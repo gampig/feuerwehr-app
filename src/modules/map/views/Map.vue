@@ -1,5 +1,11 @@
 <template>
   <page page-title="Karte" navdrawer>
+    <template v-slot:actions>
+      <v-btn @click="fetchPositions" :loading="loadingPositions" icon>
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+    </template>
+
     <l-map :zoom.sync="zoom" :center.sync="center" style="height: 100%">
       <l-tile-layer :url="url" />
       <l-marker
@@ -18,12 +24,13 @@
 <style scoped>
 .dot {
   text-align: center;
-  line-height: 15px;
+  line-height: 14px;
   height: 15px;
   width: 15px;
   font-weight: 800;
   color: black;
   background: red 50%;
+  border: 1px solid grey;
   border-radius: 100%;
 }
 .center {
@@ -54,6 +61,7 @@ export default {
       showMap: true,
 
       positions: {},
+      loadingPositions: false,
       token: "7784b80cc5de772d7ee84e3832921084",
       positionsEndpoint:
         "https://cloud.feuerwehr-parkstetten.de/index.php/apps/phonetrack/api/getlastpositions/7784b80cc5de772d7ee84e3832921084",
@@ -64,12 +72,15 @@ export default {
 
   methods: {
     fetchPositions() {
+      this.loadingPositions = true;
       fetch(this.positionsEndpoint)
         .then(response => response.json())
         .then(data => {
           this.positions = data[this.token];
+          this.loadingPositions = false;
         })
         .catch(error => {
+          this.loadingPositions = false;
           this.showError(error);
         });
     }
@@ -77,10 +88,9 @@ export default {
 
   created() {
     this.fetchPositions();
-    this.positionTimer = setInterval(
-      () => this.fetchPositions,
-      this.positionUpdateInterval
-    );
+    this.positionTimer = setInterval(() => {
+      this.fetchPositions();
+    }, this.positionUpdateInterval);
   },
 
   destroyed() {
