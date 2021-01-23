@@ -1,0 +1,44 @@
+{
+  "clothes": {
+    "clothTypes": {
+      "1": {
+        "category": "PSA",
+        "manufacturer": "Bayern 2000",
+        "name": "Hose",
+        "price": 20,
+        "isAvailable": true,
+        "sizes": [
+          "S",
+          "M",
+          "L",
+          "XL"
+        ]
+      }
+    },
+    "storage": {
+      "1": {
+        "S": 5,
+        "M": 3
+      }
+    },
+    "people": {
+      "Gampig, Jonas": {
+        "1": {
+          "M": 1
+        }
+      }
+    },
+    "orders": {
+      "#id": {
+        "person": "Gigler, Tobias",
+        "clothType": "1",
+        "size": "M",
+        "count": 2,
+        "submittedOn": 1234,
+        "orderedOn": 12345,
+        "paid": 10,
+        "done": false
+      }
+    }
+  }
+}

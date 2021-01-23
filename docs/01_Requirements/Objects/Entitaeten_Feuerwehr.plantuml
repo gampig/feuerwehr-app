@@ -1,0 +1,58 @@
+@startuml
+
+class Feuerwehr << Entität >> {
+    name
+}
+
+class Fahrzeug << Entität >> {
+    name
+    bildUrl
+    inDienstSeit
+    ausserDienstSeit
+    maxMannschaft
+}
+Feuerwehr *-- Fahrzeug
+
+class Gruppe << Entität >> {
+    name
+    farbe
+    existiertNoch
+}
+Feuerwehr *-- Gruppe
+
+class Person << Entität >> {
+    vorname
+    nachname
+    bildUrl
+    status : PersonStatus
+}
+Feuerwehr *-- Person
+
+Person -o Gruppe
+(Person, Gruppe) .. GruppenMitglied
+
+class GruppenMitglied {
+    rolle : GruppenRollen
+}
+
+GruppenMitglied --> GruppenRollen
+Person ---> PersonStatus
+
+class Kleiderlager
+Feuerwehr *-- "1" Kleiderlager
+
+
+' Statische Daten (enumeration)
+enum GruppenRollen {
+    Leiter
+    StellvLeiter
+    Ausbilder
+    Mitglied
+}
+enum PersonStatus {
+    Aktiv
+    Jugend
+    Passiv
+    Ausgetreten
+}
+@enduml

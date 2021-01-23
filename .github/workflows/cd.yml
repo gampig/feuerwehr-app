@@ -1,0 +1,44 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+env:
+  FTP_HOST: ffwpa.kasserver.com
+  FTP_USER: f0130658
+
+jobs:
+  vue-client:
+    name: Deploy client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Build Project with npm
+        run: |
+          npm ci
+          npm run build -- --modern
+
+      - name: Upload app
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ${{ env.FTP_HOST }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: client/
+          state-name: ../.client-ftp-deploy-sync-state.json

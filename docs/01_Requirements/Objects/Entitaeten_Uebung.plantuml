@@ -1,0 +1,14 @@
+@startuml
+
+class Übung << Entität >> {
+    termin
+    titel
+}
+class Gruppe << Entität >>
+class Person << Entität >>
+
+' Übung-Verbindungen
+Übung -- Gruppe
+Übung o-- Person
+
+@enduml

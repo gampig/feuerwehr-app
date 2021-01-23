@@ -1,0 +1,60 @@
+{
+  "name": "feuerwehr-app",
+  "version": "1.0.0",
+  "description": "App for fire departments to do basic non-critical administrative work",
+  "keywords": [
+    "fire station",
+    "fire department",
+    "administration"
+  ],
+  "homepage": "https://github.com/gampig/feuerwehr-app",
+  "license": "GPL-3.0-only",
+  "repository": "github:gampig/feuerwehr-app",
+  "private": true,
+  "scripts": {
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "build-report": "vue-cli-service build --report",
+    "start": "vue-cli-service serve --port 80"
+  },
+  "dependencies": {
+    "@fontsource/roboto": "^4.1.0",
+    "core-js": "^3.8.3",
+    "firebase": "^8.2.4",
+    "lodash": "^4.17.19",
+    "moment": "^2.29.1",
+    "register-service-worker": "^1.7.2",
+    "router": "^1.3.5",
+    "vue": "^2.6.11",
+    "vue-router": "^3.4.9",
+    "vuetify": "^2.4.3",
+    "vuex": "^3.6.0",
+    "vuexfire": "^3.2.5"
+  },
+  "devDependencies": {
+    "@mdi/font": "^5.9.55",
+    "@types/lodash": "^4.14.168",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "^4.5.11",
+    "@vue/cli-plugin-eslint": "^4.5.11",
+    "@vue/cli-plugin-pwa": "^4.5.11",
+    "@vue/cli-plugin-router": "^4.5.11",
+    "@vue/cli-plugin-typescript": "^4.5.11",
+    "@vue/cli-service": "^4.5.11",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.5.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
+    "prettier": "^2.2.1",
+    "sass": "^1.32.5",
+    "sass-loader": "^10.1.1",
+    "typescript": "~4.1.3",
+    "vue-cli-plugin-vuetify": "^2.0.9",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.3.0"
+  }
+}

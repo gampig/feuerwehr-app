@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+
+actor "AlarmFax" as fax
+actor "KalenderServer" as calendar
+
+actor "Gruppenführer" as leader
+actor "Admin" as admin
+leader <|- admin
+
+rectangle FeuerStatistik {
+    ' Callout added automatically
+    usecase "Einsatz hinzufügen" as AddCallout
+
+    ' Callouts
+    usecase "Einsätze anzeigen" as ViewCallouts
+    usecase "Einsatz-Mannschaft eintragen" as SelectCrew
+    
+    ' Trainings
+    usecase "Übungen anzeigen" as ViewTrainings
+    usecase "Übung hinzufügen" as AddTraining
+    usecase "Übungsteilnehmer eintragen" as SelectTrainingParticipants
+
+    usecase "Authentifizieren mit Token" as Token
+    usecase "Login" as Login
+
+    (AddCallout) ..> (Token) : include
+    (ViewCallouts) <.. (Login) : extend
+    (SelectCrew) <.. (Login) : extend
+
+    (ViewTrainings) <.. (Login) : extend
+    (SelectTrainingParticipants) <.. (Login) : extend
+    (AddTraining) <.. (Login) : extend
+}
+
+fax -- (AddCallout)
+leader -- (ViewCallouts)
+leader -- (SelectCrew)
+
+leader -- (ViewTrainings)
+leader -- (SelectTrainingParticipants)
+leader -- (AddTraining)
+
+(AddTraining) --> calendar
+@enduml

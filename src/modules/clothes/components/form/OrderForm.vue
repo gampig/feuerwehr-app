@@ -1,0 +1,173 @@
+<template>
+  <v-form ref="form">
+    <v-row class="mb-0">
+      <v-col cols="12">
+        <v-autocomplete
+          label="Person"
+          prepend-icon="mdi-account"
+          :items="people"
+          item-text="id"
+          :value="person"
+          @input="update('person', $event)"
+          :loading="loadingPeople"
+          single-line
+          :rules="[rules.required]"
+        />
+      </v-col>
+      <v-col cols="12">
+        <v-autocomplete
+          label="Kleidungsstück"
+          prepend-icon="mdi-tshirt-crew"
+          :items="types"
+          :item-text="getTypeText"
+          item-value="id"
+          :value="clothType"
+          @input="update('clothType', $event)"
+          :loading="loadingTypes"
+          single-line
+          :rules="[rules.required]"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="clothType">
+      <v-col sm="6" cols="12">
+        <v-combobox
+          label="Größe"
+          prepend-icon="mdi-ruler"
+          :items="sizes"
+          :value="size"
+          @input="update('size', $event)"
+        />
+      </v-col>
+      <v-col sm="6" cols="12">
+        <v-text-field
+          label="Anzahl"
+          type="number"
+          prepend-icon="mdi-cart-variant"
+          :value="count"
+          @input="update('count', $event)"
+          :rules="[rules.required]"
+        />
+      </v-col>
+    </v-row>
+
+    <template v-if="!create">
+      <v-divider></v-divider>
+
+      <v-row>
+        <v-col cols="6">
+          <v-text-field
+            label="Bezahlt"
+            type="number"
+            min="0"
+            suffix="€"
+            prepend-icon="mdi-cash"
+            :error="totalPrice > 0 && paid != totalPrice"
+            :value="paid"
+            @input="update('paid', $event)"
+          />
+        </v-col>
+
+        <v-col cols="6">
+          <v-text-field
+            label="Gesamtkosten"
+            :value="totalPrice + ' €'"
+            disabled
+          />
+        </v-col>
+
+        <v-col cols="12">
+          <v-checkbox
+            label="Bestellt"
+            :input-value="orderedOn"
+            @change="updateCheckbox('orderedOn', $event)"
+          />
+        </v-col>
+
+        <v-col cols="12">
+          <v-checkbox
+            label="Erledigt"
+            :input-value="doneOn"
+            @change="updateCheckbox('doneOn', $event)"
+          />
+        </v-col>
+      </v-row>
+    </template>
+  </v-form>
+</template>
+
+<script>
+import FormMixin from "@/mixins/FormMixin";
+import { mapState } from "vuex";
+import moment from "moment";
+
+export default FormMixin.extend({
+  props: {
+    create: {
+      type: Boolean,
+      default: false,
+    },
+
+    person: null,
+    clothType: null,
+    size: null,
+    count: null,
+    paid: null,
+    submittedOn: null,
+    orderedOn: null,
+    doneOn: null,
+  },
+
+  computed: {
+    ...mapState("people", { loadingPeople: "loading", people: "people" }),
+    ...mapState("clothTypes", { loadingTypes: "loading", types: "types" }),
+
+    clothTypeObject() {
+      return (
+        this.clothType && this.types.find((item) => item.id == this.clothType)
+      );
+    },
+    sizes() {
+      return (this.clothTypeObject && this.clothTypeObject.sizes) || [];
+    },
+    totalPrice() {
+      if (
+        !this.clothTypeObject ||
+        !this.clothTypeObject.price ||
+        this.clothTypeObject.price == 0
+      ) {
+        return 0;
+      }
+
+      const count = this.count ? this.count : 1;
+      return this.clothTypeObject.price * count;
+    },
+  },
+
+  methods: {
+    getTypeText(type) {
+      let text = "";
+
+      if (type.category) {
+        text += `(${type.category}) `;
+      }
+      if (type.manufacturer) {
+        text += type.manufacturer + ": ";
+      }
+      text += type.name;
+
+      return text;
+    },
+    updateCheckbox(name, checked) {
+      let value = null;
+
+      if (checked) {
+        value = moment().unix();
+      }
+
+      this.update(name, value);
+    },
+  },
+});
+</script>

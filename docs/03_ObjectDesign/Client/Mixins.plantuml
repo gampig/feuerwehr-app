@@ -1,0 +1,53 @@
+@startuml
+
+hide empty members
+
+abstract class CreateMixin {
+  creating
+  create(item)
+  //validate()//
+}
+class Create {
+  validate()
+}
+CreateMixin <|-- Create
+
+
+abstract class ListMixin {
+  loading
+  addHandler()
+  showHandler(item)
+  editHandler(item)
+  deleteHandler(item)
+  sortDateTime(a, b)
+}
+class List
+ListMixin <|-- List
+
+
+abstract class ShowMixin {
+  id
+  del()
+  //retrieveItem()//
+}
+class Show {
+  retrieveItem()
+}
+ShowMixin <|-- Show
+
+
+abstract class UpdateMixin {
+  id
+  updating
+  update(item)
+  del()
+  //retrieveItem()//
+  //validate()//
+}
+class Update {
+  retrieveItem()
+  validate()
+}
+UpdateMixin <|-- Update
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml
+
+class Einsatz << Entität >> {
+    alarmiert
+    ende
+    typ : EinsatzTypen
+    stichwort
+    schlagwort
+    adresse
+}
+class Mannschaft << Entität >>
+class Fahrzeug << Entität >>
+class Person << Entität >>
+
+' Einsatz-Verbindungen
+Einsatz o-- Mannschaft
+Mannschaft o-- "1" Fahrzeug
+Mannschaft o- Person
+(Mannschaft, Person) .. MannschaftMitglied
+
+class MannschaftMitglied {
+    funktion : EinsatzFunktionen
+}
+
+Einsatz -> EinsatzTypen
+MannschaftMitglied -> EinsatzFunktionen
+
+
+' Statische Daten (enumeration)
+enum EinsatzTypen {
+    Brand
+    THL
+    UG-ÖEL
+}
+enum EinsatzFunktionen {
+    Einsatzleiter
+    Zugführer
+    Gruppenführer
+    Maschinist
+    Atemschutz
+    Melder
+    Atemschutzüberwachung
+}
+@enduml

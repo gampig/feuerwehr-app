@@ -1,0 +1,35 @@
+@startuml
+
+class Kleidungstyp {
+  kategorie
+  hersteller
+  bezeichnung
+  preis : Euro
+  istErhaeltlich
+}
+class KleidungsstueckGroesse {
+  typ : Kleidungstyp
+  groesse
+}
+class Kleidungsstueck {
+  kleidungsstueck : KleidungsstueckGroesse
+  anzahl
+}
+class Bestellung {
+  aufgegebenAm : Datum
+  bestelltAm : Datum
+  bezahlt : Euro
+  erledigt
+}
+class Person
+class Kleiderlager
+
+Kleiderlager *---> Kleidungsstueck
+Bestellung *--> "*" Kleidungsstueck
+Person *-- Bestellung
+Person *---> Kleidungsstueck
+
+Kleidungsstueck "*" -> "1" KleidungsstueckGroesse
+Kleidungstyp "1" *-- "*" KleidungsstueckGroesse
+
+@enduml
