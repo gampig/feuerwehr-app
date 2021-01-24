@@ -65,12 +65,12 @@ export default {
 
     rulesDate: {
       type: Array,
-      default: null,
+      default: () => [],
     },
 
     rulesTime: {
       type: Array,
-      default: null,
+      default: () => [],
     },
 
     clearable: {
