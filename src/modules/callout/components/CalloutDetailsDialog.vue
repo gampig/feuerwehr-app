@@ -29,6 +29,18 @@ export default {
     },
     item: {
       type: Object,
+      default: () => {
+        return {
+          alarmTime: null,
+          endTime: null,
+          type: null,
+          keyword: null,
+          catchphrase: null,
+          address: null,
+          standbyCrew: null,
+          vehicles: null,
+        };
+      },
     },
   },
 };

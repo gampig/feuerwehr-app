@@ -30,6 +30,7 @@ export default {
       type: Boolean,
     },
     date: {
+      type: String,
       default: null,
     },
     maxDate: {

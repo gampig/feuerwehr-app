@@ -42,6 +42,10 @@ export default {
     };
   },
 
+  created() {
+    this.reset();
+  },
+
   methods: {
     ...mapActions("callouts", ["create"]),
     ...mapActions("callout", ["bind"]),
@@ -72,10 +76,6 @@ export default {
         });
       }
     },
-  },
-
-  created() {
-    this.reset();
   },
 };
 </script>

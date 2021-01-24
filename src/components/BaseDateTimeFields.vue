@@ -45,21 +45,27 @@ export default {
   props: {
     label: {
       type: String,
+      default: null,
     },
     prependIcon: {
       type: String,
+      default: null,
     },
     maxDate: {
       type: String,
+      default: null,
     },
     minDate: {
       type: String,
+      default: null,
     },
     rulesDate: {
       type: Array,
+      default: null,
     },
     rulesTime: {
       type: Array,
+      default: null,
     },
     clearable: {
       type: Boolean,
@@ -68,6 +74,7 @@ export default {
 
     value: {
       type: Number,
+      default: null,
     },
   },
 

@@ -185,6 +185,19 @@ export default {
     },
   },
 
+  watch: {
+    $route() {
+      this.init();
+    },
+    userSettings() {
+      this.handleUserSettings();
+    },
+  },
+
+  created() {
+    this.init();
+  },
+
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
     ...mapActions("vehicles", ["bindVehicle", "unbindVehicle"]),
@@ -269,19 +282,6 @@ export default {
       this.unbindVehicle();
       this.$router.go(-1 * this.current_step);
     },
-  },
-
-  watch: {
-    $route() {
-      this.init();
-    },
-    userSettings() {
-      this.handleUserSettings();
-    },
-  },
-
-  created() {
-    this.init();
   },
 };
 </script>

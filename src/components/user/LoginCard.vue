@@ -35,6 +35,7 @@ export default {
   props: {
     values: {
       type: Object,
+      default: null,
     },
 
     cardTitle: {

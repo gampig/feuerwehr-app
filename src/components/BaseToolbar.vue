@@ -39,23 +39,23 @@ export default {
   props: {
     handleSubmit: {
       type: Function,
-      required: false,
+      default: null,
     },
     handleReset: {
       type: Function,
-      required: false,
+      default: null,
     },
     handleDelete: {
       type: Function,
-      required: false,
+      default: null,
     },
     handleAdd: {
       type: Function,
-      required: false,
+      default: null,
     },
     title: {
       type: String,
-      required: false,
+      default: null,
     },
     isLoading: {
       type: Boolean,

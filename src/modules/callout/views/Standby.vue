@@ -58,6 +58,10 @@ export default {
     },
   },
 
+  created() {
+    this.init(this.id);
+  },
+
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
 
@@ -83,10 +87,6 @@ export default {
     onDialogClose(calloutId) {
       this.goTo("StandbyPeople", { id: calloutId });
     },
-  },
-
-  created() {
-    this.init(this.id);
   },
 };
 </script>

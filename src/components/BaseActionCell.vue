@@ -20,26 +20,20 @@
   </div>
 </template>
 
-<style scoped>
-.btn-container .v-btn {
-  margin: 4px;
-}
-</style>
-
 <script>
 export default {
   props: {
     handleShow: {
       type: Function,
-      required: false,
+      default: null,
     },
     handleEdit: {
       type: Function,
-      required: false,
+      default: null,
     },
     handleDelete: {
       type: Function,
-      required: false,
+      default: null,
     },
   },
   data() {
@@ -49,3 +43,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.btn-container .v-btn {
+  margin: 4px;
+}
+</style>

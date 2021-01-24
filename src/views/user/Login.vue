@@ -27,6 +27,18 @@ export default {
     },
   },
 
+  watch: {
+    loggedIn(loggedIn) {
+      if (loggedIn) {
+        if (this.nextUrl) {
+          this.$router.replace(this.nextUrl);
+        } else {
+          this.$router.replace({ name: "Home" });
+        }
+      }
+    },
+  },
+
   methods: {
     ...mapActions("auth", ["login"]),
 
@@ -42,18 +54,6 @@ export default {
         .then(() => {
           this.login(user);
         });
-    },
-  },
-
-  watch: {
-    loggedIn(loggedIn) {
-      if (loggedIn) {
-        if (this.nextUrl) {
-          this.$router.replace(this.nextUrl);
-        } else {
-          this.$router.replace({ name: "Home" });
-        }
-      }
     },
   },
 };

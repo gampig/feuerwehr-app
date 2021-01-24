@@ -37,26 +37,6 @@
   </v-card>
 </template>
 
-<style scoped>
-.list-enter-active {
-  transition: all 1.2s;
-}
-.list-leave-active {
-  transition: all 0.6s;
-}
-
-.list-enter {
-  background: green !important;
-}
-.list-leave-to {
-  background: red !important;
-}
-
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>
-
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import PersonAutocomplete from "../form/PersonAutocomplete";
@@ -101,3 +81,23 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.list-enter-active {
+  transition: all 1.2s;
+}
+.list-leave-active {
+  transition: all 0.6s;
+}
+
+.list-enter {
+  background: green !important;
+}
+.list-leave-to {
+  background: red !important;
+}
+
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

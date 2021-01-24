@@ -29,9 +29,11 @@ import modules from "@/modules";
 export default {
   props: {
     handleAdd: {
+      type: Function,
       default: null,
     },
     search: {
+      type: String,
       default: "",
     },
   },

@@ -49,6 +49,7 @@ export default {
       type: Boolean,
     },
     date: {
+      type: Number,
       default: null,
     },
     maxDate: {

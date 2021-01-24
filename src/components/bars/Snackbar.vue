@@ -41,6 +41,14 @@ export default {
     ]),
   },
 
+  watch: {
+    id() {
+      if (this.show) {
+        this.setTimer();
+      }
+    },
+  },
+
   methods: {
     ...mapMutations("notifications", ["setShow"]),
 
@@ -55,14 +63,6 @@ export default {
 
     close() {
       this.setShow(false);
-    },
-  },
-
-  watch: {
-    id() {
-      if (this.show) {
-        this.setTimer();
-      }
     },
   },
 };

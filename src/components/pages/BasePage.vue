@@ -13,12 +13,6 @@
   </div>
 </template>
 
-<style scoped>
-.full-height {
-  height: 100%;
-}
-</style>
-
 <script>
 import AppBar from "../bars/AppBar";
 
@@ -26,3 +20,9 @@ export default {
   components: { AppBar },
 };
 </script>
+
+<style scoped>
+.full-height {
+  height: 100%;
+}
+</style>

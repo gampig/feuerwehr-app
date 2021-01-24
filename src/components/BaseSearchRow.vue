@@ -22,6 +22,7 @@
 export default {
   props: {
     search: {
+      type: String,
       default: "",
     },
   },

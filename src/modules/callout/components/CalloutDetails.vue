@@ -71,13 +71,16 @@
       </template>
 
       <v-list-group
-        v-for="item in item.vehicles"
-        :key="item.vehicle.id"
+        v-for="calloutVehicle in item.vehicles"
+        :key="calloutVehicle.vehicle.id"
         sub-group
       >
         <template #prependIcon>
-          <v-avatar v-if="item.vehicle.pictureUrl">
-            <v-img :src="item.vehicle.pictureUrl" :alt="item.vehicle.name">
+          <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
+            <v-img
+              :src="calloutVehicle.vehicle.pictureUrl"
+              :alt="calloutVehicle.vehicle.name"
+            >
               <template #placeholder>
                 <v-icon>mdi-truck-outlined</v-icon>
               </template>
@@ -87,30 +90,36 @@
         </template>
         <template #activator>
           <v-list-item-content>
-            <v-list-item-title>{{ item.vehicle.name }}</v-list-item-title>
+            <v-list-item-title>{{
+              calloutVehicle.vehicle.name
+            }}</v-list-item-title>
             <v-list-item-subtitle>
               Besatzung:
               {{
-                (item.crewMembers && Object.keys(item.crewMembers).length) ||
+                (item.crewMembers &&
+                  Object.keys(calloutVehicle.crewMembers).length) ||
                 "0"
               }}
-              <template v-if="item.vehicle.maxCrewNumber">
-                / {{ item.vehicle.maxCrewNumber }}
+              <template v-if="calloutVehicle.vehicle.maxCrewNumber">
+                / {{ calloutVehicle.vehicle.maxCrewNumber }}
               </template>
             </v-list-item-subtitle>
             <v-list-item-subtitle
-              v-if="item.calloutDetails && item.calloutDetails.endTime"
+              v-if="
+                calloutVehicle.calloutDetails &&
+                calloutVehicle.calloutDetails.endTime
+              "
             >
               Einsatzende:
-              {{ item.calloutDetails.endTime | formatDateTime }} (Dauer:
-              {{ duration(item.calloutDetails.endTime) }})
+              {{ calloutVehicle.calloutDetails.endTime | formatDateTime }}
+              (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
             </v-list-item-subtitle>
           </v-list-item-content>
         </template>
 
         <v-list-item
-          v-for="(role, person) in item.crewMembers"
-          :key="item.vehicle.id + person"
+          v-for="(role, person) in calloutVehicle.crewMembers"
+          :key="calloutVehicle.vehicle.id + person"
         >
           <v-list-item-avatar></v-list-item-avatar>
           <v-list-item-content>

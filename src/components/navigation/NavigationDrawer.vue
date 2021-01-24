@@ -103,18 +103,18 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("auth", ["loggedIn", "user", "userSettings"]),
+    ...mapGetters("auth", ["hasAnyRole"]),
+    ...mapState("navigation", ["links"]),
+  },
+
   watch: {
     loggedIn(loggedIn) {
       if (!loggedIn) {
         this.showUserSettings = false;
       }
     },
-  },
-
-  computed: {
-    ...mapState("auth", ["loggedIn", "user", "userSettings"]),
-    ...mapGetters("auth", ["hasAnyRole"]),
-    ...mapState("navigation", ["links"]),
   },
 
   methods: {
