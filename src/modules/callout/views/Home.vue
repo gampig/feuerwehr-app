@@ -11,6 +11,14 @@
             </v-col>
           </v-row>
 
+          <v-row v-if="isAdmin" justify="center" class="mb-6">
+            <v-col sm="6" md="4">
+              <v-btn :to="{ name: 'SelectStandby' }" block>
+                Bereitschaft eintragen
+              </v-btn>
+            </v-col>
+          </v-row>
+
           <v-row justify="center">
             <v-col sm="6" md="4">
               <v-btn :to="{ name: 'CalloutList' }" text block> Archiv </v-btn>
@@ -21,3 +29,11 @@
     </v-container>
   </BasePage>
 </template>
+
+<script lang="ts">
+import Vue from "vue";
+import { mapGetters } from "vuex";
+export default Vue.extend({
+  computed: mapGetters("auth", ["isAdmin"]),
+});
+</script>
