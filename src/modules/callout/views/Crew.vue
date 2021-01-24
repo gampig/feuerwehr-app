@@ -195,9 +195,9 @@ export default {
     },
 
     closeHandler() {
-      this.unbindCallout();
-      this.unbindVehicle();
       this.$router.go(-1 * this.currentStep);
+      this.unbindVehicle();
+      this.unbindCallout();
     },
   },
 };
