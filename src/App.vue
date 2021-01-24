@@ -48,6 +48,7 @@ export default {
         version,
       });
     },
+
     onLogout() {
       modules.onLogout();
       this.toLoginPage();

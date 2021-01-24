@@ -29,14 +29,17 @@ export default {
     value: {
       type: Boolean,
     },
+
     date: {
       type: String,
       default: null,
     },
+
     maxDate: {
       type: String,
       default: undefined,
     },
+
     minDate: {
       type: String,
       default: undefined,
@@ -67,10 +70,12 @@ export default {
         this.dateVal = moment().format("YYYY-MM-DD");
       }
     },
+
     cancel() {
       this.$emit("input", false);
       this.reset();
     },
+
     save() {
       this.$emit("input", false);
       this.$emit("update:date", this.dateVal);

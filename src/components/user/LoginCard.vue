@@ -53,12 +53,14 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
       passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
     };
   },
+
   computed: {
     item() {
       return (
@@ -70,6 +72,7 @@ export default {
       );
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

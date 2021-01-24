@@ -10,10 +10,12 @@ export default Vue.extend({
           !value ||
           moment(value).unix() <= moment().unix() ||
           "Zeitpunkt muss in Vergangenheit liegen",
+
         restrictFuture: (value: any) =>
           !value ||
           moment(value).unix() <= moment().add(1, "day").unix() ||
           "Zeitpunkt darf nicht später als 24 Stunden ab jetzt sein",
+
         recently: (value: any) => {
           const aDayAgo = moment().subtract(7, "day").unix();
           return (
@@ -29,6 +31,7 @@ export default Vue.extend({
     today() {
       return moment().format("YYYY-MM-DD");
     },
+
     tomorrow() {
       return moment().add(1, "day").format("YYYY-MM-DD");
     },

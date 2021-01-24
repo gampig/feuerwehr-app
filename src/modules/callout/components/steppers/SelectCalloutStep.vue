@@ -87,6 +87,7 @@ export default {
       this.showUserConfirm = false;
       this.selectCallout();
     },
+
     selectCallout: function (calloutId) {
       this.$emit("input", calloutId);
     },

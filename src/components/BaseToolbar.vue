@@ -41,44 +41,53 @@ export default {
       type: Function,
       default: null,
     },
+
     handleReset: {
       type: Function,
       default: null,
     },
+
     handleDelete: {
       type: Function,
       default: null,
     },
+
     handleAdd: {
       type: Function,
       default: null,
     },
+
     title: {
       type: String,
       default: null,
     },
+
     isLoading: {
       type: Boolean,
       required: false,
       default: () => false,
     },
   },
+
   data() {
     return {
       confirmDelete: false,
     };
   },
+
   methods: {
     addItem() {
       if (this.handleAdd) {
         this.handleAdd();
       }
     },
+
     submitItem() {
       if (this.handleSubmit) {
         this.handleSubmit();
       }
     },
+
     resetItem() {
       if (this.handleReset) {
         this.handleReset();

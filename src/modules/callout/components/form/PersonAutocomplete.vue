@@ -40,10 +40,12 @@ export default {
       type: Array,
       required: true,
     },
+
     loading: {
       type: Boolean,
       default: false,
     },
+
     label: {
       type: String,
       default: "Person suchen...",

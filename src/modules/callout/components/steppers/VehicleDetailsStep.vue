@@ -36,6 +36,7 @@ export default {
       emptyItem: {
         endTime: null,
       },
+
       loading: false,
     };
   },
@@ -49,6 +50,7 @@ export default {
     callout(callout) {
       this.importItem(callout, this.vehicle);
     },
+
     vehicle(vehicle) {
       this.importItem(this.callout, vehicle);
     },

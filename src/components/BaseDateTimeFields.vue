@@ -47,26 +47,32 @@ export default {
       type: String,
       default: null,
     },
+
     prependIcon: {
       type: String,
       default: null,
     },
+
     maxDate: {
       type: String,
       default: null,
     },
+
     minDate: {
       type: String,
       default: null,
     },
+
     rulesDate: {
       type: Array,
       default: null,
     },
+
     rulesTime: {
       type: Array,
       default: null,
     },
+
     clearable: {
       type: Boolean,
       default: false,
@@ -104,10 +110,12 @@ export default {
       this.date = date;
       this.emit();
     },
+
     updateTime(time) {
       this.time = time;
       this.emit();
     },
+
     emit() {
       const value =
         this.date && this.time

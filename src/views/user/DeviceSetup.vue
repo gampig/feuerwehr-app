@@ -38,6 +38,7 @@ export default {
       deviceService.set(device);
       this.device = device;
     },
+
     handleLogout() {
       deviceService.remove();
       this.device = null;

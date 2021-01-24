@@ -74,9 +74,11 @@ export default {
         this.current_step = 1;
       }
     },
+
     goTo(name, params) {
       this.$router.push({ name, params });
     },
+
     onCalloutSelect(calloutId) {
       if (!calloutId) {
         this.showCreateDialog = true;
@@ -84,6 +86,7 @@ export default {
         this.goTo("StandbyPeople", { id: calloutId });
       }
     },
+
     onDialogClose(calloutId) {
       this.goTo("StandbyPeople", { id: calloutId });
     },

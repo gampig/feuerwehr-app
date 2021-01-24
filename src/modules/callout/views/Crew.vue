@@ -189,6 +189,7 @@ export default {
     $route() {
       this.init();
     },
+
     userSettings() {
       this.handleUserSettings();
     },
@@ -231,6 +232,7 @@ export default {
           break;
       }
     },
+
     initCallout(id) {
       if (id) {
         if (!this.callout || id != this.callout[".key"]) {
@@ -240,6 +242,7 @@ export default {
         this.unbindCallout();
       }
     },
+
     initVehicle(id) {
       if (id && (!this.vehicle || id != this.vehicle.id)) {
         this.bindVehicle(id);
@@ -247,6 +250,7 @@ export default {
         this.handleUserSettings();
       }
     },
+
     handleUserSettings() {
       if (this.userSettings && this.userSettings.vehicle) {
         this.userIsVehicle = true;
@@ -262,6 +266,7 @@ export default {
     goTo(name, params) {
       this.$router.push({ name, params });
     },
+
     nextFromEditCallout() {
       if (!this.userIsVehicle) {
         this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });
@@ -269,6 +274,7 @@ export default {
         this.goTo("CrewVehicleDetails", { callout_id: this.callout[".key"] });
       }
     },
+
     backFromVehicleDetails() {
       if (!this.userIsVehicle) {
         this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });

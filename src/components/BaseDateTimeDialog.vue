@@ -48,14 +48,17 @@ export default {
     value: {
       type: Boolean,
     },
+
     date: {
       type: Number,
       default: null,
     },
+
     maxDate: {
       type: String,
       default: undefined,
     },
+
     minDate: {
       type: String,
       default: undefined,
@@ -91,10 +94,12 @@ export default {
         this.timeVal = moment().format("HH:mm");
       }
     },
+
     cancel() {
       this.$emit("input", false);
       this.reset();
     },
+
     save() {
       this.$emit("input", false);
       const date = moment(this.dateVal + " " + this.timeVal);

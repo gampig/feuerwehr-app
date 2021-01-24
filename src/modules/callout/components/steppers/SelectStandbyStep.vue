@@ -70,11 +70,13 @@ export default {
         this.loading = false;
       });
     },
+
     onRemove(item) {
       const personId = item;
 
       this.removeStandbyMember(personId);
     },
+
     back() {
       this.$emit("back");
     },

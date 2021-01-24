@@ -48,6 +48,7 @@ export default {
       type: Boolean,
       default: false,
     },
+
     updating: {
       type: Boolean,
       default: false,

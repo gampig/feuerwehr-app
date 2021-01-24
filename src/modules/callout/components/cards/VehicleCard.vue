@@ -32,12 +32,15 @@ export default {
           name: {
             type: String,
           },
+
           picture: {
             type: String,
           },
+
           crewNumber: {
             type: Number,
           },
+
           maxCrewNumber: {
             type: Number,
           },

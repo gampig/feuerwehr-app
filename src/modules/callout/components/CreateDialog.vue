@@ -61,10 +61,12 @@ export default {
       };
       this.loading = false;
     },
+
     cancel() {
       this.$emit("input", false);
       this.reset();
     },
+
     save() {
       if (this.$refs.form.$refs.form.validate()) {
         this.loading = true;

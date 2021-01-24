@@ -27,15 +27,18 @@ export default {
       type: Function,
       default: null,
     },
+
     handleEdit: {
       type: Function,
       default: null,
     },
+
     handleDelete: {
       type: Function,
       default: null,
     },
   },
+
   data() {
     return {
       confirmDelete: false,

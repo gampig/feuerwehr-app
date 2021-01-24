@@ -69,9 +69,11 @@ export default {
       };
       return item;
     },
+
     roles() {
       return (this.userSettings && this.userSettings.roles) || {};
     },
+
     rolesArray() {
       return Object.keys(this.roles) || [];
     },

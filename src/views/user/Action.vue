@@ -29,6 +29,7 @@ export default {
     mode() {
       return this.$route.query.mode;
     },
+
     code() {
       return this.$route.query.oobCode;
     },

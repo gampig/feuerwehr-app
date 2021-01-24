@@ -20,16 +20,19 @@ export default {
       required: true,
       default: () => false,
     },
+
     handleDelete: {
       type: Function,
       required: true,
     },
   },
+
   computed: {
     show: {
       get() {
         return this.visible;
       },
+
       set(value) {
         if (!value) {
           this.$emit("close");

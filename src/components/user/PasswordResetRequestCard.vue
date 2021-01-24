@@ -22,16 +22,19 @@ export default {
       default: null,
     },
   },
+
   data() {
     return {
       emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
     };
   },
+
   computed: {
     item() {
       return { email: this.values || "" };
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

@@ -41,10 +41,12 @@ export default Vue.extend({
         return !!person.firstName && !!person.lastName && !!person.status;
       },
     },
+
     role: {
       type: String as PropType<CalloutRole>,
       default: null,
     },
+
     loading: {
       type: Boolean,
       default: false,

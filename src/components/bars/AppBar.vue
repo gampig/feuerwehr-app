@@ -43,22 +43,27 @@ export default {
       type: String,
       default: process.env.VUE_APP_TITLE,
     },
+
     navdrawer: {
       type: Boolean,
       default: false,
     },
+
     backButton: {
       type: Boolean,
       default: false,
     },
+
     closeButton: {
       type: Boolean,
       default: false,
     },
+
     closeHandler: {
       type: Function,
       default: null,
     },
+
     extended: {
       type: Boolean,
       default: false,
@@ -73,6 +78,7 @@ export default {
     goBack() {
       this.$router.back();
     },
+
     closePage() {
       if (this.closeHandler) {
         this.closeHandler();

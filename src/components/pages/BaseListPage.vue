@@ -32,6 +32,7 @@ export default {
       type: Function,
       default: null,
     },
+
     search: {
       type: String,
       default: "",

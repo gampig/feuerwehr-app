@@ -56,11 +56,13 @@ export default {
       crew: "crew",
       loadingCallout: "loading",
     }),
+
     ...mapState("vehicles", ["vehicle"]),
     ...mapGetters("people", {
       findPerson: "find",
       peopleWithoutCrew: "peopleWithoutCrew",
     }),
+
     ...mapGetters("callout", ["crewOfVehicle"]),
 
     crew() {
@@ -95,6 +97,7 @@ export default {
         this.loading = false;
       });
     },
+
     onUpdate({ person, role }) {
       this.$set(this.loadingMap, person.id, true);
       this.updateRole({
@@ -105,6 +108,7 @@ export default {
         this.$delete(this.loadingMap, person.id);
       });
     },
+
     onRemove(personId) {
       this.$set(this.loadingMap, personId, true);
       this.removeCrewMember({
@@ -114,6 +118,7 @@ export default {
         this.$delete(this.loadingMap, personId);
       });
     },
+
     back() {
       this.$emit("back");
     },

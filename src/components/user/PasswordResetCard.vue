@@ -30,16 +30,19 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
     };
   },
+
   computed: {
     item() {
       return { newPassword: "" };
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
