@@ -30,7 +30,7 @@
     <v-card-actions>
       <v-btn @click="back" color="primary" text> Zurück </v-btn>
       <v-spacer></v-spacer>
-      <v-btn :to="{ name: 'CalloutHome' }" color="primary"> Fertig </v-btn>
+      <v-btn @click="$emit('input')" color="primary"> Fertig </v-btn>
     </v-card-actions>
   </v-card>
 </template>

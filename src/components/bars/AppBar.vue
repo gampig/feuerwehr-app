@@ -11,7 +11,7 @@
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
 
-      <v-btn icon v-if="closeButton" @click="goBack">
+      <v-btn icon v-if="closeButton" @click="closePage">
         <v-icon>mdi-close</v-icon>
       </v-btn>
 
@@ -55,6 +55,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    closeHandler: {
+      type: Function,
+      default: null,
+    },
     extended: {
       type: Boolean,
       default: false,
@@ -68,6 +72,13 @@ export default {
   methods: {
     goBack() {
       this.$router.back();
+    },
+    closePage() {
+      if (this.closeHandler) {
+        this.closeHandler();
+      } else {
+        this.goBack();
+      }
     },
   },
 };

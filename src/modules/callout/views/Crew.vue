@@ -1,5 +1,9 @@
 <template>
-  <page page-title="Mannschaft auswählen" close-button>
+  <page
+    page-title="Mannschaft auswählen"
+    close-button
+    :close-handler="closeHandler"
+  >
     <template v-if="item" v-slot:actions>
       <v-menu bottom left>
         <template v-slot:activator="{ on, attrs }">
@@ -89,6 +93,7 @@
       >
       <v-stepper-content :step="steps.selectCrew">
         <select-crew-step
+          @input="closeHandler"
           @back="
             goTo('CrewVehicleDetails', {
               callout_id: callout['.key'],
@@ -257,6 +262,12 @@ export default {
       } else {
         this.goTo("CrewEditCallout", { callout_id: this.callout[".key"] });
       }
+    },
+
+    closeHandler() {
+      this.unbindCallout();
+      this.unbindVehicle();
+      this.$router.go(-1 * this.current_step);
     },
   },
 
