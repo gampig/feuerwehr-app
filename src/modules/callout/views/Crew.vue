@@ -4,7 +4,7 @@
     close-button
     :close-handler="closeHandler"
   >
-    <template v-if="item" #actions>
+    <template v-if="callout" #actions>
       <v-menu bottom left>
         <template #activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
@@ -80,7 +80,7 @@
       /></v-stepper-content>
     </v-stepper>
 
-    <CalloutDetailsDialog v-model="showCalloutDetails" :item="item" />
+    <CalloutDetailsDialog v-model="showCalloutDetails" />
   </BasePage>
 </template>
 
@@ -122,47 +122,10 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout", "crew"]),
+    ...mapState("callout", ["callout"]),
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
     ...mapGetters("vehicles", { findVehicle: "find" }),
-
-    item() {
-      if (!this.callout) {
-        return null;
-      }
-
-      let vehicles = {};
-
-      if (this.crew && this.crew.vehicles) {
-        for (const vehicleIdx in this.crew.vehicles) {
-          vehicles[vehicleIdx] = {
-            vehicle: this.findVehicle(vehicleIdx),
-            crewMembers: this.crew.vehicles[vehicleIdx],
-          };
-        }
-      }
-
-      if (this.callout.vehicles) {
-        for (const vehicleIdx in this.callout.vehicles) {
-          if (!vehicles[vehicleIdx]) {
-            vehicles[vehicleIdx] = {
-              vehicle: this.findVehicle(vehicleIdx),
-            };
-          }
-
-          vehicles[vehicleIdx].calloutDetails = this.callout.vehicles[
-            vehicleIdx
-          ];
-        }
-      }
-
-      return {
-        ...this.callout,
-        standbyCrew: (this.crew && this.crew.standby) || null,
-        vehicles: vehicles !== {} ? vehicles : null,
-      };
-    },
   },
 
   watch: {

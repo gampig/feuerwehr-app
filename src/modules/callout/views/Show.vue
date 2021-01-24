@@ -9,15 +9,15 @@
     <v-container>
       <BaseToolbar :handle-delete="isAdmin ? del : null">
         <template slot="left">
-          <v-toolbar-title v-if="item">
-            {{ item.keyword }} -
-            {{ item.alarmTime | formatDateTime }}
+          <v-toolbar-title v-if="callout">
+            {{ callout.keyword }} -
+            {{ callout.alarmTime | formatDateTime }}
           </v-toolbar-title>
         </template>
       </BaseToolbar>
 
       <v-card>
-        <CalloutDetails v-if="item" :item="item" />
+        <CalloutDetails v-if="callout" />
       </v-card>
     </v-container>
 
@@ -44,48 +44,11 @@ export default makeShowMixin("Callout", "callouts").extend({
   },
 
   computed: {
-    ...mapState("callout", ["callout", "crew"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
+    ...mapState("callout", ["callout"]),
     ...mapGetters("auth", ["isAdmin"]),
 
     editRoute() {
       return { name: "CalloutUpdate", params: { id: this.id } };
-    },
-    item() {
-      if (!this.callout) {
-        return null;
-      }
-
-      let vehicles = {};
-
-      if (this.crew && this.crew.vehicles) {
-        for (const vehicleIdx in this.crew.vehicles) {
-          vehicles[vehicleIdx] = {
-            vehicle: this.findVehicle(vehicleIdx),
-            crewMembers: this.crew.vehicles[vehicleIdx],
-          };
-        }
-      }
-
-      if (this.callout.vehicles) {
-        for (const vehicleIdx in this.callout.vehicles) {
-          if (!vehicles[vehicleIdx]) {
-            vehicles[vehicleIdx] = {
-              vehicle: this.findVehicle(vehicleIdx),
-            };
-          }
-
-          vehicles[vehicleIdx].calloutDetails = this.callout.vehicles[
-            vehicleIdx
-          ];
-        }
-      }
-
-      return {
-        ...this.callout,
-        standbyCrew: (this.crew && this.crew.standby) || null,
-        vehicles: vehicles !== {} ? vehicles : null,
-      };
     },
   },
 

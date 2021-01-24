@@ -1,18 +1,18 @@
 <template>
-  <v-list>
+  <v-list v-if="callout">
     <ListItem icon="mdi-alarm-light" subtitle="Alarm">
-      {{ item["alarmTime"] | formatDateTime }}
-      ({{ item.alarmTime | formatDateTimeFromNow }})
+      {{ callout.alarmTime | formatDateTime }}
+      ({{ callout.alarmTime | formatDateTimeFromNow }})
     </ListItem>
 
-    <ListItem v-if="item.endTime" icon="mdi-calendar-check" subtitle="Ende">
-      {{ item["endTime"] | formatDateTime }}
-      (Dauer {{ duration(item.endTime) }})
+    <ListItem v-if="callout.endTime" icon="mdi-calendar-check" subtitle="Ende">
+      {{ callout.endTime | formatDateTime }}
+      (Dauer {{ duration(callout.endTime) }})
     </ListItem>
 
-    <ListItem v-if="item.type" icon="mdi-clipboard-list" subtitle="Typ">
+    <ListItem v-if="callout.type" icon="mdi-clipboard-list" subtitle="Typ">
       <v-chip
-        v-for="(val, type) in item.type"
+        v-for="(val, type) in callout.type"
         :key="type"
         class="mr-1"
         small
@@ -22,28 +22,28 @@
     </ListItem>
 
     <ListItem
-      v-if="item.keyword"
+      v-if="callout.keyword"
       icon="mdi-clipboard-text"
       subtitle="Stichwort"
     >
-      {{ item["keyword"] }}
+      {{ callout.keyword }}
     </ListItem>
 
     <ListItem
-      v-if="item.catchphrase"
+      v-if="callout.catchphrase"
       icon="mdi-clipboard-text"
       subtitle="Schlagwort"
     >
-      {{ item["catchphrase"] }}
+      {{ callout.catchphrase }}
     </ListItem>
 
-    <ListItem v-if="item.address" icon="mdi-home" subtitle="Adresse">
-      {{ item["address"] }}
+    <ListItem v-if="callout.address" icon="mdi-home" subtitle="Adresse">
+      {{ callout.address }}
     </ListItem>
 
-    <v-divider v-if="item.standbyCrew || item.vehicles"></v-divider>
+    <v-divider v-if="standbyCrew || vehicles"></v-divider>
 
-    <v-list-group v-if="item.standbyCrew">
+    <v-list-group v-if="standbyCrew">
       <template #activator>
         <v-list-item-avatar>
           <v-icon>mdi-account-group</v-icon>
@@ -52,7 +52,7 @@
       </template>
 
       <v-list-item
-        v-for="(value, person) in item.standbyCrew"
+        v-for="(value, person) in standbyCrew"
         :key="'standby' + person"
       >
         <v-list-item-avatar></v-list-item-avatar>
@@ -62,7 +62,7 @@
       </v-list-item>
     </v-list-group>
 
-    <v-list-group v-if="item.vehicles" :value="true">
+    <v-list-group v-if="vehicles" :value="true">
       <template #activator>
         <v-list-item-avatar>
           <v-icon>mdi-truck</v-icon>
@@ -71,7 +71,7 @@
       </template>
 
       <v-list-group
-        v-for="calloutVehicle in item.vehicles"
+        v-for="calloutVehicle in vehicles"
         :key="calloutVehicle.vehicle.id"
         sub-group
       >
@@ -139,26 +139,60 @@
 <script>
 import moment from "moment";
 import ListItem from "@/components/ListItem";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   components: {
     ListItem,
   },
 
-  props: {
-    item: {
-      type: Object,
-      required: true,
+  computed: {
+    ...mapState("callout", ["callout", "crew"]),
+    ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    standbyCrew() {
+      return (this.crew && this.crew.standby) || null;
+    },
+
+    vehicles() {
+      if (!this.callout) return null;
+
+      let vehicles = {};
+
+      if (this.crew && this.crew.vehicles) {
+        for (const vehicleIdx in this.crew.vehicles) {
+          vehicles[vehicleIdx] = {
+            vehicle: this.findVehicle(vehicleIdx),
+            crewMembers: this.crew.vehicles[vehicleIdx],
+          };
+        }
+      }
+
+      if (this.callout.vehicles) {
+        for (const vehicleIdx in this.callout.vehicles) {
+          if (!vehicles[vehicleIdx]) {
+            vehicles[vehicleIdx] = {
+              vehicle: this.findVehicle(vehicleIdx),
+            };
+          }
+
+          vehicles[vehicleIdx].calloutDetails = this.callout.vehicles[
+            vehicleIdx
+          ];
+        }
+      }
+
+      return Object.keys(vehicles).length > 0 ? vehicles : null;
     },
   },
 
   methods: {
     duration(endTime) {
-      if (!this.item.alarmTime || !endTime) {
+      if (!this.callout || !this.callout.alarmTime || !endTime) {
         return "";
       }
 
-      const alarm = moment.unix(this.item.alarmTime);
+      const alarm = moment.unix(this.callout.alarmTime);
       const end = moment.unix(endTime);
       return moment.duration(alarm.diff(end)).humanize();
     },
