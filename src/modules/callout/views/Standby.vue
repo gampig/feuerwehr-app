@@ -1,7 +1,7 @@
 <template>
   <BasePage page-title="Bereitschaft eintragen" navdrawer>
     <v-stepper v-model="current_step" vertical>
-      <v-stepper-step step="1" :complete="current_step > 1">
+      <v-stepper-step step="1" :complete="currentStep > 1">
         Einsatz
         <template v-if="callout">
           : {{ callout.alarmTime | formatDateTime }} -
@@ -12,7 +12,7 @@
         <SelectCalloutStep @input="onCalloutSelect" />
       </v-stepper-content>
 
-      <v-stepper-step step="2" :complete="current_step > 2"
+      <v-stepper-step step="2" :complete="currentStep > 2"
         >Bereitschaft</v-stepper-step
       >
       <v-stepper-content step="2">
@@ -39,13 +39,18 @@ export default {
 
   data() {
     return {
-      current_step: 1,
       showCreateDialog: false,
+
+      steps: ["StandbyCallout", "StandbyPeople"],
     };
   },
 
   computed: {
     ...mapState("callout", ["callout"]),
+
+    currentStep() {
+      return this.getStepNumber(this.$route.name);
+    },
 
     id() {
       return this.$route.params.id;
@@ -64,6 +69,11 @@ export default {
 
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
+
+    getStepNumber(stepName) {
+      const stepIndex = this.steps.indexOf(stepName) + 1;
+      return stepIndex > 0 ? stepIndex : 1;
+    },
 
     init(id) {
       if (id) {

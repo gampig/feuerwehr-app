@@ -20,40 +20,32 @@
       </v-menu>
     </template>
 
-    <v-stepper v-model="current_step" vertical>
-      <v-stepper-step
-        :step="steps.selectCallout"
-        :complete="current_step > steps.selectCallout"
-      >
+    <v-stepper :value="currentStep" vertical>
+      <v-stepper-step step="1" :complete="currentStep > 1">
         Einsatz
         <template v-if="callout">
           : {{ callout.alarmTime | formatDateTime }} -
           {{ callout.keyword }}
         </template>
       </v-stepper-step>
-      <v-stepper-content :step="steps.selectCallout">
+      <v-stepper-content step="1">
         <SelectCalloutStep
           @input="goTo('CrewEditCallout', { callout_id: $event })"
         />
       </v-stepper-content>
 
-      <v-stepper-step
-        :step="steps.editCallout"
-        :complete="current_step > steps.editCallout"
+      <v-stepper-step step="2" :complete="currentStep > 2"
         >Einsatz bearbeiten</v-stepper-step
       >
-      <v-stepper-content :step="steps.editCallout">
+      <v-stepper-content step="2">
         <EditCalloutStep @input="nextFromEditCallout" @back="goBack" />
       </v-stepper-content>
 
-      <v-stepper-step
-        :step="steps.selectVehicle"
-        :complete="current_step > steps.selectVehicle"
-      >
+      <v-stepper-step step="3" :complete="currentStep > 3">
         Fahrzeug
         <template v-if="vehicle">: {{ vehicle.name }}</template>
       </v-stepper-step>
-      <v-stepper-content :step="steps.selectVehicle">
+      <v-stepper-content step="3">
         <SelectVehicleStep
           @input="
             goTo('CrewVehicleDetails', {
@@ -65,13 +57,10 @@
         />
       </v-stepper-content>
 
-      <v-stepper-step
-        :step="steps.vehicleDetails"
-        :complete="current_step > steps.vehicleDetails"
-      >
+      <v-stepper-step step="4" :complete="currentStep > 4">
         Einsatzende
       </v-stepper-step>
-      <v-stepper-content :step="steps.vehicleDetails">
+      <v-stepper-content step="4">
         <VehicleDetailsStep
           @input="
             goTo('CrewPeople', {
@@ -83,12 +72,10 @@
         />
       </v-stepper-content>
 
-      <v-stepper-step
-        :step="steps.selectCrew"
-        :complete="current_step > steps.selectCrew"
+      <v-stepper-step step="5" :complete="currentStep > 5"
         >Mannschaft</v-stepper-step
       >
-      <v-stepper-content :step="steps.selectCrew">
+      <v-stepper-content step="5">
         <SelectCrewStep @input="closeHandler" @back="goBack"
       /></v-stepper-content>
     </v-stepper>
@@ -118,16 +105,16 @@ export default {
 
   data() {
     return {
-      current_step: 1,
       userIsVehicle: false,
       showCalloutDetails: false,
-      steps: {
-        selectCallout: 1,
-        editCallout: 2,
-        selectVehicle: 3,
-        vehicleDetails: 4,
-        selectCrew: 5,
-      },
+
+      steps: [
+        "CrewCallouts",
+        "CrewEditCallout",
+        "CrewVehicles",
+        "CrewVehicleDetails",
+        "CrewPeople",
+      ],
     };
   },
 
@@ -136,6 +123,10 @@ export default {
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
     ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    currentStep() {
+      return this.getStepNumber(this.$route.name);
+    },
 
     item() {
       if (!this.callout) {
@@ -193,34 +184,15 @@ export default {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
     ...mapActions("vehicles", ["bindVehicle", "unbindVehicle"]),
 
-    init() {
-      const name = this.$route.name;
-      const params = this.$route.params;
+    getStepNumber(stepName) {
+      const stepIndex = this.steps.indexOf(stepName) + 1;
+      return stepIndex > 0 ? stepIndex : 1;
+    },
 
+    init() {
+      const params = this.$route.params;
       this.initCallout(params.callout_id);
       this.initVehicle(params.vehicle_id);
-
-      switch (name) {
-        default:
-          this.current_step = this.steps.selectCallout;
-          break;
-
-        case "CrewEditCallout":
-          this.current_step = this.steps.editCallout;
-          break;
-
-        case "CrewVehicles":
-          this.current_step = this.steps.selectVehicle;
-          break;
-
-        case "CrewVehicleDetails":
-          this.current_step = this.steps.vehicleDetails;
-          break;
-
-        case "CrewPeople":
-          this.current_step = this.steps.selectCrew;
-          break;
-      }
     },
 
     initCallout(id) {
@@ -272,7 +244,7 @@ export default {
     closeHandler() {
       this.unbindCallout();
       this.unbindVehicle();
-      this.$router.go(-1 * this.current_step);
+      this.$router.go(-1 * this.currentStep);
     },
   },
 };
