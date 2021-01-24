@@ -1,7 +1,7 @@
 <template>
   <v-app id="feuerwehr-app">
     <router-view />
-    <loading :visible="loading" text="Anmelden..." />
+    <Loading :visible="loading" text="Anmelden..." />
   </v-app>
 </template>
 

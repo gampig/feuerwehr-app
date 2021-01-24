@@ -10,13 +10,13 @@
     <v-divider></v-divider>
 
     <v-card-text :loading="loadingCallout">
-      <person-autocomplete
+      <PersonAutocomplete
         :items="peopleWithoutCrew"
         :loading="loading"
         @input="onAdd"
-      ></person-autocomplete>
+      ></PersonAutocomplete>
 
-      <crew-roles-form
+      <CrewRolesForm
         :crew="crew"
         :loading="loadingMap"
         cards-outlined

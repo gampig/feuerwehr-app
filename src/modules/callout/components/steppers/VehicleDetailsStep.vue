@@ -5,7 +5,7 @@
     <v-divider></v-divider>
 
     <v-card-text>
-      <vehicle-details-form
+      <VehicleDetailsForm
         ref="form"
         :alarm-time="callout && callout.alarmTime"
         v-bind.sync="item"

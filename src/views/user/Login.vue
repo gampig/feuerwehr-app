@@ -1,12 +1,12 @@
 <template>
   <BasePageCentered navdrawer>
-    <login-card ask-for-persistence @input="handleLogin">
+    <LoginCard ask-for-persistence @input="handleLogin">
       <v-btn :to="{ name: 'UserPasswordResetRequest' }" text
         >Passwort vergessen</v-btn
       >
       <v-spacer />
       <v-btn type="submit" color="primary"> Anmelden </v-btn>
-    </login-card>
+    </LoginCard>
   </BasePageCentered>
 </template>
 

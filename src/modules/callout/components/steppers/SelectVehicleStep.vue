@@ -14,14 +14,14 @@
           md="3"
           lg="2"
         >
-          <vehicle-card
+          <VehicleCard
             :value="vehicle"
             color="secondary"
             dark
             outlined
             @click="selectVehicle(vehicle.id)"
           >
-          </vehicle-card>
+          </VehicleCard>
         </v-col>
       </v-row>
 
@@ -34,12 +34,12 @@
           md="3"
           lg="2"
         >
-          <vehicle-card
+          <VehicleCard
             :value="vehicle"
             outlined
             @click="selectVehicle(vehicle.id)"
           >
-          </vehicle-card>
+          </VehicleCard>
         </v-col>
       </v-row>
 
@@ -67,12 +67,12 @@
             md="3"
             lg="2"
           >
-            <vehicle-card
+            <VehicleCard
               :value="vehicle"
               outlined
               @click="selectVehicle(vehicle.id)"
             >
-            </vehicle-card>
+            </VehicleCard>
           </v-col>
         </v-row>
       </v-expand-transition>

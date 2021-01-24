@@ -1,16 +1,16 @@
 <template>
   <v-list>
-    <list-item icon="mdi-alarm-light" subtitle="Alarm">
+    <ListItem icon="mdi-alarm-light" subtitle="Alarm">
       {{ item["alarmTime"] | formatDateTime }}
       ({{ item.alarmTime | formatDateTimeFromNow }})
-    </list-item>
+    </ListItem>
 
-    <list-item v-if="item.endTime" icon="mdi-calendar-check" subtitle="Ende">
+    <ListItem v-if="item.endTime" icon="mdi-calendar-check" subtitle="Ende">
       {{ item["endTime"] | formatDateTime }}
       (Dauer {{ duration(item.endTime) }})
-    </list-item>
+    </ListItem>
 
-    <list-item v-if="item.type" icon="mdi-clipboard-list" subtitle="Typ">
+    <ListItem v-if="item.type" icon="mdi-clipboard-list" subtitle="Typ">
       <v-chip
         v-for="(val, type) in item.type"
         :key="type"
@@ -19,27 +19,27 @@
         outlined
         >{{ type }}</v-chip
       >
-    </list-item>
+    </ListItem>
 
-    <list-item
+    <ListItem
       v-if="item.keyword"
       icon="mdi-clipboard-text"
       subtitle="Stichwort"
     >
       {{ item["keyword"] }}
-    </list-item>
+    </ListItem>
 
-    <list-item
+    <ListItem
       v-if="item.catchphrase"
       icon="mdi-clipboard-text"
       subtitle="Schlagwort"
     >
       {{ item["catchphrase"] }}
-    </list-item>
+    </ListItem>
 
-    <list-item v-if="item.address" icon="mdi-home" subtitle="Adresse">
+    <ListItem v-if="item.address" icon="mdi-home" subtitle="Adresse">
       {{ item["address"] }}
-    </list-item>
+    </ListItem>
 
     <v-divider v-if="item.standbyCrew || item.vehicles"></v-divider>
 

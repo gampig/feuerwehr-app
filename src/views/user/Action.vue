@@ -1,6 +1,6 @@
 <template>
   <BasePageCentered navdrawer>
-    <password-reset-card
+    <PasswordResetCard
       v-if="mode === 'resetPassword'"
       :loading="loading"
       @input="handleSubmit"

@@ -11,7 +11,7 @@
 
       <v-divider></v-divider>
 
-      <callout-details v-if="item" :item="item" />
+      <CalloutDetails v-if="item" :item="item" />
     </v-card>
   </v-dialog>
 </template>

@@ -10,11 +10,11 @@
     <v-divider v-if="callout"></v-divider>
 
     <v-card-text v-if="callout">
-      <person-autocomplete
+      <PersonAutocomplete
         :items="peopleWithoutCrew"
         :loading="loading"
         @input="onAdd"
-      ></person-autocomplete>
+      ></PersonAutocomplete>
 
       <transition-group name="list" tag="div">
         <v-chip

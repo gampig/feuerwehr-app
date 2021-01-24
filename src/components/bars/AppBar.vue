@@ -1,8 +1,8 @@
 <template>
   <div>
-    <snackbar />
+    <Snackbar />
 
-    <navigation-drawer v-if="navdrawer" v-model="drawer" />
+    <NavigationDrawer v-if="navdrawer" v-model="drawer" />
 
     <v-app-bar app>
       <v-app-bar-nav-icon v-if="navdrawer" @click.stop="drawer = !drawer" />

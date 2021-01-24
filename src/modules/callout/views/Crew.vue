@@ -32,7 +32,7 @@
         </template>
       </v-stepper-step>
       <v-stepper-content :step="steps.selectCallout">
-        <select-callout-step
+        <SelectCalloutStep
           @input="goTo('CrewEditCallout', { callout_id: $event })"
         />
       </v-stepper-content>
@@ -43,7 +43,7 @@
         >Einsatz bearbeiten</v-stepper-step
       >
       <v-stepper-content :step="steps.editCallout">
-        <edit-callout-step
+        <EditCalloutStep
           @input="nextFromEditCallout"
           @back="goTo('CrewCallouts')"
         />
@@ -57,7 +57,7 @@
         <template v-if="vehicle">: {{ vehicle.name }}</template>
       </v-stepper-step>
       <v-stepper-content :step="steps.selectVehicle">
-        <select-vehicle-step
+        <SelectVehicleStep
           @input="
             goTo('CrewVehicleDetails', {
               callout_id: callout['.key'],
@@ -92,7 +92,7 @@
         >Mannschaft</v-stepper-step
       >
       <v-stepper-content :step="steps.selectCrew">
-        <select-crew-step
+        <SelectCrewStep
           @input="closeHandler"
           @back="
             goTo('CrewVehicleDetails', {

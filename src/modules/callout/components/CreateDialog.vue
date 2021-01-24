@@ -6,7 +6,7 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <callout-form ref="form" v-bind.sync="item"></callout-form>
+        <CalloutForm ref="form" v-bind.sync="item"></CalloutForm>
       </v-card-text>
 
       <v-divider></v-divider>

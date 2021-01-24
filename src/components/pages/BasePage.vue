@@ -1,11 +1,11 @@
 <template>
   <div class="full-height">
-    <app-bar v-bind="$attrs" v-on="$listeners">
+    <AppBar v-bind="$attrs" v-on="$listeners">
       <slot name="actions"></slot>
       <template #extension>
         <slot name="extension"></slot>
       </template>
-    </app-bar>
+    </AppBar>
 
     <v-main class="full-height">
       <slot />

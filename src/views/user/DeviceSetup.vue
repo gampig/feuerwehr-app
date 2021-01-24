@@ -11,10 +11,10 @@
       </v-card-actions>
     </v-card>
 
-    <login-card v-else card-title="Gerät anmelden" @input="handleSubmit">
+    <LoginCard v-else card-title="Gerät anmelden" @input="handleSubmit">
       <v-spacer />
       <v-btn type="submit" color="primary"> Speichern </v-btn>
-    </login-card>
+    </LoginCard>
   </BasePageCentered>
 </template>
 

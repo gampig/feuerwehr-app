@@ -9,7 +9,7 @@
         </template>
       </v-stepper-step>
       <v-stepper-content step="1">
-        <select-callout-step @input="onCalloutSelect" />
+        <SelectCalloutStep @input="onCalloutSelect" />
       </v-stepper-content>
 
       <v-stepper-step step="2" :complete="current_step > 2"
@@ -20,7 +20,7 @@
       /></v-stepper-content>
     </v-stepper>
 
-    <create-dialog v-model="showCreateDialog" @save="onDialogClose" />
+    <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
   </BasePage>
 </template>
 
