@@ -26,6 +26,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import SelectStandbyStep from "../components/steppers/SelectStandbyStep";
 import CreateDialog from "../components/CreateDialog";
@@ -37,6 +38,8 @@ export default {
     CreateDialog,
   },
 
+  mixins: [StepperMixin],
+
   data() {
     return {
       showCreateDialog: false,
@@ -47,10 +50,6 @@ export default {
 
   computed: {
     ...mapState("callout", ["callout"]),
-
-    currentStep() {
-      return this.getStepNumber(this.$route.name);
-    },
 
     id() {
       return this.$route.params.id;
@@ -70,11 +69,6 @@ export default {
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
 
-    getStepNumber(stepName) {
-      const stepIndex = this.steps.indexOf(stepName) + 1;
-      return stepIndex > 0 ? stepIndex : 1;
-    },
-
     init(id) {
       if (id) {
         this.bindCallout(id);
@@ -83,10 +77,6 @@ export default {
         this.unbindCallout();
         this.current_step = 1;
       }
-    },
-
-    goTo(name, params) {
-      this.$router.push({ name, params });
     },
 
     onCalloutSelect(calloutId) {

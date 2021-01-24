@@ -86,6 +86,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
+import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import EditCalloutStep from "../components/steppers/EditCalloutStep";
 import SelectVehicleStep from "../components/steppers/SelectVehicleStep";
@@ -102,6 +103,8 @@ export default {
     SelectCrewStep,
     CalloutDetailsDialog,
   },
+
+  mixins: [StepperMixin],
 
   data() {
     return {
@@ -123,10 +126,6 @@ export default {
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
     ...mapGetters("vehicles", { findVehicle: "find" }),
-
-    currentStep() {
-      return this.getStepNumber(this.$route.name);
-    },
 
     item() {
       if (!this.callout) {
@@ -184,11 +183,6 @@ export default {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
     ...mapActions("vehicles", ["bindVehicle", "unbindVehicle"]),
 
-    getStepNumber(stepName) {
-      const stepIndex = this.steps.indexOf(stepName) + 1;
-      return stepIndex > 0 ? stepIndex : 1;
-    },
-
     init() {
       const params = this.$route.params;
       this.initCallout(params.callout_id);
@@ -223,10 +217,6 @@ export default {
       } else {
         this.userIsVehicle = false;
       }
-    },
-
-    goTo(name, params) {
-      this.$router.push({ name, params });
     },
 
     goBack() {
