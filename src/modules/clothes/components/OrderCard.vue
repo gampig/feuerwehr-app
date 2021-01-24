@@ -57,7 +57,7 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click="$emit('edit')" text>Bearbeiten</v-btn>
+      <v-btn text @click="$emit('edit')">Bearbeiten</v-btn>
     </v-card-actions>
   </v-card>
 </template>

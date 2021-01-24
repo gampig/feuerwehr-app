@@ -1,14 +1,14 @@
 <template>
-  <page v-bind="$attrs" back-button>
-    <template v-slot:actions>
+  <BasePage v-bind="$attrs" back-button>
+    <template #actions>
       <v-toolbar-items>
-        <v-btn @click="$emit('submit')" :loading="updating" text
+        <v-btn :loading="updating" text @click="$emit('submit')"
           >Speichern</v-btn
         >
       </v-toolbar-items>
 
       <v-menu bottom left>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
@@ -33,22 +33,16 @@
       </v-card>
     </v-container>
 
-    <ConfirmDelete
+    <BaseConfirmDelete
       :visible="confirmDelete"
       :handle-delete="() => $emit('delete')"
       @close="confirmDelete = false"
     />
-  </page>
+  </BasePage>
 </template>
 
 <script>
-import ConfirmDelete from "@/components/dialogs/ConfirmDelete";
-
 export default {
-  components: {
-    ConfirmDelete,
-  },
-
   props: {
     loading: {
       type: Boolean,

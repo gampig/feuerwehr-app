@@ -1,25 +1,23 @@
 <template>
-  <UpdatePage
+  <BaseUpdatePage
     page-title="Einsatz bearbeiten"
+    :loading="loading"
+    :updating="updating"
     @submit="onSubmit"
     @reset="resetItem"
     @delete="del"
-    :loading="loading"
-    :updating="updating"
   >
     <CalloutForm ref="form" v-bind.sync="item" require-keyword />
-  </UpdatePage>
+  </BaseUpdatePage>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import UpdatePage from "@/components/pages/UpdatePage";
 import CalloutForm from "../components/form/Form.vue";
 import makeUpdateMixin from "@/mixins/UpdateMixin";
 
 export default makeUpdateMixin("Callout", "callouts").extend({
   components: {
-    UpdatePage,
     CalloutForm,
   },
 

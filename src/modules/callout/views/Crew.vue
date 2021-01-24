@@ -1,12 +1,12 @@
 <template>
-  <page
+  <BasePage
     page-title="Mannschaft auswählen"
     close-button
     :close-handler="closeHandler"
   >
-    <template v-if="item" v-slot:actions>
+    <template v-if="item" #actions>
       <v-menu bottom left>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
@@ -104,7 +104,7 @@
     </v-stepper>
 
     <CalloutDetailsDialog v-model="showCalloutDetails" :item="item" />
-  </page>
+  </BasePage>
 </template>
 
 <script>

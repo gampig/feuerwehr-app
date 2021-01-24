@@ -3,28 +3,26 @@ import "./firebase";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
-import {
-  formatDate,
-  formatDateTime,
-  formatDateTimeFromNow,
-} from "./utils/dates";
 import { vuetify } from "./plugins/vuetify";
 
 import store from "./store";
 import router from "./router";
 import modules from "./modules";
 
-import Page from "./components/pages/Page.vue";
-import PageCentered from "./components/pages/PageCentered.vue";
+// Globally register all `Base`-prefixed components
+import "./components/globals";
 
-Vue.config.productionTip = false;
-
+// Filters
+import {
+  formatDate,
+  formatDateTime,
+  formatDateTimeFromNow,
+} from "./utils/dates";
 Vue.filter("formatDate", formatDate);
 Vue.filter("formatDateTime", formatDateTime);
 Vue.filter("formatDateTimeFromNow", formatDateTimeFromNow);
 
-Vue.component("Page", Page);
-Vue.component("PageCentered", PageCentered);
+Vue.config.productionTip = false;
 
 modules.install(store, router);
 

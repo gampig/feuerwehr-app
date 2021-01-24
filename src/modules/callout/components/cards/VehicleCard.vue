@@ -1,5 +1,5 @@
 <template>
-  <v-card v-bind="$attrs" v-on="$listeners" append>
+  <v-card v-bind="$attrs" append v-on="$listeners">
     <v-img
       v-if="value.pictureUrl"
       :src="value.pictureUrl"
@@ -24,7 +24,6 @@
 
 <script>
 export default {
-  name: "VehicleCard",
   props: {
     value: {
       type: Object,

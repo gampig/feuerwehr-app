@@ -1,5 +1,5 @@
 <template>
-  <page page-title="Einsatz" navdrawer>
+  <BasePage page-title="Einsatz" navdrawer>
     <v-container class="fill-height" fluid>
       <v-row align="center">
         <v-col>
@@ -19,5 +19,5 @@
         </v-col>
       </v-row>
     </v-container>
-  </page>
+  </BasePage>
 </template>

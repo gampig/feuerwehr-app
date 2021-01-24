@@ -1,5 +1,5 @@
 <template>
-  <page-centered page-title="Passwort ändern" navdrawer>
+  <BasePageCentered page-title="Passwort ändern" navdrawer>
     <v-form @submit.prevent="submit">
       <v-card :disabled="loading">
         <v-card-text>
@@ -23,7 +23,7 @@
       :value="reauthenticationRequired"
       @input="onDialogInput"
     ></reauthentication-dialog>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>

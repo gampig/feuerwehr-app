@@ -9,14 +9,14 @@
       </v-col>
 
       <v-col cols="6" class="d-flex justify-end align-center">
-        <v-btn @click="addHandler" color="primary">
+        <v-btn color="primary" @click="addHandler">
           <v-icon left>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>
     </v-row>
 
-    <SearchRow :search.sync="search" />
+    <BaseSearchRow :search.sync="search" />
 
     <v-row>
       <v-col cols="12">
@@ -52,7 +52,7 @@
           locale="de-DE"
           item-key="id"
         >
-          <ActionCell
+          <BaseActionCell
             slot="item.action"
             slot-scope="props"
             :handle-edit="() => editHandler(props.item)"
@@ -67,8 +67,6 @@
 import { mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
 import Loading from "@/components/Loading.vue";
-import SearchRow from "@/components/SearchRow.vue";
-import ActionCell from "@/components/ActionCell.vue";
 import OrderCard from "../../components/OrderCard.vue";
 import { formatDate } from "@/utils/dates";
 import moment from "moment";
@@ -89,7 +87,7 @@ function latestTimestampOfOrder(order: Order) {
 }
 
 export default makeListMixin("ClothesOrder", "orders").extend({
-  components: { Loading, SearchRow, ActionCell, OrderCard },
+  components: { Loading, OrderCard },
 
   data() {
     return {

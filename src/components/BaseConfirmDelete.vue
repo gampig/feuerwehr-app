@@ -14,7 +14,6 @@
 
 <script>
 export default {
-  name: "ConfirmDelete",
   props: {
     visible: {
       type: Boolean,

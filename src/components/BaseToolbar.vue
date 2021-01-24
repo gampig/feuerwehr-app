@@ -25,7 +25,7 @@
         <v-icon left>mdi-plus</v-icon> Neu
       </v-btn>
     </div>
-    <ConfirmDelete
+    <BaseConfirmDelete
       v-if="handleDelete"
       :visible="confirmDelete"
       :handle-delete="handleDelete"
@@ -35,18 +35,7 @@
 </template>
 
 <script>
-import ConfirmDelete from "../dialogs/ConfirmDelete";
-
 export default {
-  name: "Toolbar",
-  components: {
-    ConfirmDelete,
-  },
-  data() {
-    return {
-      confirmDelete: false,
-    };
-  },
   props: {
     handleSubmit: {
       type: Function,
@@ -73,6 +62,11 @@ export default {
       required: false,
       default: () => false,
     },
+  },
+  data() {
+    return {
+      confirmDelete: false,
+    };
   },
   methods: {
     addItem() {

@@ -1,5 +1,5 @@
 <template>
-  <ListPage
+  <BaseListPage
     page-title="Einsatz-Archiv"
     :search.sync="search"
     :handle-add="isAdmin ? addHandler : null"
@@ -16,30 +16,26 @@
       locale="de-DE"
       item-key="id"
     >
-      <template v-slot:[`item.type`]="{ item }">
+      <template #[`item.type`]="{ item }">
         <v-chip v-for="(val, type) in item.type" :key="type" class="ma-1">{{
           type
         }}</v-chip>
       </template>
-      <ActionCell
+      <BaseActionCell
         slot="item.action"
         slot-scope="props"
         :handle-show="() => showHandler(props.item)"
         :handle-edit="isAdmin ? () => editHandler(props.item) : null"
       />
     </v-data-table>
-  </ListPage>
+  </BaseListPage>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
-import ListPage from "@/components/pages/ListPage";
-import ActionCell from "@/components/ActionCell";
 
 export default makeListMixin("Callout", "callouts").extend({
-  components: { ListPage, ActionCell },
-
   data() {
     return {
       headers: [

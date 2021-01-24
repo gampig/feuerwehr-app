@@ -1,5 +1,5 @@
 <template>
-  <page-centered page-title="Gerät einrichten" navdrawer>
+  <BasePageCentered page-title="Gerät einrichten" navdrawer>
     <v-card v-if="device">
       <v-toolbar color="green" dark flat>
         <v-toolbar-title>Gerät ist angemeldet</v-toolbar-title>
@@ -7,15 +7,15 @@
       <v-card-title>{{ device.email }}</v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="handleLogout" text>Abmelden</v-btn>
+        <v-btn text @click="handleLogout">Abmelden</v-btn>
       </v-card-actions>
     </v-card>
 
-    <login-card v-else @input="handleSubmit" card-title="Gerät anmelden">
+    <login-card v-else card-title="Gerät anmelden" @input="handleSubmit">
       <v-spacer />
       <v-btn type="submit" color="primary"> Speichern </v-btn>
     </login-card>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>

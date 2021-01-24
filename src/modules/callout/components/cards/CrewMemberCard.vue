@@ -5,17 +5,17 @@
         {{ getName(person) }}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn @click="$emit('delete')" icon><v-icon>mdi-close</v-icon></v-btn>
+      <v-btn icon @click="$emit('delete')"><v-icon>mdi-close</v-icon></v-btn>
     </v-toolbar>
     <v-card-text>
       <v-select
         :value="role"
         :items="roles"
         label="Funktion"
-        @input="update"
         :loading="loading"
         :disabled="loading"
         clearable
+        @input="update"
       ></v-select>
     </v-card-text>
     <v-card-actions>

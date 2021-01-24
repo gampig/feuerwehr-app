@@ -5,9 +5,9 @@
 
       <v-card-text>
         <v-text-field
+          v-model="item.newPassword"
           type="password"
           label="Neues Passwort"
-          v-model="item.newPassword"
           :rules="passwordRules"
         />
       </v-card-text>

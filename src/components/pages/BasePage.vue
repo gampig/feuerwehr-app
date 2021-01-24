@@ -2,7 +2,7 @@
   <div class="full-height">
     <app-bar v-bind="$attrs" v-on="$listeners">
       <slot name="actions"></slot>
-      <template v-slot:extension>
+      <template #extension>
         <slot name="extension"></slot>
       </template>
     </app-bar>

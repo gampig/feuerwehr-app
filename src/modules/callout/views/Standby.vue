@@ -1,5 +1,5 @@
 <template>
-  <page page-title="Bereitschaft eintragen" navdrawer>
+  <BasePage page-title="Bereitschaft eintragen" navdrawer>
     <v-stepper v-model="current_step" vertical>
       <v-stepper-step step="1" :complete="current_step > 1">
         Einsatz
@@ -20,8 +20,8 @@
       /></v-stepper-content>
     </v-stepper>
 
-    <create-dialog @save="onDialogClose" v-model="showCreateDialog" />
-  </page>
+    <create-dialog v-model="showCreateDialog" @save="onDialogClose" />
+  </BasePage>
 </template>
 
 <script>

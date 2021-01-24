@@ -11,19 +11,19 @@
 
     <v-card-text v-if="callout">
       <person-autocomplete
-        @input="onAdd"
         :items="peopleWithoutCrew"
         :loading="loading"
+        @input="onAdd"
       ></person-autocomplete>
 
       <transition-group name="list" tag="div">
         <v-chip
           v-for="(val, person) in crew"
           :key="person + 0"
-          @click:close="onRemove(person)"
           color="secondary"
           class="ma-1"
           close
+          @click:close="onRemove(person)"
           >{{ person }}</v-chip
         >
       </transition-group>
@@ -32,7 +32,7 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="back" text> Zurück </v-btn>
+      <v-btn text @click="back"> Zurück </v-btn>
     </v-card-actions>
   </v-card>
 </template>

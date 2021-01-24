@@ -1,5 +1,5 @@
 <template>
-  <page navdrawer> </page>
+  <BasePage navdrawer />
 </template>
 
 <script>
@@ -15,6 +15,10 @@ export default {
     },
   },
 
+  created() {
+    this.redirect();
+  },
+
   methods: {
     redirect() {
       const startPage = modules.getStartPage();
@@ -23,10 +27,6 @@ export default {
         this.$router.replace(startPage);
       }
     },
-  },
-
-  created() {
-    this.redirect();
   },
 };
 </script>

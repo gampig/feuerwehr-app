@@ -1,25 +1,23 @@
 <template>
-  <UpdatePage
+  <BaseUpdatePage
     page-title="Bestellung bearbeiten"
+    :loading="loading"
+    :updating="updating"
     @submit="onSubmit"
     @reset="resetItem"
     @delete="del"
-    :loading="loading"
-    :updating="updating"
   >
     <OrderForm ref="form" v-bind.sync="item" />
-  </UpdatePage>
+  </BaseUpdatePage>
 </template>
 
 <script>
-import UpdatePage from "@/components/pages/UpdatePage";
 import OrderForm from "../../components/form/OrderForm";
 import makeUpdateMixin from "@/mixins/UpdateMixin";
 import { mapActions, mapState } from "vuex";
 
 export default makeUpdateMixin("ClothesOrder", "orders").extend({
   components: {
-    UpdatePage,
     OrderForm,
   },
 

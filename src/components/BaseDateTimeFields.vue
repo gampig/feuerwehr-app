@@ -7,10 +7,10 @@
         :prepend-icon="prependIcon"
         :value="date"
         :rules="rulesDate"
-        @click="editDate = true"
-        @click:clear="updateDate(null)"
         :clearable="clearable"
         readonly
+        @click="editDate = true"
+        @click:clear="updateDate(null)"
       />
     </v-col>
     <v-col sm="6" cols="12">
@@ -19,13 +19,13 @@
         type="time"
         :prepend-icon="prependIcon"
         :value="time"
-        @input="updateTime"
         :rules="rulesTime"
         :clearable="clearable"
+        @input="updateTime"
       />
     </v-col>
 
-    <date-dialog
+    <DateTimeFieldsDateDialog
       v-model="editDate"
       :max-date="maxDate"
       :min-date="minDate"
@@ -37,9 +37,11 @@
 
 <script>
 import moment from "moment";
-import DateDialog from "@/components/dialogs/DateDialog";
+import DateTimeFieldsDateDialog from "./DateTimeFieldsDateDialog";
 
 export default {
+  components: { DateTimeFieldsDateDialog },
+
   props: {
     label: {
       type: String,
@@ -67,10 +69,6 @@ export default {
     value: {
       type: Number,
     },
-  },
-
-  components: {
-    DateDialog,
   },
 
   data() {

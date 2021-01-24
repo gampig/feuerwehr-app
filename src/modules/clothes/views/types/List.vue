@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
 
-    <SearchRow :search.sync="search" />
+    <BaseSearchRow :search.sync="search" />
 
     <v-row>
       <v-col cols="12">
@@ -32,14 +32,14 @@
           locale="de-DE"
           item-key="id"
         >
-          <template v-slot:[`item.price`]="{ item }">
+          <template #[`item.price`]="{ item }">
             <template v-if="item.price && item.price > 0">
               {{ item.price }} €
             </template>
             <template v-else>-</template>
           </template>
 
-          <ActionCell
+          <BaseActionCell
             slot="item.action"
             slot-scope="props"
             :handle-edit="() => editHandler(props.item)"
@@ -53,12 +53,8 @@
 <script>
 import { mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
-import SearchRow from "@/components/SearchRow";
-import ActionCell from "@/components/ActionCell";
 
 export default makeListMixin("ClothesType", "clothTypes").extend({
-  components: { SearchRow, ActionCell },
-
   data() {
     return {
       headers: [

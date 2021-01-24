@@ -11,26 +11,26 @@
 
     <v-card-text :loading="loadingCallout">
       <person-autocomplete
-        @input="onAdd"
         :items="peopleWithoutCrew"
         :loading="loading"
+        @input="onAdd"
       ></person-autocomplete>
 
       <crew-roles-form
-        @input="onUpdate"
-        @delete="onRemove"
         :crew="crew"
         :loading="loadingMap"
         cards-outlined
+        @input="onUpdate"
+        @delete="onRemove"
       />
     </v-card-text>
 
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="back" color="primary" text> Zurück </v-btn>
+      <v-btn color="primary" text @click="back"> Zurück </v-btn>
       <v-spacer></v-spacer>
-      <v-btn @click="$emit('input')" color="primary"> Fertig </v-btn>
+      <v-btn color="primary" @click="$emit('input')"> Fertig </v-btn>
     </v-card-actions>
   </v-card>
 </template>

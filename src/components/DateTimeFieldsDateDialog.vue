@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="cancel" persistent max-width="600">
+  <v-dialog :value="value" persistent max-width="600" @input="cancel">
     <v-card>
       <v-date-picker
         v-model="dateVal"
@@ -13,9 +13,9 @@
       />
 
       <v-card-actions>
-        <v-btn @click="cancel" text> Abbrechen </v-btn>
+        <v-btn text @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn @click="save" color="primary"> Speichern </v-btn>
+        <v-btn color="primary" @click="save"> Speichern </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -54,6 +54,10 @@ export default {
     },
   },
 
+  created() {
+    this.reset();
+  },
+
   methods: {
     reset() {
       if (this.date) {
@@ -70,10 +74,6 @@ export default {
       this.$emit("input", false);
       this.$emit("update:date", this.dateVal);
     },
-  },
-
-  created() {
-    this.reset();
   },
 };
 </script>

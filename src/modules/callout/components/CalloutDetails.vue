@@ -5,12 +5,12 @@
       ({{ item.alarmTime | formatDateTimeFromNow }})
     </list-item>
 
-    <list-item icon="mdi-calendar-check" subtitle="Ende" v-if="item.endTime">
+    <list-item v-if="item.endTime" icon="mdi-calendar-check" subtitle="Ende">
       {{ item["endTime"] | formatDateTime }}
       (Dauer {{ duration(item.endTime) }})
     </list-item>
 
-    <list-item icon="mdi-clipboard-list" subtitle="Typ" v-if="item.type">
+    <list-item v-if="item.type" icon="mdi-clipboard-list" subtitle="Typ">
       <v-chip
         v-for="(val, type) in item.type"
         :key="type"
@@ -22,29 +22,29 @@
     </list-item>
 
     <list-item
+      v-if="item.keyword"
       icon="mdi-clipboard-text"
       subtitle="Stichwort"
-      v-if="item.keyword"
     >
       {{ item["keyword"] }}
     </list-item>
 
     <list-item
+      v-if="item.catchphrase"
       icon="mdi-clipboard-text"
       subtitle="Schlagwort"
-      v-if="item.catchphrase"
     >
       {{ item["catchphrase"] }}
     </list-item>
 
-    <list-item icon="mdi-home" subtitle="Adresse" v-if="item.address">
+    <list-item v-if="item.address" icon="mdi-home" subtitle="Adresse">
       {{ item["address"] }}
     </list-item>
 
     <v-divider v-if="item.standbyCrew || item.vehicles"></v-divider>
 
     <v-list-group v-if="item.standbyCrew">
-      <template v-slot:activator>
+      <template #activator>
         <v-list-item-avatar>
           <v-icon>mdi-account-group</v-icon>
         </v-list-item-avatar>
@@ -63,7 +63,7 @@
     </v-list-group>
 
     <v-list-group v-if="item.vehicles" :value="true">
-      <template v-slot:activator>
+      <template #activator>
         <v-list-item-avatar>
           <v-icon>mdi-truck</v-icon>
         </v-list-item-avatar>
@@ -75,17 +75,17 @@
         :key="item.vehicle.id"
         sub-group
       >
-        <template v-slot:prependIcon>
+        <template #prependIcon>
           <v-avatar v-if="item.vehicle.pictureUrl">
             <v-img :src="item.vehicle.pictureUrl" :alt="item.vehicle.name">
-              <template v-slot:placeholder>
+              <template #placeholder>
                 <v-icon>mdi-truck-outlined</v-icon>
               </template>
             </v-img>
           </v-avatar>
           <v-icon v-else>mdi-truck-outlined</v-icon>
         </template>
-        <template v-slot:activator>
+        <template #activator>
           <v-list-item-content>
             <v-list-item-title>{{ item.vehicle.name }}</v-list-item-title>
             <v-list-item-subtitle>

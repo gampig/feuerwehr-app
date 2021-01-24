@@ -8,10 +8,10 @@
           :items="people"
           item-text="id"
           :value="person"
-          @input="update('person', $event)"
           :loading="loadingPeople"
           single-line
           :rules="[rules.required]"
+          @input="update('person', $event)"
         />
       </v-col>
       <v-col cols="12">
@@ -22,10 +22,10 @@
           :item-text="getTypeText"
           item-value="id"
           :value="clothType"
-          @input="update('clothType', $event)"
           :loading="loadingTypes"
           single-line
           :rules="[rules.required]"
+          @input="update('clothType', $event)"
         />
       </v-col>
     </v-row>
@@ -46,8 +46,8 @@
           type="number"
           prepend-icon="mdi-cart-variant"
           :value="count"
-          @input="update('count', $event)"
           :rules="[rules.required]"
+          @input="update('count', $event)"
         />
       </v-col>
     </v-row>

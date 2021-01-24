@@ -15,11 +15,11 @@
           lg="2"
         >
           <vehicle-card
-            @click="selectVehicle(vehicle.id)"
             :value="vehicle"
             color="secondary"
             dark
             outlined
+            @click="selectVehicle(vehicle.id)"
           >
           </vehicle-card>
         </v-col>
@@ -35,9 +35,9 @@
           lg="2"
         >
           <vehicle-card
-            @click="selectVehicle(vehicle.id)"
             :value="vehicle"
             outlined
+            @click="selectVehicle(vehicle.id)"
           >
           </vehicle-card>
         </v-col>
@@ -46,9 +46,9 @@
       <v-row v-if="sortedVehicles.inactive.length > 0">
         <v-col cols="12" sm="8" md="6" lg="4">
           <v-btn
-            @click="showAllInactiveVehicles = !showAllInactiveVehicles"
             depressed
             block
+            @click="showAllInactiveVehicles = !showAllInactiveVehicles"
           >
             Ehemalige Fahrzeuge
             <v-icon right>{{
@@ -68,9 +68,9 @@
             lg="2"
           >
             <vehicle-card
-              @click="selectVehicle(vehicle.id)"
               :value="vehicle"
               outlined
+              @click="selectVehicle(vehicle.id)"
             >
             </vehicle-card>
           </v-col>
@@ -81,7 +81,7 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="$emit('back')" color="primary" text> Zurück </v-btn>
+      <v-btn color="primary" text @click="$emit('back')"> Zurück </v-btn>
     </v-card-actions>
   </v-card>
 </template>

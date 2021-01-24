@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="cancel" persistent max-width="900">
+  <v-dialog :value="value" persistent max-width="900" @input="cancel">
     <v-card>
       <v-card-title> Neuer Einsatz </v-card-title>
 
@@ -12,9 +12,9 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn @click="cancel" text> Abbrechen </v-btn>
+        <v-btn text @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn @click="save" :loading="loading" color="primary" text>
+        <v-btn :loading="loading" color="primary" text @click="save">
           Speichern
         </v-btn>
       </v-card-actions>

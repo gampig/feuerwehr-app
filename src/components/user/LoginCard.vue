@@ -6,20 +6,20 @@
       <v-card-text>
         <v-text-field
           v-if="!noEmail"
-          label="E-Mail"
           v-model="item.email"
+          label="E-Mail"
           :rules="emailRules"
         />
         <v-text-field
+          v-model="item.password"
           type="password"
           label="Passwort"
-          v-model="item.password"
           :rules="passwordRules"
         />
         <v-checkbox
           v-if="askForPersistence"
-          label="Angemeldet bleiben"
           v-model="item.persist"
+          label="Angemeldet bleiben"
         ></v-checkbox>
       </v-card-text>
 

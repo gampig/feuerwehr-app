@@ -1,20 +1,20 @@
 <template>
-  <page page-title="Einsatz" back-button>
-    <template v-slot:actions>
+  <BasePage page-title="Einsatz" back-button>
+    <template #actions>
       <v-btn v-if="isAdmin" :to="editRoute" icon>
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
 
     <v-container>
-      <Toolbar :handle-delete="isAdmin ? del : null">
+      <BaseToolbar :handle-delete="isAdmin ? del : null">
         <template slot="left">
           <v-toolbar-title v-if="item">
             {{ item.keyword }} -
             {{ item.alarmTime | formatDateTime }}
           </v-toolbar-title>
         </template>
-      </Toolbar>
+      </BaseToolbar>
 
       <v-card>
         <CalloutDetails v-if="item" :item="item" />
@@ -22,20 +22,18 @@
     </v-container>
 
     <Loading :visible="loading" />
-  </page>
+  </BasePage>
 </template>
 
 <script>
 import Loading from "@/components/Loading";
 import makeShowMixin from "@/mixins/ShowMixin";
-import Toolbar from "@/components/bars/Toolbar";
 import CalloutDetails from "../components/CalloutDetails";
 import { mapActions, mapGetters, mapState } from "vuex";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
     Loading,
-    Toolbar,
     CalloutDetails,
   },
 

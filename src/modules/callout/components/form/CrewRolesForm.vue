@@ -1,20 +1,20 @@
 <template>
   <v-row>
     <v-col
+      v-for="crewMember in crew"
+      :key="crewMember.person.id"
       cols="12"
       sm="6"
       md="4"
       lg="3"
-      v-for="crewMember in crew"
-      :key="crewMember.person.id"
     >
       <crew-member-card
-        @input="submit(crewMember.person, $event)"
-        @delete="remove(crewMember.person.id)"
         :person="crewMember.person"
         :role="crewMember.role"
         :loading="loading[crewMember.person.id]"
         :outlined="cardsOutlined"
+        @input="submit(crewMember.person, $event)"
+        @delete="remove(crewMember.person.id)"
       >
       </crew-member-card>
     </v-col>

@@ -18,6 +18,16 @@ export default {
     ...mapState("auth", ["loggedIn", "loading"]),
   },
 
+  watch: {
+    loggedIn() {
+      this.onStateChanged();
+    },
+
+    loading() {
+      this.onStateChanged();
+    },
+  },
+
   methods: {
     onStateChanged() {
       if (!this.loading) {
@@ -47,16 +57,6 @@ export default {
       if (this.$route.name == "Home") {
         this.$router.push({ name: "UserLogin" });
       }
-    },
-  },
-
-  watch: {
-    loggedIn() {
-      this.onStateChanged();
-    },
-
-    loading() {
-      this.onStateChanged();
     },
   },
 };

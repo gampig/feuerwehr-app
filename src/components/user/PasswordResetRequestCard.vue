@@ -4,7 +4,7 @@
       <v-card-title>Passwort zurücksetzen</v-card-title>
 
       <v-card-text>
-        <v-text-field label="E-Mail" v-model="item.email" :rules="emailRules" />
+        <v-text-field v-model="item.email" label="E-Mail" :rules="emailRules" />
       </v-card-text>
 
       <v-card-actions>

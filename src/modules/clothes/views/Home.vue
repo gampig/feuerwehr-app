@@ -1,10 +1,10 @@
 <template>
-  <page page-title="Kleidung" extended navdrawer>
-    <template v-slot:actions>
-      <v-btn @click="reload" icon><v-icon>mdi-reload</v-icon></v-btn>
+  <BasePage page-title="Kleidung" extended navdrawer>
+    <template #actions>
+      <v-btn icon @click="reload"><v-icon>mdi-reload</v-icon></v-btn>
     </template>
 
-    <template v-slot:extension>
+    <template #extension>
       <v-tabs fixed-tabs>
         <v-tab :to="{ name: 'ClothesOrders' }">
           <v-icon left>mdi-cart</v-icon>
@@ -18,7 +18,7 @@
     </template>
 
     <router-view></router-view>
-  </page>
+  </BasePage>
 </template>
 
 <script>

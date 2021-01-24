@@ -4,9 +4,9 @@
       <v-list-item
         v-if="!item.auth || item.auth()"
         :key="item.title"
-        v-on="item.click !== undefined ? { click: item.click } : {}"
         :to="item.to"
         :href="item.href"
+        v-on="item.click !== undefined ? { click: item.click } : {}"
       >
         <v-list-item-avatar v-if="item.icon">
           <v-icon>{{ item.icon }}</v-icon>

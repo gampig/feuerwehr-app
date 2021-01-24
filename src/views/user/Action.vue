@@ -1,13 +1,13 @@
 <template>
-  <page-centered navdrawer>
+  <BasePageCentered navdrawer>
     <password-reset-card
       v-if="mode === 'resetPassword'"
-      @input="handleSubmit"
       :loading="loading"
+      @input="handleSubmit"
     />
 
     <h3 v-else>Modus unbekannt!</h3>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>
