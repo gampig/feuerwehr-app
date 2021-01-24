@@ -1,41 +1,39 @@
 <template>
-  <page page-title="Einsatz" back-button>
-    <template v-slot:actions>
+  <BasePage page-title="Einsatz" back-button>
+    <template #actions>
       <v-btn v-if="isAdmin" :to="editRoute" icon>
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
 
     <v-container>
-      <Toolbar :handle-delete="isAdmin ? del : null">
+      <BaseToolbar :handle-delete="isAdmin ? del : null">
         <template slot="left">
-          <v-toolbar-title v-if="item">
-            {{ item.keyword }} -
-            {{ item.alarmTime | formatDateTime }}
+          <v-toolbar-title v-if="callout">
+            {{ callout.keyword }} -
+            {{ callout.alarmTime | formatDateTime }}
           </v-toolbar-title>
         </template>
-      </Toolbar>
+      </BaseToolbar>
 
       <v-card>
-        <CalloutDetails v-if="item" :item="item" />
+        <CalloutDetails v-if="callout" />
       </v-card>
     </v-container>
 
     <Loading :visible="loading" />
-  </page>
+  </BasePage>
 </template>
 
 <script>
 import Loading from "@/components/Loading";
 import makeShowMixin from "@/mixins/ShowMixin";
-import Toolbar from "@/components/bars/Toolbar";
 import CalloutDetails from "../components/CalloutDetails";
 import { mapActions, mapGetters, mapState } from "vuex";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
     Loading,
-    Toolbar,
     CalloutDetails,
   },
 
@@ -46,48 +44,11 @@ export default makeShowMixin("Callout", "callouts").extend({
   },
 
   computed: {
-    ...mapState("callout", ["callout", "crew"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
+    ...mapState("callout", ["callout"]),
     ...mapGetters("auth", ["isAdmin"]),
 
     editRoute() {
       return { name: "CalloutUpdate", params: { id: this.id } };
-    },
-    item() {
-      if (!this.callout) {
-        return null;
-      }
-
-      let vehicles = {};
-
-      if (this.crew && this.crew.vehicles) {
-        for (const vehicleIdx in this.crew.vehicles) {
-          vehicles[vehicleIdx] = {
-            vehicle: this.findVehicle(vehicleIdx),
-            crewMembers: this.crew.vehicles[vehicleIdx],
-          };
-        }
-      }
-
-      if (this.callout.vehicles) {
-        for (const vehicleIdx in this.callout.vehicles) {
-          if (!vehicles[vehicleIdx]) {
-            vehicles[vehicleIdx] = {
-              vehicle: this.findVehicle(vehicleIdx),
-            };
-          }
-
-          vehicles[vehicleIdx].calloutDetails = this.callout.vehicles[
-            vehicleIdx
-          ];
-        }
-      }
-
-      return {
-        ...this.callout,
-        standbyCrew: (this.crew && this.crew.standby) || null,
-        vehicles: vehicles !== {} ? vehicles : null,
-      };
     },
   },
 

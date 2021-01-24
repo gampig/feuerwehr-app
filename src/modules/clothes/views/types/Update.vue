@@ -1,25 +1,23 @@
 <template>
-  <UpdatePage
+  <BaseUpdatePage
     page-title="Kleidungsstück bearbeiten"
+    :loading="loading"
+    :updating="updating"
     @submit="onSubmit"
     @reset="resetItem"
     @delete="del"
-    :loading="loading"
-    :updating="updating"
   >
     <TypeForm ref="form" v-bind.sync="item" />
-  </UpdatePage>
+  </BaseUpdatePage>
 </template>
 
 <script>
-import UpdatePage from "@/components/pages/UpdatePage";
 import TypeForm from "../../components/form/TypeForm";
 import makeUpdateMixin from "@/mixins/UpdateMixin";
 import { mapActions, mapState } from "vuex";
 
 export default makeUpdateMixin("ClothesType", "clothTypes").extend({
   components: {
-    UpdatePage,
     TypeForm,
   },
 

@@ -1,21 +1,19 @@
 <template>
-  <CreatePage
+  <BaseCreatePage
     page-title="Kleidungsstück hinzufügen"
-    @submit="onSubmit"
     :creating="creating"
+    @submit="onSubmit"
   >
     <TypeForm ref="form" v-bind.sync="item" create />
-  </CreatePage>
+  </BaseCreatePage>
 </template>
 
 <script>
-import CreatePage from "@/components/pages/CreatePage";
 import TypeForm from "../../components/form/TypeForm";
 import makeCreateMixin from "@/mixins/CreateMixin";
 
 export default makeCreateMixin("ClothesType", "clothTypes").extend({
   components: {
-    CreatePage,
     TypeForm,
   },
 

@@ -1,8 +1,8 @@
 <template>
-  <page v-bind="$attrs" back-button>
-    <template v-slot:actions>
+  <BasePage v-bind="$attrs" back-button>
+    <template #actions>
       <v-toolbar-items>
-        <v-btn @click="$emit('submit')" :loading="creating" text>
+        <v-btn :loading="creating" text @click="$emit('submit')">
           Erstellen
         </v-btn>
       </v-toolbar-items>
@@ -15,7 +15,7 @@
         </v-card-text>
       </v-card>
     </v-container>
-  </page>
+  </BasePage>
 </template>
 
 <script>

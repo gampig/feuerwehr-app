@@ -6,20 +6,20 @@
       <v-card-text>
         <v-text-field
           v-if="!noEmail"
-          label="E-Mail"
           v-model="item.email"
+          label="E-Mail"
           :rules="emailRules"
         />
         <v-text-field
+          v-model="item.password"
           type="password"
           label="Passwort"
-          v-model="item.password"
           :rules="passwordRules"
         />
         <v-checkbox
           v-if="askForPersistence"
-          label="Angemeldet bleiben"
           v-model="item.persist"
+          label="Angemeldet bleiben"
         ></v-checkbox>
       </v-card-text>
 
@@ -35,6 +35,7 @@ export default {
   props: {
     values: {
       type: Object,
+      default: null,
     },
 
     cardTitle: {
@@ -52,12 +53,14 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
       passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
     };
   },
+
   computed: {
     item() {
       return (
@@ -69,6 +72,7 @@ export default {
       );
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

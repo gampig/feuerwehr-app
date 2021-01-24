@@ -1,28 +1,23 @@
 <template>
   <v-form ref="form">
-    <date-time-fields
+    <BaseDateTimeFields
       label="Ende"
       prepend-icon="mdi-calendar-check-outline"
       :value="endTime"
-      @input="update('endTime', $event)"
       :min-date="alarmDate"
       :max-date="tomorrow"
       :rules-date="[rules.restrictFuture, calloutRules.endAfterAlarm]"
       clearable
+      @input="update('endTime', $event)"
     />
   </v-form>
 </template>
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
-import DateTimeFields from "@/components/DateTimeFields";
 import moment from "moment";
 
 export default FormMixin.extend({
-  components: {
-    DateTimeFields,
-  },
-
   props: {
     alarmTime: null,
     endTime: null,

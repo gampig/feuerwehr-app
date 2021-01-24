@@ -4,7 +4,7 @@
       <v-card-title>Passwort zurücksetzen</v-card-title>
 
       <v-card-text>
-        <v-text-field label="E-Mail" v-model="item.email" :rules="emailRules" />
+        <v-text-field v-model="item.email" label="E-Mail" :rules="emailRules" />
       </v-card-text>
 
       <v-card-actions>
@@ -19,18 +19,22 @@ export default {
   props: {
     values: {
       type: Object,
+      default: null,
     },
   },
+
   data() {
     return {
       emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
     };
   },
+
   computed: {
     item() {
       return { email: this.values || "" };
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

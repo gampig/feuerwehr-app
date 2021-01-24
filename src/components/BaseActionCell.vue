@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="btn-container">
-      <v-btn v-if="handleShow" @click="handleShow" icon>
+      <v-btn v-if="handleShow" icon @click="handleShow">
         <v-icon> mdi-eye </v-icon>
       </v-btn>
-      <v-btn v-if="handleEdit" @click="handleEdit" icon>
+      <v-btn v-if="handleEdit" icon @click="handleEdit">
         <v-icon> mdi-pencil </v-icon>
       </v-btn>
-      <v-btn v-if="handleDelete" @click="confirmDelete = true" icon>
+      <v-btn v-if="handleDelete" icon @click="confirmDelete = true">
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </div>
-    <ConfirmDelete
+    <BaseConfirmDelete
       v-if="handleDelete"
       :visible="confirmDelete"
       :handle-delete="handleDelete"
@@ -20,38 +20,35 @@
   </div>
 </template>
 
-<style scoped>
-.btn-container .v-btn {
-  margin: 4px;
-}
-</style>
-
 <script>
-import ConfirmDelete from "./dialogs/ConfirmDelete";
-
 export default {
-  name: "ActionCell",
-  components: {
-    ConfirmDelete,
+  props: {
+    handleShow: {
+      type: Function,
+      default: null,
+    },
+
+    handleEdit: {
+      type: Function,
+      default: null,
+    },
+
+    handleDelete: {
+      type: Function,
+      default: null,
+    },
   },
+
   data() {
     return {
       confirmDelete: false,
     };
   },
-  props: {
-    handleShow: {
-      type: Function,
-      required: false,
-    },
-    handleEdit: {
-      type: Function,
-      required: false,
-    },
-    handleDelete: {
-      type: Function,
-      required: false,
-    },
-  },
 };
 </script>
+
+<style scoped>
+.btn-container .v-btn {
+  margin: 4px;
+}
+</style>

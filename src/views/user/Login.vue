@@ -1,13 +1,13 @@
 <template>
-  <page-centered navdrawer>
-    <login-card @input="handleLogin" ask-for-persistence>
+  <BasePageCentered navdrawer>
+    <LoginCard ask-for-persistence @input="handleLogin">
       <v-btn :to="{ name: 'UserPasswordResetRequest' }" text
         >Passwort vergessen</v-btn
       >
       <v-spacer />
       <v-btn type="submit" color="primary"> Anmelden </v-btn>
-    </login-card>
-  </page-centered>
+    </LoginCard>
+  </BasePageCentered>
 </template>
 
 <script>
@@ -27,6 +27,18 @@ export default {
     },
   },
 
+  watch: {
+    loggedIn(loggedIn) {
+      if (loggedIn) {
+        if (this.nextUrl) {
+          this.$router.replace(this.nextUrl);
+        } else {
+          this.$router.replace({ name: "Home" });
+        }
+      }
+    },
+  },
+
   methods: {
     ...mapActions("auth", ["login"]),
 
@@ -42,18 +54,6 @@ export default {
         .then(() => {
           this.login(user);
         });
-    },
-  },
-
-  watch: {
-    loggedIn(loggedIn) {
-      if (loggedIn) {
-        if (this.nextUrl) {
-          this.$router.replace(this.nextUrl);
-        } else {
-          this.$router.replace({ name: "Home" });
-        }
-      }
     },
   },
 };

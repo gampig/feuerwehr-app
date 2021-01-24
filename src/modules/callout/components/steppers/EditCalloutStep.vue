@@ -5,15 +5,15 @@
     <v-divider></v-divider>
 
     <v-card-text>
-      <callout-form ref="form" v-bind.sync="item" require-keyword />
+      <CalloutForm ref="form" v-bind.sync="item" require-keyword />
     </v-card-text>
 
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="$emit('back')" color="primary" text> Zurück </v-btn>
+      <v-btn color="primary" text @click="$emit('back')"> Zurück </v-btn>
       <v-spacer></v-spacer>
-      <v-btn @click="submit" :loading="loading" color="primary">
+      <v-btn :loading="loading" color="primary" @click="submit">
         Speichern & Weiter
       </v-btn>
     </v-card-actions>

@@ -10,20 +10,20 @@
     <v-divider v-if="callout"></v-divider>
 
     <v-card-text v-if="callout">
-      <person-autocomplete
-        @input="onAdd"
+      <PersonAutocomplete
         :items="peopleWithoutCrew"
         :loading="loading"
-      ></person-autocomplete>
+        @input="onAdd"
+      ></PersonAutocomplete>
 
       <transition-group name="list" tag="div">
         <v-chip
           v-for="(val, person) in crew"
           :key="person + 0"
-          @click:close="onRemove(person)"
           color="secondary"
           class="ma-1"
           close
+          @click:close="onRemove(person)"
           >{{ person }}</v-chip
         >
       </transition-group>
@@ -32,30 +32,10 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="back" text> Zurück </v-btn>
+      <v-btn text @click="back"> Zurück </v-btn>
     </v-card-actions>
   </v-card>
 </template>
-
-<style scoped>
-.list-enter-active {
-  transition: all 1.2s;
-}
-.list-leave-active {
-  transition: all 0.6s;
-}
-
-.list-enter {
-  background: green !important;
-}
-.list-leave-to {
-  background: red !important;
-}
-
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
@@ -90,14 +70,36 @@ export default {
         this.loading = false;
       });
     },
+
     onRemove(item) {
       const personId = item;
 
       this.removeStandbyMember(personId);
     },
+
     back() {
       this.$emit("back");
     },
   },
 };
 </script>
+
+<style scoped>
+.list-enter-active {
+  transition: all 1.2s;
+}
+.list-leave-active {
+  transition: all 0.6s;
+}
+
+.list-enter {
+  background: green !important;
+}
+.list-leave-to {
+  background: red !important;
+}
+
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

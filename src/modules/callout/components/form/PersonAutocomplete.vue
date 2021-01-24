@@ -2,7 +2,6 @@
   <v-autocomplete
     :items="items"
     :item-text="getName"
-    @change="onSelection"
     :value="search"
     auto-select-first
     return-object
@@ -10,8 +9,9 @@
     :loading="loading"
     filled
     single-line
+    @change="onSelection"
   >
-    <template v-slot:item="data">
+    <template #item="data">
       <template v-if="typeof data.item !== 'object'">
         <v-list-item-content v-text="data.item"></v-list-item-content>
       </template>
@@ -40,10 +40,12 @@ export default {
       type: Array,
       required: true,
     },
+
     loading: {
       type: Boolean,
       default: false,
     },
+
     label: {
       type: String,
       default: "Person suchen...",

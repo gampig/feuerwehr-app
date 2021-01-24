@@ -1,14 +1,14 @@
 <template>
-  <v-dialog v-bind="$attrs" v-on="$listeners" width="500">
-    <login-card
-      @input="submit"
+  <v-dialog v-bind="$attrs" width="500" v-on="$listeners">
+    <LoginCard
       :card-title="user && (user.displayName || user.email)"
       no-email
+      @input="submit"
     >
-      <v-btn @click="$emit('input', false)" text>Abbrechen</v-btn>
+      <v-btn text @click="$emit('input', false)">Abbrechen</v-btn>
       <v-spacer />
       <v-btn type="submit" :loading="loading" color="primary"> Weiter </v-btn>
-    </login-card>
+    </LoginCard>
   </v-dialog>
 </template>
 

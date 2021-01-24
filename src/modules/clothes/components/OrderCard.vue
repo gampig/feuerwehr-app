@@ -57,7 +57,7 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click="$emit('edit')" text>Bearbeiten</v-btn>
+      <v-btn text @click="$emit('edit')">Bearbeiten</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -68,17 +68,17 @@ const formatter = new Intl.NumberFormat("de-DE", {
 });
 
 export default {
-  props: [
-    "person",
-    "clothType",
-    "size",
-    "count",
-    "paid",
-    "totalPrice",
-    "submittedOn",
-    "orderedOn",
-    "doneOn",
-  ],
+  props: {
+    person: { type: String, default: null },
+    clothType: { type: String, default: null },
+    size: { type: String, default: null },
+    count: { type: Number, default: 1 },
+    paid: { type: Number, default: 0 },
+    totalPrice: { type: Number, default: 0 },
+    submittedOn: { type: String, default: null },
+    orderedOn: { type: String, default: null },
+    doneOn: { type: String, default: null },
+  },
 
   methods: {
     formatCurrency(value) {

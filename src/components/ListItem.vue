@@ -21,6 +21,7 @@ export default {
       type: String,
       default: null,
     },
+
     subtitle: {
       type: String,
       default: null,

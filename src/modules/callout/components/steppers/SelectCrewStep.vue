@@ -10,27 +10,27 @@
     <v-divider></v-divider>
 
     <v-card-text :loading="loadingCallout">
-      <person-autocomplete
-        @input="onAdd"
+      <PersonAutocomplete
         :items="peopleWithoutCrew"
         :loading="loading"
-      ></person-autocomplete>
+        @input="onAdd"
+      ></PersonAutocomplete>
 
-      <crew-roles-form
-        @input="onUpdate"
-        @delete="onRemove"
+      <CrewRolesForm
         :crew="crew"
         :loading="loadingMap"
         cards-outlined
+        @input="onUpdate"
+        @delete="onRemove"
       />
     </v-card-text>
 
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="back" color="primary" text> Zurück </v-btn>
+      <v-btn color="primary" text @click="back"> Zurück </v-btn>
       <v-spacer></v-spacer>
-      <v-btn :to="{ name: 'CalloutHome' }" color="primary"> Fertig </v-btn>
+      <v-btn color="primary" @click="$emit('input')"> Fertig </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -56,11 +56,13 @@ export default {
       crew: "crew",
       loadingCallout: "loading",
     }),
+
     ...mapState("vehicles", ["vehicle"]),
     ...mapGetters("people", {
       findPerson: "find",
       peopleWithoutCrew: "peopleWithoutCrew",
     }),
+
     ...mapGetters("callout", ["crewOfVehicle"]),
 
     crew() {
@@ -95,6 +97,7 @@ export default {
         this.loading = false;
       });
     },
+
     onUpdate({ person, role }) {
       this.$set(this.loadingMap, person.id, true);
       this.updateRole({
@@ -105,6 +108,7 @@ export default {
         this.$delete(this.loadingMap, person.id);
       });
     },
+
     onRemove(personId) {
       this.$set(this.loadingMap, personId, true);
       this.removeCrewMember({
@@ -114,6 +118,7 @@ export default {
         this.$delete(this.loadingMap, personId);
       });
     },
+
     back() {
       this.$emit("back");
     },

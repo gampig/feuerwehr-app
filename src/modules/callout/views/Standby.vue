@@ -1,7 +1,7 @@
 <template>
-  <page page-title="Bereitschaft eintragen" navdrawer>
+  <BasePage page-title="Bereitschaft eintragen" navdrawer>
     <v-stepper v-model="current_step" vertical>
-      <v-stepper-step step="1" :complete="current_step > 1">
+      <v-stepper-step step="1" :complete="currentStep > 1">
         Einsatz
         <template v-if="callout">
           : {{ callout.alarmTime | formatDateTime }} -
@@ -9,23 +9,24 @@
         </template>
       </v-stepper-step>
       <v-stepper-content step="1">
-        <select-callout-step @input="onCalloutSelect" />
+        <SelectCalloutStep @input="onCalloutSelect" />
       </v-stepper-content>
 
-      <v-stepper-step step="2" :complete="current_step > 2"
+      <v-stepper-step step="2" :complete="currentStep > 2"
         >Bereitschaft</v-stepper-step
       >
       <v-stepper-content step="2">
-        <SelectStandbyStep @back="goTo('StandbyCallout')"
+        <SelectStandbyStep @back="$router.back()"
       /></v-stepper-content>
     </v-stepper>
 
-    <create-dialog @save="onDialogClose" v-model="showCreateDialog" />
-  </page>
+    <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
+  </BasePage>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import SelectStandbyStep from "../components/steppers/SelectStandbyStep";
 import CreateDialog from "../components/CreateDialog";
@@ -37,10 +38,13 @@ export default {
     CreateDialog,
   },
 
+  mixins: [StepperMixin],
+
   data() {
     return {
-      current_step: 1,
       showCreateDialog: false,
+
+      steps: ["StandbyCallout", "StandbyPeople"],
     };
   },
 
@@ -58,6 +62,10 @@ export default {
     },
   },
 
+  created() {
+    this.init(this.id);
+  },
+
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
 
@@ -70,9 +78,7 @@ export default {
         this.current_step = 1;
       }
     },
-    goTo(name, params) {
-      this.$router.push({ name, params });
-    },
+
     onCalloutSelect(calloutId) {
       if (!calloutId) {
         this.showCreateDialog = true;
@@ -80,13 +86,10 @@ export default {
         this.goTo("StandbyPeople", { id: calloutId });
       }
     },
+
     onDialogClose(calloutId) {
       this.goTo("StandbyPeople", { id: calloutId });
     },
-  },
-
-  created() {
-    this.init(this.id);
   },
 };
 </script>

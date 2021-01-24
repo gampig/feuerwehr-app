@@ -5,9 +5,9 @@
 
       <v-card-text>
         <v-text-field
+          v-model="item.newPassword"
           type="password"
           label="Neues Passwort"
-          v-model="item.newPassword"
           :rules="passwordRules"
         />
       </v-card-text>
@@ -30,16 +30,19 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
     };
   },
+
   computed: {
     item() {
       return { newPassword: "" };
     },
   },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

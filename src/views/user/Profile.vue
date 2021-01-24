@@ -1,11 +1,11 @@
 <template>
-  <page-centered page-title="Profil" navdrawer>
+  <BasePageCentered page-title="Profil" navdrawer>
     <v-form @submit.prevent="submit">
       <v-card :disabled="loading">
         <v-list-item>
-          <list-item-user-avatar
+          <BaseListItemUserAvatar
             :src="user && user.photoURL"
-          ></list-item-user-avatar>
+          ></BaseListItemUserAvatar>
           <v-list-item-content>
             <v-list-item-title>{{
               user && user.displayName
@@ -38,18 +38,13 @@
         </v-card-actions>
       </v-card>
     </v-form>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import ListItemUserAvatar from "@/components/user/ListItemUserAvatar";
 
 export default {
-  components: {
-    ListItemUserAvatar,
-  },
-
   data() {
     return {
       loading: false,
@@ -74,9 +69,11 @@ export default {
       };
       return item;
     },
+
     roles() {
       return (this.userSettings && this.userSettings.roles) || {};
     },
+
     rolesArray() {
       return Object.keys(this.roles) || [];
     },

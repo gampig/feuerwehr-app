@@ -1,5 +1,5 @@
 <template>
-  <page v-bind="$attrs" v-on="$listeners">
+  <BasePage v-bind="$attrs" v-on="$listeners">
     <v-container>
       <v-row justify="center">
         <v-col cols="11" sm="10" md="8" lg="6">
@@ -7,5 +7,5 @@
         </v-col>
       </v-row>
     </v-container>
-  </page>
+  </BasePage>
 </template>

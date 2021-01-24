@@ -1,17 +1,17 @@
 <template>
   <div>
-    <snackbar />
+    <Snackbar />
 
-    <navigation-drawer v-if="navdrawer" v-model="drawer" />
+    <NavigationDrawer v-if="navdrawer" v-model="drawer" />
 
     <v-app-bar app>
       <v-app-bar-nav-icon v-if="navdrawer" @click.stop="drawer = !drawer" />
 
-      <v-btn icon v-if="backButton" @click="goBack">
+      <v-btn v-if="backButton" icon @click="goBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
 
-      <v-btn icon v-if="closeButton" @click="goBack">
+      <v-btn v-if="closeButton" icon @click="closePage">
         <v-icon>mdi-close</v-icon>
       </v-btn>
 
@@ -21,7 +21,7 @@
 
       <slot />
 
-      <template v-if="extended" v-slot:extension>
+      <template v-if="extended" #extension>
         <slot name="extension" />
       </template>
     </v-app-bar>
@@ -43,18 +43,27 @@ export default {
       type: String,
       default: process.env.VUE_APP_TITLE,
     },
+
     navdrawer: {
       type: Boolean,
       default: false,
     },
+
     backButton: {
       type: Boolean,
       default: false,
     },
+
     closeButton: {
       type: Boolean,
       default: false,
     },
+
+    closeHandler: {
+      type: Function,
+      default: null,
+    },
+
     extended: {
       type: Boolean,
       default: false,
@@ -68,6 +77,14 @@ export default {
   methods: {
     goBack() {
       this.$router.back();
+    },
+
+    closePage() {
+      if (this.closeHandler) {
+        this.closeHandler();
+      } else {
+        this.goBack();
+      }
     },
   },
 };

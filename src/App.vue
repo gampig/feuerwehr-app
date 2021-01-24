@@ -1,7 +1,7 @@
 <template>
   <v-app id="feuerwehr-app">
     <router-view />
-    <loading :visible="loading" text="Anmelden..." />
+    <Loading :visible="loading" text="Anmelden..." />
   </v-app>
 </template>
 
@@ -16,6 +16,16 @@ export default {
 
   computed: {
     ...mapState("auth", ["loggedIn", "loading"]),
+  },
+
+  watch: {
+    loggedIn() {
+      this.onStateChanged();
+    },
+
+    loading() {
+      this.onStateChanged();
+    },
   },
 
   methods: {
@@ -38,6 +48,7 @@ export default {
         version,
       });
     },
+
     onLogout() {
       modules.onLogout();
       this.toLoginPage();
@@ -47,16 +58,6 @@ export default {
       if (this.$route.name == "Home") {
         this.$router.push({ name: "UserLogin" });
       }
-    },
-  },
-
-  watch: {
-    loggedIn() {
-      this.onStateChanged();
-    },
-
-    loading() {
-      this.onStateChanged();
     },
   },
 };

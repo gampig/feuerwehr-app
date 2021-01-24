@@ -5,7 +5,7 @@
     <v-divider></v-divider>
 
     <v-card-text>
-      <vehicle-details-form
+      <VehicleDetailsForm
         ref="form"
         :alarm-time="callout && callout.alarmTime"
         v-bind.sync="item"
@@ -14,9 +14,9 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn @click="$emit('back')" color="primary" text> Zurück </v-btn>
+      <v-btn color="primary" text @click="$emit('back')"> Zurück </v-btn>
       <v-spacer></v-spacer>
-      <v-btn @click="submit" :loading="loading" color="primary">
+      <v-btn :loading="loading" color="primary" @click="submit">
         Speichern & Weiter
       </v-btn>
     </v-card-actions>
@@ -36,6 +36,7 @@ export default {
       emptyItem: {
         endTime: null,
       },
+
       loading: false,
     };
   },
@@ -49,6 +50,7 @@ export default {
     callout(callout) {
       this.importItem(callout, this.vehicle);
     },
+
     vehicle(vehicle) {
       this.importItem(this.callout, vehicle);
     },

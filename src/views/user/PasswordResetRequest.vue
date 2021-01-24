@@ -1,13 +1,13 @@
 <template>
-  <page-centered navdrawer>
+  <BasePageCentered navdrawer>
     <password-reset-request-card @input="handleRequest">
-      <v-btn @click="$router.back()" text>Zurück</v-btn>
+      <v-btn text @click="$router.back()">Zurück</v-btn>
       <v-spacer />
       <v-btn type="submit" :loading="loading" color="primary">
         Passwort zurücksetzen
       </v-btn>
     </password-reset-request-card>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>

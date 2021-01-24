@@ -3,7 +3,7 @@
     <v-card-title>
       Einsatz auswählen
       <v-spacer />
-      <v-btn @click="reload" icon><v-icon>mdi-reload</v-icon></v-btn>
+      <v-btn icon @click="reload"><v-icon>mdi-reload</v-icon></v-btn>
     </v-card-title>
 
     <v-divider></v-divider>
@@ -15,8 +15,8 @@
         <v-list-item
           v-for="callout in items"
           :key="callout.id"
-          @click="selectCallout(callout.id)"
           two-line
+          @click="selectCallout(callout.id)"
         >
           <v-list-item-content>
             <v-list-item-title>
@@ -36,7 +36,7 @@
     </template>
 
     <v-card-actions>
-      <v-btn @click="showUserConfirm = true" :disabled="loading" text>
+      <v-btn :disabled="loading" text @click="showUserConfirm = true">
         Neuer Einsatz
       </v-btn>
     </v-card-actions>
@@ -51,7 +51,7 @@
         <v-card-actions>
           <v-btn text @click.stop="showUserConfirm = false"> Abbrechen </v-btn>
           <v-spacer />
-          <v-btn @click="onUserConfirm" text> Neuer Einsatz </v-btn>
+          <v-btn text @click="onUserConfirm"> Neuer Einsatz </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -87,6 +87,7 @@ export default {
       this.showUserConfirm = false;
       this.selectCallout();
     },
+
     selectCallout: function (calloutId) {
       this.$emit("input", calloutId);
     },

@@ -1,22 +1,20 @@
 <template>
-  <CreatePage
+  <BaseCreatePage
     page-title="Bestellung hinzufügen"
-    @submit="onSubmit"
     :creating="creating"
+    @submit="onSubmit"
   >
     <OrderForm ref="form" v-bind.sync="item" create />
-  </CreatePage>
+  </BaseCreatePage>
 </template>
 
 <script>
-import CreatePage from "@/components/pages/CreatePage";
 import OrderForm from "../../components/form/OrderForm";
 import makeCreateMixin from "@/mixins/CreateMixin";
 import moment from "moment";
 
 export default makeCreateMixin("ClothesOrder", "orders").extend({
   components: {
-    CreatePage,
     OrderForm,
   },
 

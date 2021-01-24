@@ -1,13 +1,13 @@
 <template>
-  <page-centered navdrawer>
-    <password-reset-card
+  <BasePageCentered navdrawer>
+    <PasswordResetCard
       v-if="mode === 'resetPassword'"
-      @input="handleSubmit"
       :loading="loading"
+      @input="handleSubmit"
     />
 
     <h3 v-else>Modus unbekannt!</h3>
-  </page-centered>
+  </BasePageCentered>
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
     mode() {
       return this.$route.query.mode;
     },
+
     code() {
       return this.$route.query.oobCode;
     },

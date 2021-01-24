@@ -15,8 +15,8 @@
           label="Bezeichnung"
           append-icon="mdi-form-textbox"
           :value="name"
-          @input="update('name', $event)"
           :rules="[rules.required]"
+          @input="update('name', $event)"
         />
       </v-col>
 
@@ -26,8 +26,8 @@
           append-icon="mdi-clipboard-list"
           :items="categories"
           :value="category"
-          @input="update('category', $event)"
           :rules="[rules.required]"
+          @input="update('category', $event)"
         />
       </v-col>
 
@@ -47,11 +47,11 @@
           label="Größen"
           append-icon="mdi-ruler"
           :value="sizes"
-          @input="update('sizes', $event)"
           chips
           small-chips
           deletable-chips
           multiple
+          @input="update('sizes', $event)"
         />
       </v-col>
 

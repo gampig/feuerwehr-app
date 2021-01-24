@@ -1,20 +1,20 @@
 <template>
-  <v-dialog :value="value" @input="cancel" persistent max-width="900">
+  <v-dialog :value="value" persistent max-width="900" @input="cancel">
     <v-card>
       <v-card-title> Neuer Einsatz </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
-        <callout-form ref="form" v-bind.sync="item"></callout-form>
+        <CalloutForm ref="form" v-bind.sync="item"></CalloutForm>
       </v-card-text>
 
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn @click="cancel" text> Abbrechen </v-btn>
+        <v-btn text @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn @click="save" :loading="loading" color="primary" text>
+        <v-btn :loading="loading" color="primary" text @click="save">
           Speichern
         </v-btn>
       </v-card-actions>
@@ -42,6 +42,10 @@ export default {
     };
   },
 
+  created() {
+    this.reset();
+  },
+
   methods: {
     ...mapActions("callouts", ["create"]),
     ...mapActions("callout", ["bind"]),
@@ -57,10 +61,12 @@ export default {
       };
       this.loading = false;
     },
+
     cancel() {
       this.$emit("input", false);
       this.reset();
     },
+
     save() {
       if (this.$refs.form.$refs.form.validate()) {
         this.loading = true;
@@ -72,10 +78,6 @@ export default {
         });
       }
     },
-  },
-
-  created() {
-    this.reset();
   },
 };
 </script>

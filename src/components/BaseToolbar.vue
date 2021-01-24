@@ -25,7 +25,7 @@
         <v-icon left>mdi-plus</v-icon> Neu
       </v-btn>
     </div>
-    <ConfirmDelete
+    <BaseConfirmDelete
       v-if="handleDelete"
       :visible="confirmDelete"
       :handle-delete="handleDelete"
@@ -35,56 +35,59 @@
 </template>
 
 <script>
-import ConfirmDelete from "../dialogs/ConfirmDelete";
-
 export default {
-  name: "Toolbar",
-  components: {
-    ConfirmDelete,
-  },
-  data() {
-    return {
-      confirmDelete: false,
-    };
-  },
   props: {
     handleSubmit: {
       type: Function,
-      required: false,
+      default: null,
     },
+
     handleReset: {
       type: Function,
-      required: false,
+      default: null,
     },
+
     handleDelete: {
       type: Function,
-      required: false,
+      default: null,
     },
+
     handleAdd: {
       type: Function,
-      required: false,
+      default: null,
     },
+
     title: {
       type: String,
-      required: false,
+      default: null,
     },
+
     isLoading: {
       type: Boolean,
       required: false,
       default: () => false,
     },
   },
+
+  data() {
+    return {
+      confirmDelete: false,
+    };
+  },
+
   methods: {
     addItem() {
       if (this.handleAdd) {
         this.handleAdd();
       }
     },
+
     submitItem() {
       if (this.handleSubmit) {
         this.handleSubmit();
       }
     },
+
     resetItem() {
       if (this.handleReset) {
         this.handleReset();

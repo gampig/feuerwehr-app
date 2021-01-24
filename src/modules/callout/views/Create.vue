@@ -1,21 +1,19 @@
 <template>
-  <CreatePage
+  <BaseCreatePage
     page-title="Einsatz erstellen"
-    @submit="onSubmit"
     :creating="creating"
+    @submit="onSubmit"
   >
     <CalloutForm ref="form" v-bind.sync="item" require-keyword />
-  </CreatePage>
+  </BaseCreatePage>
 </template>
 
 <script>
-import CreatePage from "@/components/pages/CreatePage";
 import CalloutForm from "../components/form/Form";
 import makeCreateMixin from "@/mixins/CreateMixin";
 
 export default makeCreateMixin("Callout", "callouts").extend({
   components: {
-    CreatePage,
     CalloutForm,
   },
 

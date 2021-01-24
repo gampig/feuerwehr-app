@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :value="value" @input="$emit('input', $event)" app>
+  <v-navigation-drawer :value="value" app @input="$emit('input', $event)">
     <v-list nav>
       <v-list-item v-if="!loggedIn" :to="loginRoute" replace>
         <v-list-item-avatar>
@@ -11,9 +11,7 @@
       </v-list-item>
 
       <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
-        <list-item-user-avatar
-          :src="user && user.photoURL"
-        ></list-item-user-avatar>
+        <BaseListItemUserAvatar :src="user && user.photoURL" />
         <v-list-item-content>
           <v-list-item-title>
             {{ user.displayName }}
@@ -33,7 +31,7 @@
       <NavigationLinks v-else :links="links" />
     </v-list>
 
-    <template v-slot:append>
+    <template #append>
       <div v-if="showUserSettings" class="pa-3 text--disabled">
         Version: {{ version }}
       </div>
@@ -44,14 +42,12 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import version from "@/utils/version";
-import ListItemUserAvatar from "../user/ListItemUserAvatar";
 import NavigationLinks from "./NavigationLinks";
 
 const deviceRoles = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
 export default {
   components: {
-    ListItemUserAvatar,
     NavigationLinks,
   },
 
@@ -107,18 +103,18 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("auth", ["loggedIn", "user", "userSettings"]),
+    ...mapGetters("auth", ["hasAnyRole"]),
+    ...mapState("navigation", ["links"]),
+  },
+
   watch: {
     loggedIn(loggedIn) {
       if (!loggedIn) {
         this.showUserSettings = false;
       }
     },
-  },
-
-  computed: {
-    ...mapState("auth", ["loggedIn", "user", "userSettings"]),
-    ...mapGetters("auth", ["hasAnyRole"]),
-    ...mapState("navigation", ["links"]),
   },
 
   methods: {

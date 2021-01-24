@@ -5,10 +5,10 @@
         <v-select
           label="Typ"
           :value="typeArray"
-          @input="updateType"
           :items="typeSelectItems"
           :rules="(requireKeyword && [rules.required]) || []"
           multiple
+          @input="updateType"
         />
       </v-col>
     </v-row>
@@ -19,8 +19,8 @@
           label="Stichwort"
           :items="keywords"
           :value="keyword"
-          @input="$emit('update:keyword', $event)"
           :rules="(requireKeyword && [rules.required]) || []"
+          @input="$emit('update:keyword', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
@@ -33,14 +33,14 @@
       </v-col>
     </v-row>
 
-    <DateTimeFields
+    <BaseDateTimeFields
       label="Alarm"
       prepend-icon="mdi-alarm-light-outline"
       :value="alarmTime"
-      @input="update('alarmTime', $event)"
       :max-date="today"
       :rules-date="[rules.required, rules.onlyPastAllowed, rules.recently]"
       :rules-time="[rules.required]"
+      @input="update('alarmTime', $event)"
     />
 
     <v-row>
@@ -58,14 +58,9 @@
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
-import DateTimeFields from "@/components/DateTimeFields";
 import keywordsMap from "@/assets/keywords.json";
 
 export default FormMixin.extend({
-  components: {
-    DateTimeFields,
-  },
-
   props: {
     type: null,
     keyword: null,

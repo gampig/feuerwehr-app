@@ -11,8 +11,8 @@
     <template v-if="subText">
       <p>{{ subText }}</p>
     </template>
-    <template v-slot:action="{ attrs }">
-      <v-btn v-bind="attrs" @click.native="close" icon>
+    <template #action="{ attrs }">
+      <v-btn v-bind="attrs" icon @click.native="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </template>
@@ -41,6 +41,14 @@ export default {
     ]),
   },
 
+  watch: {
+    id() {
+      if (this.show) {
+        this.setTimer();
+      }
+    },
+  },
+
   methods: {
     ...mapMutations("notifications", ["setShow"]),
 
@@ -55,14 +63,6 @@ export default {
 
     close() {
       this.setShow(false);
-    },
-  },
-
-  watch: {
-    id() {
-      if (this.show) {
-        this.setTimer();
-      }
     },
   },
 };

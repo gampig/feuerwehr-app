@@ -1,17 +1,17 @@
 <template>
-  <v-dialog @input="$emit('input', false)" :value="value" max-width="700">
+  <v-dialog :value="value" max-width="700" @input="$emit('input', false)">
     <v-card>
       <v-card-title class="headline">
         Details zum Einsatz
         <v-spacer></v-spacer>
-        <v-btn @click="$emit('input', false)" large icon>
+        <v-btn large icon @click="$emit('input', false)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
 
       <v-divider></v-divider>
 
-      <callout-details v-if="item" :item="item" />
+      <CalloutDetails v-if="item" :item="item" />
     </v-card>
   </v-dialog>
 </template>
@@ -27,8 +27,21 @@ export default {
       type: Boolean,
       required: true,
     },
+
     item: {
       type: Object,
+      default: () => {
+        return {
+          alarmTime: null,
+          endTime: null,
+          type: null,
+          keyword: null,
+          catchphrase: null,
+          address: null,
+          standbyCrew: null,
+          vehicles: null,
+        };
+      },
     },
   },
 };
