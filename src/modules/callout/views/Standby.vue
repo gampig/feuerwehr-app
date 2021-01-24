@@ -16,7 +16,7 @@
         >Bereitschaft</v-stepper-step
       >
       <v-stepper-content step="2">
-        <SelectStandbyStep @back="goTo('StandbyCallout')"
+        <SelectStandbyStep @back="$router.back()"
       /></v-stepper-content>
     </v-stepper>
 

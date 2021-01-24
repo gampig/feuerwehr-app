@@ -43,10 +43,7 @@
         >Einsatz bearbeiten</v-stepper-step
       >
       <v-stepper-content :step="steps.editCallout">
-        <EditCalloutStep
-          @input="nextFromEditCallout"
-          @back="goTo('CrewCallouts')"
-        />
+        <EditCalloutStep @input="nextFromEditCallout" @back="goBack" />
       </v-stepper-content>
 
       <v-stepper-step
@@ -64,7 +61,7 @@
               vehicle_id: $event,
             })
           "
-          @back="goTo('CrewEditCallout', { callout_id: callout['.key'] })"
+          @back="goBack"
         />
       </v-stepper-content>
 
@@ -82,7 +79,7 @@
               vehicle_id: vehicle.id,
             })
           "
-          @back="backFromVehicleDetails"
+          @back="goBack"
         />
       </v-stepper-content>
 
@@ -92,14 +89,7 @@
         >Mannschaft</v-stepper-step
       >
       <v-stepper-content :step="steps.selectCrew">
-        <SelectCrewStep
-          @input="closeHandler"
-          @back="
-            goTo('CrewVehicleDetails', {
-              callout_id: callout['.key'],
-              vehicle_id: vehicle.id,
-            })
-          "
+        <SelectCrewStep @input="closeHandler" @back="goBack"
       /></v-stepper-content>
     </v-stepper>
 
@@ -267,19 +257,15 @@ export default {
       this.$router.push({ name, params });
     },
 
+    goBack() {
+      this.$router.back();
+    },
+
     nextFromEditCallout() {
       if (!this.userIsVehicle) {
         this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });
       } else {
         this.goTo("CrewVehicleDetails", { callout_id: this.callout[".key"] });
-      }
-    },
-
-    backFromVehicleDetails() {
-      if (!this.userIsVehicle) {
-        this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });
-      } else {
-        this.goTo("CrewEditCallout", { callout_id: this.callout[".key"] });
       }
     },
 
