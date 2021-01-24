@@ -96,7 +96,7 @@
             <v-list-item-subtitle>
               Besatzung:
               {{
-                (item.crewMembers &&
+                (calloutVehicle.crewMembers &&
                   Object.keys(calloutVehicle.crewMembers).length) ||
                 "0"
               }}
