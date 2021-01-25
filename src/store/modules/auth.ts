@@ -186,8 +186,8 @@ const authModule = {
         .then((currentUser) =>
           firebase
             .database()
-            .ref("users/" + currentUser.uid)
-            .child("clients/" + deviceId)
+            .ref("userClients/" + currentUser.uid)
+            .child(deviceId)
             .update(payload)
         )
         .catch((error) => handleError(commit, error));
