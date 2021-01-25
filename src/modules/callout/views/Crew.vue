@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import EditCalloutStep from "../components/steppers/EditCalloutStep";
@@ -89,7 +89,6 @@ export default {
 
   data() {
     return {
-      userIsVehicle: false,
       showCalloutDetails: false,
     };
   },
@@ -98,7 +97,14 @@ export default {
     ...mapState("callout", ["callout"]),
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    calloutId() {
+      return this.$route.params.callout_id;
+    },
+
+    vehicleId() {
+      return this.userSettings?.vehicle || this.$route.params.vehicle_id;
+    },
 
     steps() {
       return [
@@ -133,65 +139,35 @@ export default {
   },
 
   watch: {
-    $route() {
-      this.init();
+    calloutId(id) {
+      if (id) this.bindCallout(id);
+      else this.unbindCallout();
     },
 
-    userSettings() {
-      this.handleUserSettings();
+    vehicleId(id) {
+      if (id) this.bindVehicle(id);
+      else this.unbindVehicle();
     },
   },
 
   created() {
-    this.init();
+    if (this.calloutId) this.bindCallout(this.calloutId);
+    else this.unbindCallout();
+
+    if (this.vehicleId) this.bindVehicle(this.vehicleId);
+    else this.unbindVehicle();
   },
 
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
     ...mapActions("vehicles", ["bindVehicle", "unbindVehicle"]),
 
-    init() {
-      const params = this.$route.params;
-      this.initCallout(params.callout_id);
-      this.initVehicle(params.vehicle_id);
-    },
-
-    initCallout(id) {
-      if (id) {
-        if (!this.callout || id != this.callout[".key"]) {
-          this.bindCallout(id);
-        }
-      } else {
-        this.unbindCallout();
-      }
-    },
-
-    initVehicle(id) {
-      if (id && (!this.vehicle || id != this.vehicle.id)) {
-        this.bindVehicle(id);
-      } else {
-        this.handleUserSettings();
-      }
-    },
-
-    handleUserSettings() {
-      if (this.userSettings && this.userSettings.vehicle) {
-        this.userIsVehicle = true;
-
-        if (!this.vehicle || this.vehicle.id != this.userSettings.vehicle) {
-          this.bindVehicle(this.userSettings.vehicle);
-        }
-      } else {
-        this.userIsVehicle = false;
-      }
-    },
-
     goBack() {
       this.$router.back();
     },
 
     nextFromEditCallout() {
-      if (!this.userIsVehicle) {
+      if (!this.vehicleId) {
         this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });
       } else {
         this.goTo("CrewVehicleDetails", { callout_id: this.callout[".key"] });
