@@ -1,23 +1,13 @@
 <template>
   <BasePage page-title="Bereitschaft eintragen" navdrawer>
-    <v-stepper v-model="current_step" vertical>
-      <v-stepper-step step="1" :complete="currentStep > 1">
-        Einsatz
-        <template v-if="callout">
-          : {{ callout.alarmTime | formatDateTime }} -
-          {{ callout.keyword }}
-        </template>
-      </v-stepper-step>
-      <v-stepper-content step="1">
+    <v-stepper v-model="currentStep" vertical>
+      <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
         <SelectCalloutStep @input="onCalloutSelect" />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="2" :complete="currentStep > 2"
-        >Bereitschaft</v-stepper-step
-      >
-      <v-stepper-content step="2">
-        <SelectStandbyStep @back="$router.back()"
-      /></v-stepper-content>
+      <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
+        <SelectStandbyStep @back="$router.back()" />
+      </BaseStepperVerticalStep>
     </v-stepper>
 
     <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
@@ -30,6 +20,7 @@ import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import SelectStandbyStep from "../components/steppers/SelectStandbyStep";
 import CreateDialog from "../components/CreateDialog";
+import { formatDateTime } from "@/utils/dates";
 
 export default {
   components: {
@@ -43,8 +34,6 @@ export default {
   data() {
     return {
       showCreateDialog: false,
-
-      steps: ["StandbyCallout", "StandbyPeople"],
     };
   },
 
@@ -53,6 +42,25 @@ export default {
 
     id() {
       return this.$route.params.id;
+    },
+
+    steps() {
+      return [
+        {
+          name: "StandbyCallout",
+          label:
+            "Einsatz" +
+            (this.callout
+              ? `: ${formatDateTime(this.callout.alarmTime)} - ${
+                  this.callout.keyword
+                }`
+              : ""),
+        },
+        {
+          name: "StandbyPeople",
+          label: "Bereitschaft",
+        },
+      ];
     },
   },
 
@@ -72,10 +80,8 @@ export default {
     init(id) {
       if (id) {
         this.bindCallout(id);
-        this.current_step = 2;
       } else {
         this.unbindCallout();
-        this.current_step = 1;
       }
     },
 

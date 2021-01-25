@@ -21,31 +21,17 @@
     </template>
 
     <v-stepper :value="currentStep" vertical>
-      <v-stepper-step step="1" :complete="currentStep > 1">
-        Einsatz
-        <template v-if="callout">
-          : {{ callout.alarmTime | formatDateTime }} -
-          {{ callout.keyword }}
-        </template>
-      </v-stepper-step>
-      <v-stepper-content step="1">
+      <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
         <SelectCalloutStep
           @input="goTo('CrewEditCallout', { callout_id: $event })"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="2" :complete="currentStep > 2"
-        >Einsatz bearbeiten</v-stepper-step
-      >
-      <v-stepper-content step="2">
+      <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
         <EditCalloutStep @input="nextFromEditCallout" @back="goBack" />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="3" :complete="currentStep > 3">
-        Fahrzeug
-        <template v-if="vehicle">: {{ vehicle.name }}</template>
-      </v-stepper-step>
-      <v-stepper-content step="3">
+      <BaseStepperVerticalStep :index="3" :step="steps[2]" :value="currentStep">
         <SelectVehicleStep
           @input="
             goTo('CrewVehicleDetails', {
@@ -55,12 +41,9 @@
           "
           @back="goBack"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="4" :complete="currentStep > 4">
-        Einsatzende
-      </v-stepper-step>
-      <v-stepper-content step="4">
+      <BaseStepperVerticalStep :index="4" :step="steps[3]" :value="currentStep">
         <VehicleDetailsStep
           @input="
             goTo('CrewPeople', {
@@ -70,14 +53,11 @@
           "
           @back="goBack"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="5" :complete="currentStep > 5"
-        >Mannschaft</v-stepper-step
-      >
-      <v-stepper-content step="5">
+      <BaseStepperVerticalStep :index="5" :step="steps[4]" :value="currentStep">
         <SelectCrewStep @input="closeHandler" @back="goBack"
-      /></v-stepper-content>
+      /></BaseStepperVerticalStep>
     </v-stepper>
 
     <CalloutDetailsDialog v-model="showCalloutDetails" />
@@ -93,6 +73,7 @@ import SelectVehicleStep from "../components/steppers/SelectVehicleStep";
 import VehicleDetailsStep from "../components/steppers/VehicleDetailsStep";
 import SelectCrewStep from "../components/steppers/SelectCrewStep";
 import CalloutDetailsDialog from "../components/CalloutDetailsDialog";
+import { formatDateTime } from "@/utils/dates";
 
 export default {
   components: {
@@ -110,14 +91,6 @@ export default {
     return {
       userIsVehicle: false,
       showCalloutDetails: false,
-
-      steps: [
-        "CrewCallouts",
-        "CrewEditCallout",
-        "CrewVehicles",
-        "CrewVehicleDetails",
-        "CrewPeople",
-      ],
     };
   },
 
@@ -126,6 +99,37 @@ export default {
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
     ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    steps() {
+      return [
+        {
+          name: "CrewCallouts",
+          label:
+            "Einsatz" +
+            (this.callout
+              ? `: ${formatDateTime(this.callout.alarmTime)} - ${
+                  this.callout.keyword
+                }`
+              : ""),
+        },
+        {
+          name: "CrewEditCallout",
+          label: "Einsatz bearbeiten",
+        },
+        {
+          name: "CrewVehicles",
+          label: "Fahrzeug" + (this.vehicle ? `: ${this.vehicle.name}` : ""),
+        },
+        {
+          name: "CrewVehicleDetails",
+          label: "Einsatzende",
+        },
+        {
+          name: "CrewPeople",
+          label: "Mannschaft",
+        },
+      ];
+    },
   },
 
   watch: {
