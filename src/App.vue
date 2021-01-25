@@ -32,8 +32,6 @@ export default {
     onStateChanged() {
       if (this.loggedIn) {
         this.onLogin();
-      } else {
-        this.onLogout();
       }
     },
 
