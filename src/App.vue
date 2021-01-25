@@ -22,20 +22,18 @@ export default {
     loggedIn() {
       this.onStateChanged();
     },
+  },
 
-    loading() {
-      this.onStateChanged();
-    },
+  created() {
+    this.onStateChanged();
   },
 
   methods: {
     onStateChanged() {
-      if (!this.loading) {
-        if (this.loggedIn) {
-          this.onLogin();
-        } else {
-          this.onLogout();
-        }
+      if (this.loggedIn) {
+        this.onLogin();
+      } else {
+        this.onLogout();
       }
     },
 
@@ -56,7 +54,10 @@ export default {
 
     toLoginPage() {
       if (this.$route.name == "Home") {
-        this.$router.push({ name: "UserLogin" });
+        this.$router.replace({
+          name: "UserLogin",
+          params: { nextUrl: { name: "Home" } },
+        });
       }
     },
   },
