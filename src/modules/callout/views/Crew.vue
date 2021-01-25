@@ -21,31 +21,17 @@
     </template>
 
     <v-stepper :value="currentStep" vertical>
-      <v-stepper-step step="1" :complete="currentStep > 1">
-        Einsatz
-        <template v-if="callout">
-          : {{ callout.alarmTime | formatDateTime }} -
-          {{ callout.keyword }}
-        </template>
-      </v-stepper-step>
-      <v-stepper-content step="1">
+      <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
         <SelectCalloutStep
           @input="goTo('CrewEditCallout', { callout_id: $event })"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="2" :complete="currentStep > 2"
-        >Einsatz bearbeiten</v-stepper-step
-      >
-      <v-stepper-content step="2">
+      <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
         <EditCalloutStep @input="nextFromEditCallout" @back="goBack" />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="3" :complete="currentStep > 3">
-        Fahrzeug
-        <template v-if="vehicle">: {{ vehicle.name }}</template>
-      </v-stepper-step>
-      <v-stepper-content step="3">
+      <BaseStepperVerticalStep :index="3" :step="steps[2]" :value="currentStep">
         <SelectVehicleStep
           @input="
             goTo('CrewVehicleDetails', {
@@ -55,12 +41,9 @@
           "
           @back="goBack"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="4" :complete="currentStep > 4">
-        Einsatzende
-      </v-stepper-step>
-      <v-stepper-content step="4">
+      <BaseStepperVerticalStep :index="4" :step="steps[3]" :value="currentStep">
         <VehicleDetailsStep
           @input="
             goTo('CrewPeople', {
@@ -70,14 +53,11 @@
           "
           @back="goBack"
         />
-      </v-stepper-content>
+      </BaseStepperVerticalStep>
 
-      <v-stepper-step step="5" :complete="currentStep > 5"
-        >Mannschaft</v-stepper-step
-      >
-      <v-stepper-content step="5">
+      <BaseStepperVerticalStep :index="5" :step="steps[4]" :value="currentStep">
         <SelectCrewStep @input="closeHandler" @back="goBack"
-      /></v-stepper-content>
+      /></BaseStepperVerticalStep>
     </v-stepper>
 
     <CalloutDetailsDialog v-model="showCalloutDetails" />
@@ -85,7 +65,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
 import EditCalloutStep from "../components/steppers/EditCalloutStep";
@@ -93,6 +73,7 @@ import SelectVehicleStep from "../components/steppers/SelectVehicleStep";
 import VehicleDetailsStep from "../components/steppers/VehicleDetailsStep";
 import SelectCrewStep from "../components/steppers/SelectCrewStep";
 import CalloutDetailsDialog from "../components/CalloutDetailsDialog";
+import { formatDateTime } from "@/utils/dates";
 
 export default {
   components: {
@@ -108,16 +89,7 @@ export default {
 
   data() {
     return {
-      userIsVehicle: false,
       showCalloutDetails: false,
-
-      steps: [
-        "CrewCallouts",
-        "CrewEditCallout",
-        "CrewVehicles",
-        "CrewVehicleDetails",
-        "CrewPeople",
-      ],
     };
   },
 
@@ -125,69 +97,77 @@ export default {
     ...mapState("callout", ["callout"]),
     ...mapState("vehicles", ["vehicle"]),
     ...mapState("auth", ["userSettings"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    calloutId() {
+      return this.$route.params.callout_id;
+    },
+
+    vehicleId() {
+      return this.userSettings?.vehicle || this.$route.params.vehicle_id;
+    },
+
+    steps() {
+      return [
+        {
+          name: "CrewCallouts",
+          label:
+            "Einsatz" +
+            (this.callout
+              ? `: ${formatDateTime(this.callout.alarmTime)} - ${
+                  this.callout.keyword
+                }`
+              : ""),
+        },
+        {
+          name: "CrewEditCallout",
+          label: "Einsatz bearbeiten",
+        },
+        {
+          name: "CrewVehicles",
+          label: "Fahrzeug" + (this.vehicle ? `: ${this.vehicle.name}` : ""),
+        },
+        {
+          name: "CrewVehicleDetails",
+          label: "Einsatzende",
+        },
+        {
+          name: "CrewPeople",
+          label: "Mannschaft",
+        },
+      ];
+    },
   },
 
   watch: {
-    $route() {
-      this.init();
+    calloutId(id) {
+      if (id) this.bindCallout(id);
+      else this.unbindCallout();
     },
 
-    userSettings() {
-      this.handleUserSettings();
+    vehicleId(id) {
+      if (id) this.bindVehicle(id);
+      else this.unbindVehicle();
     },
   },
 
   created() {
-    this.init();
+    if (this.calloutId) this.bindCallout(this.calloutId);
+    else this.unbindCallout();
+
+    if (this.vehicleId) this.bindVehicle(this.vehicleId);
+    else this.unbindVehicle();
   },
 
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
     ...mapActions("vehicles", ["bindVehicle", "unbindVehicle"]),
 
-    init() {
-      const params = this.$route.params;
-      this.initCallout(params.callout_id);
-      this.initVehicle(params.vehicle_id);
-    },
-
-    initCallout(id) {
-      if (id) {
-        if (!this.callout || id != this.callout[".key"]) {
-          this.bindCallout(id);
-        }
-      } else {
-        this.unbindCallout();
-      }
-    },
-
-    initVehicle(id) {
-      if (id && (!this.vehicle || id != this.vehicle.id)) {
-        this.bindVehicle(id);
-      } else {
-        this.handleUserSettings();
-      }
-    },
-
-    handleUserSettings() {
-      if (this.userSettings && this.userSettings.vehicle) {
-        this.userIsVehicle = true;
-
-        if (!this.vehicle || this.vehicle.id != this.userSettings.vehicle) {
-          this.bindVehicle(this.userSettings.vehicle);
-        }
-      } else {
-        this.userIsVehicle = false;
-      }
-    },
-
     goBack() {
       this.$router.back();
     },
 
     nextFromEditCallout() {
-      if (!this.userIsVehicle) {
+      if (!this.vehicleId) {
         this.goTo("CrewVehicles", { callout_id: this.callout[".key"] });
       } else {
         this.goTo("CrewVehicleDetails", { callout_id: this.callout[".key"] });
