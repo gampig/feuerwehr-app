@@ -1,8 +1,9 @@
+import { StepperStep } from "@/models/StepperStep";
 import Vue from "vue";
 
 export default Vue.extend({
   computed: {
-    steps(): Step[] {
+    steps(): StepperStep[] {
       return [];
     },
 
