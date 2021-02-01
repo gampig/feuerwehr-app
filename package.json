@@ -20,7 +20,7 @@
   "dependencies": {
     "@fontsource/roboto": "^4.1.0",
     "core-js": "^3.8.3",
-    "firebase": "^8.2.4",
+    "firebase": "^8.2.5",
     "lodash": "^4.17.19",
     "moment": "^2.29.1",
     "register-service-worker": "^1.7.2",
