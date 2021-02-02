@@ -11,6 +11,7 @@ export default Vue.extend({
 
   computed: {
     ...mapState("callout", { callout: "callout" }),
+    ...mapState("vehicles", { vehicle: "vehicle" }),
   },
 
   created() {
@@ -38,13 +39,13 @@ export default Vue.extend({
         const vehicle = store.state.callout.vehicle;
         if (!(vehicle && vehicle.id == paramVehicleId)) {
           //return store.dispatch("callout/bindVehicle", paramVehicleId);
-          return Promise.reject();
+          return store.dispatch("vehicles/bindVehicle", paramVehicleId);
         } else {
           return Promise.resolve();
         }
       } else {
         //return store.dispatch("callout/unbindVehicle");
-        return Promise.reject();
+        return store.dispatch("vehicles/unbindVehicle");
       }
     }
 
