@@ -1,7 +1,7 @@
 <template>
   <CrewPage
     page-title="Einsatz bearbeiten"
-    :loading="loading"
+    :loading="saving"
     save-button
     @submit="submit"
   >
@@ -14,9 +14,10 @@
 </template>
 
 <script>
+import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 import CalloutForm from "../../components/form/Form";
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -24,9 +25,11 @@ export default {
     CalloutForm,
   },
 
+  mixins: [CalloutGroupMixin],
+
   data() {
     return {
-      loading: false,
+      saving: false,
       item: {},
       emptyItem: {
         type: null,
@@ -38,40 +41,34 @@ export default {
     };
   },
 
-  computed: {
-    ...mapState("callout", { callout: "callout", loadingCallout: "loading" }),
-  },
-
   watch: {
-    callout(callout) {
-      this.item = Object.assign({}, this.emptyItem, callout);
+    loadingCallout(loading) {
+      if (!loading) {
+        this.item = Object.assign({}, this.emptyItem, this.callout);
+      }
     },
-  },
-
-  mounted() {
-    this.item = Object.assign({}, this.emptyItem, this.callout);
   },
 
   methods: {
     ...mapActions("callouts", ["create"]),
-    ...mapActions("callout", ["bind", "updateCallout"]),
+    ...mapActions("callout", ["updateCallout"]),
 
     submit() {
       if (this.$refs.form.$refs.form.validate()) {
         const submittedData = this.item;
 
-        this.loading = true;
+        this.saving = true;
         if (this.callout) {
           this.updateCallout(submittedData)
             .then(() => this.next(this.callout.id))
             .finally(() => {
-              this.loading = false;
+              this.saving = false;
             });
         } else {
           this.create(submittedData)
             .then((ref) => this.next(ref.key))
             .finally(() => {
-              this.loading = false;
+              this.saving = false;
             });
         }
       }

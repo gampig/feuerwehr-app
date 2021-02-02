@@ -56,10 +56,12 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 
 export default {
   components: { CrewPage },
+  mixins: [CalloutGroupMixin],
 
   data() {
     return {
