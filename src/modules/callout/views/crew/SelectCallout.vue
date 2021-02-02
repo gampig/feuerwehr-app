@@ -9,7 +9,7 @@
             v-for="callout in items"
             :key="callout.id"
             two-line
-            @click="selectCallout(callout.id)"
+            @click="next(callout.id)"
           >
             <v-list-item-content>
               <v-list-item-title>
@@ -85,14 +85,7 @@ export default {
   methods: {
     onUserConfirm() {
       this.showUserConfirm = false;
-      this.selectCallout();
-    },
-
-    selectCallout: function (calloutId) {
-      this.$router.push({
-        name: "CrewEditCallout",
-        params: { callout_id: calloutId },
-      });
+      this.next();
     },
   },
 };

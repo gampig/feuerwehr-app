@@ -66,7 +66,10 @@ export default {
             });
         } else {
           this.create(submittedData)
-            .then((ref) => this.next(ref.key))
+            .then((ref) => {
+              this.updateRoute(ref.key);
+              this.next(ref.key);
+            })
             .finally(() => {
               this.saving = false;
             });
@@ -74,9 +77,9 @@ export default {
       }
     },
 
-    next(calloutId) {
-      this.$router.push({
-        name: "CrewVehicles",
+    updateRoute(calloutId) {
+      this.$router.replace({
+        name: this.$route.name,
         params: { callout_id: calloutId },
       });
     },

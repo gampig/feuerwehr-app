@@ -1,5 +1,32 @@
+import { showError } from "@/utils/notifications";
 import Vue from "vue";
 import { mapState, Store } from "vuex";
+
+const stepRouteNames = [
+  "CrewCallouts",
+  "CrewEditCallout",
+  "CrewVehicles",
+  "CrewVehicleDetails",
+  "CrewPeople",
+];
+
+function makeStepParams(calloutId?: string, vehicleId?: string) {
+  return {
+    ...(calloutId && { callout_id: calloutId }),
+    ...(vehicleId && { vehicle_id: vehicleId }),
+  };
+}
+
+function getNextStepNumber(currentStepNumber: number, vehicleId?: string) {
+  const vehicleStepNumber = stepRouteNames.findIndex(
+    (step) => step === "CrewVehicles"
+  );
+  if (currentStepNumber + 1 === vehicleStepNumber && vehicleId) {
+    return currentStepNumber + 2;
+  } else {
+    return currentStepNumber + 1;
+  }
+}
 
 export default Vue.extend({
   data() {
@@ -12,6 +39,13 @@ export default Vue.extend({
   computed: {
     ...mapState("callout", { callout: "callout" }),
     ...mapState("vehicles", { vehicle: "vehicle" }),
+
+    vehicleId(): string | undefined {
+      return (
+        this.$store.state.auth.userSettings?.vehicle ||
+        this.$route.params.vehicle_id
+      );
+    },
   },
 
   created() {
@@ -55,5 +89,34 @@ export default Vue.extend({
     fetchVehicle(this.$store, this.$route.params.vehicle_id).finally(() => {
       this.loadingVehicle = false;
     });
+  },
+
+  methods: {
+    next(calloutId?: string, vehicleId?: string): void {
+      const currentStepNumber = this.getCurrentStepNumber();
+      if (currentStepNumber === -1) {
+        showError("Unzulässige Nummer des aktuellen Schrittes");
+      } else if (currentStepNumber < stepRouteNames.length - 1) {
+        const nextStepNumber = getNextStepNumber(
+          currentStepNumber,
+          this.vehicleId
+        );
+
+        this.$router.push({
+          name: stepRouteNames[nextStepNumber],
+          params: makeStepParams(calloutId, vehicleId),
+        });
+      } else {
+        this.goHome();
+      }
+    },
+
+    goHome(): void {
+      this.$router.push({ name: "CalloutHome" });
+    },
+
+    getCurrentStepNumber(): number {
+      return stepRouteNames.findIndex((step) => step === this.$route.name);
+    },
   },
 });
