@@ -29,6 +29,7 @@ export default {
       path: "anzeigen/:id",
       component: () => import("./views/Show.vue"),
     },
+
     {
       name: "CrewCallouts",
       path: "mannschaft",
@@ -39,6 +40,12 @@ export default {
       path: "mannschaft/:callout_id?/bearbeiten",
       component: () => import("./views/crew/UpdateCallout.vue"),
     },
+    {
+      name: "CrewVehicles",
+      path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
+      component: () => import("./views/crew/SelectVehicle.vue"),
+    },
+
     {
       name: "SelectStandby",
       path: "bereitschaft",

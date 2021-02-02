@@ -76,7 +76,7 @@ export default {
 
     next(calloutId) {
       this.$router.push({
-        name: "CrewEditCallout",
+        name: "CrewVehicles",
         params: { callout_id: calloutId },
       });
     },
