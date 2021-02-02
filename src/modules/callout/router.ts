@@ -30,20 +30,14 @@ export default {
       component: () => import("./views/Show.vue"),
     },
     {
-      name: "SelectCrew",
+      name: "CrewCallouts",
       path: "mannschaft",
-      redirect: { name: "CrewCallouts" },
-      component: () => import("./views/Crew.vue"),
-      children: [
-        { name: "CrewCallouts", path: "" },
-        { name: "CrewEditCallout", path: ":callout_id?/bearbeiten" },
-        { name: "CrewVehicles", path: ":callout_id" },
-        {
-          name: "CrewVehicleDetails",
-          path: ":callout_id/:vehicle_id?/fahrzeug",
-        },
-        { name: "CrewPeople", path: ":callout_id/:vehicle_id?/personen" },
-      ],
+      component: () => import("./views/crew/SelectCallout.vue"),
+    },
+    {
+      name: "CrewEditCallout",
+      path: "mannschaft/:callout_id?/bearbeiten",
+      component: () => import("./views/crew/UpdateCallout.vue"),
     },
     {
       name: "SelectStandby",
