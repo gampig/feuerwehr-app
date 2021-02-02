@@ -10,7 +10,7 @@
         color="primary"
         @click="$emit('submit')"
       >
-        Speichern & Weiter
+        Weiter
       </v-btn>
     </template>
 
