@@ -45,13 +45,17 @@ export default {
       if (!(callout && callout.id == paramCalloutId)) {
         this.$store.dispatch("callout/bind", paramCalloutId);
       }
+    } else {
+      this.$store.dispatch("callout/unbind");
     }
 
     if (paramVehicleId) {
       const vehicle = this.$store.state.callout.vehicle;
       if (!(vehicle && vehicle.id == paramVehicleId)) {
-        this.$store.dispatch("callout/bindVehicle", paramVehicleId);
+        //this.$store.dispatch("callout/bindVehicle", paramVehicleId);
       }
+    } else {
+      //this.$store.dispatch("callout/unbindVehicle");
     }
   },
 
