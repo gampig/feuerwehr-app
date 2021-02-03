@@ -43,13 +43,6 @@ export default Vue.extend({
     loading(): boolean {
       return this.loadingCallout || this.loadingVehicle;
     },
-
-    vehicleId(): string | undefined {
-      return (
-        this.$store.state.auth.userSettings?.vehicle ||
-        this.$route.params.vehicle_id
-      );
-    },
   },
 
   created() {
@@ -90,7 +83,8 @@ export default Vue.extend({
     fetchCallout(this.$store, this.$route.params.callout_id).finally(() => {
       this.loadingCallout = false;
     });
-    fetchVehicle(this.$store, this.$route.params.vehicle_id).finally(() => {
+
+    fetchVehicle(this.$store, this.getVehicleId()).finally(() => {
       this.loadingVehicle = false;
     });
   },
@@ -103,12 +97,15 @@ export default Vue.extend({
       } else if (currentStepNumber < stepRouteNames.length - 1) {
         const nextStepNumber = getNextStepNumber(
           currentStepNumber,
-          this.vehicleId
+          this.getVehicleId()
         );
 
         this.$router.push({
           name: stepRouteNames[nextStepNumber],
-          params: makeStepParams(calloutId, vehicleId),
+          params: makeStepParams(
+            calloutId || (this.callout && this.callout.id),
+            vehicleId || (this.vehicle && this.vehicle.id)
+          ),
         });
       } else {
         this.goHome();
@@ -121,6 +118,13 @@ export default Vue.extend({
 
     getCurrentStepNumber(): number {
       return stepRouteNames.findIndex((step) => step === this.$route.name);
+    },
+
+    getVehicleId(): string | undefined {
+      return (
+        this.$store.state.auth.userSettings?.vehicle ||
+        this.$route.params.vehicle_id
+      );
     },
   },
 });
