@@ -140,7 +140,7 @@ export default {
 
   methods: {
     selectVehicle(id) {
-      this.$emit("input", id);
+      this.next(this.callout.id, id);
     },
   },
 };

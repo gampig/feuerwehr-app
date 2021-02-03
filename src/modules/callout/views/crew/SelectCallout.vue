@@ -1,7 +1,7 @@
 <template>
   <CrewPage page-title="Einsatz auswählen">
-    <v-card :loading="loading">
-      <v-card-text v-if="loading"> Lade Einsätze... </v-card-text>
+    <v-card :loading="loadingCallouts">
+      <v-card-text v-if="loadingCallouts"> Lade Einsätze... </v-card-text>
 
       <template v-else>
         <v-list v-if="items && items.length > 0">
@@ -29,7 +29,7 @@
       </template>
 
       <v-card-actions>
-        <v-btn :disabled="loading" text @click="showUserConfirm = true">
+        <v-btn :disabled="loadingCallouts" text @click="showUserConfirm = true">
           Neuer Einsatz
         </v-btn>
       </v-card-actions>
@@ -70,7 +70,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callouts", ["loading"]),
+    ...mapState("callouts", { loadingCallouts: "loading" }),
     ...mapGetters("callouts", ["calloutsReversed", "calloutsOfToday"]),
 
     items() {

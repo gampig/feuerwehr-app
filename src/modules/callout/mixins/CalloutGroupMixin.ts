@@ -40,6 +40,10 @@ export default Vue.extend({
     ...mapState("callout", { callout: "callout" }),
     ...mapState("vehicles", { vehicle: "vehicle" }),
 
+    loading(): boolean {
+      return this.loadingCallout || this.loadingVehicle;
+    },
+
     vehicleId(): string | undefined {
       return (
         this.$store.state.auth.userSettings?.vehicle ||

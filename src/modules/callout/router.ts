@@ -42,8 +42,13 @@ export default {
     },
     {
       name: "CrewVehicles",
-      path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
+      path: "mannschaft/:callout_id",
       component: () => import("./views/crew/SelectVehicle.vue"),
+    },
+    {
+      name: "CrewVehicleDetails",
+      path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
+      component: () => import("./views/crew/VehicleDetails.vue"),
     },
 
     {
