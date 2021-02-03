@@ -1,20 +1,29 @@
 <template>
   <v-form ref="form">
-    <BaseDateTimeFields
-      label="Ende"
+    <v-text-field
+      label="Einsatzende"
       prepend-icon="mdi-calendar-check-outline"
-      :value="endTime"
-      :min-date="alarmDate"
-      :max-date="tomorrow"
-      :rules-date="[rules.restrictFuture, calloutRules.endAfterAlarm]"
+      :value="endTimeFormatted"
+      :rules="[rules.restrictFuture, calloutRules.endAfterAlarm]"
+      readonly
       clearable
-      @input="update('endTime', $event)"
+      @click="showEndTimeDialog = true"
+      @click:clear="update('endTime', null)"
+    />
+
+    <BaseDateTimeDialog
+      v-model="showEndTimeDialog"
+      :max-date="tomorrow"
+      :min-date="alarmDate"
+      :date="endTime"
+      @update:date="update('endTime', $event)"
     />
   </v-form>
 </template>
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
+import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
 import moment from "moment";
 
 export default FormMixin.extend({
@@ -29,15 +38,21 @@ export default FormMixin.extend({
         endAfterAlarm: (value) =>
           !value ||
           !this.alarmTime ||
-          moment(value).add(1, "day").unix() >= this.alarmTime ||
+          dateTimeToUnix(value) >= this.alarmTime ||
           "Ende kann nicht vor Alarm sein",
       },
+
+      showEndTimeDialog: false,
     };
   },
 
   computed: {
     alarmDate() {
       return moment.unix(this.alarmTime).format("YYYY-MM-DD");
+    },
+
+    endTimeFormatted() {
+      return this.endTime ? formatDateTime(this.endTime) : "";
     },
   },
 });

@@ -33,15 +33,18 @@
       </v-col>
     </v-row>
 
-    <BaseDateTimeFields
-      label="Alarm"
-      prepend-icon="mdi-alarm-light-outline"
-      :value="alarmTime"
-      :max-date="today"
-      :rules-date="[rules.required, rules.onlyPastAllowed, rules.recently]"
-      :rules-time="[rules.required]"
-      @input="update('alarmTime', $event)"
-    />
+    <v-row>
+      <v-col cols="12">
+        <v-text-field
+          label="Alarm"
+          prepend-icon="mdi-alarm-light-outline"
+          :value="alarmTimeFormatted"
+          :rules="[rules.required, rules.onlyPastAllowed, rules.recently]"
+          readonly
+          @click="showAlarmTimeDialog = true"
+        />
+      </v-col>
+    </v-row>
 
     <v-row>
       <v-col cols="12">
@@ -53,12 +56,21 @@
         />
       </v-col>
     </v-row>
+
+    <BaseDateTimeDialog
+      v-model="showAlarmTimeDialog"
+      :max-date="today"
+      :min-date="aWeekAgo"
+      :date="alarmTime"
+      @update:date="$emit('update:alarmTime', $event)"
+    />
   </v-form>
 </template>
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
 import keywordsMap from "@/assets/keywords.json";
+import { formatDateTime } from "@/utils/dates";
 
 export default FormMixin.extend({
   props: {
@@ -77,6 +89,8 @@ export default FormMixin.extend({
   data() {
     return {
       typeSelectItems: ["Brand", "THL", "UG-ÖEL"],
+
+      showAlarmTimeDialog: false,
     };
   },
 
@@ -97,6 +111,10 @@ export default FormMixin.extend({
           .filter((type) => type[1] === true)
           .map((type) => type[0])
       );
+    },
+
+    alarmTimeFormatted() {
+      return this.alarmTime ? formatDateTime(this.alarmTime) : "";
     },
   },
 

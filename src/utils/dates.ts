@@ -12,4 +12,8 @@ const formatDateTimeFromNow = function (date: number) {
   return moment.unix(date).fromNow();
 };
 
-export { formatDate, formatDateTime, formatDateTimeFromNow };
+const dateTimeToUnix = function (dateTime: string) {
+  return moment(dateTime, "L LT").unix();
+};
+
+export { formatDate, formatDateTime, formatDateTimeFromNow, dateTimeToUnix };

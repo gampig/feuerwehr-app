@@ -74,13 +74,11 @@ export default {
   },
 
   watch: {
-    date() {
-      this.reset();
+    value(value) {
+      if (value) {
+        this.reset();
+      }
     },
-  },
-
-  created() {
-    this.reset();
   },
 
   methods: {
@@ -96,11 +94,12 @@ export default {
     },
 
     cancel() {
+      this.dateTabs = null;
       this.$emit("input", false);
-      this.reset();
     },
 
     save() {
+      this.dateTabs = null;
       this.$emit("input", false);
       const date = moment(this.dateVal + " " + this.timeVal);
       this.$emit("update:date", date.unix());
