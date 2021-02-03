@@ -50,6 +50,11 @@ export default {
       path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
       component: () => import("./views/crew/VehicleDetails.vue"),
     },
+    {
+      name: "CrewPeople",
+      path: "mannschaft/:callout_id/:vehicle_id?/mannschaft",
+      component: () => import("./views/crew/SelectCrew.vue"),
+    },
 
     {
       name: "SelectStandby",

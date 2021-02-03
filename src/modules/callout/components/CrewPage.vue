@@ -10,7 +10,7 @@
         color="primary"
         @click="$emit('submit')"
       >
-        Weiter
+        {{ saveButtonLabel }}
       </v-btn>
     </template>
 
@@ -28,6 +28,11 @@ export default {
     saveButton: {
       type: Boolean,
       default: false,
+    },
+
+    saveButtonLabel: {
+      type: String,
+      default: "Weiter",
     },
 
     loading: {
