@@ -8,14 +8,39 @@
 
       <v-tabs-items v-model="dateTabs">
         <v-tab-item key="time">
-          <v-time-picker
-            v-model="timeVal"
-            color="primary"
-            format="24hr"
-            class="elevation-0"
-            style="border-radius: 0"
-            full-width
-          />
+          <v-toolbar color="primary" dark>
+            <v-toolbar-title> Zeit einstellen </v-toolbar-title>
+          </v-toolbar>
+
+          <v-form ref="timeForm">
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs3>
+                  <v-text-field
+                    v-model="hour"
+                    label="Stunde"
+                    type="number"
+                    min="0"
+                    max="23"
+                    :rules="[rules.isHour]"
+                  />
+                </v-flex>
+                <v-flex shrink align-self-center>
+                  <p class="mb-0">:</p>
+                </v-flex>
+                <v-flex xs3>
+                  <v-text-field
+                    v-model="minute"
+                    label="Minute"
+                    type="number"
+                    min="0"
+                    max="59"
+                    :rules="[rules.isMinute]"
+                  />
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
         </v-tab-item>
         <v-tab-item key="date">
           <v-date-picker
@@ -43,6 +68,9 @@
 <script>
 import moment from "moment";
 
+const hourRegex = new RegExp("^([01]?\\d|2[0-3])$");
+const minuteRegex = new RegExp("^([0-5]?\\d)$");
+
 export default {
   props: {
     value: {
@@ -67,43 +95,51 @@ export default {
 
   data() {
     return {
+      rules: {
+        isHour: (value) => hourRegex.test(value) || "Ungültig",
+
+        isMinute: (value) => minuteRegex.test(value) || "Ungültig",
+      },
+
       dateTabs: null,
       dateVal: null,
-      timeVal: null,
+      hour: "00",
+      minute: "00",
     };
   },
 
   watch: {
-    date() {
-      this.reset();
+    value(value) {
+      if (value) {
+        this.reset();
+      }
     },
-  },
-
-  created() {
-    this.reset();
   },
 
   methods: {
     reset() {
       this.dateTabs = null;
-      if (this.date) {
-        this.dateVal = moment.unix(this.date).format("YYYY-MM-DD");
-        this.timeVal = moment.unix(this.date).format("HH:mm");
-      } else {
-        this.dateVal = moment().format("YYYY-MM-DD");
-        this.timeVal = moment().format("HH:mm");
-      }
+
+      const currentMoment = this.date ? moment.unix(this.date) : moment();
+      this.dateVal = currentMoment.format("YYYY-MM-DD");
+      this.hour = currentMoment.format("HH");
+      this.minute = currentMoment.format("mm");
     },
 
     cancel() {
+      this.dateTabs = null;
       this.$emit("input", false);
-      this.reset();
     },
 
     save() {
-      this.$emit("input", false);
-      const date = moment(this.dateVal + " " + this.timeVal);
-      this.$emit("update:date", date.unix());
+      if (!this.$refs.timeForm.validate()) {
+        this.dateTabs = "time";
+      } else {
+        this.dateTabs = null;
+        this.$emit("input", false);
+        const date = moment(`${this.dateVal} ${this.hour}:${this.minute}`);
+        this.$emit("update:date", date.unix());
+      }
     },
   },
 };

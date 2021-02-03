@@ -5,7 +5,12 @@
         <v-col>
           <v-row justify="center" class="mb-6">
             <v-col sm="6" md="4">
-              <v-btn :to="{ name: 'SelectCrew' }" color="primary" x-large block>
+              <v-btn
+                :to="{ name: 'CrewCallouts' }"
+                color="primary"
+                x-large
+                block
+              >
                 Mannschaft eintragen
               </v-btn>
             </v-col>

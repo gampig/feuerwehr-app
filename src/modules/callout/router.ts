@@ -29,22 +29,33 @@ export default {
       path: "anzeigen/:id",
       component: () => import("./views/Show.vue"),
     },
+
     {
-      name: "SelectCrew",
+      name: "CrewCallouts",
       path: "mannschaft",
-      redirect: { name: "CrewCallouts" },
-      component: () => import("./views/Crew.vue"),
-      children: [
-        { name: "CrewCallouts", path: "" },
-        { name: "CrewEditCallout", path: ":callout_id?/bearbeiten" },
-        { name: "CrewVehicles", path: ":callout_id" },
-        {
-          name: "CrewVehicleDetails",
-          path: ":callout_id/:vehicle_id?/fahrzeug",
-        },
-        { name: "CrewPeople", path: ":callout_id/:vehicle_id?/personen" },
-      ],
+      component: () => import("./views/crew/SelectCallout.vue"),
     },
+    {
+      name: "CrewEditCallout",
+      path: "mannschaft/:callout_id?/bearbeiten",
+      component: () => import("./views/crew/UpdateCallout.vue"),
+    },
+    {
+      name: "CrewVehicles",
+      path: "mannschaft/:callout_id",
+      component: () => import("./views/crew/SelectVehicle.vue"),
+    },
+    {
+      name: "CrewVehicleDetails",
+      path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
+      component: () => import("./views/crew/VehicleDetails.vue"),
+    },
+    {
+      name: "CrewPeople",
+      path: "mannschaft/:callout_id/:vehicle_id?/mannschaft",
+      component: () => import("./views/crew/SelectCrew.vue"),
+    },
+
     {
       name: "SelectStandby",
       path: "bereitschaft",

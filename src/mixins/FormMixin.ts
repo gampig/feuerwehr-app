@@ -1,5 +1,6 @@
 import Vue from "vue";
 import moment from "moment";
+import { dateTimeToUnix } from "@/utils/dates";
 
 export default Vue.extend({
   data() {
@@ -8,18 +9,19 @@ export default Vue.extend({
         required: (value: any) => !!value || "Bitte fülle dieses Feld aus",
         onlyPastAllowed: (value: any) =>
           !value ||
-          moment(value).unix() <= moment().unix() ||
+          dateTimeToUnix(value) <= moment().unix() ||
           "Zeitpunkt muss in Vergangenheit liegen",
 
         restrictFuture: (value: any) =>
           !value ||
-          moment(value).unix() <= moment().add(1, "day").unix() ||
+          dateTimeToUnix(value) <= moment().add(1, "day").unix() ||
           "Zeitpunkt darf nicht später als 24 Stunden ab jetzt sein",
 
         recently: (value: any) => {
           const aDayAgo = moment().subtract(7, "day").unix();
           return (
-            moment(value).unix() > aDayAgo ||
+            !value ||
+            dateTimeToUnix(value) > aDayAgo ||
             "Zeitpunkt darf nicht länger als 7 Tage her sein"
           );
         },
@@ -34,6 +36,10 @@ export default Vue.extend({
 
     tomorrow() {
       return moment().add(1, "day").format("YYYY-MM-DD");
+    },
+
+    aWeekAgo() {
+      return moment().subtract(1, "week").format("YYYY-MM-DD");
     },
   },
 
