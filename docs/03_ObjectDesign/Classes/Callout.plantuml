@@ -1,0 +1,56 @@
+@startuml
+
+package Callout {
+  class Callout {
+    id
+    alarmTime: Date
+    keyword
+    catchphrase
+    address
+    types: Type[]
+  }
+
+  enum Type {
+    THL
+    Brand
+    UG-ÖEL
+  }
+
+  class Person {
+    name
+    role: Role
+  }
+
+  enum Role {
+    Einsatzleiter
+    Zugführer
+    Gruppenführer
+    Maschinist
+    Atemschutz
+    Melder
+    Atemschutzüberwachung
+  }
+
+  abstract class Group
+
+  class StandbyGroup
+
+  class VehicleCrew {
+    endTime: Date
+  }
+
+
+  Group <|-- StandbyGroup
+  Group <|-- VehicleCrew
+
+  Callout *-- "1" StandbyGroup
+  Callout *-- "*" VehicleCrew
+  Callout .> Type
+
+  Person ..> Role
+
+  "Group" o-- "*" Person : people
+  VehicleCrew --> "1" FireDepartment.Vehicle : vehicle
+}
+
+@enduml

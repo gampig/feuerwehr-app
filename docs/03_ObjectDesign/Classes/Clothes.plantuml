@@ -1,0 +1,37 @@
+@startuml
+
+package Clothes {
+  class ClothType {
+    id
+    manufacturer
+    name
+    isAvailable: boolean
+    category: Category
+    price
+    sizes: string[]
+  }
+
+  enum Category {
+    PSA
+    PSA Jugend
+    Verein
+    Anderes
+  }
+
+  class Order {
+    id
+    size: string
+    count
+    paid: number
+    submittedOn: Date
+    orderedOn: Date
+    doneOn: Date
+  }
+
+  ClothType .> Category
+
+  ClothType "1" --o Order
+  Order o- "1" FireDepartment.Person
+}
+
+@enduml

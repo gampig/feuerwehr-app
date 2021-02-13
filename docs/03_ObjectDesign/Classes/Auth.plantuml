@@ -1,0 +1,45 @@
+@startuml
+
+class firebase.User {
+  displayName
+  email
+  photoURL
+  uid
+}
+
+package Auth {
+  class User {
+    roles: Role[]
+  }
+
+  class LoginCredentials {
+    email
+    password
+  }
+
+  class Device {
+    id
+    lastOnline: Date
+    version: string
+  }
+
+  enum Role {
+    ROLE_ADMIN
+    ROLE_GROUPLEADER
+    ROLE_MAINTAINER_CLOTHES
+    ROLE_VEHICLE
+    ROLE_ALARM_PC
+  }
+
+  firebase.User <|-- User
+
+  Device "*" -o "*" User
+  User *-- LoginCredentials
+
+  Device o-- "0..1" LoginCredentials
+
+  User -> "0..1" FireDepartment.Vehicle : vehicle
+  User ..> Role
+}
+
+@enduml

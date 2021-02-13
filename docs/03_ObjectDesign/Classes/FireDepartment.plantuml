@@ -1,0 +1,32 @@
+@startuml
+
+package FireDepartment {
+  class Vehicle {
+    id
+    name
+    maxCrewNumber: number
+    pictureUrl
+    inServiceSince: Year
+    outOfServiceSince: Year
+  }
+
+  class Person {
+    id
+    firstName
+    lastName
+    status: Status
+    recentCalloutsCount: number
+  }
+
+  enum Status {
+    Aktiv
+    Jugend
+    Passiv
+    Ausgetreten
+    Unbekannt
+  }
+
+  Person ..> Status
+}
+
+@enduml
