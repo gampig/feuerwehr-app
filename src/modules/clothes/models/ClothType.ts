@@ -1,11 +1,6 @@
-export const ALL_CLOTH_TYPE_CATEGORIES = [
-  "PSA",
-  "PSA Jugend",
-  "Verein",
-  "Anderes",
-] as const;
+const CATEGORIES = ["PSA", "PSA Jugend", "Verein", "Anderes"] as const;
 
-export type ClothTypeCategory = typeof ALL_CLOTH_TYPE_CATEGORIES[number];
+export type Category = typeof CATEGORIES[number];
 
 export interface ClothType {
   id: string;
@@ -13,7 +8,7 @@ export interface ClothType {
   name: string;
 
   isAvailable?: boolean;
-  category?: ClothTypeCategory;
+  category?: Category;
   price?: number;
   sizes?: Array<string | number>;
 }

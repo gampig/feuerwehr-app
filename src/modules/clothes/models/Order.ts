@@ -7,7 +7,7 @@ export interface Order {
   count?: number;
   paid?: number;
 
-  submittedOn: number;
-  orderedOn?: number;
-  doneOn?: number;
+  submittedOn: Date;
+  orderedOn?: Date;
+  doneOn?: Date;
 }

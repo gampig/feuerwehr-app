@@ -1,9 +1,9 @@
-type PersonStatus = "Aktiv" | "Jugend" | "Passiv" | "Ausgetreten" | "Unbekannt";
+type Status = "Aktiv" | "Jugend" | "Passiv" | "Ausgetreten" | "Unbekannt";
 
 export interface Person {
   id: string;
   firstName: string;
   lastName: string;
-  status: PersonStatus;
+  status: Status;
   recentCalloutsCount?: number;
 }

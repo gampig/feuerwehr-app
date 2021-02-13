@@ -3,25 +3,23 @@ export interface LoginCredentials {
   password: string;
 }
 
-export type AllRoles =
+type AllRoles =
   | "ROLE_ADMIN"
   | "ROLE_GROUPLEADER"
   | "ROLE_MAINTAINER_CLOTHES"
   | "ROLE_VEHICLE"
   | "ROLE_ALARM_PC";
 
-export type Roles = Partial<Record<AllRoles, boolean>>;
+export type Roles = Array<AllRoles>;
 
 export interface Client {
-  lastOnline?: string;
+  lastOnline?: Date;
   version?: string;
 }
 
-export interface UserSettings {
-  comment?: string;
-  lastOnline?: string;
-  roles?: { [role: string]: boolean };
-  clients?: { [key: string]: Client };
+export interface Configuration {
+  roles?: Roles;
+  vehicle?: string;
 }
 
 export interface Profile {

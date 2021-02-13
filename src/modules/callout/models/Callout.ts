@@ -1,25 +1,16 @@
-type CalloutType = "THL" | "Brand" | "UG-ÖEL";
-
-export interface CalloutVehicle {
-  endTime: number | string;
-}
+type Type = "THL" | "Brand" | "UG-ÖEL";
 
 export interface Callout {
   id: string;
-  alarmTime: number;
-  alarmTimeFormatted?: string;
-  endTime?: number; // deprecated
-  endTimeFormatted?: string; // deprecated
+  alarmTime: Date;
+  endTime?: Date /** @deprecated */;
   keyword?: string;
   catchphrase?: string;
   address?: string;
-  type?: { [type in CalloutType]?: boolean };
-  vehicles?: {
-    [id: string]: CalloutVehicle;
-  };
+  types?: Type[];
 }
 
-export const ALL_CALLOUT_ROLES = [
+const ROLES = [
   "Einsatzleiter",
   "Zugführer",
   "Gruppenführer",
@@ -29,16 +20,20 @@ export const ALL_CALLOUT_ROLES = [
   "Atemschutzüberwachung",
 ] as const;
 
-export type CalloutRole = typeof ALL_CALLOUT_ROLES[number];
+export type Role = typeof ROLES[number];
 
-interface PeopleArray {
-  [id: string]: CalloutRole | boolean;
+export interface Person {
+  name: string;
+  role?: Role;
 }
 
-export interface Crew {
+export interface Group {
   id: string;
-  standby?: PeopleArray;
-  vehicles?: {
-    [id: string]: PeopleArray;
-  };
+  people?: string[];
+}
+
+export interface StandbyGroup extends Group {}
+
+export interface VehicleCrew extends Group {
+  endTime?: Date;
 }
