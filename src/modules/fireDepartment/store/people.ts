@@ -1,9 +1,7 @@
 import firebase from "firebase/app";
-import serialize from "@/utils/firebase/serialize";
-import { firebaseAction } from "vuexfire";
 import handleError from "@/utils/store/handleError";
 import { Person } from "../models/Person";
-import { GetterTree, MutationTree } from "vuex";
+import { ActionTree, GetterTree, MutationTree } from "vuex";
 
 class State {
   loading = false;
@@ -18,6 +16,9 @@ export default {
   mutations: <MutationTree<State>>{
     setLoading(state, loading: boolean) {
       state.loading = loading;
+    },
+    setPeople(state, people: Person[]) {
+      state.people = people;
     },
   },
 
@@ -50,23 +51,30 @@ export default {
     },
   },
 
-  actions: {
-    bindPeople: firebaseAction(({ bindFirebaseRef, commit }) => {
+  actions: <ActionTree<State, any>>{
+    bindPeople({ commit }) {
       commit("setLoading", true);
-      return bindFirebaseRef(
-        "people",
-        firebase.database().ref("people").orderByChild("lastName"),
-        {
-          serialize,
-        }
-      )
+      return firebase
+        .database()
+        .ref("people")
+        .get()
+        .then((snapshot) => {
+          const people: Person[] = [];
+          snapshot.forEach((child) => {
+            people.push({
+              id: child.ref.key,
+              ...child.val(),
+            });
+          });
+          commit("setPeople", people);
+        })
         .catch((error) => handleError(commit, error))
         .finally(() => {
           commit("setLoading", false);
         });
-    }),
-    unbind: firebaseAction(({ unbindFirebaseRef }) => {
-      unbindFirebaseRef("people");
-    }),
+    },
+    unbind({ commit }) {
+      commit("setPeople", []);
+    },
   },
 };

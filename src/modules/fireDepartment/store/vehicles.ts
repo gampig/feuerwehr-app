@@ -29,24 +29,36 @@ export default {
     setLoading(state, loading: boolean) {
       state.loading = loading;
     },
+    setVehicles(state, vehicles: Vehicle[]) {
+      state.vehicles = vehicles;
+    },
   },
 
   actions: <ActionTree<State, any>>{
-    bindVehicles: firebaseAction(({ bindFirebaseRef, commit }) => {
+    bindVehicles({ commit }) {
       commit("setLoading");
-      return bindFirebaseRef(
-        "vehicles",
-        firebase.database().ref("vehicles").orderByChild("inServiceSince"),
-        { serialize }
-      )
+      return firebase
+        .database()
+        .ref("vehicles")
+        .get()
+        .then((snapshot) => {
+          const vehicles: Vehicle[] = [];
+          snapshot.forEach((child) => {
+            vehicles.push({
+              id: child.ref.key,
+              ...child.val(),
+            });
+          });
+          commit("setVehicles", vehicles);
+        })
         .catch((error) => handleError(commit, error))
         .finally(() => {
           commit("setLoading", false);
         });
-    }),
-    unbindVehicles: firebaseAction(({ unbindFirebaseRef }) => {
-      unbindFirebaseRef("vehicles");
-    }),
+    },
+    unbindVehicles({ commit }) {
+      commit("setVehicles", []);
+    },
 
     bindVehicle: firebaseAction(
       ({ bindFirebaseRef, commit }, vehicleId: string) => {
