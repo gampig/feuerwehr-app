@@ -32,6 +32,9 @@ export default {
     setVehicles(state, vehicles: Vehicle[]) {
       state.vehicles = vehicles;
     },
+    setVehicle(state, vehicle: Vehicle | null) {
+      state.vehicle = vehicle;
+    },
   },
 
   actions: <ActionTree<State, any>>{
@@ -60,20 +63,13 @@ export default {
       commit("setVehicles", []);
     },
 
-    bindVehicle: firebaseAction(
-      ({ bindFirebaseRef, commit }, vehicleId: string) => {
-        return bindFirebaseRef(
-          "vehicle",
-          firebase.database().ref("vehicles").child(vehicleId),
-          {
-            serialize,
-          }
-        ).catch((error) => handleError(commit, error));
-      }
-    ),
-    unbindVehicle: firebaseAction(({ unbindFirebaseRef }) => {
-      unbindFirebaseRef("vehicle");
-    }),
+    bindVehicle({ commit, getters }, vehicleId: string) {
+      const vehicle = getters.find(vehicleId);
+      commit("setVehicle", vehicle);
+    },
+    unbindVehicle({ commit }) {
+      commit("setVehicle", null);
+    },
 
     unbind({ dispatch }) {
       dispatch("unbindVehicle");
