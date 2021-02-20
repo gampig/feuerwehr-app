@@ -2,18 +2,14 @@ import { firebaseAction } from "vuexfire";
 import firebase from "firebase/app";
 import serialize from "@/utils/firebase/serialize";
 import handleError from "@/utils/store/handleError";
-import { Callout, CalloutVehicle, Crew, CalloutRole } from "../models/Callout";
+import { Callout, VehicleCrew, StandbyGroup, Group } from "../models/Callout";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
-
-interface CrewMemberId {
-  vehicleId: string;
-  personId: string;
-}
 
 class State {
   loading = false;
   callout: Callout | null = null;
-  crew: Crew | null = null;
+  standby: StandbyGroup | null = null;
+  vehicles: { [vehicleId: string]: VehicleCrew } = {};
 
   getCallout() {
     if (this.callout == null) {
@@ -30,22 +26,24 @@ export default {
   state: new State(),
 
   getters: <GetterTree<State, any>>{
-    crewOfVehicle: (state) => (vehicleId: string) =>
-      (state.crew?.vehicles && state.crew?.vehicles[vehicleId]) || {},
-    standbyCrew: (state) => state.crew?.standby || {},
-    crewCounts: (state) =>
-      (state.crew?.vehicles &&
+    groupOfVehicle: (state) => (vehicleId: string) =>
+      (state.vehicles && state.vehicles[vehicleId]) || {},
+    groupCounts: (state) =>
+      (state.vehicles &&
         Object.fromEntries(
-          Object.entries(state.crew.vehicles).map((entry) => [
+          Object.entries(state.vehicles).map((entry) => [
             entry[0],
             Object.keys(entry[1]).length,
           ])
         )) ||
       {},
-    findCrewMember: (state) => (personId: string) =>
-      (state.crew?.standby && state.crew.standby[personId]) ||
-      (state.crew?.vehicles &&
-        Object.values(state.crew.vehicles).find((item) => item[personId])),
+    personIsInCallout: (state) => (personId: string) =>
+      state.standby?.people?.includes(personId) ||
+      (state.vehicles &&
+        Object.values(state.vehicles).some((vehicle) =>
+          vehicle.people?.includes(personId)
+        )) ||
+      false,
   },
 
   mutations: <MutationTree<State>>{
@@ -58,18 +56,25 @@ export default {
     bind: firebaseAction(({ bindFirebaseRef, commit }, calloutId: string) => {
       commit("setLoading", true);
 
-      const bindCallout = bindFirebaseRef(
-        "callout",
-        firebase.database().ref("callouts/" + calloutId),
+      const calloutRef = firebase.database().ref("callouts").child(calloutId);
+      const calloutGroupsRef = firebase
+        .database()
+        .ref("calloutGroups")
+        .child(calloutId);
+
+      const bindCallout = bindFirebaseRef("callout", calloutRef, { serialize });
+      const bindStandby = bindFirebaseRef(
+        "standby",
+        calloutGroupsRef.child("standby"),
         { serialize }
       );
-      const bindCrew = bindFirebaseRef(
-        "crew",
-        firebase.database().ref("crew/" + calloutId),
+      const bindVehicles = bindFirebaseRef(
+        "vehicles",
+        calloutGroupsRef.child("vehicles"),
         { serialize }
       );
 
-      return Promise.all([bindCallout, bindCrew])
+      return Promise.all([bindCallout, bindStandby, bindVehicles])
         .catch((error) => {
           return handleError(commit, error);
         })
@@ -78,12 +83,12 @@ export default {
         });
     }),
     unbind: firebaseAction(({ unbindFirebaseRef }) => {
-      unbindFirebaseRef("crew");
+      unbindFirebaseRef("standby");
+      unbindFirebaseRef("vehicles");
       unbindFirebaseRef("callout");
     }),
 
     updateCallout: firebaseAction(({ commit, state }, payload: Callout) => {
-      const item = { ...payload } as any;
       const key = (state.callout != null && state.callout.id) || payload.id;
 
       if (key == null) {
@@ -94,29 +99,18 @@ export default {
         return;
       }
 
-      if (item.id != null) {
-        delete item.id;
-      }
-
-      // Remove undefined properties
-      for (const key in item) {
-        if (item[key] === undefined) {
-          delete item[key];
-        }
-      }
-
       return firebase
         .database()
         .ref("callouts/" + key)
-        .update(item)
+        .update(payload)
         .catch((error) => handleError(commit, error));
     }),
-    updateVehicleDetails: firebaseAction(
+
+    updateVehicle: firebaseAction(
       (
         { commit, state },
-        { details, vehicleId }: { details: CalloutVehicle; vehicleId: string }
+        { crew, vehicleId }: { crew: VehicleCrew; vehicleId: string }
       ) => {
-        const item = { ...details } as any;
         let calloutKey: string | null;
         const vehicleKey = vehicleId;
 
@@ -127,88 +121,19 @@ export default {
           return;
         }
 
-        // Remove undefined properties
-        for (const key in item) {
-          if (item[key] === undefined) {
-            delete item[key];
-          }
-        }
-
         return firebase
           .database()
-          .ref("callouts")
-          .child(calloutKey)
-          .child("vehicles")
-          .child(vehicleKey)
-          .update(item)
+          .ref("calloutGroups/" + calloutKey)
+          .child("vehicles/" + vehicleKey)
+          .update(crew)
           .catch((error) => handleError(commit, error));
       }
     ),
-    remove: firebaseAction(({ state, commit }) => {
-      let calloutKey: string | null;
-      try {
-        calloutKey = state.getCallout().id;
-      } catch (e) {
-        handleError(commit, e);
-        return;
-      }
 
-      return firebase
-        .database()
-        .ref("crew/" + calloutKey)
-        .remove()
-        .then(() =>
-          firebase
-            .database()
-            .ref("callouts/" + calloutKey)
-            .remove()
-        )
-        .catch((error) => handleError(commit, error));
-    }),
-
-    addCrewMember: firebaseAction(
-      ({ commit, state }, { vehicleId, personId }: CrewMemberId) => {
-        let calloutKey: string | null;
-        try {
-          calloutKey = state.getCallout().id;
-        } catch (e) {
-          handleError(commit, e);
-          return;
-        }
-        return firebase
-          .database()
-          .ref("crew/" + calloutKey)
-          .child("vehicles/" + vehicleId)
-          .child(personId)
-          .set(true)
-          .catch((error) => handleError(commit, error));
-      }
-    ),
-    addStandbyMember: firebaseAction(({ commit, state }, personId: string) => {
-      let calloutKey: string | null;
-      try {
-        calloutKey = state.getCallout().id;
-      } catch (e) {
-        handleError(commit, e);
-        return;
-      }
-
-      return firebase
-        .database()
-        .ref("crew/" + calloutKey)
-        .child("standby")
-        .child(personId)
-        .set(true)
-        .catch((error) => handleError(commit, error));
-    }),
-    updateRole: firebaseAction(
+    setGroupPeople: firebaseAction(
       (
-        { commit, state },
-        {
-          vehicleId,
-          personId,
-          role,
-        }: CrewMemberId & { role: CalloutRole | boolean }
+        { state, commit },
+        { groupId, people }: { groupId: string; people: Group }
       ) => {
         let calloutKey: string | null;
         try {
@@ -218,50 +143,15 @@ export default {
           return;
         }
 
-        return firebase
-          .database()
-          .ref("crew/" + calloutKey)
-          .child("vehicles/" + vehicleId)
-          .child(personId)
-          .set(role)
-          .catch((error) => handleError(commit, error));
-      }
-    ),
-    removeCrewMember: firebaseAction(
-      ({ commit, state }, { vehicleId, personId }: CrewMemberId) => {
-        let calloutKey: string | null;
-        try {
-          calloutKey = state.getCallout().id;
-        } catch (e) {
-          handleError(commit, e);
-          return;
-        }
+        const groupKey =
+          groupId === "standby" ? "standby" : "vehicles/" + groupId;
 
         return firebase
           .database()
-          .ref("crew/" + calloutKey)
-          .child("vehicles/" + vehicleId)
-          .child(personId)
-          .remove()
-          .catch((error) => handleError(commit, error));
-      }
-    ),
-    removeStandbyMember: firebaseAction(
-      ({ commit, state }, personId: string) => {
-        let calloutKey: string | null;
-        try {
-          calloutKey = state.getCallout().id;
-        } catch (e) {
-          handleError(commit, e);
-          return;
-        }
-
-        return firebase
-          .database()
-          .ref("crew/" + calloutKey)
-          .child("standby")
-          .child(personId)
-          .remove()
+          .ref("callouts/" + calloutKey)
+          .child("calloutGroups/" + groupKey)
+          .child("people")
+          .set(people)
           .catch((error) => handleError(commit, error));
       }
     ),

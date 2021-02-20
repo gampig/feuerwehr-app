@@ -39,7 +39,7 @@ export default {
     peopleWithoutCrew(state, getters, rootState, rootGetters) {
       const people: Person[] = getters.peopleByActivity;
       return people.map((item) => {
-        if (rootGetters["callout/findCrewMember"](item.id)) {
+        if (rootGetters["callout/personIsInCallout"](item.id)) {
           return {
             ...item,
             disabled: true,

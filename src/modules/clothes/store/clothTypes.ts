@@ -24,8 +24,8 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("clothes/clothTypes"),
-    update: update("clothes/clothTypes"),
+    create: create<ClothType>("clothes/clothTypes"),
+    update: update<ClothType>("clothes/clothTypes"),
     remove: remove("clothes/clothTypes"),
 
     bindTypes: firebaseAction(({ bindFirebaseRef, commit }) => {

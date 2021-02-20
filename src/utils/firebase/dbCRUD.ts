@@ -2,30 +2,24 @@ import { firebaseAction } from "vuexfire";
 import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 
-type FirebasePayload = { [index: string]: any } & { id: string };
-type FirebasePartialPayload = Partial<FirebasePayload>;
+type FirebasePayload<T> = { [index: string]: T } & { id: string };
+type FirebasePartialPayload<T> = Partial<FirebasePayload<T>>;
 
-export function create(ref: string) {
-  return firebaseAction(({ commit }, payload) => {
+export function create<T>(ref: string) {
+  return firebaseAction(({ commit }, payload: T) => {
     return firebase
       .database()
       .ref(ref)
-      .push({ ...payload })
+      .push(payload)
       .catch((error) => handleError(commit, error));
   });
 }
 
-export function set(ref: string) {
-  return firebaseAction(({ commit }, payload: FirebasePayload) => {
-    const item: FirebasePartialPayload = { ...payload };
+export function set<T>(ref: string) {
+  return firebaseAction(({ commit }, payload: FirebasePayload<T>) => {
+    const item: FirebasePartialPayload<T> = { ...payload };
     const key = payload.id;
     delete item["id"];
-
-    // Remove undefined properties
-    Object.keys(item).forEach(
-      (key) =>
-        (item[key] === undefined || item[key] === null) && delete item[key]
-    );
 
     return firebase
       .database()
@@ -36,16 +30,11 @@ export function set(ref: string) {
   });
 }
 
-export function update(ref: string) {
-  return firebaseAction(({ commit }, payload: FirebasePayload) => {
-    const item: FirebasePartialPayload = { ...payload };
+export function update<T>(ref: string) {
+  return firebaseAction(({ commit }, payload: FirebasePayload<T>) => {
+    const item: FirebasePartialPayload<T> = { ...payload };
     const key = payload.id;
     delete item["id"];
-
-    // Remove undefined properties
-    Object.keys(item).forEach(
-      (key) => item[key] === undefined && delete item[key]
-    );
 
     return firebase
       .database()

@@ -24,8 +24,8 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("clothes/orders"),
-    update: update("clothes/orders"),
+    create: create<Order>("clothes/orders"),
+    update: update<Order>("clothes/orders"),
     remove: remove("clothes/orders"),
 
     bindOrders: firebaseAction(({ bindFirebaseRef, commit }) => {
