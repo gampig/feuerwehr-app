@@ -1,5 +1,5 @@
 import { NavLink } from "@/models/NavLink";
-import { AllRoles, Roles } from "@/models/User";
+import { Role } from "@/models/Auth";
 import VueRouter from "vue-router";
 import { Module, Store } from "vuex";
 
@@ -45,7 +45,7 @@ export default abstract class AbstractModule {
     return this.store.state.auth.loggedIn;
   }
 
-  protected hasAnyRole(requiredRoles: AllRoles[]) {
+  protected hasAnyRole(requiredRoles: Role[]) {
     return this.store.getters["auth/hasAnyRole"](requiredRoles);
   }
 }

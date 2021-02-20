@@ -17,7 +17,7 @@ package Auth {
     password
   }
 
-  class Device {
+  class Client {
     id
     lastOnline: Date
     version: string
@@ -33,10 +33,10 @@ package Auth {
 
   firebase.User <|-- User
 
-  Device "*" -o "*" User
+  Client "*" -o "*" User
   User *-- LoginCredentials
 
-  Device o-- "0..1" LoginCredentials
+  Client o-- "0..1" LoginCredentials
 
   User -> "0..1" FireDepartment.Vehicle : vehicle
   User ..> Role

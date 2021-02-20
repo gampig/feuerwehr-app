@@ -1,8 +1,8 @@
-import { AllRoles } from "@/models/User";
+import { Role } from "@/models/Auth";
 import AbstractModule from "../AbstractModule";
 import store from "./store";
 
-const requiredRoles: { [type: string]: AllRoles[] } = {
+const requiredRoles: { [type: string]: Role[] } = {
   vehicles: ["ROLE_ADMIN", "ROLE_GROUPLEADER", "ROLE_VEHICLE"],
   people: [
     "ROLE_ADMIN",

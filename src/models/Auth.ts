@@ -3,22 +3,20 @@ export interface LoginCredentials {
   password: string;
 }
 
-type AllRoles =
+export type Role =
   | "ROLE_ADMIN"
   | "ROLE_GROUPLEADER"
   | "ROLE_MAINTAINER_CLOTHES"
   | "ROLE_VEHICLE"
   | "ROLE_ALARM_PC";
 
-export type Roles = Array<AllRoles>;
-
 export interface Client {
-  lastOnline?: Date;
-  version?: string;
+  lastOnline: Date;
+  version: string;
 }
 
 export interface Configuration {
-  roles?: Roles;
+  roles?: Role[];
   vehicle?: string;
 }
 

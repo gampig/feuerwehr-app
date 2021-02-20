@@ -1,4 +1,4 @@
-import { LoginCredentials } from "@/models/User";
+import { LoginCredentials } from "@/models/Auth";
 
 function instanceOfLoginCredentials(object: any): object is LoginCredentials {
   return "email" in object && "password" in object;

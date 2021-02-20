@@ -1,9 +1,9 @@
-import { AllRoles } from "@/models/User";
+import { Role } from "@/models/Auth";
 import AbstractModule from "../AbstractModule";
 import routes from "./router";
 import store from "./store";
 
-const requiredRoles: AllRoles[] = ["ROLE_ADMIN", "ROLE_MAINTAINER_CLOTHES"];
+const requiredRoles: Role[] = ["ROLE_ADMIN", "ROLE_MAINTAINER_CLOTHES"];
 
 export default class ClothesModule extends AbstractModule {
   link = {

@@ -1,12 +1,11 @@
 import { GetterTree, MutationTree, ActionTree, ActionContext } from "vuex";
 import {
   Profile,
-  UserSettings,
+  Configuration as UserSettings,
   Client,
-  Roles,
-  AllRoles,
+  Role,
   LoginCredentials,
-} from "../../models/User";
+} from "../../models/Auth";
 import firebase from "firebase/app";
 import { firebaseAction } from "vuexfire";
 import cloneDeep from "lodash/cloneDeep";
@@ -57,14 +56,14 @@ const authModule = {
     isAdmin: (state) => {
       if (state.userSettings && state.userSettings.roles) {
         const roles = state.userSettings.roles;
-        if (roles["ROLE_ADMIN"] || roles["ROLE_GROUPLEADER"]) {
+        if (roles.some((role) => role === "ROLE_ADMIN" || "ROLE_GROUPLEADER")) {
           return true;
         }
       }
       return false;
     },
 
-    hasAnyRole: (state) => (requiredRoles: AllRoles[]) => {
+    hasAnyRole: (state) => (requiredRoles: Role[]) => {
       if (!requiredRoles) {
         return true;
       }
@@ -73,9 +72,12 @@ const authModule = {
         return false;
       }
 
-      const userRoles: Roles = state.userSettings.roles;
+      const userRoles: Role[] = state.userSettings.roles;
 
-      return userRoles && requiredRoles.some((reqRole) => userRoles[reqRole]);
+      return (
+        userRoles &&
+        requiredRoles.some((reqRole) => userRoles.includes(reqRole))
+      );
     },
   },
 
@@ -192,7 +194,7 @@ const authModule = {
         )
         .catch((error) => handleError(commit, error));
     },
-    updateRoles({ commit, state }, payload: Roles) {
+    updateRoles({ commit, state }, payload: Role[]) {
       return getCurrentUser()
         .then((currentUser) =>
           firebase
