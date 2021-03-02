@@ -23,13 +23,19 @@
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
-import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
+import { formatDateTime } from "@/utils/dates";
 import moment from "moment";
 
 export default FormMixin.extend({
   props: {
-    alarmTime: null,
-    endTime: null,
+    alarmTime: {
+      type: Date,
+      default: null,
+    },
+    endTime: {
+      type: Date,
+      default: null,
+    },
   },
 
   data() {
@@ -38,7 +44,7 @@ export default FormMixin.extend({
         endAfterAlarm: (value) =>
           !value ||
           !this.alarmTime ||
-          dateTimeToUnix(value) >= this.alarmTime ||
+          moment(value, "L LT").toDate() >= this.alarmTime ||
           "Ende kann nicht vor Alarm sein",
       },
 
@@ -48,7 +54,7 @@ export default FormMixin.extend({
 
   computed: {
     alarmDate() {
-      return moment.unix(this.alarmTime).format("YYYY-MM-DD");
+      return moment(this.alarmTime).format("YYYY-MM-DD");
     },
 
     endTimeFormatted() {
