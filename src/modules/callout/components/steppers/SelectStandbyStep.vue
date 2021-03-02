@@ -33,7 +33,21 @@
 
     <v-card-actions>
       <v-btn text @click="back"> Zurück </v-btn>
+      <v-spacer />
+      <v-btn color="primary" @click="showDoneNotice = true">Fertig</v-btn>
     </v-card-actions>
+
+    <v-dialog v-model="showDoneNotice" max-width="700">
+      <v-card>
+        <v-card-title>
+          Bitte dieses Programm (FeuerwehrApp) schließen.
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="showDoneNotice = false">Abbrechen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -47,6 +61,7 @@ export default {
   data() {
     return {
       loading: false,
+      showDoneNotice: false,
     };
   },
 
