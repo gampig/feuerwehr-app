@@ -11,7 +11,7 @@
 
       <v-divider></v-divider>
 
-      <CalloutDetails v-if="item" :item="item" />
+      <CalloutDetails />
     </v-card>
   </v-dialog>
 </template>
@@ -26,22 +26,6 @@ export default {
     value: {
       type: Boolean,
       required: true,
-    },
-
-    item: {
-      type: Object,
-      default: () => {
-        return {
-          alarmTime: null,
-          endTime: null,
-          type: null,
-          keyword: null,
-          catchphrase: null,
-          address: null,
-          standbyCrew: null,
-          vehicles: null,
-        };
-      },
     },
   },
 };
