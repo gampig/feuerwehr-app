@@ -1,15 +1,15 @@
 import moment from "moment";
 
-const formatDateTime = function (date: number) {
-  return moment.unix(date).format("L LT");
+const formatDateTime = function (date: Date) {
+  return moment(date).format("L LT");
 };
 
-const formatDate = function (date: number) {
-  return moment.unix(date).format("L");
+const formatDate = function (date: Date) {
+  return moment(date).format("L");
 };
 
-const formatDateTimeFromNow = function (date: number) {
-  return moment.unix(date).fromNow();
+const formatDateTimeFromNow = function (date: Date) {
+  return moment(date).fromNow();
 };
 
 const dateTimeToUnix = function (dateTime: string) {
