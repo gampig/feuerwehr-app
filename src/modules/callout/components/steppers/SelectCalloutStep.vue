@@ -11,9 +11,9 @@
     <v-card-text v-if="loading"> Lade Einsätze... </v-card-text>
 
     <template v-else>
-      <v-list v-if="items && items.length > 0">
+      <v-list v-if="callouts && callouts.length > 0">
         <v-list-item
-          v-for="callout in items"
+          v-for="callout in callouts"
           :key="callout.id"
           two-line
           @click="selectCallout(callout.id)"
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapState } from "vuex";
 import modules from "@/modules";
 
 export default {
@@ -70,16 +70,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callouts", ["loading"]),
-    ...mapGetters("callouts", ["calloutsReversed", "calloutsOfToday"]),
-
-    items() {
-      if (process.env.NODE_ENV === "production") {
-        return this.calloutsOfToday;
-      } else {
-        return this.calloutsReversed;
-      }
-    },
+    ...mapState("callouts", ["loading", "callouts"]),
   },
 
   methods: {
