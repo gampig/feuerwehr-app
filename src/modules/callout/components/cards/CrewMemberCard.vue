@@ -2,7 +2,7 @@
   <v-card v-bind="$attrs" v-on="$listeners">
     <v-toolbar color="secondary" dark flat>
       <v-toolbar-title>
-        {{ getName(person) }}
+        {{ person }}
       </v-toolbar-title>
       <v-spacer />
       <v-btn icon @click="$emit('delete')"><v-icon>mdi-close</v-icon></v-btn>
@@ -29,21 +29,18 @@ import { getName } from "@/modules/fireDepartment/utils/people";
 /* eslint-disable no-unused-vars */
 import Vue, { PropType } from "vue";
 import { Person } from "@/modules/fireDepartment/models/Person";
-import { ALL_CALLOUT_ROLES, CalloutRole } from "../../models/Callout";
+import { ROLES, Role } from "../../models/Callout";
 /* eslint-enable */
 
 export default Vue.extend({
   props: {
     person: {
-      type: Object as PropType<Person>,
+      type: String,
       required: true,
-      validator(person: Person) {
-        return !!person.firstName && !!person.lastName && !!person.status;
-      },
     },
 
     role: {
-      type: String as PropType<CalloutRole>,
+      type: String as PropType<Role>,
       default: null,
     },
 
@@ -55,13 +52,13 @@ export default Vue.extend({
 
   data() {
     return {
-      roles: ALL_CALLOUT_ROLES,
+      roles: ROLES,
     };
   },
 
   methods: {
     getName,
-    update(role: CalloutRole): void {
+    update(role: Role): void {
       this.$emit("input", role);
     },
   },

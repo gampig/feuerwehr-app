@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 import CrewRolesForm from "../../components/form/CrewRolesForm";
@@ -53,10 +53,6 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", {
-      crew: "crew",
-    }),
-
     ...mapGetters("people", {
       findPerson: "find",
       peopleWithoutCrew: "peopleWithoutCrew",
@@ -65,15 +61,7 @@ export default {
     ...mapGetters("callout", ["crewOfVehicle"]),
 
     crew() {
-      const crew = this.crewOfVehicle(this.vehicle && this.vehicle.id) || {};
-      const crewEntries = Object.entries(crew);
-
-      return crewEntries.map((entry) => {
-        return {
-          person: this.findPerson(entry[0]),
-          role: (typeof entry[1] === "string" && entry[1]) || "",
-        };
-      });
+      return this.crewOfVehicle(this.vehicle && this.vehicle.id) || {};
     },
   },
 

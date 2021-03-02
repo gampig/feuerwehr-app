@@ -10,7 +10,7 @@ export interface Callout {
   types?: Type[];
 }
 
-const ROLES = [
+export const ROLES = [
   "Einsatzleiter",
   "Zugführer",
   "Gruppenführer",

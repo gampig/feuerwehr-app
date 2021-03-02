@@ -18,7 +18,7 @@
 
       <transition-group name="list" tag="div">
         <v-chip
-          v-for="(val, person) in crew"
+          v-for="(val, person) in standbyPeople"
           :key="person + 0"
           color="secondary"
           class="ma-1"
@@ -53,7 +53,11 @@ export default {
   computed: {
     ...mapState("callout", { callout: "callout", loadingCallout: "loading" }),
     ...mapGetters("people", ["peopleWithoutCrew"]),
-    ...mapGetters("callout", { crew: "standbyCrew" }),
+    ...mapGetters("callout", ["standby"]),
+
+    standbyPeople() {
+      return (this.standby && this.standby.people) || {};
+    },
   },
 
   methods: {

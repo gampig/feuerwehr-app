@@ -1,20 +1,20 @@
 <template>
   <v-row>
     <v-col
-      v-for="crewMember in crew"
-      :key="crewMember.person.id"
+      v-for="(role, person) in crew"
+      :key="person"
       cols="12"
       sm="6"
       md="4"
       lg="3"
     >
       <crew-member-card
-        :person="crewMember.person"
-        :role="crewMember.role"
-        :loading="loading[crewMember.person.id]"
+        :person="person"
+        :role="role"
+        :loading="loading[person]"
         :outlined="cardsOutlined"
-        @input="submit(crewMember.person, $event)"
-        @delete="remove(crewMember.person.id)"
+        @input="submit(person, $event)"
+        @delete="remove(person)"
       >
       </crew-member-card>
     </v-col>
@@ -45,12 +45,7 @@ export default NotificationMixin.extend({
 
   methods: {
     submit(person, role) {
-      if (
-        !isEqual(
-          role,
-          this.crew.find((item) => item.person.id === person.id).role
-        )
-      ) {
+      if (!isEqual(role, this.crew[person])) {
         this.$emit("input", { person, role });
       }
     },
