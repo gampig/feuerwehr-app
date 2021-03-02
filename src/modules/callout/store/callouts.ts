@@ -25,25 +25,19 @@ export default {
   actions: <ActionTree<State, any>>{
     create: create<Callout>("callouts"),
 
-    bind: firebaseAction(
-      ({ bindFirebaseRef, commit }, startAtAlarmTime: Date) => {
-        commit("setLoading", true);
+    bind: firebaseAction(({ bindFirebaseRef, commit }) => {
+      commit("setLoading", true);
 
-        return bindFirebaseRef(
-          "callouts",
-          firebase
-            .database()
-            .ref("callouts")
-            .orderByChild("alarmTime")
-            .startAt(startAtAlarmTime.getTime() / 1000),
-          { serialize }
-        )
-          .catch((error) => handleError(commit, error))
-          .finally(() => {
-            commit("setLoading", false);
-          });
-      }
-    ),
+      return bindFirebaseRef(
+        "callouts",
+        firebase.database().ref("callouts").orderByChild("alarmTime"),
+        { serialize }
+      )
+        .catch((error) => handleError(commit, error))
+        .finally(() => {
+          commit("setLoading", false);
+        });
+    }),
     unbind: firebaseAction(({ unbindFirebaseRef }) => {
       unbindFirebaseRef("callouts");
     }),
