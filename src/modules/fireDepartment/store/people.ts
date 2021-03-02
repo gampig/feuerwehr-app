@@ -38,16 +38,26 @@ export default {
       ),
     peopleWithoutCrew(state, getters, rootState, rootGetters) {
       const people: Person[] = getters.peopleByActivity;
-      return people.map((item) => {
-        if (rootGetters["callout/findCrewMember"](item.id)) {
-          return {
-            ...item,
-            disabled: true,
-          };
-        } else {
-          return item;
-        }
-      });
+      return people
+        .map<Person & { disabled?: boolean }>((item) => {
+          if (rootGetters["callout/findCrewMember"](item.id)) {
+            return {
+              ...item,
+              disabled: true,
+            };
+          } else {
+            return item;
+          }
+        })
+        .sort((a, b) => {
+          if (a.disabled == b.disabled) {
+            return 0;
+          } else if (a.disabled && !b.disabled) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
     },
   },
 
