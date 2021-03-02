@@ -1,6 +1,5 @@
 import { GetterTree, MutationTree, ActionTree, ActionContext } from "vuex";
 import {
-  Profile,
   UserSettings,
   Client,
   Roles,
@@ -125,32 +124,6 @@ const authModule = {
           handleError(commit, error);
         });
     },
-    register(
-      { commit },
-      {
-        profile,
-        email,
-        password,
-      }: {
-        profile: Profile;
-        email: string;
-        password: string;
-      }
-    ) {
-      commit("loading");
-      return firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          if (userCredential.user) {
-            return userCredential.user.updateProfile(profile);
-          } else {
-            throw new Error("Benutzer konnte nicht registriert werden.");
-          }
-        })
-        .catch((error) => handleError(commit, error))
-        .finally(() => commit("done"));
-    },
     reauthenticate({ commit }, credential: firebase.auth.AuthCredential) {
       commit("loading");
       return getCurrentUser()
@@ -171,16 +144,6 @@ const authModule = {
         .then((currentUser) => currentUser.updatePassword(newPassword))
         .catch((error) => handleError(commit, error));
     },
-    updateUserSettings({ commit, state }, payload: UserSettings) {
-      return getCurrentUser()
-        .then((currentUser) =>
-          firebase
-            .database()
-            .ref("users/" + currentUser.uid)
-            .update(payload)
-        )
-        .catch((error) => handleError(commit, error));
-    },
     updateClientMetadata({ commit, state }, payload: Client) {
       return getCurrentUser()
         .then((currentUser) =>
@@ -191,27 +154,6 @@ const authModule = {
             .update(payload)
         )
         .catch((error) => handleError(commit, error));
-    },
-    updateRoles({ commit, state }, payload: Roles) {
-      return getCurrentUser()
-        .then((currentUser) =>
-          firebase
-            .database()
-            .ref("users/" + currentUser.uid)
-            .child("roles")
-            .set(payload)
-        )
-        .catch((error) => handleError(commit, error));
-    },
-    updateProfile({ commit }, payload: Profile) {
-      return getCurrentUser()
-        .then((currentUser) => currentUser.updateProfile(payload))
-        .then(
-          () => {
-            commit("updateProfile", payload);
-          },
-          (error) => handleError(commit, error)
-        );
     },
 
     requestReset({ commit }, email: string) {
@@ -252,20 +194,6 @@ const authModule = {
     },
     setUserSettings(state, userSettings: UserSettings) {
       state.userSettings = userSettings;
-    },
-    updateProfile(state, payload: Profile) {
-      if (state.user) {
-        state.user.displayName =
-          payload.displayName === undefined ? null : payload.displayName;
-        state.user.photoURL =
-          payload.photoURL === undefined ? null : payload.photoURL;
-      }
-    },
-    reauthenticated(state) {
-      state.reauthenticationRequired = false;
-    },
-    reauthenticationRequired(state) {
-      state.reauthenticationRequired = true;
     },
   },
 };

@@ -23,8 +23,3 @@ export interface UserSettings {
   roles?: { [role: string]: boolean };
   clients?: { [key: string]: Client };
 }
-
-export interface Profile {
-  displayName?: string | null;
-  photoURL?: string | null;
-}

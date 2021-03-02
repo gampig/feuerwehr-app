@@ -76,12 +76,6 @@ export default {
           auth: () => this.hasAnyRole(["ROLE_ADMIN"]),
         },
         {
-          title: "Profil",
-          to: { name: "UserProfile" },
-          icon: "mdi-account",
-          auth: () => this.loggedIn && !this.hasAnyRole(deviceRoles),
-        },
-        {
           title: "Passwort ändern",
           to: { name: "UserChangePassword" },
           icon: "mdi-key",

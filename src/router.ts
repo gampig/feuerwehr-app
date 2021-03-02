@@ -30,12 +30,6 @@ const routes: Array<AppRouteConfig> = [
     component: () => import("./views/user/Action.vue"),
   },
   {
-    name: "UserProfile",
-    path: "/benutzer/profil",
-    component: () => import("./views/user/Profile.vue"),
-    meta: { auth: { requiresAuth: true } },
-  },
-  {
     name: "UserChangePassword",
     path: "/benutzer/passwort",
     component: () => import("./views/user/ChangePassword.vue"),
