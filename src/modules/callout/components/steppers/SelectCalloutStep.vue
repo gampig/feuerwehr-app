@@ -72,12 +72,13 @@ export default {
   computed: {
     ...mapState("callouts", ["loading"]),
     ...mapGetters("callouts", ["calloutsReversed", "calloutsOfToday"]),
+    ...mapGetters("auth", ["isAdmin"]),
 
     items() {
-      if (process.env.NODE_ENV === "production") {
-        return this.calloutsOfToday;
-      } else {
+      if (this.isAdmin) {
         return this.calloutsReversed;
+      } else {
+        return this.calloutsOfToday;
       }
     },
   },
