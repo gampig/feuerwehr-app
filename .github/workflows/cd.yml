@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 env:
-  FTP_HOST: ffwpa.kasserver.com
-  FTP_USER: f0130658
+  FTP_HOST: w01bad8e.kasserver.com
+  FTP_USER: f013bb2a
 
 jobs:
   vue-client:
@@ -40,5 +40,4 @@ jobs:
           username: ${{ env.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: client/
           state-name: ../.client-ftp-deploy-sync-state.json
