@@ -4,21 +4,18 @@ import handleError from "@/utils/store/handleError";
 import { firebaseAction } from "vuexfire";
 import { ClothingItem } from "../models/ClothingItem";
 
-function serializeClothingItem(
+function serializeClothingItems(
   snapshot: firebase.database.DataSnapshot
 ): ClothingItem {
-  const value = snapshot.val();
-  const item: ClothingItem = {
-    id: snapshot.key || "",
-    amount: { value },
-  };
-
+  const item = { size: snapshot.key || "", count: snapshot.val() };
+  Object.defineProperty(item, ".key", { value: snapshot.key });
   return item;
 }
 
 class State {
   loading = false;
-  clothingItem: ClothingItem | null = null;
+  clothingItemId: string | null = null;
+  clothingItems: ClothingItem[] = [];
 }
 
 export default {
@@ -30,30 +27,32 @@ export default {
     setLoading(state, loading: boolean) {
       state.loading = loading;
     },
+    setClothingItemId(state, clothingItemId: string | null) {
+      state.clothingItemId = clothingItemId;
+    },
   },
 
   actions: <ActionTree<State, any>>{
     bind: firebaseAction(({ bindFirebaseRef, commit }, clothType: string) => {
       commit("setLoading", true);
       return bindFirebaseRef(
-        "clothingItem",
+        "clothingItems",
         firebase.database().ref("clothes/storage").child(clothType),
-        { serialize: serializeClothingItem }
+        { serialize: serializeClothingItems }
       )
         .catch((error) => handleError(commit, error))
         .finally(() => {
+          commit("setClothingItemId", clothType);
           commit("setLoading", false);
         });
     }),
-    unbind: firebaseAction(({ unbindFirebaseRef }) => {
+    unbind: firebaseAction(({ unbindFirebaseRef, commit }) => {
       unbindFirebaseRef("clothingItem");
+      commit("setClothingItemId", null);
     }),
 
-    setAmountOfSize(
-      { state, commit },
-      { size, amount }: { size: string; amount?: number }
-    ) {
-      if (!state.clothingItem) {
+    set: ({ commit, state }, clothingItem: ClothingItem) => {
+      if (!state.clothingItemId) {
         handleError(
           commit,
           Error("Interner Fehler: Kein Kleidungsstück ausgewählt")
@@ -61,14 +60,15 @@ export default {
         return Promise.reject();
       }
 
-      const firebaseAmount: number | null = amount || null;
+      const firebaseCount: number | null = Number(clothingItem.count) || null;
 
       return firebase
         .database()
         .ref("clothes/storage")
-        .child(state.clothingItem.id)
-        .child(size)
-        .set(firebaseAmount);
+        .child(state.clothingItemId)
+        .child(clothingItem.size)
+        .set(firebaseCount)
+        .catch((error) => handleError(commit, error));
     },
   },
 };
