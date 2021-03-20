@@ -1,9 +1,19 @@
 <template>
   <BaseListPage
-    :page-title="type ? `${type.manufacturer}: ${type.name}` : 'Lager'"
+    page-title="Lager"
     :search.sync="search"
     :handle-add="() => (showAddDialog = true)"
   >
+    <template v-if="type" #topRow>
+      <v-col cols="12">
+        <v-card color="secondary" dark>
+          <v-card-title>
+            {{ type.manufacturer }}: {{ type.name }}
+          </v-card-title>
+        </v-card>
+      </v-col>
+    </template>
+
     <v-data-table
       :headers="headers"
       :items="clothingItems"
