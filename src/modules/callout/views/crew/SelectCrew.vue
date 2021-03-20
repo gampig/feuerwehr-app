@@ -58,7 +58,6 @@ export default {
     }),
 
     ...mapGetters("people", {
-      findPerson: "find",
       peopleWithoutCrew: "peopleWithoutCrew",
     }),
 
@@ -70,7 +69,7 @@ export default {
 
       return crewEntries.map((entry) => {
         return {
-          person: this.findPerson(entry[0]),
+          person: entry[0],
           role: (typeof entry[1] === "string" && entry[1]) || "",
         };
       });
@@ -98,13 +97,13 @@ export default {
     },
 
     onUpdate({ person, role }) {
-      this.$set(this.savingMap, person.id, true);
+      this.$set(this.savingMap, person, true);
       this.updateRole({
         vehicleId: this.vehicle.id,
-        personId: person.id,
+        personId: person,
         role: role ? role : true,
       }).then(() => {
-        this.$delete(this.savingMap, person.id);
+        this.$delete(this.savingMap, person);
       });
     },
 

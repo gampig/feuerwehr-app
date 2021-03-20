@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     :items="items"
-    :item-text="getName"
+    item-text="id"
     :value="search"
     auto-select-first
     return-object
@@ -18,7 +18,7 @@
       <template v-else>
         <v-list-item-content>
           <v-list-item-title>
-            {{ getName(data.item) }}
+            {{ data.item.id }}
           </v-list-item-title>
           <v-list-item-subtitle
             v-if="data.item.status && data.item.status != 'Aktiv'"
@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { getName } from "@/modules/fireDepartment/utils/people";
-
 export default {
   props: {
     items: {
@@ -59,8 +57,6 @@ export default {
   },
 
   methods: {
-    getName,
-
     onSelection(item) {
       if (item) {
         this.$emit("input", item);

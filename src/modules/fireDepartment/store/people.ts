@@ -23,14 +23,6 @@ export default {
   },
 
   getters: <GetterTree<State, any>>{
-    find: (state) => (id: string) =>
-      state.people.find((person) => person.id === id) ||
-      <Person>{
-        id: id,
-        lastName: "Unbekannt",
-        firstName: "-",
-        status: "Unbekannt",
-      },
     peopleReversed: (state) => [...state.people].reverse(),
     peopleByActivity: (state) =>
       [...state.people].sort(
