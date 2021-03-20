@@ -3,9 +3,9 @@
     page-title="Kleidungsstück bearbeiten"
     :loading="loading"
     :updating="updating"
+    no-delete-action
     @submit="onSubmit"
     @reset="resetItem"
-    @delete="del"
   >
     <TypeForm ref="form" v-bind.sync="item" />
   </BaseUpdatePage>

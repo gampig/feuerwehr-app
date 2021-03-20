@@ -18,7 +18,7 @@
           <v-list-item @click="$emit('reset')">
             <v-list-item-title>Zurücksetzen</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="confirmDelete = true">
+          <v-list-item v-if="!noDeleteAction" @click="confirmDelete = true">
             <v-list-item-title>Löschen</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -34,6 +34,7 @@
     </v-container>
 
     <BaseConfirmDelete
+      v-if="!noDeleteAction"
       :visible="confirmDelete"
       :handle-delete="() => $emit('delete')"
       @close="confirmDelete = false"
@@ -50,6 +51,11 @@ export default {
     },
 
     updating: {
+      type: Boolean,
+      default: false,
+    },
+
+    noDeleteAction: {
       type: Boolean,
       default: false,
     },
