@@ -1,5 +1,5 @@
 import clothingTypes from "./clothingTypes";
 import orders from "./orders";
-import clothesStorage from "./clothesStorage";
+import clothingStorage from "./clothingStorage";
 
-export default { clothingTypes, orders, clothesStorage };
+export default { clothingTypes, orders, clothingStorage };
