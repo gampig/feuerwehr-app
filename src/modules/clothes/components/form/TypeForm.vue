@@ -38,7 +38,7 @@
           min="0"
           suffix="€"
           :value="price"
-          @input="update('price', $event)"
+          @input="updatePrice($event)"
         />
       </v-col>
 
@@ -105,6 +105,12 @@ export default FormMixin.extend({
     return {
       categories: ALL_CLOTHING_TYPE_CATEGORIES,
     };
+  },
+
+  methods: {
+    updatePrice(price: any) {
+      this.update("price", Number(price));
+    },
   },
 });
 </script>
