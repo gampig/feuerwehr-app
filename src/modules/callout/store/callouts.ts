@@ -1,4 +1,4 @@
-import { create } from "@/utils/firebase/dbCRUD";
+import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
 import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
@@ -11,6 +11,14 @@ import { ActionTree, GetterTree, MutationTree } from "vuex";
 class State {
   loading = false;
   callouts: Callout[] = [];
+}
+
+const crudFactory = new CrudFactory<State, Callout>("callouts");
+
+function preprocessCallout(callout: Callout): Callout {
+  callout.alarmTime = Number(callout.alarmTime);
+  callout.endTime = Number(callout.endTime) || undefined;
+  return callout;
 }
 
 export default {
@@ -45,7 +53,7 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("callouts"),
+    create: crudFactory.makeCreate(preprocessCallout),
 
     bind: firebaseAction(({ bindFirebaseRef, commit }) => {
       commit("setLoading", true);

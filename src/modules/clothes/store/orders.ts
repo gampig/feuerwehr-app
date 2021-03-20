@@ -1,4 +1,4 @@
-import { create, update, remove } from "@/utils/firebase/dbCRUD";
+import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
 import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
@@ -10,6 +10,20 @@ class State {
   loading = false;
   orders: Order[] = [];
   order: Order | null = null;
+}
+
+const crudFactory = new CrudFactory<State, Order>("clothes/orders");
+
+function preprocessOrder(order: Order): Order {
+  function toOptNum(field: any) {
+    return Number(field) || undefined;
+  }
+  order.count = toOptNum(order.count);
+  order.paid = toOptNum(order.paid);
+  order.submittedOn = Number(order.submittedOn);
+  order.orderedOn = toOptNum(order.orderedOn);
+  order.doneOn = toOptNum(order.doneOn);
+  return order;
 }
 
 export default {
@@ -24,9 +38,9 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("clothes/orders"),
-    update: update("clothes/orders"),
-    remove: remove("clothes/orders"),
+    create: crudFactory.makeCreate(preprocessOrder),
+    update: crudFactory.makeUpdate(preprocessOrder),
+    remove: crudFactory.makeRemove(),
 
     bindOrders: firebaseAction(({ bindFirebaseRef, commit }) => {
       commit("setLoading", true);

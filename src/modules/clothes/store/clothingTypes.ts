@@ -1,4 +1,4 @@
-import { create, update, remove } from "@/utils/firebase/dbCRUD";
+import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
 import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
@@ -10,6 +10,16 @@ class State {
   loading = false;
   types: ClothingType[] = [];
   type: ClothingType | null = null;
+}
+
+const crudFactory = new CrudFactory<State, ClothingType>(
+  "clothes/clothingTypes"
+);
+
+function preprocessType(type: ClothingType): ClothingType {
+  type.isAvailable = Boolean(type.isAvailable);
+  type.price = Number(type.price) || undefined;
+  return type;
 }
 
 export default {
@@ -24,9 +34,9 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("clothes/clothingTypes"),
-    update: update("clothes/clothingTypes"),
-    remove: remove("clothes/clothingTypes"),
+    create: crudFactory.makeCreate(preprocessType),
+    update: crudFactory.makeUpdate(preprocessType),
+    remove: crudFactory.makeRemove(),
 
     bindTypes: firebaseAction(({ bindFirebaseRef, commit }) => {
       commit("setLoading", true);
