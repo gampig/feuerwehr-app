@@ -9,6 +9,10 @@
     </template>
 
     <v-container fluid>
+      <v-row>
+        <slot name="topRow" />
+      </v-row>
+
       <BaseSearchRow
         :search="search"
         @update:search="$emit('update:search', $event)"

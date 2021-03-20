@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="btn-container">
+      <slot />
       <v-btn v-if="handleShow" icon @click="handleShow">
         <v-icon> mdi-eye </v-icon>
       </v-btn>

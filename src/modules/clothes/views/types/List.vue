@@ -43,7 +43,11 @@
             slot="item.action"
             slot-scope="props"
             :handle-edit="() => editHandler(props.item)"
-          />
+          >
+            <v-btn icon @click="storageHandler(props.item)">
+              <v-icon>mdi-wardrobe</v-icon>
+            </v-btn>
+          </BaseActionCell>
         </v-data-table>
       </v-col>
     </v-row>
@@ -90,6 +94,15 @@ export default makeListMixin("ClothesType", "clothTypes").extend({
       } else {
         return this.allTypes.filter((item) => item.isAvailable);
       }
+    },
+  },
+
+  methods: {
+    storageHandler(item) {
+      this.$router.push({
+        name: "ClothesStorage",
+        params: { id: item.id },
+      });
     },
   },
 });

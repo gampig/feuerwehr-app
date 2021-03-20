@@ -39,4 +39,9 @@ export default [
     path: "/kleidung/typen/bearbeiten/:id",
     component: () => import("./views/types/Update.vue"),
   },
+  {
+    name: "ClothesStorage",
+    path: "/kleidung/lager/:id",
+    component: () => import("./views/Storage.vue"),
+  },
 ];
