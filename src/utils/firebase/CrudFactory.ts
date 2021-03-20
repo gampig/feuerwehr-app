@@ -17,10 +17,11 @@ export default class<State, Payload extends FirebasePayload> {
     preprocessCallback: PreprocessCallback<Payload> = (payload) => payload
   ) {
     return <Action<State, any>>(({ commit }, payload: Payload) => {
+      const item = this.processPayload(preprocessCallback({ ...payload }));
       return firebase
         .database()
         .ref(this.ref)
-        .push(preprocessCallback({ ...payload }))
+        .push(item)
         .catch((error) => handleError(commit, error));
     });
   }
