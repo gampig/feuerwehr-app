@@ -58,7 +58,7 @@
 import { mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
 
-export default makeListMixin("ClothesType", "clothTypes").extend({
+export default makeListMixin("ClothesType", "clothingTypes").extend({
   data() {
     return {
       headers: [
@@ -86,7 +86,7 @@ export default makeListMixin("ClothesType", "clothTypes").extend({
   },
 
   computed: {
-    ...mapState("clothTypes", { allTypes: "types" }),
+    ...mapState("clothingTypes", { allTypes: "types" }),
 
     types() {
       if (this.showUnavailableTypes) {

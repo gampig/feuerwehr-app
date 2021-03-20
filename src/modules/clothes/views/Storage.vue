@@ -117,7 +117,7 @@ export default makeUpdateMixin("", "").extend({
   },
 
   computed: {
-    ...mapState("clothTypes", ["type"]),
+    ...mapState("clothingTypes", ["type"]),
     ...mapState("clothesStorage", { remoteClothingItems: "clothingItems" }),
   },
 
@@ -127,7 +127,7 @@ export default makeUpdateMixin("", "").extend({
   },
 
   methods: {
-    ...mapActions("clothTypes", ["bindType", "unbindType"]),
+    ...mapActions("clothingTypes", ["bindType", "unbindType"]),
     ...mapActions("clothesStorage", {
       bindStorage: "bind",
       unbindStorage: "unbind",

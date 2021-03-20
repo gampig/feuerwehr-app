@@ -28,7 +28,7 @@ export default makeUpdateMixin("ClothesOrder", "orders").extend({
       item: {},
       emptyItem: {
         person: null,
-        clothType: null,
+        clothingType: null,
         size: null,
         count: null,
         paid: null,

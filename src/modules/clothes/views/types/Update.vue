@@ -16,7 +16,7 @@ import TypeForm from "../../components/form/TypeForm";
 import makeUpdateMixin from "@/mixins/UpdateMixin";
 import { mapActions, mapState } from "vuex";
 
-export default makeUpdateMixin("ClothesType", "clothTypes").extend({
+export default makeUpdateMixin("ClothesType", "clothingTypes").extend({
   components: {
     TypeForm,
   },
@@ -38,7 +38,7 @@ export default makeUpdateMixin("ClothesType", "clothTypes").extend({
   },
 
   computed: {
-    ...mapState("clothTypes", ["type"]),
+    ...mapState("clothingTypes", ["type"]),
   },
 
   destroyed() {
@@ -46,7 +46,7 @@ export default makeUpdateMixin("ClothesType", "clothTypes").extend({
   },
 
   methods: {
-    ...mapActions("clothTypes", ["bindType", "unbindType"]),
+    ...mapActions("clothingTypes", ["bindType", "unbindType"]),
 
     validate() {
       return this.$refs.form.$refs.form.validate();

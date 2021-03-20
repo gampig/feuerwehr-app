@@ -71,15 +71,15 @@ import FormMixin from "@/mixins/FormMixin";
 /* eslint-disable no-unused-vars */
 import { PropType } from "vue";
 import {
-  ALL_CLOTH_TYPE_CATEGORIES,
-  ClothTypeCategory,
-} from "../../models/ClothType";
+  ALL_CLOTHING_TYPE_CATEGORIES,
+  ClothingTypeCategory,
+} from "../../models/ClothingType";
 /* eslint-enable */
 
 export default FormMixin.extend({
   props: {
     category: {
-      type: String as PropType<ClothTypeCategory>,
+      type: String as PropType<ClothingTypeCategory>,
     },
     manufacturer: {
       type: String,
@@ -103,7 +103,7 @@ export default FormMixin.extend({
 
   data() {
     return {
-      categories: ALL_CLOTH_TYPE_CATEGORIES,
+      categories: ALL_CLOTHING_TYPE_CATEGORIES,
     };
   },
 });

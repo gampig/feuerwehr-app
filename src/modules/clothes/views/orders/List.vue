@@ -72,7 +72,7 @@ import { formatDate } from "@/utils/dates";
 import moment from "moment";
 /* eslint-disable no-unused-vars */
 import { Order } from "../../models/Order";
-import { ClothType } from "../../models/ClothType";
+import { ClothingType } from "../../models/ClothingType";
 /* eslint-enable */
 
 function latestTimestampOfOrder(order: Order) {
@@ -99,7 +99,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
         },
         { text: "Bestellt", value: "orderedOn", sort: this.sortDate },
         { text: "Erledigt", value: "doneOn", sort: this.sortDate },
-        { text: "Kleidung", value: "clothType" },
+        { text: "Kleidung", value: "clothingType" },
         { text: "Person", value: "person" },
         {
           text: "Aktionen",
@@ -121,7 +121,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
 
   computed: {
     ...mapState("orders", { allOrders: "orders" }),
-    ...mapState("clothTypes", ["types"]),
+    ...mapState("clothingTypes", ["types"]),
 
     orders(): Order[] {
       return (this.allOrders as Order[])
@@ -135,15 +135,16 @@ export default makeListMixin("ClothesOrder", "orders").extend({
             order.orderedOn && formatDate(order.orderedOn);
           orderFormatted.doneOn = order.doneOn && formatDate(order.doneOn);
 
-          const clothType = order.clothType
-            ? (this.types as ClothType[]).find(
-                (type) => type.id === order.clothType
+          const clothingType = order.clothingType
+            ? (this.types as ClothingType[]).find(
+                (type) => type.id === order.clothingType
               )
             : undefined;
-          orderFormatted.clothType =
-            clothType && `${clothType.manufacturer}: ${clothType.name}`;
+          orderFormatted.clothingType =
+            clothingType &&
+            `${clothingType.manufacturer}: ${clothingType.name}`;
 
-          const price = clothType?.price || 0;
+          const price = clothingType?.price || 0;
           const count = order?.count || 1;
           orderFormatted.totalPrice = price * count;
 

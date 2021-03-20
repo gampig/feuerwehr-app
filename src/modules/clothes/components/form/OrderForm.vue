@@ -21,16 +21,16 @@
           :items="types"
           :item-text="getTypeText"
           item-value="id"
-          :value="clothType"
+          :value="clothingType"
           :loading="loadingTypes"
           single-line
           :rules="[rules.required]"
-          @input="update('clothType', $event)"
+          @input="update('clothingType', $event)"
         />
       </v-col>
     </v-row>
 
-    <v-row v-if="clothType">
+    <v-row v-if="clothingType">
       <v-col sm="6" cols="12">
         <v-combobox
           label="Größe"
@@ -110,7 +110,7 @@ export default FormMixin.extend({
     },
 
     person: null,
-    clothType: null,
+    clothingType: null,
     size: null,
     count: null,
     paid: null,
@@ -121,27 +121,28 @@ export default FormMixin.extend({
 
   computed: {
     ...mapState("people", { loadingPeople: "loading", people: "people" }),
-    ...mapState("clothTypes", { loadingTypes: "loading", types: "types" }),
+    ...mapState("clothingTypes", { loadingTypes: "loading", types: "types" }),
 
-    clothTypeObject() {
+    clothingTypeObject() {
       return (
-        this.clothType && this.types.find((item) => item.id == this.clothType)
+        this.clothingType &&
+        this.types.find((item) => item.id == this.clothingType)
       );
     },
     sizes() {
-      return (this.clothTypeObject && this.clothTypeObject.sizes) || [];
+      return (this.clothingTypeObject && this.clothingTypeObject.sizes) || [];
     },
     totalPrice() {
       if (
-        !this.clothTypeObject ||
-        !this.clothTypeObject.price ||
-        this.clothTypeObject.price == 0
+        !this.clothingTypeObject ||
+        !this.clothingTypeObject.price ||
+        this.clothingTypeObject.price == 0
       ) {
         return 0;
       }
 
       const count = this.count ? this.count : 1;
-      return this.clothTypeObject.price * count;
+      return this.clothingTypeObject.price * count;
     },
   },
 

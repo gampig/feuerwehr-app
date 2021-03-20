@@ -22,7 +22,7 @@ export default makeCreateMixin("ClothesOrder", "orders").extend({
     return {
       item: {
         person: null,
-        clothType: null,
+        clothingType: null,
         size: null,
         count: null,
         paid: null,

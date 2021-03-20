@@ -12,7 +12,7 @@
 import TypeForm from "../../components/form/TypeForm";
 import makeCreateMixin from "@/mixins/CreateMixin";
 
-export default makeCreateMixin("ClothesType", "clothTypes").extend({
+export default makeCreateMixin("ClothesType", "clothingTypes").extend({
   components: {
     TypeForm,
   },

@@ -1,7 +1,7 @@
 export interface Order {
   id: string;
   person: string;
-  clothType: string;
+  clothingType: string;
 
   size?: string | number;
   count?: number;

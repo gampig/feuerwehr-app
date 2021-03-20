@@ -3,13 +3,13 @@ import { firebaseAction } from "vuexfire";
 import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
-import { ClothType } from "../models/ClothType";
+import { ClothingType } from "../models/ClothingType";
 import { ActionTree, MutationTree } from "vuex";
 
 class State {
   loading = false;
-  types: ClothType[] = [];
-  type: ClothType | null = null;
+  types: ClothingType[] = [];
+  type: ClothingType | null = null;
 }
 
 export default {
@@ -24,15 +24,15 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    create: create("clothes/clothTypes"),
-    update: update("clothes/clothTypes"),
-    remove: remove("clothes/clothTypes"),
+    create: create("clothes/clothingTypes"),
+    update: update("clothes/clothingTypes"),
+    remove: remove("clothes/clothingTypes"),
 
     bindTypes: firebaseAction(({ bindFirebaseRef, commit }) => {
       commit("setLoading", true);
       return bindFirebaseRef(
         "types",
-        firebase.database().ref("clothes/clothTypes"),
+        firebase.database().ref("clothes/clothingTypes"),
         { serialize }
       )
         .catch((error) => handleError(commit, error))
@@ -47,7 +47,7 @@ export default {
     bindType: firebaseAction(({ bindFirebaseRef, commit }, id: string) => {
       return bindFirebaseRef(
         "type",
-        firebase.database().ref("clothes/clothTypes").child(id),
+        firebase.database().ref("clothes/clothingTypes").child(id),
         { serialize }
       ).catch((error) => handleError(commit, error));
     }),

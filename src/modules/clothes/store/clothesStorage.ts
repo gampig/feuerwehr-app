@@ -33,19 +33,21 @@ export default {
   },
 
   actions: <ActionTree<State, any>>{
-    bind: firebaseAction(({ bindFirebaseRef, commit }, clothType: string) => {
-      commit("setLoading", true);
-      return bindFirebaseRef(
-        "clothingItems",
-        firebase.database().ref("clothes/storage").child(clothType),
-        { serialize: serializeClothingItems }
-      )
-        .catch((error) => handleError(commit, error))
-        .finally(() => {
-          commit("setClothingItemId", clothType);
-          commit("setLoading", false);
-        });
-    }),
+    bind: firebaseAction(
+      ({ bindFirebaseRef, commit }, clothingType: string) => {
+        commit("setLoading", true);
+        return bindFirebaseRef(
+          "clothingItems",
+          firebase.database().ref("clothes/storage").child(clothingType),
+          { serialize: serializeClothingItems }
+        )
+          .catch((error) => handleError(commit, error))
+          .finally(() => {
+            commit("setClothingItemId", clothingType);
+            commit("setLoading", false);
+          });
+      }
+    ),
     unbind: firebaseAction(({ unbindFirebaseRef, commit }) => {
       unbindFirebaseRef("clothingItem");
       commit("setClothingItemId", null);

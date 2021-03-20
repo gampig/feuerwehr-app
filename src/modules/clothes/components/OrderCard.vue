@@ -5,7 +5,7 @@
         {{ person }}
       </div>
       <p class="text-h5 text--primary">
-        {{ clothType }}
+        {{ clothingType }}
       </p>
 
       <div v-if="size" class="mb-3">
@@ -70,7 +70,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 export default {
   props: {
     person: { type: String, default: null },
-    clothType: { type: String, default: null },
+    clothingType: { type: String, default: null },
     size: { type: String, default: null },
     count: { type: Number, default: 1 },
     paid: { type: Number, default: 0 },
