@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import isEqual from "lodash/isEqual";
 import NotificationMixin from "@/mixins/NotificationMixin";
 import crewMemberCard from "../cards/CrewMemberCard";
 
@@ -45,9 +44,7 @@ export default NotificationMixin.extend({
 
   methods: {
     submit(person, role) {
-      if (
-        !isEqual(role, this.crew.find((item) => item.person === person).role)
-      ) {
+      if (role != this.crew.find((item) => item.person === person).role) {
         this.$emit("input", { person, role });
       }
     },
