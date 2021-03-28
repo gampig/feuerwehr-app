@@ -38,10 +38,14 @@
             <div class="mt-4 title">Anzahl ändern</div>
             <v-text-field
               v-model="item.count"
+              prepend-icon="mdi-minus"
+              append-outer-icon="mdi-plus"
               type="number"
               min="0"
               label="Anzahl"
               single-line
+              @click:prepend="decrementCount(item)"
+              @click:append-outer="incrementCount(item)"
             />
           </template>
         </v-edit-dialog>
@@ -133,6 +137,13 @@ export default makeUpdateMixin("", "").extend({
       unbindStorage: "unbind",
       setCount: "set",
     }),
+
+    decrementCount(item) {
+      if (item.count > 0) item.count -= 1;
+    },
+    incrementCount(item) {
+      item.count += 1;
+    },
 
     onAdd() {
       if (this.$refs.addForm.validate()) {
