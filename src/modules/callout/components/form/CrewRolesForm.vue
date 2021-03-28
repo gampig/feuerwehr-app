@@ -18,6 +18,22 @@
       >
       </crew-member-card>
     </v-col>
+
+    <v-dialog :value="personToRemove !== null" persistent max-width="300">
+      <v-card>
+        <v-card-title></v-card-title>
+        <v-card-text>
+          Soll {{ personToRemove }} wirklich von der Mannschaft entfernt werden?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text @click="cancelRemoval()"> Abbrechen </v-btn>
+          <v-spacer />
+          <v-btn text color="primary" @click="confirmRemoval()">
+            Entfernen
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
@@ -42,6 +58,12 @@ export default NotificationMixin.extend({
     },
   },
 
+  data() {
+    return {
+      personToRemove: null,
+    };
+  },
+
   methods: {
     submit(person, role) {
       if (role != this.crew.find((item) => item.person === person).role) {
@@ -49,7 +71,15 @@ export default NotificationMixin.extend({
       }
     },
     remove(personId) {
-      this.$emit("delete", personId);
+      this.personToRemove = personId;
+    },
+
+    cancelRemoval() {
+      this.personToRemove = null;
+    },
+    confirmRemoval() {
+      this.$emit("delete", this.personToRemove);
+      this.personToRemove = null;
     },
   },
 });
