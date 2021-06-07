@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^4.2.2",
-    "core-js": "^3.8.3",
+    "core-js": "^3.14.0",
     "firebase": "^8.3.0",
     "lodash": "^4.17.19",
     "moment": "^2.29.1",
