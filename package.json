@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^4.2.2",
-    "core-js": "^3.8.3",
+    "core-js": "^3.14.0",
     "firebase": "^8.3.0",
     "lodash": "^4.17.19",
     "moment": "^2.29.1",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@mdi/font": "^5.9.55",
-    "@types/lodash": "^4.14.168",
+    "@types/lodash": "^4.14.170",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "^4.5.11",
