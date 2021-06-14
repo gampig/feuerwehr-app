@@ -1,11 +1,5 @@
 <template>
   <BasePage page-title="Einsatz" back-button>
-    <template #actions>
-      <v-btn v-if="isAdmin" :to="editRoute" icon>
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-    </template>
-
     <v-container>
       <BaseToolbar :handle-delete="isAdmin ? del : null">
         <template slot="left">
@@ -46,10 +40,6 @@ export default makeShowMixin("Callout", "callouts").extend({
   computed: {
     ...mapState("callout", ["callout"]),
     ...mapGetters("auth", ["isAdmin"]),
-
-    editRoute() {
-      return { name: "CalloutUpdate", params: { id: this.id } };
-    },
   },
 
   methods: {

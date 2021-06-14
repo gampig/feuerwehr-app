@@ -1,9 +1,5 @@
 <template>
-  <BaseListPage
-    page-title="Einsatz-Archiv"
-    :search.sync="search"
-    :handle-add="isAdmin ? addHandler : null"
-  >
+  <BaseListPage page-title="Einsatz-Archiv" :search.sync="search">
     <v-data-table
       v-model="selected"
       :headers="headers"
@@ -25,7 +21,6 @@
         slot="item.action"
         slot-scope="props"
         :handle-show="() => showHandler(props.item)"
-        :handle-edit="isAdmin ? () => editHandler(props.item) : null"
       />
     </v-data-table>
   </BaseListPage>
@@ -62,7 +57,6 @@ export default makeListMixin("Callout", "callouts").extend({
 
   computed: {
     ...mapGetters("callouts", { callouts: "calloutsWithFormattedDateTime" }),
-    ...mapGetters("auth", ["isAdmin"]),
   },
 });
 </script>

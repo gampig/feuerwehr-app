@@ -15,16 +15,6 @@ export default {
       component: () => import("./views/List.vue"),
     },
     {
-      name: "CalloutCreate",
-      path: "erstellen",
-      component: () => import("./views/Create.vue"),
-    },
-    {
-      name: "CalloutUpdate",
-      path: "bearbeiten/:id",
-      component: () => import("./views/Update.vue"),
-    },
-    {
       name: "CalloutShow",
       path: "anzeigen/:id",
       component: () => import("./views/Show.vue"),
