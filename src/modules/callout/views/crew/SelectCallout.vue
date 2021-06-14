@@ -72,10 +72,9 @@ export default {
   computed: {
     ...mapState("callouts", { loadingCallouts: "loading" }),
     ...mapGetters("callouts", ["calloutsReversed", "calloutsOfToday"]),
-    ...mapGetters("auth", ["isAdmin"]),
 
     items() {
-      if (this.isAdmin) {
+      if (this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"])) {
         return this.calloutsReversed;
       } else {
         return this.calloutsOfToday;

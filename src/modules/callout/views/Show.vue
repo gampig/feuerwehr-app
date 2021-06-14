@@ -1,7 +1,7 @@
 <template>
   <BasePage page-title="Einsatz" back-button>
     <v-container>
-      <BaseToolbar :handle-delete="isAdmin ? del : null">
+      <BaseToolbar :handle-delete="userCanDeleteCallout ? del : null">
         <template slot="left">
           <v-toolbar-title v-if="callout">
             {{ callout.keyword }} -
@@ -23,7 +23,7 @@
 import Loading from "@/components/Loading";
 import makeShowMixin from "@/mixins/ShowMixin";
 import CalloutDetails from "../components/CalloutDetails";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
@@ -39,7 +39,10 @@ export default makeShowMixin("Callout", "callouts").extend({
 
   computed: {
     ...mapState("callout", ["callout"]),
-    ...mapGetters("auth", ["isAdmin"]),
+
+    userCanDeleteCallout() {
+      return this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"]);
+    },
   },
 
   methods: {

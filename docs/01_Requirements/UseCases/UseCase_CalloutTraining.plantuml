@@ -5,8 +5,6 @@ actor "AlarmFax" as fax
 actor "KalenderServer" as calendar
 
 actor "Gruppenführer" as leader
-actor "Admin" as admin
-leader <|- admin
 
 rectangle FeuerStatistik {
     ' Callout added automatically
@@ -15,7 +13,7 @@ rectangle FeuerStatistik {
     ' Callouts
     usecase "Einsätze anzeigen" as ViewCallouts
     usecase "Einsatz-Mannschaft eintragen" as SelectCrew
-    
+
     ' Trainings
     usecase "Übungen anzeigen" as ViewTrainings
     usecase "Übung hinzufügen" as AddTraining

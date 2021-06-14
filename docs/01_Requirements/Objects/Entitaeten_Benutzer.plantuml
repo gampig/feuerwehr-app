@@ -6,11 +6,9 @@ abstract class Benutzer << Entity >> {
     passwort
 }
 class Gruppenführer << Entity >>
-class Admin << Entity >>
 class Alarmfax << Entity >>
 
 Benutzer <|-- Alarmfax
 Benutzer <|-- Gruppenführer
-Gruppenführer <|-- Admin
 
 @enduml

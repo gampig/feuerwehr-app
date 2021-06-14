@@ -73,7 +73,7 @@ export default {
           title: "Gerät einrichten",
           to: { name: "DeviceSetup" },
           icon: "mdi-tablet-android",
-          auth: () => this.hasAnyRole(["ROLE_ADMIN"]),
+          auth: () => this.hasAnyRole(["ROLE_GROUPLEADER"]),
         },
         {
           title: "Passwort ändern",

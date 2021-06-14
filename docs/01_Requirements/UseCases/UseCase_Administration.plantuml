@@ -2,15 +2,11 @@
 left to right direction
 
 actor "Gruppenführer" as leader
-actor "Admin" as admin
-leader <|- admin
 
 rectangle FeuerStatistik {
     usecase "Daten exportieren" as Export
     usecase "Person bearbeiten" as EditPeople
     usecase "Gruppe bearbeiten" as EditGroups
-    usecase "Benutzer bearbeiten" as EditUsers
-    usecase "Login-Tokens bearbeiten" as EditTokens
     usecase "Fahrzeug bearbeiten" as EditVehicle
     usecase "Passwort ändern" as EditPwd
 
@@ -19,10 +15,8 @@ rectangle FeuerStatistik {
     (Export) <.. (Login) : extend
     (EditPeople) <.. (Login) : extend
     (EditGroups) <.. (Login) : extend
-    (EditUsers) <.. (Login) : extend
     (EditVehicle) <.. (Login) : extend
     (EditPwd) <.. (Login) : extend
-    (EditTokens) <.. (Login) : extend
 }
 
 leader -- (Export)
@@ -30,6 +24,4 @@ leader -- (EditPeople)
 leader -- (EditGroups)
 leader -- (EditVehicle)
 leader -- (EditPwd)
-admin -- (EditUsers)
-admin -- (EditTokens)
 @enduml

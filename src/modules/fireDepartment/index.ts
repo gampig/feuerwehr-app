@@ -3,9 +3,8 @@ import AbstractModule from "../AbstractModule";
 import store from "./store";
 
 const requiredRoles: { [type: string]: AllRoles[] } = {
-  vehicles: ["ROLE_ADMIN", "ROLE_GROUPLEADER", "ROLE_VEHICLE"],
+  vehicles: ["ROLE_GROUPLEADER", "ROLE_VEHICLE"],
   people: [
-    "ROLE_ADMIN",
     "ROLE_GROUPLEADER",
     "ROLE_VEHICLE",
     "ROLE_MAINTAINER_CLOTHES",

@@ -53,16 +53,6 @@ const authModule = {
   state: new State(),
 
   getters: <GetterTree<State, any>>{
-    isAdmin: (state) => {
-      if (state.userSettings && state.userSettings.roles) {
-        const roles = state.userSettings.roles;
-        if (roles["ROLE_ADMIN"] || roles["ROLE_GROUPLEADER"]) {
-          return true;
-        }
-      }
-      return false;
-    },
-
     hasAnyRole: (state) => (requiredRoles: AllRoles[]) => {
       if (!requiredRoles) {
         return true;

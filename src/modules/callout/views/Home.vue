@@ -16,7 +16,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="isAdmin" justify="center" class="mb-6">
+          <v-row v-if="showStandbyButton" justify="center" class="mb-6">
             <v-col sm="6" md="4">
               <v-btn :to="{ name: 'SelectStandby' }" block>
                 Bereitschaft eintragen
@@ -37,8 +37,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapGetters } from "vuex";
 export default Vue.extend({
-  computed: mapGetters("auth", ["isAdmin"]),
+  computed: {
+    showStandbyButton() {
+      return this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"]);
+    },
+  },
 });
 </script>

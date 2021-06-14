@@ -3,11 +3,7 @@ import AbstractModule from "../AbstractModule";
 import routes from "./router";
 import store from "./store";
 
-const requiredRoles: AllRoles[] = [
-  "ROLE_ADMIN",
-  "ROLE_GROUPLEADER",
-  "ROLE_VEHICLE",
-];
+const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
 const standbyRequiredRoles: AllRoles[] = ["ROLE_ALARM_PC"];
 
 export default class CalloutModule extends AbstractModule {

@@ -3,7 +3,7 @@ import AbstractModule from "../AbstractModule";
 import routes from "./router";
 import store from "./store";
 
-const requiredRoles: AllRoles[] = ["ROLE_ADMIN", "ROLE_MAINTAINER_CLOTHES"];
+const requiredRoles: AllRoles[] = ["ROLE_MAINTAINER_CLOTHES"];
 
 export default class ClothesModule extends AbstractModule {
   link = {
