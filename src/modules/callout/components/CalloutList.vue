@@ -17,6 +17,9 @@
               {{ callout.keyword }}
             </v-list-item-title>
             <v-list-item-subtitle>
+              {{ callout.catchphrase }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
               {{ callout.alarmTime | formatDateTimeFromNow }} ({{
                 callout.alarmTime | formatDateTime
               }})
