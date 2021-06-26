@@ -74,7 +74,7 @@ export default {
     ...mapGetters("callouts", ["calloutsReversed", "calloutsOfToday"]),
 
     items() {
-      if (this.$store.getters["auth/hasAnyRoles"](["ROLE_GROUPLEADER"])) {
+      if (this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"])) {
         return this.calloutsReversed;
       } else {
         return this.calloutsOfToday;
