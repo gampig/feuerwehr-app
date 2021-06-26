@@ -18,7 +18,7 @@
     "start": "vue-cli-service serve --port 80"
   },
   "dependencies": {
-    "@fontsource/roboto": "^4.2.2",
+    "@fontsource/roboto": "^4.4.5",
     "core-js": "^3.14.0",
     "firebase": "^8.6.8",
     "lodash": "^4.17.19",
