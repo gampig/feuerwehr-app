@@ -1,6 +1,6 @@
 import { AllRoles } from "@/models/User";
 import AbstractModule from "../AbstractModule";
-import routes from "./router";
+import route from "./router";
 import store from "./store";
 
 const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
@@ -24,7 +24,7 @@ export default class CalloutModule extends AbstractModule {
   ];
 
   install() {
-    this.router.addRoutes([routes]);
+    this.router.addRoute(route);
     this.installStore(store);
 
     this.store.commit("navigation/addLinks", this.navLinks);

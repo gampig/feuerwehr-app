@@ -14,7 +14,7 @@ export default class ClothesModule extends AbstractModule {
   };
 
   install() {
-    this.router.addRoutes(routes);
+    routes.forEach((route) => this.router.addRoute(route));
     this.installStore(store);
 
     this.store.commit("navigation/addLinks", [this.link]);
