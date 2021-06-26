@@ -1,6 +1,5 @@
 import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
-import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 import { Order } from "../models/Order";
@@ -46,8 +45,7 @@ export default {
       commit("setLoading", true);
       return bindFirebaseRef(
         "orders",
-        firebase.database().ref("clothes/orders").orderByChild("submittedOn"),
-        { serialize }
+        firebase.database().ref("clothes/orders").orderByChild("submittedOn")
       )
         .catch((error) => handleError(commit, error))
         .finally(() => {
@@ -61,8 +59,7 @@ export default {
     bindOrder: firebaseAction(({ bindFirebaseRef, commit }, id: string) => {
       return bindFirebaseRef(
         "order",
-        firebase.database().ref("clothes/orders").child(id),
-        { serialize }
+        firebase.database().ref("clothes/orders").child(id)
       ).catch((error) => handleError(commit, error));
     }),
     unbindOrder: firebaseAction(({ unbindFirebaseRef }) => {

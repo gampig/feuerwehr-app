@@ -1,6 +1,5 @@
 import { firebaseAction } from "vuexfire";
 import firebase from "firebase/app";
-import serialize from "@/utils/firebase/serialize";
 import handleError from "@/utils/store/handleError";
 import { Callout, CalloutVehicle, Crew, CalloutRole } from "../models/Callout";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
@@ -60,13 +59,11 @@ export default {
 
       const bindCallout = bindFirebaseRef(
         "callout",
-        firebase.database().ref("callouts/" + calloutId),
-        { serialize }
+        firebase.database().ref("callouts/" + calloutId)
       );
       const bindCrew = bindFirebaseRef(
         "crew",
-        firebase.database().ref("crew/" + calloutId),
-        { serialize }
+        firebase.database().ref("crew/" + calloutId)
       );
 
       return Promise.all([bindCallout, bindCrew])

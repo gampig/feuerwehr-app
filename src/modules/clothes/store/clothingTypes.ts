@@ -1,6 +1,5 @@
 import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
-import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 import { ClothingType } from "../models/ClothingType";
@@ -42,8 +41,7 @@ export default {
       commit("setLoading", true);
       return bindFirebaseRef(
         "types",
-        firebase.database().ref("clothes/clothingTypes"),
-        { serialize }
+        firebase.database().ref("clothes/clothingTypes")
       )
         .catch((error) => handleError(commit, error))
         .finally(() => {
@@ -57,8 +55,7 @@ export default {
     bindType: firebaseAction(({ bindFirebaseRef, commit }, id: string) => {
       return bindFirebaseRef(
         "type",
-        firebase.database().ref("clothes/clothingTypes").child(id),
-        { serialize }
+        firebase.database().ref("clothes/clothingTypes").child(id)
       ).catch((error) => handleError(commit, error));
     }),
     unbindType: firebaseAction(({ unbindFirebaseRef }) => {

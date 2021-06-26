@@ -1,6 +1,5 @@
 import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
-import serialize from "@/utils/firebase/serialize";
 import firebase from "firebase/app";
 import moment from "moment";
 import { formatDateTime } from "@/utils/dates";
@@ -66,8 +65,7 @@ export default {
           .database()
           .ref("callouts")
           .orderByChild("alarmTime")
-          .startAt(filterTime),
-        { serialize }
+          .startAt(filterTime)
       )
         .then((ref) => {
           commit("setLoading", false);
