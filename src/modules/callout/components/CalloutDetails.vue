@@ -176,9 +176,8 @@ export default {
             };
           }
 
-          vehicles[vehicleIdx].calloutDetails = this.callout.vehicles[
-            vehicleIdx
-          ];
+          vehicles[vehicleIdx].calloutDetails =
+            this.callout.vehicles[vehicleIdx];
         }
       }
 
