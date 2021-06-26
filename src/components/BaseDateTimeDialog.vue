@@ -71,6 +71,10 @@ import moment from "moment";
 const hourRegex = new RegExp("^([01]?\\d|2[0-3])$");
 const minuteRegex = new RegExp("^([0-5]?\\d)$");
 
+function pad(n) {
+  return n < 10 ? "0" + n : n;
+}
+
 export default {
   props: {
     value: {
@@ -137,7 +141,11 @@ export default {
       } else {
         this.dateTabs = null;
         this.$emit("input", false);
-        const date = moment(`${this.dateVal} ${this.hour}:${this.minute}`);
+
+        // Pad: MomentJS expects a leading zero for the hour and minute
+        const date = moment(
+          `${this.dateVal} ${pad(this.hour)}:${pad(this.minute)}`
+        );
         this.$emit("update:date", date.unix());
       }
     },
