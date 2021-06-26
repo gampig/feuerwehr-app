@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "production") {
       console.log("New content is downloading.");
     },
     updated(registration) {
-      if (router.currentRoute.meta.skipWaiting) {
+      if (router.currentRoute.meta?.skipWaiting) {
         console.log("New content is available; app will refresh...");
 
         const worker = registration.waiting;
