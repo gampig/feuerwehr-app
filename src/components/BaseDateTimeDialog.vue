@@ -72,7 +72,7 @@ const hourRegex = new RegExp("^([01]?\\d|2[0-3])$");
 const minuteRegex = new RegExp("^([0-5]?\\d)$");
 
 function pad(n) {
-  return n < 10 ? "0" + n : n;
+  return n < 10 ? "0" + Number(n) : Number(n);
 }
 
 export default {
