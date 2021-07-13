@@ -34,6 +34,12 @@ export default {
         .filter((callout) => callout.alarmTime > aDayAgo)
         .reverse();
     },
+    calloutsBeforeToday: (state) => {
+      const aDayAgo = moment().subtract(1, "day").unix();
+      return state.callouts
+        .filter((callout) => callout.alarmTime <= aDayAgo)
+        .reverse();
+    },
     calloutsWithFormattedDateTime: (state) =>
       state.callouts.map((item) => {
         const callout = { ...item };
