@@ -1,12 +1,11 @@
 @startuml
 left to right direction
 
-actor "AlarmFax" as fax
-actor "KalenderServer" as calendar
+actor "AlarmServer" as alarm
 
 actor "Gruppenführer" as leader
 
-rectangle FeuerStatistik {
+rectangle FeuerwehrApp {
     ' Callout added automatically
     usecase "Einsatz hinzufügen" as AddCallout
 
@@ -18,20 +17,9 @@ rectangle FeuerStatistik {
     usecase "Übungen anzeigen" as ViewTrainings
     usecase "Übung hinzufügen" as AddTraining
     usecase "Übungsteilnehmer eintragen" as SelectTrainingParticipants
-
-    usecase "Authentifizieren mit Token" as Token
-    usecase "Login" as Login
-
-    (AddCallout) ..> (Token) : include
-    (ViewCallouts) <.. (Login) : extend
-    (SelectCrew) <.. (Login) : extend
-
-    (ViewTrainings) <.. (Login) : extend
-    (SelectTrainingParticipants) <.. (Login) : extend
-    (AddTraining) <.. (Login) : extend
 }
 
-fax -- (AddCallout)
+alarm -- (AddCallout)
 leader -- (ViewCallouts)
 leader -- (SelectCrew)
 
@@ -39,5 +27,4 @@ leader -- (ViewTrainings)
 leader -- (SelectTrainingParticipants)
 leader -- (AddTraining)
 
-(AddTraining) --> calendar
 @enduml
