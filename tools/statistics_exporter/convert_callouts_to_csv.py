@@ -5,7 +5,7 @@ import csv
 input_filename = 'data.json'
 output_filename = 'Statistik.csv'
 
-with open(input_filename) as f:
+with open(input_filename, encoding='utf-8') as f:
     data = json.load(f)
 
 vehicles = data['vehicles']
@@ -88,7 +88,7 @@ class Callout:
 callouts = [Callout(callout_id, callout).serialize()
             for callout_id, callout in data['callouts'].items()]
 
-with open(output_filename, 'w') as f:
+with open(output_filename, 'w', encoding='utf-8-sig') as f:
     csvwriter = csv.writer(f, delimiter=';')
     csvwriter.writerow(headers)
     csvwriter.writerows(callouts)
