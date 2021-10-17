@@ -92,3 +92,5 @@ with open(output_filename, 'w', encoding='utf-8-sig') as f:
     csvwriter = csv.writer(f, delimiter=';')
     csvwriter.writerow(headers)
     csvwriter.writerows(callouts)
+
+print(f"Exported {len(callouts)} entries to {output_filename}.")
