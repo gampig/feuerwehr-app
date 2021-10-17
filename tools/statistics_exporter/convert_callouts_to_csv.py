@@ -88,7 +88,7 @@ class Callout:
 callouts = [Callout(callout_id, callout).serialize()
             for callout_id, callout in data['callouts'].items()]
 
-with open(output_filename, 'w', encoding='utf-8-sig') as f:
+with open(output_filename, 'w', encoding='utf-8-sig', newline='\n') as f:
     csvwriter = csv.writer(f, delimiter=';')
     csvwriter.writerow(headers)
     csvwriter.writerows(callouts)
