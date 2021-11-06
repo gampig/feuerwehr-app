@@ -11,6 +11,7 @@ with open(input_filename, encoding='utf-8') as f:
 vehicles = data['vehicles']
 
 people = data['people'].keys()
+peopleWithoutComma = [p.replace(', ', ' ') for p in people]
 
 crew = dict()
 for callout_id, callout in data['crew'].items():
@@ -32,7 +33,7 @@ headers = [
     'THL',
     'UG-ÖEL',
 ]
-headers.extend(people)
+headers.extend(peopleWithoutComma)
 headers.extend([
     'Einsatzbeginn',
     'Einsatzende'
