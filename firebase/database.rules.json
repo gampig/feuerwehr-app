@@ -1,0 +1,122 @@
+{
+  "rules": {
+    "callouts": {
+      ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+      ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val()",
+      ".indexOn": ["alarmTime"],
+
+      "$callout_id": {
+        // Neuer Einsatz oder max. 7 Tage alt
+        ".write": "(!data.exists() || (now/1000 - 604800) < data.child('alarmTime').val()) && (now/1000 - 604800) < newData.child('alarmTime').val() && auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+        ".validate": "newData.hasChildren(['alarmTime'])",
+        "alarmTime": {
+          ".validate": "newData.isNumber()"
+        },
+        "endTime": {
+          ".validate": "newData.isNumber()"
+        }
+      }
+    },
+
+    "crew": {
+      ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+      ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val()",
+
+      "$callout_id": {
+        // Einsatz existiert und ist max. 7 Tage alt
+        ".write": "(root.child('callouts').child($callout_id).exists() && ((now/1000 - 604800) < root.child('callouts').child($callout_id).child('alarmTime').val())) && auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+        "vehicles": {
+          "$vehicle_id": {
+            ".validate": "root.child('vehicles').child($vehicle_id).exists()",
+            "$person_id": {
+              ".validate": "root.child('people').child($person_id).exists()"
+            }
+          }
+        },
+        "standby": {
+          "$person_id": {
+            ".validate": "root.child('people').child($person_id).exists()"
+          }
+        }
+      }
+    },
+
+    "clothes": {
+      // Rollen: MAINTAINER_CLOTHES
+      ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val()",
+      ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val()",
+
+      "clothingTypes": {
+        ".indexOn": ["category"],
+
+        "$type_id": {
+          ".validate": "newData.hasChildren(['name'])"
+        }
+      },
+      "storage": {
+        "$type_id": {
+          ".validate": "root.child('clothes').child('clothingTypes').child($type_id).exists()"
+        }
+      },
+      "people": {
+        "$person_id": {
+          ".validate": "root.child('people').child($person_id).exists()",
+          "$type_id": {
+            ".validate": "root.child('clothes').child('clothingTypes').child($type_id).exists()"
+          }
+        }
+      },
+      "orders": {
+        "$order_id": {
+          ".validate": "newData.hasChildren(['submittedOn']) && root.child('people').child(newData.child('person').val()).exists() && root.child('clothes').child('clothingTypes').child(newData.child('clothingType').val()).exists()"
+        }
+      }
+    },
+
+    "vehicles": {
+      ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+      ".indexOn": "inServiceSince",
+
+      "$vehicle_id": {
+        ".validate": "newData.hasChildren(['name'])",
+        "inServiceSince": {
+          ".validate": "newData.isNumber()"
+        },
+        "outOfServiceSince": {
+          ".validate": "newData.isNumber()"
+        },
+        "maxCrewNumber": {
+          ".validate": "newData.isNumber()"
+        }
+      }
+    },
+
+    "people": {
+      // Rollen: CALLOUT_EDITOR, MAINTAINER_CLOTHES
+      ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val())",
+      ".indexOn": ["lastName"],
+
+      "$person_id": {
+        ".validate": "newData.hasChildren(['firstName', 'lastName', 'status'])"
+      }
+    },
+
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+
+        "clients": {
+          ".write": "$uid === auth.uid"
+        }
+      }
+    },
+
+    "userClients": {
+      "$uid": {
+        "$client_id": {
+          ".write": "$uid === auth.uid"
+        }
+      }
+    }
+  }
+}
