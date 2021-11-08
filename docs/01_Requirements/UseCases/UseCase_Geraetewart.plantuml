@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+
+actor "Gerätewart" as leader
+
+rectangle FeuerwehrApp {
+    usecase "Wartungstermin hinzufügen" as AddMaintenanceMeeting
+    usecase "Wartungsterminliste ansehen" as ViewMaintenanceMeetings
+    usecase "Helfer zu Termin hinzufügen" as AddHelperToMeeting
+}
+
+leader -- (AddMaintenanceMeeting)
+leader -- (ViewMaintenanceMeetings)
+leader -- (AddHelperToMeeting)
+
+@enduml

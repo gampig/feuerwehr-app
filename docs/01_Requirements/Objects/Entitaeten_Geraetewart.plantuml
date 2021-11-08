@@ -1,0 +1,15 @@
+@startuml
+
+class Wartungstermin << Entität >> {
+  beginn
+  ende
+  taetigkeit
+}
+
+class GeraetewartTeam << Entität >>
+class Person << Entität >>
+
+Wartungstermin o-- Person
+Wartungstermin -- "1" GeraetewartTeam
+
+@enduml
