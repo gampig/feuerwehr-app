@@ -5,6 +5,7 @@ export interface LoginCredentials {
 
 export type AllRoles =
   | "ROLE_GROUPLEADER"
+  | "ROLE_MAINTAINER"
   | "ROLE_MAINTAINER_CLOTHES"
   | "ROLE_VEHICLE"
   | "ROLE_ALARM_PC";

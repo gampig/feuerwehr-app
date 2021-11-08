@@ -4,6 +4,7 @@ import ClothesModule from "./clothes";
 import { Store } from "vuex";
 import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
+import MaintenanceTeamModule from "./maintenanceTeam";
 
 class AppModules {
   modules: { [index: string]: AbstractModule } = {};
@@ -17,6 +18,9 @@ class AppModules {
 
     this.modules.callout = new CalloutModule(store, router);
     this.modules.callout.install();
+
+    this.modules.maintenanceTeam = new MaintenanceTeamModule(store, router);
+    this.modules.maintenanceTeam.install();
 
     this.modules.clothes = new ClothesModule(store, router);
     this.modules.clothes.install();
