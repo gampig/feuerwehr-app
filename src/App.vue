@@ -30,8 +30,10 @@ export default {
 
   methods: {
     onStateChanged() {
-      if (this.loggedIn) {
+      if (this.loggedIn === true) {
         this.onLogin();
+      } else if (this.loggedIn === false) {
+        this.onLogout();
       }
     },
 
@@ -51,7 +53,7 @@ export default {
     },
 
     toLoginPage() {
-      if (this.$route.name == "Home") {
+      if (this.$route.name != "UserLogin") {
         this.$router.replace({
           name: "UserLogin",
           params: { nextUrl: { name: "Home" } },

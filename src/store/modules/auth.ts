@@ -17,7 +17,7 @@ import handleError from "@/utils/store/handleError";
 
 class State {
   loading = true;
-  loggedIn = false;
+  loggedIn: boolean | null = null;
   user: firebase.User | null = null;
   userSettings: UserSettings | null = null;
   reauthenticationRequired = false;
