@@ -79,7 +79,7 @@
 
         <v-col cols="12">
           <v-checkbox
-            label="Bestellt"
+            :label="makeLabelWithDate('Bestellt', orderedOn)"
             :input-value="orderedOn"
             @change="updateCheckbox('orderedOn', $event)"
           />
@@ -87,7 +87,7 @@
 
         <v-col cols="12">
           <v-checkbox
-            label="Erledigt"
+            :label="makeLabelWithDate('Erledigt', doneOn)"
             :input-value="doneOn"
             @change="updateCheckbox('doneOn', $event)"
           />
@@ -160,6 +160,19 @@ export default FormMixin.extend({
 
       return text;
     },
+
+    makeLabelWithDate(text, timestamp) {
+      if (timestamp) {
+        return text + " (am " + this.getDate(timestamp) + ")";
+      } else {
+        return text;
+      }
+    },
+
+    getDate(timestamp) {
+      return moment.unix(timestamp).format("L");
+    },
+
     updateCheckbox(name, checked) {
       let value = null;
 
