@@ -33,7 +33,7 @@
     "vuexfire": "^3.2.5"
   },
   "devDependencies": {
-    "@mdi/font": "^5.9.55",
+    "@mdi/font": "^6.5.95",
     "@types/lodash": "^4.14.178",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
