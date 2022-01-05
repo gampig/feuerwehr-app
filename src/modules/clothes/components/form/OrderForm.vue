@@ -77,6 +77,14 @@
           />
         </v-col>
 
+        <v-col v-if="submittedOn" cols="12">
+          <v-checkbox
+            :label="makeLabelWithDate('Eingereicht', submittedOn)"
+            input-value="true"
+            disabled
+          />
+        </v-col>
+
         <v-col cols="12">
           <v-checkbox
             :label="makeLabelWithDate('Bestellt', orderedOn)"
