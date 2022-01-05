@@ -58,5 +58,11 @@ export default makeListMixin("Callout", "callouts").extend({
   computed: {
     ...mapGetters("callouts", { callouts: "calloutsWithFormattedDateTime" }),
   },
+
+  created() {
+    if (!this.$store.state.callouts.allCalloutsLoaded) {
+      this.$store.dispatch("callouts/bind", { loadAllCallouts: true });
+    }
+  },
 });
 </script>

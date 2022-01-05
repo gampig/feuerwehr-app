@@ -20,25 +20,25 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-group
-          v-if="
-            canViewAllCallouts &&
-            calloutsBeforeToday &&
-            calloutsBeforeToday.length > 0
-          "
-          v-model="showAllCallouts"
-        >
+        <v-list-group v-if="canViewAllCallouts" v-model="showAllCallouts">
           <template #activator>
             <v-list-item-content>
               <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
             </v-list-item-content>
           </template>
-          <CalloutListItem
-            v-for="callout in calloutsBeforeToday"
-            :key="callout.id"
-            :callout="callout"
-            @click="selectCallout(callout.id)"
-          />
+          <template v-if="allCalloutsLoaded && calloutsBeforeToday.length > 0">
+            <CalloutListItem
+              v-for="callout in calloutsBeforeToday"
+              :key="callout.id"
+              :callout="callout"
+              @click="selectCallout(callout.id)"
+            />
+          </template>
+          <v-list-item v-else>
+            <v-list-item-content>
+              Keine weiteren Einsätze vorhanden.
+            </v-list-item-content>
+          </v-list-item>
         </v-list-group>
       </v-list>
     </template>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutListItem from "./CalloutListItem";
 
 export default {
@@ -81,7 +81,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callouts", ["loading"]),
+    ...mapState("callouts", ["loading", "allCalloutsLoaded"]),
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
@@ -89,7 +89,17 @@ export default {
     },
   },
 
+  watch: {
+    showAllCallouts(showAllCallouts) {
+      if (showAllCallouts === true && this.allCalloutsLoaded === false) {
+        this.bind({ loadAllCallouts: true });
+      }
+    },
+  },
+
   methods: {
+    ...mapActions("callouts", ["bind"]),
+
     onUserConfirm() {
       this.showUserConfirm = false;
       this.selectCallout();
