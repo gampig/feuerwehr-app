@@ -63,7 +63,6 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
     return {
       headers: [
         { text: "Kategorie", value: "category" },
-        { text: "Hersteller", value: "manufacturer" },
         { text: "Bezeichnung", value: "name" },
         { text: "Preis", value: "price" },
         {
@@ -73,7 +72,7 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
         },
       ],
       options: {
-        sortBy: ["category", "manufacturer"],
+        sortBy: ["category", "name"],
         sortDesc: [false, false],
         page: 1,
         itemsPerPage: 15,

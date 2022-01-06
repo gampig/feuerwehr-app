@@ -1,16 +1,7 @@
 <template>
   <v-form ref="form">
     <v-row class="mb-0">
-      <v-col sm="6" md="4" cols="12">
-        <v-text-field
-          label="Hersteller"
-          append-icon="mdi-factory"
-          :value="manufacturer"
-          @input="update('manufacturer', $event)"
-        />
-      </v-col>
-
-      <v-col sm="6" md="4" cols="12">
+      <v-col sm="8" cols="12">
         <v-text-field
           label="Bezeichnung"
           append-icon="mdi-form-textbox"
@@ -20,7 +11,7 @@
         />
       </v-col>
 
-      <v-col sm="6" md="4" cols="12">
+      <v-col sm="4" cols="12">
         <v-select
           label="Kategorie"
           append-icon="mdi-clipboard-list"
@@ -31,18 +22,7 @@
         />
       </v-col>
 
-      <v-col sm="6" md="4" cols="12">
-        <v-text-field
-          label="Preis"
-          type="number"
-          min="0"
-          suffix="€"
-          :value="price"
-          @input="updatePrice($event)"
-        />
-      </v-col>
-
-      <v-col md="8" cols="12">
+      <v-col sm="8" cols="12">
         <v-combobox
           label="Größen"
           append-icon="mdi-ruler"
@@ -55,7 +35,18 @@
         />
       </v-col>
 
-      <v-col sm="6" md="4" cols="12">
+      <v-col sm="4" cols="12">
+        <v-text-field
+          label="Preis"
+          type="number"
+          min="0"
+          suffix="€"
+          :value="price"
+          @input="updatePrice($event)"
+        />
+      </v-col>
+
+      <v-col cols="12">
         <v-checkbox
           label="Ist noch erhältlich"
           :input-value="isAvailable"
@@ -80,9 +71,6 @@ export default FormMixin.extend({
   props: {
     category: {
       type: String as PropType<ClothingTypeCategory>,
-    },
-    manufacturer: {
-      type: String,
     },
     name: {
       type: String,

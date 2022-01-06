@@ -9,7 +9,6 @@ export type ClothingTypeCategory = typeof ALL_CLOTHING_TYPE_CATEGORIES[number];
 
 export interface ClothingType {
   id: string;
-  manufacturer?: string;
   name: string;
 
   isAvailable?: boolean;

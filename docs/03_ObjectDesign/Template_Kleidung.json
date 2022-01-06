@@ -3,16 +3,10 @@
     "clothTypes": {
       "1": {
         "category": "PSA",
-        "manufacturer": "Bayern 2000",
-        "name": "Hose",
+        "name": "Bayern 2000 Hose",
         "price": 20,
         "isAvailable": true,
-        "sizes": [
-          "S",
-          "M",
-          "L",
-          "XL"
-        ]
+        "sizes": ["S", "M", "L", "XL"]
       }
     },
     "storage": {

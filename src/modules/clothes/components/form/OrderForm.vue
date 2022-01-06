@@ -161,9 +161,6 @@ export default FormMixin.extend({
       if (type.category) {
         text += `(${type.category}) `;
       }
-      if (type.manufacturer) {
-        text += type.manufacturer + ": ";
-      }
       text += type.name;
 
       return text;

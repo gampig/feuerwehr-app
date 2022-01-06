@@ -28,7 +28,6 @@ export default makeUpdateMixin("ClothesType", "clothingTypes").extend({
       item: {},
       emptyItem: {
         category: null,
-        manufacturer: null,
         name: null,
         price: null,
         isAvailable: null,

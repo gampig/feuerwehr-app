@@ -21,7 +21,6 @@ export default makeCreateMixin("ClothesType", "clothingTypes").extend({
     return {
       item: {
         category: null,
-        manufacturer: null,
         name: null,
         price: null,
         isAvailable: true,

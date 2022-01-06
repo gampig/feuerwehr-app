@@ -8,7 +8,7 @@
       <v-col cols="12">
         <v-card color="secondary" dark>
           <v-card-title>
-            {{ type.manufacturer }}: {{ type.name }}
+            {{ type.name }}
           </v-card-title>
         </v-card>
       </v-col>

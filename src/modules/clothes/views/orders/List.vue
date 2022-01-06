@@ -140,9 +140,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
                 (type) => type.id === order.clothingType
               )
             : undefined;
-          orderFormatted.clothingType =
-            clothingType &&
-            `${clothingType.manufacturer}: ${clothingType.name}`;
+          orderFormatted.clothingType = clothingType && clothingType.name;
 
           const price = clothingType?.price || 0;
           const count = order?.count || 1;
