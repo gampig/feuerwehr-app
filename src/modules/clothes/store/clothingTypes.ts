@@ -41,7 +41,10 @@ export default {
       commit("setLoading", true);
       return bindFirebaseRef(
         "types",
-        firebase.database().ref("clothes/clothingTypes")
+        firebase
+          .database()
+          .ref("clothes/clothingTypes")
+          .orderByChild("category")
       )
         .catch((error) => handleError(commit, error))
         .finally(() => {
