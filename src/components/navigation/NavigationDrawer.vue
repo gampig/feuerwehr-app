@@ -32,7 +32,10 @@
     </v-list>
 
     <template #append>
-      <div v-if="showUserSettings" class="pa-3 text--disabled">
+      <div
+        v-if="loggedIn != true || showUserSettings"
+        class="pa-3 text--disabled"
+      >
         Version: {{ version }}<br />Entwickelt von Jonas Gampig
       </div>
     </template>
