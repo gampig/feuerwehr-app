@@ -14,10 +14,10 @@ export default function (
   next: NavigationGuardNext<any>,
   store: Store<any>
 ) {
-  const user = store.state.auth.user;
+  const loggedIn = store.state.auth.loggedIn;
 
   if (requires(to, "requiresAuth")) {
-    if (!user) {
+    if (loggedIn === false) {
       next({
         name: "UserLogin",
         params:
