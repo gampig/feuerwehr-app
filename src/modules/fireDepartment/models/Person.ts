@@ -1,4 +1,11 @@
-type PersonStatus = "Aktiv" | "Jugend" | "Passiv" | "Ausgetreten" | "Unbekannt";
+export const ALL_PERSON_STATUS_VALUES = [
+  "Aktiv",
+  "Jugend",
+  "Passiv",
+  "Ausgetreten",
+] as const;
+
+type PersonStatus = typeof ALL_PERSON_STATUS_VALUES[number];
 
 export interface Person {
   id: string;
