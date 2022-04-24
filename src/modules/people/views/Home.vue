@@ -88,10 +88,7 @@ import { mapState } from "vuex";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
 /* eslint-disable no-unused-vars */
-import {
-  Person,
-  ALL_PERSON_STATUS_VALUES,
-} from "../../fireDepartment/models/Person";
+import { Person, ALL_PERSON_STATUS_VALUES } from "../models/Person";
 /* eslint-enable */
 
 export default Vue.extend({

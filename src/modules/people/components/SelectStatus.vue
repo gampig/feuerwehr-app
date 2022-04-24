@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ALL_PERSON_STATUS_VALUES } from "../../fireDepartment/models/Person";
+import { ALL_PERSON_STATUS_VALUES } from "../models/Person";
 
 export default Vue.extend({
   props: {

@@ -1,28 +1,34 @@
 import { AllRoles } from "@/models/User";
 import AbstractModule from "../AbstractModule";
 import routes from "./router";
+import store from "./store";
 
-const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER"];
+const rolesWriteAccess: AllRoles[] = ["ROLE_GROUPLEADER"];
 
 export default class PeopleModule extends AbstractModule {
   link = {
     title: "Personen",
     to: { name: "PeopleHome" },
     icon: "mdi-account-multiple",
-    auth: () => this.isAuthorized(),
+    auth: () => this.isAuthorizedForLink(),
   };
 
   install() {
     routes.forEach((route) => this.router.addRoute(route));
+    this.installStore(store);
 
     this.store.commit("navigation/addLinks", [this.link]);
   }
 
-  isAuthorized() {
-    return this.hasAnyRole(requiredRoles);
+  isAuthorizedForLink() {
+    return this.hasAnyRole(rolesWriteAccess);
   }
 
-  load() {}
+  load() {
+    return this.store.dispatch("people/bindPeople");
+  }
 
-  unload() {}
+  unload() {
+    return this.store.dispatch("people/unbind");
+  }
 }

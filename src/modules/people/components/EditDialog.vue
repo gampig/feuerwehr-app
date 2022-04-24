@@ -34,7 +34,7 @@
 import Vue from "vue";
 import SelectStatus from "./SelectStatus.vue";
 /* eslint-disable no-unused-vars */
-import { Person } from "../../fireDepartment/models/Person";
+import { Person } from "../models/Person";
 /* eslint-enable */
 
 export default Vue.extend({
