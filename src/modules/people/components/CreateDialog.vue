@@ -26,12 +26,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-select
-                  v-model="status"
-                  label="Status"
-                  :items="availableStatusValues"
-                  :rules="[rules.required]"
-                ></v-select>
+                <SelectStatus v-model="status"></SelectStatus>
               </v-col>
             </v-row>
           </v-container>
@@ -53,13 +48,15 @@
 
 <script lang="ts">
 import NotificationMixin from "@/mixins/NotificationMixin";
-import { ALL_PERSON_STATUS_VALUES } from "@/modules/fireDepartment/models/Person";
+import SelectStatus from "./SelectStatus.vue";
 
 function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default NotificationMixin.extend({
+  components: { SelectStatus },
+
   props: {
     value: {
       type: Boolean,
@@ -68,7 +65,6 @@ export default NotificationMixin.extend({
 
   data() {
     return {
-      availableStatusValues: ALL_PERSON_STATUS_VALUES,
       rules: {
         required: (value: string | null) => !!value || "Erforderlich",
       },
@@ -77,7 +73,7 @@ export default NotificationMixin.extend({
 
       firstName: "",
       lastName: "",
-      status: null,
+      status: null as null | string,
     };
   },
 

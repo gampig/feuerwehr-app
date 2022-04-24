@@ -10,19 +10,7 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-chip-group
-                  v-model="status"
-                  active-class="primary"
-                  mandatory
-                  column
-                >
-                  <v-chip
-                    v-for="availableStatus in availableStatusValues"
-                    :key="availableStatus"
-                  >
-                    {{ availableStatus }}
-                  </v-chip>
-                </v-chip-group>
+                <SelectStatus v-model="status"></SelectStatus>
               </v-col>
             </v-row>
           </v-container>
@@ -44,14 +32,14 @@
 
 <script lang="ts">
 import Vue from "vue";
+import SelectStatus from "./SelectStatus.vue";
 /* eslint-disable no-unused-vars */
-import {
-  Person,
-  ALL_PERSON_STATUS_VALUES,
-} from "../../fireDepartment/models/Person";
+import { Person } from "../../fireDepartment/models/Person";
 /* eslint-enable */
 
 export default Vue.extend({
+  components: { SelectStatus },
+
   props: {
     value: {
       type: Boolean,
@@ -65,9 +53,8 @@ export default Vue.extend({
 
   data() {
     return {
-      availableStatusValues: ALL_PERSON_STATUS_VALUES,
       loading: false,
-      status: null as null | number,
+      status: null as null | string,
     };
   },
 
@@ -92,10 +79,7 @@ export default Vue.extend({
 
   methods: {
     loadData() {
-      const statusText = this.person?.status;
-      if (statusText)
-        this.status = this.availableStatusValues.indexOf(statusText);
-      else this.status = null;
+      this.status = this.person?.status || null;
     },
 
     cancel() {
@@ -111,7 +95,7 @@ export default Vue.extend({
       this.$store
         .dispatch("people/set", {
           id: this.personId,
-          status: this.availableStatusValues[this.status],
+          status: this.status,
         })
         .then(() => {
           this.$emit("input", false);
