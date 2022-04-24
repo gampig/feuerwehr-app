@@ -5,7 +5,7 @@ export const ALL_PERSON_STATUS_VALUES = [
   "Ausgetreten",
 ] as const;
 
-type PersonStatus = typeof ALL_PERSON_STATUS_VALUES[number];
+export type PersonStatus = typeof ALL_PERSON_STATUS_VALUES[number];
 
 export interface Person {
   id: string;

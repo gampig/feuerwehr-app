@@ -54,7 +54,7 @@ export default Vue.extend({
   data() {
     return {
       loading: false,
-      status: null as null | string,
+      status: "Aktiv",
     };
   },
 
@@ -68,7 +68,7 @@ export default Vue.extend({
   },
 
   watch: {
-    personId() {
+    person() {
       this.loadData();
     },
 
@@ -77,9 +77,13 @@ export default Vue.extend({
     },
   },
 
+  mounted() {
+    this.loadData();
+  },
+
   methods: {
     loadData() {
-      this.status = this.person?.status || null;
+      if (this.person) this.status = this.person.status;
     },
 
     cancel() {

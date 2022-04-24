@@ -13,33 +13,43 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { ALL_PERSON_STATUS_VALUES } from "../models/Person";
+/* eslint-disable no-unused-vars */
+import Vue, { PropType } from "vue";
+import { ALL_PERSON_STATUS_VALUES, PersonStatus } from "../models/Person";
+/* eslint-enable */
 
 export default Vue.extend({
   props: {
     value: {
-      type: String,
-      default: "",
+      type: String as PropType<PersonStatus>,
+      default: "Aktiv",
     },
   },
 
   data() {
     return {
       availableStatusValues: ALL_PERSON_STATUS_VALUES,
-      selectedStatusIndex: null as null | number,
+      selectedStatusIndex: 0,
     };
   },
 
   watch: {
-    value(status) {
-      if (status === null) this.selectedStatusIndex = null;
-      else
-        this.selectedStatusIndex = this.availableStatusValues.indexOf(status);
+    value() {
+      this.loadData();
     },
   },
 
+  created() {
+    this.loadData();
+  },
+
   methods: {
+    loadData() {
+      this.selectedStatusIndex = this.availableStatusValues.indexOf(
+        this.value as PersonStatus
+      );
+    },
+
     changeStatus(newStatusIndex: number) {
       this.$emit("input", this.availableStatusValues[newStatusIndex]);
     },
