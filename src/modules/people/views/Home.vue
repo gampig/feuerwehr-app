@@ -56,7 +56,16 @@
                   {{ item.id }}
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-card-text> {{ item.status }} </v-card-text>
+                <v-list dense>
+                  <v-list-item dense @click="edit(item.id)">
+                    <v-list-item-content>
+                      {{ item.status }}
+                    </v-list-item-content>
+                    <v-list-item-icon>
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-list-item-icon>
+                  </v-list-item>
+                </v-list>
               </v-card>
             </v-col>
           </v-row>
@@ -65,6 +74,11 @@
     </v-container>
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
+
+    <EditDialog
+      v-model="showEditDialog"
+      :person-id="personToBeEdited"
+    ></EditDialog>
   </BasePage>
 </template>
 
@@ -72,6 +86,7 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 import CreateDialog from "../components/CreateDialog.vue";
+import EditDialog from "../components/EditDialog.vue";
 /* eslint-disable no-unused-vars */
 import {
   Person,
@@ -80,10 +95,12 @@ import {
 /* eslint-enable */
 
 export default Vue.extend({
-  components: { CreateDialog },
+  components: { CreateDialog, EditDialog },
   data() {
     return {
       showCreateDialog: false,
+      showEditDialog: false,
+      personToBeEdited: "",
       search: "",
       selectedStatus: null,
       availableStatusValues: ALL_PERSON_STATUS_VALUES,
@@ -100,11 +117,22 @@ export default Vue.extend({
         this.reloadPeople();
       }
     },
+
+    showEditDialog(show) {
+      if (!show) {
+        this.reloadPeople();
+      }
+    },
   },
 
   methods: {
     create() {
       this.showCreateDialog = true;
+    },
+
+    edit(id: string) {
+      this.personToBeEdited = id;
+      this.showEditDialog = true;
     },
 
     filterPeople(items: Person[], search: string) {
