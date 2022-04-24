@@ -2,11 +2,14 @@ import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 import { Person } from "../models/Person";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
+import CrudFactory from "@/utils/firebase/CrudFactory";
 
 class State {
   loading = false;
   people: Person[] = [];
 }
+
+const crudFactory = new CrudFactory<State, Person>("people");
 
 export default {
   namespaced: true,
@@ -78,5 +81,7 @@ export default {
     unbind({ commit }) {
       commit("setPeople", []);
     },
+
+    set: crudFactory.makeSet((person) => person),
   },
 };

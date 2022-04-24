@@ -4,6 +4,7 @@ import ClothesModule from "./clothes";
 import { Store } from "vuex";
 import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
+import PeopleModule from "./people";
 
 class AppModules {
   modules: { [index: string]: AbstractModule } = {};
@@ -20,6 +21,9 @@ class AppModules {
 
     this.modules.clothes = new ClothesModule(store, router);
     this.modules.clothes.install();
+
+    this.modules.people = new PeopleModule(store, router);
+    this.modules.people.install();
   }
 
   onLogin() {
