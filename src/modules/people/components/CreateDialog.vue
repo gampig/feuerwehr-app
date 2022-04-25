@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="cancel">
+  <v-dialog :value="value" max-width="500" persistent @input="cancel">
     <v-card>
       <v-card-title> Person hinzufügen </v-card-title>
 
