@@ -4,6 +4,7 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
 import { vuetify } from "./plugins/vuetify";
+import notifier from "./plugins/notifier";
 
 import store from "./store";
 import router from "./router";
@@ -11,6 +12,8 @@ import modules from "./modules";
 
 // Globally register all `Base`-prefixed components
 import "./components/globals";
+
+Vue.use(notifier);
 
 // Filters
 import {

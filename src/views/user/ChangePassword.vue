@@ -19,19 +19,19 @@
       </v-card>
     </v-form>
 
-    <reauthentication-dialog
+    <ReauthenticationDialog
       :value="reauthenticationRequired"
       @input="onDialogInput"
-    ></reauthentication-dialog>
+    ></ReauthenticationDialog>
   </BasePageCentered>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
-import NotificationMixin from "@/mixins/NotificationMixin";
+import Vue from "vue";
 import ReauthenticationDialog from "@/components/user/ReauthenticationDialog";
 
-export default NotificationMixin.extend({
+export default Vue.extend({
   components: {
     ReauthenticationDialog,
   },
@@ -56,12 +56,13 @@ export default NotificationMixin.extend({
       this.updatePassword(this.newPassword)
         .then(() => {
           this.newPassword = "";
-          this.showMessage("Passwort wurde geändert.");
+          this.$showMessage("Passwort wurde geändert.");
         })
         .finally(() => {
           this.loading = false;
         });
     },
+
     onDialogInput(open) {
       if (!open) {
         if (this.reauthenticationRequired) {

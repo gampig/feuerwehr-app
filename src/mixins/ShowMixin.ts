@@ -1,7 +1,13 @@
-import NotificationMixin from "./NotificationMixin";
+import Vue from "vue";
 
 export default function (servicePrefix: string, storeName: string) {
-  return NotificationMixin.extend({
+  return Vue.extend({
+    computed: {
+      id() {
+        return this.$route.params.id;
+      },
+    },
+
     watch: {
       id() {
         this.retrieveItem();
@@ -12,12 +18,6 @@ export default function (servicePrefix: string, storeName: string) {
       this.retrieveItem();
     },
 
-    computed: {
-      id() {
-        return this.$route.params.id;
-      },
-    },
-
     methods: {
       retrieveItem(): any {
         return {};
@@ -25,7 +25,7 @@ export default function (servicePrefix: string, storeName: string) {
 
       del() {
         this.$store.dispatch(`${storeName}/remove`, this.id).then(() => {
-          this.showMessage("Objekt wurde gelöscht.");
+          this.$showMessage("Objekt wurde gelöscht.");
           this.$router.back();
         });
       },

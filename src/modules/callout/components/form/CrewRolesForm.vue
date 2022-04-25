@@ -38,10 +38,10 @@
 </template>
 
 <script>
-import NotificationMixin from "@/mixins/NotificationMixin";
+import Vue from "vue";
 import crewMemberCard from "../cards/CrewMemberCard";
 
-export default NotificationMixin.extend({
+export default Vue.extend({
   components: { crewMemberCard },
 
   props: {
@@ -49,9 +49,14 @@ export default NotificationMixin.extend({
       type: Array,
       required: true,
     },
+
     loading: {
       type: Object,
+      default: () => {
+        return {};
+      },
     },
+
     cardsOutlined: {
       type: Boolean,
       default: false,
@@ -70,6 +75,7 @@ export default NotificationMixin.extend({
         this.$emit("input", { person, role });
       }
     },
+
     remove(personId) {
       this.personToRemove = personId;
     },
@@ -77,6 +83,7 @@ export default NotificationMixin.extend({
     cancelRemoval() {
       this.personToRemove = null;
     },
+
     confirmRemoval() {
       this.$emit("delete", this.personToRemove);
       this.personToRemove = null;

@@ -1,11 +1,17 @@
-import NotificationMixin from "./NotificationMixin";
+import Vue from "vue";
 
 export default function (servicePrefix: string, storeName: string) {
-  return NotificationMixin.extend({
+  return Vue.extend({
     data() {
       return {
         updating: false,
       };
+    },
+
+    computed: {
+      id() {
+        return this.$route.params.id;
+      },
     },
 
     watch: {
@@ -18,16 +24,11 @@ export default function (servicePrefix: string, storeName: string) {
       this.retrieveItem();
     },
 
-    computed: {
-      id() {
-        return this.$route.params.id;
-      },
-    },
-
     methods: {
       retrieveItem(): any {
         return {};
       },
+
       validate(): boolean {
         return true;
       },
@@ -39,16 +40,17 @@ export default function (servicePrefix: string, storeName: string) {
           this.$store
             .dispatch(`${storeName}/update`, item)
             .then(() => {
-              this.showMessage("Gespeichert");
+              this.$showMessage("Gespeichert");
             })
             .finally(() => {
               this.updating = false;
             });
         }
       },
+
       del() {
         this.$store.dispatch(`${storeName}/remove`, this.id).then(() => {
-          this.showMessage("Objekt wurde gelöscht.");
+          this.$showMessage("Objekt wurde gelöscht.");
           this.$router.back();
         });
       },

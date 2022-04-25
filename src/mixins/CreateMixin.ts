@@ -1,7 +1,7 @@
-import NotificationMixin from "./NotificationMixin";
+import Vue from "vue";
 
 export default function (servicePrefix: string, storeName: string) {
-  return NotificationMixin.extend({
+  return Vue.extend({
     data() {
       return {
         creating: false,
@@ -20,7 +20,7 @@ export default function (servicePrefix: string, storeName: string) {
           this.$store
             .dispatch(`${storeName}/create`, item)
             .then((ref) => {
-              this.showMessage("Objekt wurde erstellt.");
+              this.$showMessage("Objekt wurde erstellt.");
 
               this.$router.replace({
                 name: `${servicePrefix}Update`,

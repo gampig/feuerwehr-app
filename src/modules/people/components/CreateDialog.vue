@@ -47,14 +47,14 @@
 </template>
 
 <script lang="ts">
-import NotificationMixin from "@/mixins/NotificationMixin";
+import Vue from "vue";
 import SelectStatus from "./SelectStatus.vue";
 
 function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default NotificationMixin.extend({
+export default Vue.extend({
   components: { SelectStatus },
 
   props: {
@@ -99,7 +99,7 @@ export default NotificationMixin.extend({
         })
         .then(() => {
           (this.$refs.form as any).reset();
-          this.showMessage('"' + personId + '" hinzugefügt.');
+          this.$showMessage('"' + personId + '" hinzugefügt.');
         })
         .finally(() => {
           this.loading = false;

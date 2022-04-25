@@ -1,9 +1,9 @@
 import { mapState } from "vuex";
 import moment from "moment";
-import NotificationMixin from "./NotificationMixin";
+import Vue from "vue";
 
 export default function (servicePrefix: string, storeName: string) {
-  return NotificationMixin.extend({
+  return Vue.extend({
     computed: {
       ...mapState(storeName, ["loading"]),
     },
@@ -12,22 +12,25 @@ export default function (servicePrefix: string, storeName: string) {
       addHandler() {
         this.$router.push({ name: `${servicePrefix}Create` });
       },
+
       showHandler(item: any) {
         this.$router.push({
           name: `${servicePrefix}Show`,
           params: { id: item.id },
         });
       },
+
       editHandler(item: any) {
         this.$router.push({
           name: `${servicePrefix}Update`,
           params: { id: item.id },
         });
       },
+
       deleteHandler(item: any) {
         this.$store
           .dispatch(`${storeName}/remove`, item.id)
-          .then(() => this.showMessage("Objekt wurde gelöscht."));
+          .then(() => this.$showMessage("Objekt wurde gelöscht."));
       },
 
       filterList(list: Array<any>, search: string) {
@@ -49,6 +52,7 @@ export default function (servicePrefix: string, storeName: string) {
         else if (diff < 0) return -1;
         else return 0;
       },
+
       sortDate(a: any, b: any) {
         const diff = moment(a, "L").diff(moment(b, "L"));
         if (diff > 0) return 1;
