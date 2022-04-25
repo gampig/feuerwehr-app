@@ -9,7 +9,7 @@
       </v-col>
 
       <v-col cols="6" class="d-flex justify-end align-center">
-        <v-btn color="primary" @click="addHandler">
+        <v-btn color="primary" @click="create">
           <v-icon left>mdi-plus</v-icon>
           Neu
         </v-btn>
@@ -31,7 +31,11 @@
               sm="6"
               md="4"
             >
-              <OrderCard v-bind="item" @edit="editHandler(item)" />
+              <OrderCard
+                v-bind="item"
+                @edit="edit(item.id)"
+                @remove="askForConfirmationToRemove(item.id)"
+              />
             </v-col>
           </v-row>
 
@@ -55,24 +59,36 @@
           <BaseActionCell
             slot="item.action"
             slot-scope="props"
-            :handle-edit="() => editHandler(props.item)"
+            :handle-edit="() => edit(props.item.id)"
           />
         </v-data-table>
       </v-col>
     </v-row>
+
+    <CreateDialog v-model="showCreateDialog"></CreateDialog>
+    <EditDialog v-model="showEditDialog"></EditDialog>
+
+    <BaseConfirmDelete
+      :visible="showRemoveConfirmationDialog"
+      :handle-delete="remove"
+      @close="showRemoveConfirmationDialog = false"
+    >
+    </BaseConfirmDelete>
   </v-container>
 </template>
 
 <script lang="ts">
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
 import Loading from "@/components/Loading.vue";
-import OrderCard from "../../components/OrderCard.vue";
+import OrderCard from "../components/OrderCard.vue";
+import CreateDialog from "../components/CreateDialog.vue";
+import EditDialog from "../components/EditDialog.vue";
 import { formatDate } from "@/utils/dates";
 import moment from "moment";
 /* eslint-disable no-unused-vars */
-import { Order } from "../../models/Order";
-import { ClothingType } from "../../models/ClothingType";
+import { Order } from "../models/Order";
+import { ClothingType } from "../models/ClothingType";
 /* eslint-enable */
 
 function latestTimestampOfOrder(order: Order) {
@@ -88,7 +104,7 @@ function latestTimestampOfOrder(order: Order) {
 }
 
 export default makeListMixin("ClothesOrder", "orders").extend({
-  components: { Loading, OrderCard },
+  components: { Loading, OrderCard, CreateDialog, EditDialog },
 
   data() {
     return {
@@ -117,6 +133,12 @@ export default makeListMixin("ClothesOrder", "orders").extend({
 
       search: "",
       showDoneOrders: false,
+
+      showCreateDialog: false,
+      showEditDialog: false,
+      showRemoveConfirmationDialog: false,
+
+      orderToRemove: "",
     };
   },
 
@@ -157,6 +179,29 @@ export default makeListMixin("ClothesOrder", "orders").extend({
       );
 
       return this.filterList(sortedOrders, this.search);
+    },
+  },
+
+  methods: {
+    ...mapActions("orders", ["bindOrder", "unbindOrder"]),
+
+    create() {
+      this.showCreateDialog = true;
+    },
+
+    edit(orderId: string) {
+      this.bindOrder(orderId);
+      this.showEditDialog = true;
+    },
+
+    remove() {
+      this.showRemoveConfirmationDialog = false;
+      this.$store.dispatch("orders/remove", this.orderToRemove);
+    },
+
+    askForConfirmationToRemove(orderId: string) {
+      this.orderToRemove = orderId;
+      this.showRemoveConfirmationDialog = true;
     },
   },
 });

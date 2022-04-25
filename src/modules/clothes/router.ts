@@ -9,7 +9,7 @@ export default [
       {
         name: "ClothesOrders",
         path: "bestellungen",
-        component: () => import("./views/orders/List.vue"),
+        component: () => import("./views/Orders.vue"),
       },
       {
         name: "ClothesTypes",
@@ -17,16 +17,6 @@ export default [
         component: () => import("./views/types/List.vue"),
       },
     ],
-  },
-  {
-    name: "ClothesOrderCreate",
-    path: "/kleidung/bestellungen/erstellen",
-    component: () => import("./views/orders/Create.vue"),
-  },
-  {
-    name: "ClothesOrderUpdate",
-    path: "/kleidung/bestellungen/bearbeiten/:id",
-    component: () => import("./views/orders/Update.vue"),
   },
 
   {

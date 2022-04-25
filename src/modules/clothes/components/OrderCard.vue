@@ -55,7 +55,12 @@
       </v-timeline>
     </v-card-text>
 
+    <v-divider></v-divider>
+
     <v-card-actions>
+      <v-btn icon @click="$emit('remove')">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
       <v-btn text @click="$emit('edit')">Bearbeiten</v-btn>
     </v-card-actions>

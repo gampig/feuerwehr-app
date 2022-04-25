@@ -7,6 +7,7 @@ import { ActionTree, MutationTree } from "vuex";
 
 class State {
   loading = false;
+  loadingOrder = false;
   orders: Order[] = [];
   order: Order | null = null;
 }
@@ -34,11 +35,15 @@ export default {
     setLoading(state, loading: boolean) {
       state.loading = loading;
     },
+    setLoadingOrder(state, loading: boolean) {
+      state.loadingOrder = loading;
+    },
   },
 
   actions: <ActionTree<State, any>>{
     create: crudFactory.makeCreate(preprocessOrder),
     update: crudFactory.makeUpdate(preprocessOrder),
+    set: crudFactory.makeSet(preprocessOrder),
     remove: crudFactory.makeRemove(),
 
     bindOrders: firebaseAction(({ bindFirebaseRef, commit }) => {
@@ -57,10 +62,15 @@ export default {
     }),
 
     bindOrder: firebaseAction(({ bindFirebaseRef, commit }, id: string) => {
+      commit("setLoadingOrder", true);
       return bindFirebaseRef(
         "order",
         firebase.database().ref("clothes/orders").child(id)
-      ).catch((error) => handleError(commit, error));
+      )
+        .catch((error) => handleError(commit, error))
+        .finally(() => {
+          commit("setLoadingOrder", false);
+        });
     }),
     unbindOrder: firebaseAction(({ unbindFirebaseRef }) => {
       unbindFirebaseRef("order");
