@@ -1,4 +1,4 @@
-import FireDepartmentModule from "./fireDepartment";
+import VehiclesModule from "./vehicles";
 import CalloutModule from "./callout";
 import ClothesModule from "./clothes";
 import { Store } from "vuex";
@@ -13,8 +13,8 @@ class AppModules {
   install(store: Store<any>, router: VueRouter) {
     this.store = store;
 
-    this.modules.fireDepartment = new FireDepartmentModule(store, router);
-    this.modules.fireDepartment.install();
+    this.modules.vehicles = new VehiclesModule(store, router);
+    this.modules.vehicles.install();
 
     this.modules.callout = new CalloutModule(store, router);
     this.modules.callout.install();

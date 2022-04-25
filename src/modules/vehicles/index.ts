@@ -2,11 +2,9 @@ import { AllRoles } from "@/models/User";
 import AbstractModule from "../AbstractModule";
 import store from "./store";
 
-const requiredRoles: { [type: string]: AllRoles[] } = {
-  vehicles: ["ROLE_GROUPLEADER", "ROLE_VEHICLE"],
-};
+const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
 
-export default class FireDepartmentModule extends AbstractModule {
+export default class VehiclesModule extends AbstractModule {
   link = null;
 
   install() {
@@ -14,7 +12,7 @@ export default class FireDepartmentModule extends AbstractModule {
   }
 
   load() {
-    if (this.hasAnyRole(requiredRoles.vehicles)) {
+    if (this.hasAnyRole(requiredRoles)) {
       return this.store.dispatch("vehicles/bindVehicles");
     } else {
       return this.store.dispatch("vehicles/unbind");
