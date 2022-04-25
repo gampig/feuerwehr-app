@@ -1,25 +1,15 @@
 <template>
-  <v-dialog :value="value" persistent max-width="900" @input="cancel">
-    <v-card :loading="loading">
-      <v-card-title>Bestellung bearbeiten</v-card-title>
-
-      <v-divider></v-divider>
-
-      <v-card-text>
-        <OrderForm ref="form" v-bind.sync="item" />
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
-        <v-spacer />
-        <v-btn :loading="saving" color="primary" text @click="save">
-          Speichern
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <BaseEditDialog
+    :value="value"
+    max-width="900"
+    title="Bestellung bearbeiten"
+    :loading="loading"
+    :saving="saving"
+    @input="cancel"
+    @save="save"
+  >
+    <OrderForm ref="form" v-bind.sync="item" />
+  </BaseEditDialog>
 </template>
 
 <script lang="ts">

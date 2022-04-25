@@ -1,49 +1,38 @@
 <template>
-  <v-dialog :value="value" max-width="500" persistent @input="cancel">
-    <v-card>
-      <v-card-title> Person hinzufügen </v-card-title>
+  <BaseCreateDialog
+    :value="value"
+    max-width="500"
+    :loading="loading"
+    title="Person hinzufügen"
+    @input="cancel"
+    @create="create"
+  >
+    <v-form ref="form">
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="firstName"
+              label="Vorname"
+              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
 
-      <v-divider></v-divider>
+          <v-col cols="12">
+            <v-text-field
+              v-model="lastName"
+              label="Nachname"
+              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
 
-      <v-card-text>
-        <v-form ref="form">
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="firstName"
-                  label="Vorname"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12">
-                <v-text-field
-                  v-model="lastName"
-                  label="Nachname"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12">
-                <SelectStatus v-model="status"></SelectStatus>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-actions>
-        <v-btn text @click="cancel">Abbrechen</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn text color="primary" :loading="loading" @click="create">
-          Hinzufügen
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+          <v-col cols="12">
+            <SelectStatus v-model="status"></SelectStatus>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+  </BaseCreateDialog>
 </template>
 
 <script lang="ts">
