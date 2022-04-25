@@ -77,6 +77,7 @@ import { ClothingType } from "../../models/ClothingType";
 
 function latestTimestampOfOrder(order: Order) {
   function dateToTimestamp(date: any) {
+    if (date === undefined) return 0;
     return moment(date, "L").unix();
   }
   return Math.max(
