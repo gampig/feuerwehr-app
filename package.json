@@ -15,6 +15,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build-report": "vue-cli-service build --report",
+    "serve-container": "vue-cli-service serve --port 80 --host localhost",
     "start": "vue-cli-service serve --port 80"
   },
   "dependencies": {
