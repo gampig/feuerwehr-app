@@ -49,20 +49,17 @@
       </v-btn>
     </v-card-actions>
 
-    <v-dialog v-model="showUserConfirm" width="400">
-      <v-card>
-        <v-card-title>Einsatz wirklich nicht vorhanden?</v-card-title>
-        <v-card-text>
-          Wenn der Einsatz bereits in der Liste vorhanden ist,
-          <br />bitte den vorhandenen Eintrag verwenden!
-        </v-card-text>
-        <v-card-actions>
-          <v-btn text @click.stop="showUserConfirm = false"> Abbrechen </v-btn>
-          <v-spacer />
-          <v-btn text @click="onUserConfirm"> Neuer Einsatz </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <BaseConfirmDialog
+      v-model="showUserConfirm"
+      width="400"
+      title="Einsatz wirklich nicht vorhanden?"
+      confirm-text="Neuer Einsatz"
+      @confirm="onUserConfirm"
+    >
+      Wenn der Einsatz bereits in der Liste vorhanden ist,
+      <br />
+      bitte den vorhandenen Eintrag verwenden!
+    </BaseConfirmDialog>
   </v-card>
 </template>
 

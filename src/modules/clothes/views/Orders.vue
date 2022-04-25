@@ -68,12 +68,10 @@
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
 
-    <BaseConfirmDelete
-      :visible="showRemoveConfirmationDialog"
-      :handle-delete="remove"
-      @close="showRemoveConfirmationDialog = false"
-    >
-    </BaseConfirmDelete>
+    <BaseConfirmDialog
+      v-model="showRemoveConfirmationDialog"
+      @confirm="remove"
+    />
   </v-container>
 </template>
 

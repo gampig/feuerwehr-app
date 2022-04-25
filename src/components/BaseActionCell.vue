@@ -12,11 +12,10 @@
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </div>
-    <BaseConfirmDelete
+    <BaseConfirmDialog
       v-if="handleDelete"
-      :visible="confirmDelete"
-      :handle-delete="handleDelete"
-      @close="confirmDelete = false"
+      v-model="confirmDelete"
+      @confirm="handleDelete"
     />
   </div>
 </template>

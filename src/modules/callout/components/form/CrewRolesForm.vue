@@ -19,21 +19,15 @@
       </crew-member-card>
     </v-col>
 
-    <v-dialog :value="personToRemove !== null" persistent max-width="300">
-      <v-card>
-        <v-card-title></v-card-title>
-        <v-card-text>
-          Soll {{ personToRemove }} wirklich von der Mannschaft entfernt werden?
-        </v-card-text>
-        <v-card-actions>
-          <v-btn text @click="cancelRemoval()"> Abbrechen </v-btn>
-          <v-spacer />
-          <v-btn text color="primary" @click="confirmRemoval()">
-            Entfernen
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <BaseConfirmDialog
+      :value="personToRemove !== null"
+      confirm-text="Entfernen"
+      width="300"
+      @cancel="cancelRemoval"
+      @confirm="confirmRemoval"
+    >
+      Soll {{ personToRemove }} wirklich von der Mannschaft entfernt werden?
+    </BaseConfirmDialog>
   </v-row>
 </template>
 

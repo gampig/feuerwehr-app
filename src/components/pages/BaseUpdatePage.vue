@@ -33,11 +33,10 @@
       </v-card>
     </v-container>
 
-    <BaseConfirmDelete
+    <BaseConfirmDialog
       v-if="!noDeleteAction"
-      :visible="confirmDelete"
-      :handle-delete="() => $emit('delete')"
-      @close="confirmDelete = false"
+      v-model="confirmDelete"
+      @confirm="$emit('delete')"
     />
   </BasePage>
 </template>

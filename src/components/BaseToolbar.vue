@@ -25,11 +25,10 @@
         <v-icon left>mdi-plus</v-icon> Neu
       </v-btn>
     </div>
-    <BaseConfirmDelete
+    <BaseConfirmDialog
       v-if="handleDelete"
-      :visible="confirmDelete"
-      :handle-delete="handleDelete"
-      @close="confirmDelete = false"
+      v-model="confirmDelete"
+      @confirm="handleDelete"
     />
   </v-toolbar>
 </template>
