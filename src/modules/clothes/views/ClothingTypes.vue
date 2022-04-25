@@ -42,7 +42,7 @@
           <BaseActionCell
             slot="item.action"
             slot-scope="props"
-            :handle-edit="() => editHandler(props.item)"
+            :handle-edit="() => editHandler(props.item.id)"
           >
             <v-btn icon @click="storageHandler(props.item)">
               <v-icon>mdi-wardrobe</v-icon>
@@ -51,14 +51,21 @@
         </v-data-table>
       </v-col>
     </v-row>
+
+    <CreateDialog v-model="showCreateDialog"></CreateDialog>
+    <EditDialog v-model="showEditDialog"></EditDialog>
   </v-container>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
+import CreateDialog from "../components/types/CreateDialog";
+import EditDialog from "../components/types/EditDialog";
 
 export default makeListMixin("ClothesType", "clothingTypes").extend({
+  components: { CreateDialog, EditDialog },
+
   data() {
     return {
       headers: [
@@ -81,6 +88,9 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
       selected: [],
       search: "",
       showUnavailableTypes: false,
+
+      showCreateDialog: false,
+      showEditDialog: false,
     };
   },
 
@@ -97,6 +107,17 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
   },
 
   methods: {
+    ...mapActions("clothingTypes", ["bindType"]),
+
+    addHandler() {
+      this.showCreateDialog = true;
+    },
+
+    editHandler(clothingTypeId) {
+      this.bindType(clothingTypeId);
+      this.showEditDialog = true;
+    },
+
     storageHandler(item) {
       this.$router.push({
         name: "ClothesStorage",

@@ -7,6 +7,7 @@ import { ActionTree, MutationTree } from "vuex";
 
 class State {
   loading = false;
+  loadingType = false;
   types: ClothingType[] = [];
   type: ClothingType | null = null;
 }
@@ -30,11 +31,15 @@ export default {
     setLoading(state, loading: boolean) {
       state.loading = loading;
     },
+    setLoadingType(state, loading: boolean) {
+      state.loadingType = loading;
+    },
   },
 
   actions: <ActionTree<State, any>>{
     create: crudFactory.makeCreate(preprocessType),
     update: crudFactory.makeUpdate(preprocessType),
+    set: crudFactory.makeSet(preprocessType),
     remove: crudFactory.makeRemove(),
 
     bindTypes: firebaseAction(({ bindFirebaseRef, commit }) => {
@@ -56,10 +61,15 @@ export default {
     }),
 
     bindType: firebaseAction(({ bindFirebaseRef, commit }, id: string) => {
+      commit("setLoadingType", true);
       return bindFirebaseRef(
         "type",
         firebase.database().ref("clothes/clothingTypes").child(id)
-      ).catch((error) => handleError(commit, error));
+      )
+        .catch((error) => handleError(commit, error))
+        .finally(() => {
+          commit("setLoadingType", false);
+        });
     }),
     unbindType: firebaseAction(({ unbindFirebaseRef }) => {
       unbindFirebaseRef("type");

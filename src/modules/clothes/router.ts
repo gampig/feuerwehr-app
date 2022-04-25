@@ -14,21 +14,11 @@ export default [
       {
         name: "ClothesTypes",
         path: "typen",
-        component: () => import("./views/types/List.vue"),
+        component: () => import("./views/ClothingTypes.vue"),
       },
     ],
   },
 
-  {
-    name: "ClothesTypeCreate",
-    path: "/kleidung/typen/erstellen",
-    component: () => import("./views/types/Create.vue"),
-  },
-  {
-    name: "ClothesTypeUpdate",
-    path: "/kleidung/typen/bearbeiten/:id",
-    component: () => import("./views/types/Update.vue"),
-  },
   {
     name: "ClothesStorage",
     path: "/kleidung/lager/:id",
