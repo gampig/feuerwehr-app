@@ -79,9 +79,9 @@
 import { mapActions, mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
 import Loading from "@/components/Loading.vue";
-import OrderCard from "../components/OrderCard.vue";
-import CreateDialog from "../components/CreateDialog.vue";
-import EditDialog from "../components/EditDialog.vue";
+import OrderCard from "../components/orders/OrderCard.vue";
+import CreateDialog from "../components/orders/CreateDialog.vue";
+import EditDialog from "../components/orders/EditDialog.vue";
 import { formatDate } from "@/utils/dates";
 import moment from "moment";
 /* eslint-disable no-unused-vars */

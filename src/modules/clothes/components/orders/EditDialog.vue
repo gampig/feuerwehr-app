@@ -14,10 +14,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import OrderForm from "./form/OrderForm.vue";
+import OrderForm from "./OrderForm.vue";
 import { mapState } from "vuex";
 /* eslint-disable no-unused-vars */
-import { Order } from "../models/Order";
+import { Order } from "../../models/Order";
 /* eslint-enable */
 
 export default Vue.extend({
