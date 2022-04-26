@@ -7,7 +7,7 @@
     @input="cancel"
     @create="save"
   >
-    <TypeForm ref="form" v-bind.sync="item" create />
+    <TypeForm ref="form" v-bind.sync="item" />
   </BaseCreateDialog>
 </template>
 

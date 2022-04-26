@@ -52,58 +52,56 @@
       </v-col>
     </v-row>
 
-    <template v-if="!create">
-      <v-divider></v-divider>
+    <v-divider></v-divider>
 
-      <v-row>
-        <template v-if="totalPrice > 0">
-          <v-col cols="6">
-            <v-text-field
-              label="Bezahlt"
-              type="number"
-              min="0"
-              suffix="€"
-              prepend-icon="mdi-cash"
-              :error="totalPrice > 0 && paid != totalPrice"
-              :value="paid"
-              @input="update('paid', $event)"
-            />
-          </v-col>
+    <v-row>
+      <template v-if="totalPrice > 0">
+        <v-col cols="6">
+          <v-text-field
+            label="Bezahlt"
+            type="number"
+            min="0"
+            suffix="€"
+            prepend-icon="mdi-cash"
+            :error="totalPrice > 0 && paid != totalPrice"
+            :value="paid"
+            @input="update('paid', $event)"
+          />
+        </v-col>
 
-          <v-col cols="6">
-            <v-text-field
-              label="Gesamtkosten"
-              :value="totalPrice + ' €'"
-              disabled
-            />
-          </v-col>
-        </template>
-
-        <v-col v-if="submittedOn" cols="12">
-          <v-checkbox
-            :label="makeLabelWithDate('Eingereicht', submittedOn)"
-            input-value="true"
+        <v-col cols="6">
+          <v-text-field
+            label="Gesamtkosten"
+            :value="totalPrice + ' €'"
             disabled
           />
         </v-col>
+      </template>
 
-        <v-col cols="12">
-          <v-checkbox
-            :label="makeLabelWithDate('Bestellt', orderedOn)"
-            :input-value="orderedOn"
-            @change="updateCheckbox('orderedOn', $event)"
-          />
-        </v-col>
+      <v-col cols="12">
+        <v-checkbox
+          :label="makeLabelWithDate('Eingereicht', submittedOn)"
+          input-value="true"
+          disabled
+        />
+      </v-col>
 
-        <v-col cols="12">
-          <v-checkbox
-            :label="makeLabelWithDate('Erledigt', doneOn)"
-            :input-value="doneOn"
-            @change="updateCheckbox('doneOn', $event)"
-          />
-        </v-col>
-      </v-row>
-    </template>
+      <v-col cols="12">
+        <v-checkbox
+          :label="makeLabelWithDate('Bestellt', orderedOn)"
+          :input-value="orderedOn"
+          @change="updateCheckbox('orderedOn', $event)"
+        />
+      </v-col>
+
+      <v-col cols="12">
+        <v-checkbox
+          :label="makeLabelWithDate('Erledigt', doneOn)"
+          :input-value="doneOn"
+          @change="updateCheckbox('doneOn', $event)"
+        />
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 
@@ -114,11 +112,6 @@ import moment from "moment";
 
 export default FormMixin.extend({
   props: {
-    create: {
-      type: Boolean,
-      default: false,
-    },
-
     person: null,
     clothingType: null,
     size: null,

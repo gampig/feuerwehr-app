@@ -7,7 +7,7 @@
     @input="cancel"
     @create="save"
   >
-    <OrderForm ref="form" v-bind.sync="item" create />
+    <OrderForm ref="form" v-bind.sync="item" />
   </BaseCreateDialog>
 </template>
 
