@@ -52,39 +52,31 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="showAddDialog" max-width="600px" persistent>
+    <BaseCreateDialog
+      v-model="showAddDialog"
+      max-width="600"
+      title="Kleidungsstücke hinzufügen"
+      :loading="adding"
+      @create="onAdd"
+    >
       <v-form ref="addForm">
-        <v-card>
-          <v-card-title>Kleidungsstücke hinzufügen</v-card-title>
-          <v-card-text>
-            <v-combobox
-              v-model="newSize"
-              label="Größe"
-              prepend-icon="mdi-ruler"
-              :rules="[rules.required]"
-              :items="(type && type.sizes) || []"
-            />
-            <v-text-field
-              v-model="newCount"
-              type="number"
-              min="1"
-              label="Anzahl"
-              prepend-icon="mdi-hanger"
-              :rules="[rules.required]"
-            />
-          </v-card-text>
-          <v-card-actions>
-            <v-btn text color="primary" @click="showAddDialog = false">
-              Abbrechen
-            </v-btn>
-            <v-spacer />
-            <v-btn text color="primary" :loading="adding" @click="onAdd">
-              Speichern
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-combobox
+          v-model="newSize"
+          label="Größe"
+          prepend-icon="mdi-ruler"
+          :rules="[rules.required]"
+          :items="(type && type.sizes) || []"
+        />
+        <v-text-field
+          v-model="newCount"
+          type="number"
+          min="1"
+          label="Anzahl"
+          prepend-icon="mdi-hanger"
+          :rules="[rules.required]"
+        />
       </v-form>
-    </v-dialog>
+    </BaseCreateDialog>
   </BaseListPage>
 </template>
 
