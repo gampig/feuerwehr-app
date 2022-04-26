@@ -2,7 +2,7 @@
   <BaseEditDialog
     :value="value"
     max-width="900"
-    :title="clothingType.name || 'Kleidungsstück bearbeiten'"
+    :title="(clothingType && clothingType.name) || 'Kleidungsstück bearbeiten'"
     :loading="loading"
     :saving="saving"
     @input="cancel"
