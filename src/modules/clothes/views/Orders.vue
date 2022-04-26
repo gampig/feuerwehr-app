@@ -60,6 +60,7 @@
             slot="item.action"
             slot-scope="props"
             :handle-edit="() => edit(props.item.id)"
+            :handle-delete="() => remove(props.item.id)"
           />
         </v-data-table>
       </v-col>
@@ -192,9 +193,11 @@ export default makeListMixin("ClothesOrder", "orders").extend({
       this.showEditDialog = true;
     },
 
-    remove() {
+    remove(orderId?: string) {
+      const orderToRemove =
+        orderId === undefined ? this.orderToRemove : orderId;
       this.showRemoveConfirmationDialog = false;
-      this.$store.dispatch("orders/remove", this.orderToRemove);
+      this.$store.dispatch("orders/remove", orderToRemove);
     },
 
     askForConfirmationToRemove(orderId: string) {
