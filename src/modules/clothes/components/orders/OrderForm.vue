@@ -56,26 +56,28 @@
       <v-divider></v-divider>
 
       <v-row>
-        <v-col cols="6">
-          <v-text-field
-            label="Bezahlt"
-            type="number"
-            min="0"
-            suffix="€"
-            prepend-icon="mdi-cash"
-            :error="totalPrice > 0 && paid != totalPrice"
-            :value="paid"
-            @input="update('paid', $event)"
-          />
-        </v-col>
+        <template v-if="totalPrice > 0">
+          <v-col cols="6">
+            <v-text-field
+              label="Bezahlt"
+              type="number"
+              min="0"
+              suffix="€"
+              prepend-icon="mdi-cash"
+              :error="totalPrice > 0 && paid != totalPrice"
+              :value="paid"
+              @input="update('paid', $event)"
+            />
+          </v-col>
 
-        <v-col cols="6">
-          <v-text-field
-            label="Gesamtkosten"
-            :value="totalPrice + ' €'"
-            disabled
-          />
-        </v-col>
+          <v-col cols="6">
+            <v-text-field
+              label="Gesamtkosten"
+              :value="totalPrice + ' €'"
+              disabled
+            />
+          </v-col>
+        </template>
 
         <v-col v-if="submittedOn" cols="12">
           <v-checkbox
