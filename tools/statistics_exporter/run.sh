@@ -1,9 +1,13 @@
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+DATABASE_FILE=$SCRIPT_DIR/output/Datenbank.json
+OUTPUT_FILE=$SCRIPT_DIR/output/Mannschaftsbuch.csv
+
 download_database() {
-	firebase database:get / > data.json
+	firebase database:get / > $DATABASE_FILE
 }
 
 convert_database() {
-	python3 convert_callouts_to_csv.py
+	python3 $SCRIPT_DIR/scripts/convert_callouts_to_csv.py "$DATABASE_FILE" "$OUTPUT_FILE"
 }
 
 echo "Firebase-Datenbank herunterladen..."

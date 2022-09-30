@@ -1,9 +1,15 @@
 import json
 from datetime import datetime
 import csv
+import argparse
 
-input_filename = 'data.json'
-output_filename = 'Statistik.csv'
+parser = argparse.ArgumentParser()
+parser.add_argument('input', help='Datenbank im JSON-Format')
+parser.add_argument('output', help='Zu speichernde CSV-Datei')
+args = parser.parse_args()
+
+input_filename = args.input
+output_filename = args.output
 
 with open(input_filename, encoding='utf-8') as f:
     data = json.load(f)
