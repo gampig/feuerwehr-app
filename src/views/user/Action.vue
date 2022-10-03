@@ -46,7 +46,7 @@ export default {
       })
         .then(() => {
           this.$router.push({ name: "UserLogin" });
-          this.showMessage("Passwort wurde erfolgreich geändert.");
+          this.$showMessage("Passwort wurde erfolgreich geändert.");
         })
         .finally(() => {
           this.loading = false;

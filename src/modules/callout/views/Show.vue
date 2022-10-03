@@ -57,7 +57,7 @@ export default makeShowMixin("Callout", "callouts").extend({
     },
     del() {
       this.remove().then(() => {
-        this.showMessage("Objekt wurde gelöscht.");
+        this.$showMessage("Einsatz wurde gelöscht.");
         this.$router.back();
       });
     },
