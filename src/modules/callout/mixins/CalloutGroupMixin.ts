@@ -113,7 +113,7 @@ export default Vue.extend({
     },
 
     goHome(): void {
-      this.$router.push({ name: "CalloutHome" });
+      this.$router.push({ name: "CrewCallouts" });
     },
 
     getCurrentStepNumber(): number {

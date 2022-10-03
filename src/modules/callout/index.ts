@@ -9,7 +9,7 @@ const standbyRequiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_ALARM_PC"];
 export default class CalloutModule extends AbstractModule {
   link = {
     title: "Mannschaft",
-    to: { name: "CalloutHome" },
+    to: { name: "CrewCallouts" },
     icon: "mdi-alarm-light",
     auth: () => this.hasAnyRole(requiredRoles),
   };

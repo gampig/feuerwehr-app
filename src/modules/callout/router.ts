@@ -1,14 +1,9 @@
 export default {
   path: encodeURI("/einsätze"),
+  redirect: { name: "CrewCallouts" },
   component: () => import("./components/Layout.vue"),
   meta: { auth: { requiresAuth: true } },
   children: [
-    {
-      name: "CalloutHome",
-      path: "",
-      meta: { skipWaiting: true },
-      component: () => import("./views/Home.vue"),
-    },
     {
       name: "CalloutList",
       path: "liste",
@@ -23,6 +18,7 @@ export default {
     {
       name: "CrewCallouts",
       path: "mannschaft",
+      meta: { skipWaiting: true },
       component: () => import("./views/crew/SelectCallout.vue"),
     },
     {
