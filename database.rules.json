@@ -3,7 +3,7 @@
     "callouts": {
       ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
       ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val()",
-      ".indexOn": ["alarmTime"],
+      ".indexOn": ["alarmTime", "einsatznummer"],
 
       "$callout_id": {
         // Neuer Einsatz oder max. 7 Tage alt
