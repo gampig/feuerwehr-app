@@ -4,11 +4,11 @@ import route from "./router";
 import store from "./store";
 
 const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
-const standbyRequiredRoles: AllRoles[] = ["ROLE_ALARM_PC"];
+const standbyRequiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_ALARM_PC"];
 
 export default class CalloutModule extends AbstractModule {
   link = {
-    title: "Einsatz",
+    title: "Mannschaft",
     to: { name: "CalloutHome" },
     icon: "mdi-alarm-light",
     auth: () => this.hasAnyRole(requiredRoles),
@@ -20,6 +20,12 @@ export default class CalloutModule extends AbstractModule {
       to: { name: "SelectStandby" },
       icon: "mdi-alarm-light",
       auth: () => this.hasAnyRole(standbyRequiredRoles),
+    },
+    {
+      title: "Einsätze",
+      to: { name: "CalloutList" },
+      icon: "mdi-alarm-light",
+      auth: () => this.hasAnyRole(requiredRoles),
     },
   ];
 

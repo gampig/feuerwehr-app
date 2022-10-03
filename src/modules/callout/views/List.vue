@@ -1,29 +1,40 @@
 <template>
-  <BaseListPage page-title="Einsatz-Archiv" :search.sync="search">
-    <v-data-table
-      v-model="selected"
-      :headers="headers"
-      :items="callouts"
-      :search="search"
-      :loading="loading"
-      loading-text="Laden..."
-      :options.sync="options"
-      class="elevation-1"
-      locale="de-DE"
-      item-key="id"
-    >
-      <template #[`item.type`]="{ item }">
-        <v-chip v-for="(val, type) in item.type" :key="type" class="ma-1">{{
-          type
-        }}</v-chip>
-      </template>
-      <BaseActionCell
-        slot="item.action"
-        slot-scope="props"
-        :handle-show="() => showHandler(props.item)"
-      />
-    </v-data-table>
-  </BaseListPage>
+  <BasePage page-title="Einsatz-Archiv" navdrawer>
+    <v-container fluid>
+      <BaseSearchRow :search.sync="search" />
+
+      <v-row>
+        <v-col cols="12">
+          <v-data-table
+            v-model="selected"
+            :headers="headers"
+            :items="callouts"
+            :search="search"
+            :loading="loading"
+            loading-text="Laden..."
+            :options.sync="options"
+            class="elevation-1"
+            locale="de-DE"
+            item-key="id"
+          >
+            <template #[`item.type`]="{ item }">
+              <v-chip
+                v-for="(val, type) in item.type"
+                :key="type"
+                class="ma-1"
+                >{{ type }}</v-chip
+              >
+            </template>
+            <BaseActionCell
+              slot="item.action"
+              slot-scope="props"
+              :handle-show="() => showHandler(props.item)"
+            />
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </BasePage>
 </template>
 
 <script>
