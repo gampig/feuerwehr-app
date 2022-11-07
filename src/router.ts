@@ -10,7 +10,7 @@ const routes: Array<AppRouteConfig> = [
   {
     path: "/",
     name: "Home",
-    meta: { skipWaiting: true },
+    meta: { auth: { requiresAuth: true }, skipWaiting: true },
     component: () => import("@/views/Home.vue"),
   },
   {

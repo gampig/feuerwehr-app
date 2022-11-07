@@ -53,7 +53,7 @@ export default {
     },
 
     toLoginPage() {
-      if (this.$route.name != "UserLogin") {
+      if (this.$route.meta?.auth?.requiresAuth) {
         this.$router.replace({
           name: "UserLogin",
           params: { nextUrl: { name: "Home" } },
