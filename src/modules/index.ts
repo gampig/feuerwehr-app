@@ -5,6 +5,7 @@ import { Store } from "vuex";
 import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
+import ExporterModule from "./exporter";
 
 class AppModules {
   modules: { [index: string]: AbstractModule } = {};
@@ -24,6 +25,9 @@ class AppModules {
 
     this.modules.people = new PeopleModule(store, router);
     this.modules.people.install();
+
+    this.modules.exporter = new ExporterModule(store, router);
+    this.modules.exporter.install();
   }
 
   onLogin() {
