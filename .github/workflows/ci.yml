@@ -5,10 +5,10 @@ on:
     branches:
       - 'main'
     paths-ignore:
-      - '.devcontainer/'
-      - '.github/'
-      - 'docs/'
-      - 'tools/'
+      - '.devcontainer/**'
+      - '.github/**'
+      - 'docs/**'
+      - 'tools/**'
       - '.editorconfig'
       - '.git*'
       - '**.md'
