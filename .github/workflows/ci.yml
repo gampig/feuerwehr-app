@@ -1,6 +1,19 @@
 name: CI
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '.devcontainer/'
+      - '.github/'
+      - 'docs/'
+      - 'tools/'
+      - '.editorconfig'
+      - '.git*'
+      - '**.md'
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   build:
