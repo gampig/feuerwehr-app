@@ -1,8 +1,6 @@
 name: CD
 
-on:
-  push:
-    branches: [main]
+on: workflow_dispatch
 
 env:
   FTP_HOST: w01bad8e.kasserver.com
