@@ -1,31 +1,27 @@
-import { AllRoles } from "@/models/User";
+import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import route from "./router";
 import store from "./store";
 
-const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
-const standbyRequiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_ALARM_PC"];
-
 export default class CalloutModule extends AbstractModule {
-  link = {
-    title: "Mannschaft",
-    to: { name: "CrewCallouts" },
-    icon: "mdi-alarm-light",
-    auth: () => this.hasAnyRole(requiredRoles),
-  };
   navLinks = [
-    this.link,
+    {
+      title: "Mannschaft",
+      to: { name: "CrewCallouts" },
+      icon: "mdi-alarm-light",
+      auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
+    },
     {
       title: "Bereitschaft",
       to: { name: "SelectStandby" },
       icon: "mdi-alarm-light",
-      auth: () => this.hasAnyRole(standbyRequiredRoles),
+      auth: () => this.hasAnyRole(Acl.bereitschaftsliste),
     },
     {
       title: "Einsätze",
       to: { name: "CalloutList" },
       icon: "mdi-alarm-light",
-      auth: () => this.hasAnyRole(requiredRoles),
+      auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
     },
   ];
 
@@ -37,7 +33,7 @@ export default class CalloutModule extends AbstractModule {
   }
 
   isAuthorized() {
-    return this.hasAnyRole([...requiredRoles, ...standbyRequiredRoles]);
+    return this.hasAnyRole([...Acl.mannschaftsbuch, ...Acl.bereitschaftsliste]);
   }
 
   load() {

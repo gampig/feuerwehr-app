@@ -37,24 +37,6 @@ class AppModules {
   onLogout() {
     Object.values(this.modules).forEach((module) => module.onLogout());
   }
-
-  getStartPage() {
-    if (this.store?.state.auth.roles?.ROLE_ALARM_PC) {
-      return { name: "SelectStandby" };
-    }
-
-    return (
-      this.getLink(this.modules.callout) || this.getLink(this.modules.clothes)
-    );
-  }
-
-  getLink(module: AbstractModule) {
-    if (module.isAuthorized()) {
-      return module.link?.to;
-    } else {
-      return undefined;
-    }
-  }
 }
 
 const modules = new AppModules();

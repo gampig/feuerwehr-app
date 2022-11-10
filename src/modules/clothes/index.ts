@@ -1,27 +1,25 @@
-import { AllRoles } from "@/models/User";
+import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import routes from "./router";
 import store from "./store";
 
-const requiredRoles: AllRoles[] = ["ROLE_MAINTAINER_CLOTHES"];
-
 export default class ClothesModule extends AbstractModule {
-  link = {
-    title: "Kleidung",
-    to: { name: "ClothesHome" },
-    icon: "mdi-tshirt-crew",
-    auth: () => this.isAuthorized(),
-  };
-
   install() {
     routes.forEach((route) => this.router.addRoute(route));
     this.installStore(store);
 
-    this.store.commit("navigation/addLinks", [this.link]);
+    this.store.commit("navigation/addLinks", [
+      {
+        title: "Kleidung",
+        to: { name: "ClothesHome" },
+        icon: "mdi-tshirt-crew",
+        auth: () => this.isAuthorized(),
+      },
+    ]);
   }
 
   isAuthorized() {
-    return this.hasAnyRole(requiredRoles);
+    return this.hasAnyRole(Acl.kleiderverwaltung);
   }
 
   load() {

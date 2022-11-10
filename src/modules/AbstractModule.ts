@@ -6,7 +6,6 @@ import { Module, Store } from "vuex";
 export default abstract class AbstractModule {
   protected store: Store<any>;
   protected router: VueRouter;
-  abstract link: NavLink | null;
 
   constructor(store: Store<any>, router: VueRouter) {
     this.store = store;
