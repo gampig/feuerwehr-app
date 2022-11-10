@@ -4,32 +4,9 @@ import route from "./router";
 import store from "./store";
 
 export default class CalloutModule extends AbstractModule {
-  navLinks = [
-    {
-      title: "Mannschaft",
-      to: { name: "CrewCallouts" },
-      icon: "mdi-alarm-light",
-      auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
-    },
-    {
-      title: "Bereitschaft",
-      to: { name: "SelectStandby" },
-      icon: "mdi-alarm-light",
-      auth: () => this.hasAnyRole(Acl.bereitschaftsliste),
-    },
-    {
-      title: "Einsätze",
-      to: { name: "CalloutList" },
-      icon: "mdi-alarm-light",
-      auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
-    },
-  ];
-
   install() {
     this.router.addRoute(route);
     this.installStore(store);
-
-    this.store.commit("navigation/addLinks", this.navLinks);
   }
 
   isAuthorized() {

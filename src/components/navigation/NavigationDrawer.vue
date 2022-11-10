@@ -46,6 +46,7 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import version from "@/utils/version";
 import NavigationLinks from "./NavigationLinks";
+import { Acl } from "@/acl";
 
 const deviceRoles = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
@@ -97,13 +98,51 @@ export default {
           auth: () => this.hasAnyRole(deviceRoles),
         },
       ],
+
+      links: [
+        {
+          title: "Mannschaft",
+          to: { name: "CrewCallouts" },
+          icon: "mdi-alarm-light",
+          auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
+        },
+        {
+          title: "Bereitschaft",
+          to: { name: "SelectStandby" },
+          icon: "mdi-alarm-light",
+          auth: () => this.hasAnyRole(Acl.bereitschaftsliste),
+        },
+        {
+          title: "Einsätze",
+          to: { name: "CalloutList" },
+          icon: "mdi-alarm-light",
+          auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
+        },
+        {
+          title: "Kleidung",
+          to: { name: "ClothesHome" },
+          icon: "mdi-tshirt-crew",
+          auth: () => this.hasAnyRole(Acl.kleiderverwaltung),
+        },
+        {
+          title: "Personen",
+          to: { name: "PeopleHome" },
+          icon: "mdi-account-multiple",
+          auth: () => this.hasAnyRole(Acl.personenBearbeiten),
+        },
+        {
+          title: "Datenexport",
+          to: { name: "ExporterHome" },
+          icon: "mdi-download",
+          auth: () => this.hasAnyRole(Acl.datenexport),
+        },
+      ],
     };
   },
 
   computed: {
     ...mapState("auth", ["loggedIn", "user"]),
     ...mapGetters("auth", ["hasAnyRole"]),
-    ...mapState("navigation", ["links"]),
   },
 
   watch: {
