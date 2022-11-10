@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth", ["loggedIn", "user", "userSettings"]),
+    ...mapState("auth", ["loggedIn", "user"]),
     ...mapGetters("auth", ["hasAnyRole"]),
     ...mapState("navigation", ["links"]),
   },

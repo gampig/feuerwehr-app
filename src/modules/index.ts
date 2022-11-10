@@ -39,7 +39,7 @@ class AppModules {
   }
 
   getStartPage() {
-    if (this.store?.state.auth.userSettings?.roles?.ROLE_ALARM_PC) {
+    if (this.store?.state.auth.roles?.ROLE_ALARM_PC) {
       return { name: "SelectStandby" };
     }
 

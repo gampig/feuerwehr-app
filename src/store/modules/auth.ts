@@ -1,45 +1,47 @@
 import { GetterTree, MutationTree, ActionTree, ActionContext } from "vuex";
 import {
-  UserSettings,
   Client,
   Roles,
   AllRoles,
   LoginCredentials,
+  UserSettings,
 } from "../../models/User";
 import firebase from "firebase/app";
-import { firebaseAction } from "vuexfire";
 import cloneDeep from "lodash/cloneDeep";
 
 import deviceService, { deviceId } from "@/services/device";
 
-import { showError } from "@/utils/notifications";
 import handleError from "@/utils/store/handleError";
 
 class State {
   loading = true;
   loggedIn: boolean | null = null;
   user: firebase.User | null = null;
-  userSettings: UserSettings | null = null;
+  vehicle?: string;
+  roles?: Roles;
   reauthenticationRequired = false;
 }
 
 function onLogin(context: ActionContext<any, any>, user: firebase.User) {
   const userCopy = cloneDeep(user);
   context.commit("setUser", userCopy);
-  context.dispatch("bind");
+  firebase
+    .database()
+    .ref("users/" + context.state.user.uid)
+    .once("value", (snapshot) => {
+      const userSettings = snapshot.val() as UserSettings;
+      context.commit("setUserSettings", userSettings);
+      onLoginComplete(context);
+    });
 }
 
-function onSettingsBound(
-  context: ActionContext<any, any>,
-  ref: firebase.database.DataSnapshot
-) {
+function onLoginComplete(context: ActionContext<any, any>) {
   context.commit("login");
-  return ref;
 }
 
 function onLogout(context: ActionContext<any, any>) {
   context.commit("logout");
-  context.dispatch("unbind");
+  context.commit("setUserSettings");
 
   const deviceCred = deviceService.get();
   if (deviceCred) {
@@ -54,17 +56,14 @@ const authModule = {
 
   getters: <GetterTree<State, any>>{
     hasAnyRole: (state) => (requiredRoles: AllRoles[]) => {
-      if (!requiredRoles) {
+      if (requiredRoles.length == 0) {
         return true;
-      }
-
-      if (!state.userSettings || state.userSettings.roles === undefined) {
+      } else if (!state.roles) {
         return false;
+      } else {
+        const userRoles: Roles = state.roles;
+        return requiredRoles.some((reqRole) => userRoles[reqRole]);
       }
-
-      const userRoles: Roles = state.userSettings.roles;
-
-      return userRoles && requiredRoles.some((reqRole) => userRoles[reqRole]);
     },
   },
 
@@ -78,21 +77,6 @@ const authModule = {
         }
       });
     },
-    bind: firebaseAction((context) => {
-      if (!context.state.user) {
-        showError("Benutzer muss angemeldet sein.");
-      } else {
-        return context
-          .bindFirebaseRef(
-            "userSettings",
-            firebase.database().ref("users/" + context.state.user.uid)
-          )
-          .then((ref) => onSettingsBound(context, ref));
-      }
-    }),
-    unbind: firebaseAction(({ unbindFirebaseRef }) => {
-      return unbindFirebaseRef("userSettings");
-    }),
 
     login({ commit }, { email, password }: LoginCredentials) {
       commit("loading");
@@ -182,8 +166,13 @@ const authModule = {
     setUser(state, user: firebase.User) {
       state.user = user;
     },
-    setUserSettings(state, userSettings: UserSettings) {
-      state.userSettings = userSettings;
+    setUserSettings(state, userSettings?: UserSettings) {
+      state.roles = userSettings?.roles;
+      if (state.roles) {
+        state.roles.ROLE_USER = true;
+      }
+
+      state.vehicle = userSettings?.vehicle;
     },
   },
 };

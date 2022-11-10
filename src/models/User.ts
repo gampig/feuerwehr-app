@@ -4,6 +4,8 @@ export interface LoginCredentials {
 }
 
 export type AllRoles =
+  | "ROLE_USER"
+  | "ROLE_ADMIN"
   | "ROLE_GROUPLEADER"
   | "ROLE_MAINTAINER_CLOTHES"
   | "ROLE_VEHICLE"
@@ -17,8 +19,6 @@ export interface Client {
 }
 
 export interface UserSettings {
-  comment?: string;
-  lastOnline?: string;
-  roles?: { [role: string]: boolean };
-  clients?: { [key: string]: Client };
+  roles?: Roles;
+  vehicle?: string;
 }

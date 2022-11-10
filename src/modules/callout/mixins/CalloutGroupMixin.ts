@@ -121,10 +121,7 @@ export default Vue.extend({
     },
 
     getVehicleId(): string | undefined {
-      return (
-        this.$store.state.auth.userSettings?.vehicle ||
-        this.$route.params.vehicle_id
-      );
+      return this.$store.state.auth.vehicle || this.$route.params.vehicle_id;
     },
   },
 });

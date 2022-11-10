@@ -7,10 +7,10 @@ import modules from "@/modules";
 import { mapState } from "vuex";
 
 export default {
-  computed: mapState("auth", ["userSettings"]),
+  computed: mapState("auth", ["loggedIn"]),
 
   watch: {
-    userSettings() {
+    loggedIn() {
       this.redirect();
     },
   },
