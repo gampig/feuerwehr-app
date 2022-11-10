@@ -1,6 +1,8 @@
 import { AllRoles } from "./models/User";
 
 export abstract class Acl {
+  static readonly geraetEinrichten: AllRoles[] = ["ROLE_GROUPLEADER"];
+
   static readonly mannschaftsbuch: AllRoles[] = [
     "ROLE_GROUPLEADER",
     "ROLE_VEHICLE",
@@ -10,6 +12,10 @@ export abstract class Acl {
     "ROLE_GROUPLEADER",
     "ROLE_ALARM_PC",
   ];
+
+  static readonly alleEinsaetzeLaden: AllRoles[] = ["ROLE_GROUPLEADER"];
+
+  static readonly einsatzLoeschen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
   static readonly kleiderverwaltung: AllRoles[] = ["ROLE_MAINTAINER_CLOTHES"];
 

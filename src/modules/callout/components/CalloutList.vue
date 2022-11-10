@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import { Acl } from "@/acl";
 import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutListItem from "./CalloutListItem";
 
@@ -82,7 +83,7 @@ export default {
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
-      return this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"]);
+      return this.$store.getters["auth/hasAnyRole"](Acl.alleEinsaetzeLaden);
     },
   },
 

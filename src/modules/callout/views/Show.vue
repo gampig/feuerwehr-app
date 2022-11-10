@@ -24,6 +24,7 @@ import Loading from "@/components/Loading";
 import makeShowMixin from "@/mixins/ShowMixin";
 import CalloutDetails from "../components/CalloutDetails";
 import { mapActions, mapState } from "vuex";
+import { Acl } from "@/acl";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
@@ -41,7 +42,7 @@ export default makeShowMixin("Callout", "callouts").extend({
     ...mapState("callout", ["callout"]),
 
     userCanDeleteCallout() {
-      return this.$store.getters["auth/hasAnyRole"](["ROLE_GROUPLEADER"]);
+      return this.$store.getters["auth/hasAnyRole"](Acl.einsatzLoeschen);
     },
   },
 
