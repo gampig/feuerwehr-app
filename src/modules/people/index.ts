@@ -1,9 +1,7 @@
-import { AllRoles } from "@/models/User";
+import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import routes from "./router";
 import store from "./store";
-
-const rolesWriteAccess: AllRoles[] = ["ROLE_GROUPLEADER"];
 
 export default class PeopleModule extends AbstractModule {
   link = {
@@ -21,7 +19,7 @@ export default class PeopleModule extends AbstractModule {
   }
 
   isAuthorizedForLink() {
-    return this.hasAnyRole(rolesWriteAccess);
+    return this.hasAnyRole(Acl.personenBearbeiten);
   }
 
   load() {

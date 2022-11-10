@@ -1,8 +1,6 @@
-import { AllRoles } from "@/models/User";
+import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import store from "./store";
-
-const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER", "ROLE_VEHICLE"];
 
 export default class VehiclesModule extends AbstractModule {
   link = null;
@@ -12,7 +10,7 @@ export default class VehiclesModule extends AbstractModule {
   }
 
   load() {
-    if (this.hasAnyRole(requiredRoles)) {
+    if (this.hasAnyRole(Acl.mannschaftsbuch)) {
       return this.store.dispatch("vehicles/bindVehicles");
     } else {
       return this.store.dispatch("vehicles/unbind");

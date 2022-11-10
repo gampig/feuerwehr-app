@@ -1,8 +1,6 @@
-import { AllRoles } from "@/models/User";
+import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import routes from "./router";
-
-const requiredRoles: AllRoles[] = ["ROLE_GROUPLEADER"];
 
 export default class ExporterModule extends AbstractModule {
   link = {
@@ -19,7 +17,7 @@ export default class ExporterModule extends AbstractModule {
   }
 
   isAuthorized() {
-    return this.hasAnyRole(requiredRoles);
+    return this.hasAnyRole(Acl.datenexport);
   }
 
   load() {}
