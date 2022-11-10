@@ -33,7 +33,8 @@
 		"ecmel.vscode-html-css",
 		"dbaeumer.vscode-eslint",
 		"prettier.prettier",
-		"octref.vetur"
+		"octref.vetur",
+		"esbenp.prettier-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
