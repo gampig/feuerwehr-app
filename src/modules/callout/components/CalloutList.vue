@@ -83,7 +83,7 @@ export default {
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
-      return this.$store.getters["auth/hasAnyRole"](Acl.alleEinsaetzeLaden);
+      return this.$store.getters["auth/hasAnyRole"](Acl.alleEinsaetzeAnzeigen);
     },
   },
 
