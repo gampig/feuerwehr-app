@@ -2,11 +2,12 @@
   <BasePage navdrawer />
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import modules from "@/modules";
 import { mapState } from "vuex";
 
-export default {
+export default Vue.extend({
   computed: mapState("auth", ["loggedIn"]),
 
   watch: {
@@ -28,5 +29,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
