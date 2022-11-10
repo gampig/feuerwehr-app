@@ -11,7 +11,9 @@
       </v-list-item>
 
       <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
-        <BaseListItemUserAvatar :src="user && user.photoURL" />
+        <v-list-item-avatar>
+          <v-icon>mdi-account-circle</v-icon>
+        </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>
             {{ user.displayName }}
