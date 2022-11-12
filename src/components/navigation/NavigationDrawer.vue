@@ -79,7 +79,7 @@ export default {
         {
           title: "Gerät einrichten",
           to: { name: "DeviceSetup" },
-          icon: "mdi-tablet-android",
+          icon: "mdi-tablet",
           auth: () => this.hasAnyRole(Acl.geraetEinrichten),
         },
         {
