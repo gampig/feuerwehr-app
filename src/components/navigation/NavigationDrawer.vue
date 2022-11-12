@@ -34,12 +34,13 @@
     </v-list>
 
     <template #append>
-      <div
-        v-if="loggedIn != true || showUserSettings"
-        class="pa-3 text--disabled"
-      >
-        Version: {{ version }}<br />Entwickelt von Jonas Gampig
-      </div>
+      <v-list v-if="loggedIn != true || showUserSettings" dense>
+        <v-list-item>
+          <v-list-item-subtitle class="text-xs text--disabled">
+            Version: {{ version }}<br />Entwickelt von Jonas Gampig
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
     </template>
   </v-navigation-drawer>
 </template>
