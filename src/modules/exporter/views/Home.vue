@@ -44,7 +44,7 @@ export default Vue.extend({
       const people = this.$store.state.people.people;
 
       const data = exportPeopleWithStatus(people);
-      saveAsCsv(data);
+      saveAsCsv(data, "Personen.csv");
     },
 
     exportMannschaftsbuch() {
