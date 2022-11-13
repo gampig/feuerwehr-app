@@ -8,6 +8,10 @@ const formatDate = function (date: number) {
   return moment.unix(date).format("L");
 };
 
+const formatDateWithoutYear = function (date: number) {
+  return moment.unix(date).format("DD.MM.");
+};
+
 const formatDateTimeFromNow = function (date: number) {
   return moment.unix(date).fromNow();
 };
@@ -16,4 +20,10 @@ const dateTimeToUnix = function (dateTime: string) {
   return moment(dateTime, "L LT").unix();
 };
 
-export { formatDate, formatDateTime, formatDateTimeFromNow, dateTimeToUnix };
+export {
+  formatDate,
+  formatDateWithoutYear,
+  formatDateTime,
+  formatDateTimeFromNow,
+  dateTimeToUnix,
+};

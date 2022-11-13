@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import { Callout, Crew } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
-import { formatDate, formatDateTime } from "@/utils/dates";
+import { formatDateTime, formatDateWithoutYear } from "@/utils/dates";
 
 type MannschaftenMap = { [calloutId: string]: Crew | undefined };
 
@@ -63,7 +63,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       const dataRows: string[][] = einsaetze.map((einsatz) => {
         const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
         return [
-          formatDate(einsatz.alarmTime),
+          formatDateWithoutYear(einsatz.alarmTime),
           wrapString(einsatz.keyword),
           wrapString(einsatz.catchphrase),
           wrapString(einsatz.address),
