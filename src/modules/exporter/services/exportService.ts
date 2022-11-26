@@ -58,6 +58,14 @@ function getGroupOfPerson(
   return "";
 }
 
+function getEinsatzDatum(einsatz: Callout): string {
+  return formatDateWithoutYear(einsatz.alarmTime);
+}
+
+function getEinsatzBeginn(einsatz: Callout): string {
+  return formatDateTime(einsatz.alarmTime);
+}
+
 function getEinsatzEnde(einsatz: Callout): string {
   return einsatz.vehicles
     ? formatDateTime(
@@ -106,7 +114,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       const dataRows: string[][] = einsaetze.map((einsatz) => {
         const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
         return [
-          formatDateWithoutYear(einsatz.alarmTime),
+          getEinsatzDatum(einsatz),
           wrapString(einsatz.keyword),
           wrapString(einsatz.catchphrase),
           wrapString(einsatz.address),
@@ -119,7 +127,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
               getGroupOfPerson(person, mannschaft, fahrzeugeMap)
             )
           )
-          .concat([formatDateTime(einsatz.alarmTime), getEinsatzEnde(einsatz)])
+          .concat([getEinsatzBeginn(einsatz), getEinsatzEnde(einsatz)])
           .concat(
             fahrzeuge.map((fahrzeug) =>
               einsatz.vehicles && einsatz.vehicles[fahrzeug.id]
