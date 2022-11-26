@@ -27,6 +27,19 @@ async function fetchMannschaften() {
   return snapshot.val() as MannschaftenMap;
 }
 
+function isPersonInMannschaft(person: Person, mannschaft: Crew): boolean {
+  const isInBereitschaft: boolean =
+    mannschaft.standby != undefined && mannschaft.standby[person.id] != null;
+
+  const isInAnyFahrzeug: boolean =
+    mannschaft.vehicles != undefined &&
+    Object.values(mannschaft.vehicles).some(
+      (personen) => personen[person.id] != null
+    );
+
+  return isInBereitschaft || isInAnyFahrzeug;
+}
+
 function wrapString(str?: string): string {
   return str ? '"' + str + '"' : "";
 }
@@ -39,7 +52,6 @@ export function exportPeopleWithStatus(people: Person[]): string[][] {
 }
 
 export async function exportMannschaftsbuch(): Promise<string[][]> {
-  const personen = getPersonen();
   const fahrzeuge = getFahrzeuge();
   const fahrzeugeMap: { [id: string]: Vehicle | undefined } = fahrzeuge.reduce(
     (map, fahrzeug) => ({ ...map, [fahrzeug.id]: fahrzeug }),
@@ -47,18 +59,14 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
   );
   return Promise.all([fetchEinsaetze(), fetchMannschaften()]).then(
     ([einsaetze, mannschaftenMap]) => {
-      const headerRow = [
-        "Datum",
-        "Stichwort",
-        "Schlagwort",
-        "Adresse",
-        "Brand",
-        "THL",
-        "UG-ÖEL",
-      ]
-        .concat(personen.map((person) => person.id.replace(", ", " ")))
-        .concat(["Einsatzbeginn", "Einsatzende"])
-        .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
+      const personen = getPersonen().filter(
+        (person) =>
+          person.status == "Aktiv" ||
+          Object.values(mannschaftenMap).some(
+            (mannschaft) =>
+              mannschaft && isPersonInMannschaft(person, mannschaft)
+          )
+      );
 
       const dataRows: string[][] = einsaetze.map((einsatz) => {
         const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
@@ -105,6 +113,19 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
             )
           );
       });
+
+      const headerRow = [
+        "Datum",
+        "Stichwort",
+        "Schlagwort",
+        "Adresse",
+        "Brand",
+        "THL",
+        "UG-ÖEL",
+      ]
+        .concat(personen.map((person) => person.id.replace(", ", " ")))
+        .concat(["Einsatzbeginn", "Einsatzende"])
+        .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
 
       return [headerRow].concat(dataRows);
     }
