@@ -58,24 +58,38 @@ function getGroupOfPerson(
   return "";
 }
 
-function getEinsatzDatum(einsatz: Callout): string {
-  return formatDateWithoutYear(einsatz.alarmTime);
-}
+class CalloutFormatter {
+  private einsatz: Callout;
 
-function getEinsatzBeginn(einsatz: Callout): string {
-  return formatDateTime(einsatz.alarmTime);
-}
+  constructor(einsatz: Callout) {
+    this.einsatz = einsatz;
+  }
 
-function getEinsatzEnde(einsatz: Callout): string {
-  return einsatz.vehicles
-    ? formatDateTime(
-        Math.max(
-          ...Object.values(einsatz.vehicles).map((fahrzeugImEinsatz) =>
-            Number(fahrzeugImEinsatz.endTime)
+  getDatum(): string {
+    return formatDateWithoutYear(this.einsatz.alarmTime);
+  }
+
+  getBeginn(): string {
+    return formatDateTime(this.einsatz.alarmTime);
+  }
+
+  getEnde(): string {
+    return this.einsatz.vehicles
+      ? formatDateTime(
+          Math.max(
+            ...Object.values(this.einsatz.vehicles).map((fahrzeugImEinsatz) =>
+              Number(fahrzeugImEinsatz.endTime)
+            )
           )
         )
-      )
-    : "";
+      : "";
+  }
+
+  getEndeOfFahrzeug(fahrzeug: Vehicle): string {
+    return this.einsatz.vehicles && this.einsatz.vehicles[fahrzeug.id]
+      ? formatDateTime(Number(this.einsatz.vehicles[fahrzeug.id].endTime))
+      : "";
+  }
 }
 
 /**
@@ -112,9 +126,10 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       );
 
       const dataRows: string[][] = einsaetze.map((einsatz) => {
+        const einsatzFormatter = new CalloutFormatter(einsatz);
         const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
         return [
-          getEinsatzDatum(einsatz),
+          einsatzFormatter.getDatum(),
           wrapString(einsatz.keyword),
           wrapString(einsatz.catchphrase),
           wrapString(einsatz.address),
@@ -127,12 +142,10 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
               getGroupOfPerson(person, mannschaft, fahrzeugeMap)
             )
           )
-          .concat([getEinsatzBeginn(einsatz), getEinsatzEnde(einsatz)])
+          .concat([einsatzFormatter.getBeginn(), einsatzFormatter.getEnde()])
           .concat(
             fahrzeuge.map((fahrzeug) =>
-              einsatz.vehicles && einsatz.vehicles[fahrzeug.id]
-                ? formatDateTime(Number(einsatz.vehicles[fahrzeug.id].endTime))
-                : ""
+              einsatzFormatter.getEndeOfFahrzeug(fahrzeug)
             )
           );
       });
