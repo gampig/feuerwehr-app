@@ -1,8 +1,8 @@
 import storage from "../utils/storage";
-import { Callout, Crew } from "@/modules/callout/models/Callout";
+import { Crew } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
-import { Vehicle, FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
-import { formatDateTime, formatDateWithoutYear } from "@/utils/dates";
+import { FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
+import { CalloutFormatter } from "../utils/CalloutFormatter";
 
 function isPersonInMannschaft(person: Person, mannschaft: Crew): boolean {
   const isInBereitschaft: boolean =
@@ -32,40 +32,6 @@ function getGroupOfPerson(
     }
   }
   return "";
-}
-
-class CalloutFormatter {
-  private einsatz: Callout;
-
-  constructor(einsatz: Callout) {
-    this.einsatz = einsatz;
-  }
-
-  getDatum(): string {
-    return formatDateWithoutYear(this.einsatz.alarmTime);
-  }
-
-  getBeginn(): string {
-    return formatDateTime(this.einsatz.alarmTime);
-  }
-
-  getEnde(): string {
-    return this.einsatz.vehicles
-      ? formatDateTime(
-          Math.max(
-            ...Object.values(this.einsatz.vehicles).map((fahrzeugImEinsatz) =>
-              Number(fahrzeugImEinsatz.endTime)
-            )
-          )
-        )
-      : "";
-  }
-
-  getEndeOfFahrzeug(fahrzeug: Vehicle): string {
-    return this.einsatz.vehicles && this.einsatz.vehicles[fahrzeug.id]
-      ? formatDateTime(Number(this.einsatz.vehicles[fahrzeug.id].endTime))
-      : "";
-  }
 }
 
 /**
