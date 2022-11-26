@@ -58,6 +58,18 @@ function getGroupOfPerson(
   return "";
 }
 
+function getEinsatzEnde(einsatz: Callout): string {
+  return einsatz.vehicles
+    ? formatDateTime(
+        Math.max(
+          ...Object.values(einsatz.vehicles).map((fahrzeugImEinsatz) =>
+            Number(fahrzeugImEinsatz.endTime)
+          )
+        )
+      )
+    : "";
+}
+
 /**
  *
  * @param str
@@ -107,18 +119,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
               getGroupOfPerson(person, mannschaft, fahrzeugeMap)
             )
           )
-          .concat([
-            formatDateTime(einsatz.alarmTime),
-            einsatz.vehicles
-              ? formatDateTime(
-                  Math.max(
-                    ...Object.values(einsatz.vehicles).map(
-                      (fahrzeugImEinsatz) => Number(fahrzeugImEinsatz.endTime)
-                    )
-                  )
-                )
-              : "",
-          ])
+          .concat([formatDateTime(einsatz.alarmTime), getEinsatzEnde(einsatz)])
           .concat(
             fahrzeuge.map((fahrzeug) =>
               einsatz.vehicles && einsatz.vehicles[fahrzeug.id]
