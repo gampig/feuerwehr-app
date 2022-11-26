@@ -1,33 +1,8 @@
-import store from "@/store";
-import firebase from "firebase/app";
-import {
-  Callout,
-  Crew,
-  MannschaftenMap,
-} from "@/modules/callout/models/Callout";
+import storage from "../utils/storage";
+import { Callout, Crew } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
 import { Vehicle, FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
 import { formatDateTime, formatDateWithoutYear } from "@/utils/dates";
-
-function getPersonen(): Person[] {
-  return store.state.people.people as Person[];
-}
-
-function getFahrzeuge(): Vehicle[] {
-  return store.state.vehicles.vehicles as Vehicle[];
-}
-
-async function fetchEinsaetze(): Promise<Callout[]> {
-  if (!store.state.callouts.allCalloutsLoaded) {
-    await store.dispatch("callouts/bind", { loadAllCallouts: true });
-  }
-  return store.state.callouts.callouts as Callout[];
-}
-
-async function fetchMannschaften() {
-  const snapshot = await firebase.database().ref("crew").once("value");
-  return snapshot.val() as MannschaftenMap;
-}
 
 function isPersonInMannschaft(person: Person, mannschaft: Crew): boolean {
   const isInBereitschaft: boolean =
@@ -110,14 +85,18 @@ export function exportPeopleWithStatus(people: Person[]): string[][] {
 }
 
 export async function exportMannschaftsbuch(): Promise<string[][]> {
-  const fahrzeuge = getFahrzeuge();
+  const fahrzeuge = storage.getFahrzeuge();
   const fahrzeugeMap: FahrzeugeMap = fahrzeuge.reduce(
     (map, fahrzeug) => ({ ...map, [fahrzeug.id]: fahrzeug }),
     {}
   );
-  return Promise.all([fetchEinsaetze(), fetchMannschaften()]).then(
-    ([einsaetze, mannschaftenMap]) => {
-      const personen = getPersonen().filter(
+  return Promise.all([
+    storage.fetchEinsaetze(),
+    storage.fetchMannschaften(),
+  ]).then(([einsaetze, mannschaftenMap]) => {
+    const personen = storage
+      .getPersonen()
+      .filter(
         (person) =>
           person.status == "Aktiv" ||
           Object.values(mannschaftenMap).some(
@@ -126,45 +105,44 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
           )
       );
 
-      const dataRows: string[][] = einsaetze.map((einsatz) => {
-        const einsatzFormatter = new CalloutFormatter(einsatz);
-        const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
-        return [
-          einsatzFormatter.getDatum(),
-          wrapString(einsatz.keyword),
-          wrapString(einsatz.catchphrase),
-          wrapString(einsatz.address),
-          einsatz.type?.Brand ? "x" : "",
-          einsatz.type?.THL ? "x" : "",
-          einsatz.type?.["UG-ÖEL"] ? "x" : "",
-        ]
-          .concat(
-            personen.map((person) =>
-              getGroupOfPerson(person, mannschaft, fahrzeugeMap)
-            )
-          )
-          .concat([einsatzFormatter.getBeginn(), einsatzFormatter.getEnde()])
-          .concat(
-            fahrzeuge.map((fahrzeug) =>
-              einsatzFormatter.getEndeOfFahrzeug(fahrzeug)
-            )
-          );
-      });
-
-      const headerRow = [
-        "Datum",
-        "Stichwort",
-        "Schlagwort",
-        "Adresse",
-        "Brand",
-        "THL",
-        "UG-ÖEL",
+    const dataRows: string[][] = einsaetze.map((einsatz) => {
+      const einsatzFormatter = new CalloutFormatter(einsatz);
+      const mannschaft: Crew = mannschaftenMap[einsatz.id] || { id: "" };
+      return [
+        einsatzFormatter.getDatum(),
+        wrapString(einsatz.keyword),
+        wrapString(einsatz.catchphrase),
+        wrapString(einsatz.address),
+        einsatz.type?.Brand ? "x" : "",
+        einsatz.type?.THL ? "x" : "",
+        einsatz.type?.["UG-ÖEL"] ? "x" : "",
       ]
-        .concat(personen.map((person) => person.id.replace(", ", " ")))
-        .concat(["Einsatzbeginn", "Einsatzende"])
-        .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
+        .concat(
+          personen.map((person) =>
+            getGroupOfPerson(person, mannschaft, fahrzeugeMap)
+          )
+        )
+        .concat([einsatzFormatter.getBeginn(), einsatzFormatter.getEnde()])
+        .concat(
+          fahrzeuge.map((fahrzeug) =>
+            einsatzFormatter.getEndeOfFahrzeug(fahrzeug)
+          )
+        );
+    });
 
-      return [headerRow].concat(dataRows);
-    }
-  );
+    const headerRow = [
+      "Datum",
+      "Stichwort",
+      "Schlagwort",
+      "Adresse",
+      "Brand",
+      "THL",
+      "UG-ÖEL",
+    ]
+      .concat(personen.map((person) => person.id.replace(", ", " ")))
+      .concat(["Einsatzbeginn", "Einsatzende"])
+      .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
+
+    return [headerRow].concat(dataRows);
+  });
 }
