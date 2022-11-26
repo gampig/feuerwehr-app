@@ -5,6 +5,7 @@ import { Person } from "@/modules/people/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 import { formatDateTime, formatDateWithoutYear } from "@/utils/dates";
 
+type FahrzeugeMap = { [fahrzeugId: string]: Vehicle | undefined };
 type MannschaftenMap = { [calloutId: string]: Crew | undefined };
 
 function getPersonen(): Person[] {
@@ -40,6 +41,23 @@ function isPersonInMannschaft(person: Person, mannschaft: Crew): boolean {
   return isInBereitschaft || isInAnyFahrzeug;
 }
 
+function getGroupOfPerson(
+  person: Person,
+  mannschaft: Crew,
+  fahrzeuge: FahrzeugeMap
+): string {
+  if (mannschaft.standby && mannschaft.standby[person.id]) {
+    return "Bereitschaft";
+  } else if (mannschaft.vehicles) {
+    for (const fahrzeugId in mannschaft.vehicles) {
+      if (mannschaft.vehicles[fahrzeugId][person.id]) {
+        return fahrzeuge[fahrzeugId]?.name || fahrzeugId;
+      }
+    }
+  }
+  return "";
+}
+
 function wrapString(str?: string): string {
   return str ? '"' + str + '"' : "";
 }
@@ -53,7 +71,7 @@ export function exportPeopleWithStatus(people: Person[]): string[][] {
 
 export async function exportMannschaftsbuch(): Promise<string[][]> {
   const fahrzeuge = getFahrzeuge();
-  const fahrzeugeMap: { [id: string]: Vehicle | undefined } = fahrzeuge.reduce(
+  const fahrzeugeMap: FahrzeugeMap = fahrzeuge.reduce(
     (map, fahrzeug) => ({ ...map, [fahrzeug.id]: fahrzeug }),
     {}
   );
@@ -80,18 +98,9 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
           einsatz.type?.["UG-ÖEL"] ? "x" : "",
         ]
           .concat(
-            personen.map((person) => {
-              if (mannschaft.standby && mannschaft.standby[person.id]) {
-                return "Bereitschaft";
-              } else if (mannschaft.vehicles) {
-                for (const fahrzeugId in mannschaft.vehicles) {
-                  if (mannschaft.vehicles[fahrzeugId][person.id]) {
-                    return fahrzeugeMap[fahrzeugId]?.name || fahrzeugId;
-                  }
-                }
-              }
-              return "";
-            })
+            personen.map((person) =>
+              getGroupOfPerson(person, mannschaft, fahrzeugeMap)
+            )
           )
           .concat([
             formatDateTime(einsatz.alarmTime),
