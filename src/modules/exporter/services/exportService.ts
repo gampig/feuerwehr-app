@@ -14,10 +14,10 @@ function wrapString(str?: string): string {
   return str ? '"' + str + '"' : "";
 }
 
-export function exportPeopleWithStatus(people: Person[]): string[][] {
+export function exportPeopleWithStatus(): string[][] {
   return [
     ["Name", "Status"],
-    ...people.map((person) => [person.id, person.status]),
+    ...storage.getPersonen().map((person) => [person.id, person.status]),
   ];
 }
 
