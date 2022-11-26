@@ -42,3 +42,5 @@ export interface Crew {
     [id: string]: PeopleArray;
   };
 }
+
+export type MannschaftenMap = { [calloutId: string]: Crew | undefined };

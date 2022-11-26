@@ -6,3 +6,5 @@ export interface Vehicle {
   maxCrewNumber?: number;
   pictureUrl?: string;
 }
+
+export type FahrzeugeMap = { [fahrzeugId: string]: Vehicle | undefined };

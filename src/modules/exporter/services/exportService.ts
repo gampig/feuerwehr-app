@@ -1,12 +1,13 @@
 import store from "@/store";
 import firebase from "firebase/app";
-import { Callout, Crew } from "@/modules/callout/models/Callout";
+import {
+  Callout,
+  Crew,
+  MannschaftenMap,
+} from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
-import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { Vehicle, FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
 import { formatDateTime, formatDateWithoutYear } from "@/utils/dates";
-
-type FahrzeugeMap = { [fahrzeugId: string]: Vehicle | undefined };
-type MannschaftenMap = { [calloutId: string]: Crew | undefined };
 
 function getPersonen(): Person[] {
   return store.state.people.people as Person[];
