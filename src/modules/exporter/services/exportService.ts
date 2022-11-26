@@ -58,6 +58,11 @@ function getGroupOfPerson(
   return "";
 }
 
+/**
+ *
+ * @param str
+ * @returns str wrapped with quotation marks
+ */
 function wrapString(str?: string): string {
   return str ? '"' + str + '"' : "";
 }
