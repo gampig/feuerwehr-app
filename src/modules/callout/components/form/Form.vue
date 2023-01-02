@@ -1,15 +1,17 @@
 <template>
   <v-form ref="form">
-    <v-row class="mb-0">
+    <v-row>
       <v-col sm="6" cols="12">
-        <v-select
-          label="Typ"
-          :value="typeArray"
-          :items="typeSelectItems"
-          :rules="(requireKeyword && [rules.required]) || []"
+        <v-chip-group
           multiple
-          @input="updateType"
-        />
+          active-class="primary"
+          :value="selectedTypes"
+          @change="updateType"
+        >
+          <v-chip v-for="t in typeSelectItems" :key="t" filter>
+            {{ t }}
+          </v-chip>
+        </v-chip-group>
       </v-col>
     </v-row>
 
@@ -104,13 +106,11 @@ export default FormMixin.extend({
       );
     },
 
-    typeArray() {
-      return (
-        this.type != null &&
-        Object.entries(this.type)
-          .filter((type) => type[1] === true)
-          .map((type) => type[0])
-      );
+    selectedTypes() {
+      const typesEntries = (this.type && Object.entries(this.type)) || [];
+      return typesEntries
+        .filter((type) => type[1] === true)
+        .map((type) => this.typeSelectItems.indexOf(type[0]));
     },
 
     alarmTimeFormatted() {
@@ -119,9 +119,13 @@ export default FormMixin.extend({
   },
 
   methods: {
-    updateType(event) {
-      const types = Object.fromEntries(event.map((type) => [type, true]));
-      this.update("type", types);
+    updateType(selectedIndexes) {
+      this.update(
+        "type",
+        Object.fromEntries(
+          selectedIndexes.map((index) => [this.typeSelectItems[index], true])
+        )
+      );
     },
   },
 });
