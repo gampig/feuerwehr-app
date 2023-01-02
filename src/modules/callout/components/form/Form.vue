@@ -5,10 +5,10 @@
         <v-chip-group
           multiple
           active-class="primary"
-          :value="selectedTypes"
+          :value="selectedTypesIndexes"
           @change="updateType"
         >
-          <v-chip v-for="t in typeSelectItems" :key="t" filter>
+          <v-chip v-for="t in availableTypes" :key="t" filter>
             {{ t }}
           </v-chip>
         </v-chip-group>
@@ -90,7 +90,7 @@ export default FormMixin.extend({
 
   data() {
     return {
-      typeSelectItems: ["Brand", "THL", "UG-ÖEL"],
+      availableTypes: ["Brand", "THL", "UG-ÖEL"],
 
       showAlarmTimeDialog: false,
     };
@@ -106,11 +106,11 @@ export default FormMixin.extend({
       );
     },
 
-    selectedTypes() {
+    selectedTypesIndexes() {
       const typesEntries = (this.type && Object.entries(this.type)) || [];
       return typesEntries
         .filter((type) => type[1] === true)
-        .map((type) => this.typeSelectItems.indexOf(type[0]));
+        .map((type) => this.availableTypes.indexOf(type[0]));
     },
 
     alarmTimeFormatted() {
@@ -123,7 +123,7 @@ export default FormMixin.extend({
       this.update(
         "type",
         Object.fromEntries(
-          selectedIndexes.map((index) => [this.typeSelectItems[index], true])
+          selectedIndexes.map((index) => [this.availableTypes[index], true])
         )
       );
     },
