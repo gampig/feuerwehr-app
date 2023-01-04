@@ -17,6 +17,8 @@ export abstract class Acl {
 
   static readonly einsatzLoeschen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
+  static readonly karte: AllRoles[] = ["ROLE_GROUPLEADER"];
+
   static readonly kleiderverwaltung: AllRoles[] = ["ROLE_MAINTAINER_CLOTHES"];
 
   static readonly personenBearbeiten: AllRoles[] = ["ROLE_GROUPLEADER"];

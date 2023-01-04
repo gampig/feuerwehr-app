@@ -5,6 +5,7 @@ import "./registerServiceWorker";
 import moment from "moment";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
+import "leaflet/dist/leaflet.css";
 
 import store from "./store";
 import router from "./router";

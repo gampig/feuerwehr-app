@@ -6,6 +6,7 @@ import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
 import ExporterModule from "./exporter";
+import MapModule from "./map";
 
 class AppModules {
   modules: { [index: string]: AbstractModule } = {};
@@ -19,6 +20,9 @@ class AppModules {
 
     this.modules.callout = new CalloutModule(store, router);
     this.modules.callout.install();
+
+    this.modules.map = new MapModule(store, router);
+    this.modules.map.install();
 
     this.modules.clothes = new ClothesModule(store, router);
     this.modules.clothes.install();

@@ -122,6 +122,12 @@ export default {
           auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
         },
         {
+          title: "Karte",
+          to: { name: "Map" },
+          icon: "mdi-map",
+          auth: () => this.hasAnyRole(Acl.karte),
+        },
+        {
           title: "Kleidung",
           to: { name: "ClothesHome" },
           icon: "mdi-tshirt-crew",
