@@ -7,11 +7,20 @@
 </template>
 
 <script>
-import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CalloutList from "../../components/CalloutList";
 
 export default {
   components: { CalloutList },
-  mixins: [CalloutGroupMixin],
+
+  methods: {
+    next(calloutId) {
+      this.$router.push({
+        name: "CrewEditCallout",
+        params: {
+          callout_id: calloutId,
+        },
+      });
+    },
+  },
 };
 </script>

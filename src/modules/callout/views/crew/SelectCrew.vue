@@ -3,9 +3,9 @@
     page-title="Mannschaft"
     save-button
     save-button-label="Fertig"
-    @submit="next"
+    @submit="submit"
   >
-    <v-card :loading="loadingCallout">
+    <v-card :loading="loading">
       <v-card-title>
         {{ vehicle && vehicle.name }}
       </v-card-title>
@@ -36,14 +36,19 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 import CrewRolesForm from "../../components/form/CrewRolesForm";
 import PersonAutocomplete from "../../components/form/PersonAutocomplete";
 
 export default {
   components: { CrewPage, CrewRolesForm, PersonAutocomplete },
-  mixins: [CalloutGroupMixin],
+
+  props: {
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
   data() {
     return {
@@ -56,6 +61,8 @@ export default {
     ...mapState("callout", {
       crew: "crew",
     }),
+
+    ...mapState("vehicles", ["vehicle"]),
 
     ...mapGetters("people", {
       peopleWithoutCrew: "peopleWithoutCrew",
@@ -82,6 +89,12 @@ export default {
       updateRole: "updateRole",
       removeCrewMember: "removeCrewMember",
     }),
+
+    submit() {
+      this.$router.push({
+        name: "CrewCallouts",
+      });
+    },
 
     onAdd(item) {
       this.adding = true;

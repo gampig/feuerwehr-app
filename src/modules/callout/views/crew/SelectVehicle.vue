@@ -66,13 +66,11 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
-import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 import VehicleCard from "../../components/cards/VehicleCard";
 
 export default {
   components: { CrewPage, VehicleCard },
-  mixins: [CalloutGroupMixin],
 
   data() {
     return {
@@ -126,7 +124,13 @@ export default {
 
   methods: {
     selectVehicle(id) {
-      this.next(this.callout.id, id);
+      this.$router.push({
+        name: "CrewVehicleDetails",
+        params: {
+          callout_id: this.$store.state.callout.callout.id,
+          vehicle_id: id,
+        },
+      });
     },
   },
 };

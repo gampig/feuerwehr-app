@@ -16,30 +16,36 @@ export default {
     },
 
     {
-      name: "CrewCallouts",
       path: "mannschaft",
-      meta: { skipWaiting: true },
-      component: () => import("./views/crew/SelectCallout.vue"),
-    },
-    {
-      name: "CrewEditCallout",
-      path: "mannschaft/:callout_id?/bearbeiten",
-      component: () => import("./views/crew/UpdateCallout.vue"),
-    },
-    {
-      name: "CrewVehicles",
-      path: "mannschaft/:callout_id",
-      component: () => import("./views/crew/SelectVehicle.vue"),
-    },
-    {
-      name: "CrewVehicleDetails",
-      path: "mannschaft/:callout_id/:vehicle_id?/fahrzeug",
-      component: () => import("./views/crew/VehicleDetails.vue"),
-    },
-    {
-      name: "CrewPeople",
-      path: "mannschaft/:callout_id/:vehicle_id?/mannschaft",
-      component: () => import("./views/crew/SelectCrew.vue"),
+      component: () => import("./views/Crew.vue"),
+      children: [
+        {
+          name: "CrewCallouts",
+          path: "",
+          meta: { skipWaiting: true },
+          component: () => import("./views/crew/SelectCallout.vue"),
+        },
+        {
+          name: "CrewEditCallout",
+          path: ":callout_id?/bearbeiten",
+          component: () => import("./views/crew/UpdateCallout.vue"),
+        },
+        {
+          name: "CrewVehicles",
+          path: ":callout_id",
+          component: () => import("./views/crew/SelectVehicle.vue"),
+        },
+        {
+          name: "CrewVehicleDetails",
+          path: ":callout_id/:vehicle_id?/fahrzeug",
+          component: () => import("./views/crew/VehicleDetails.vue"),
+        },
+        {
+          name: "CrewPeople",
+          path: ":callout_id/:vehicle_id?/mannschaft",
+          component: () => import("./views/crew/SelectCrew.vue"),
+        },
+      ],
     },
 
     {

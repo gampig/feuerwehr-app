@@ -5,7 +5,7 @@
     save-button
     @submit="submit"
   >
-    <v-card :loading="loadingCallout">
+    <v-card :loading="loading">
       <v-card-text>
         <CalloutForm ref="form" v-bind.sync="item" require-keyword />
       </v-card-text>
@@ -14,10 +14,9 @@
 </template>
 
 <script>
-import CalloutGroupMixin from "../../mixins/CalloutGroupMixin";
 import CrewPage from "../../components/CrewPage";
 import CalloutForm from "../../components/form/Form";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -25,7 +24,12 @@ export default {
     CalloutForm,
   },
 
-  mixins: [CalloutGroupMixin],
+  props: {
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
   data() {
     return {
@@ -41,17 +45,29 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("callout", ["callout"]),
+  },
+
   watch: {
-    loadingCallout(loading) {
+    loading(loading) {
       if (!loading) {
-        this.item = Object.assign({}, this.emptyItem, this.callout);
+        this.setItem();
       }
     },
+  },
+
+  created() {
+    this.setItem();
   },
 
   methods: {
     ...mapActions("callouts", ["create"]),
     ...mapActions("callout", ["updateCallout"]),
+
+    setItem() {
+      this.item = Object.assign({}, this.emptyItem, this.callout);
+    },
 
     submit() {
       if (this.$refs.form.$refs.form.validate()) {
@@ -82,6 +98,26 @@ export default {
         name: this.$route.name,
         params: { callout_id: calloutId },
       });
+    },
+
+    next(calloutId) {
+      const vehicle = this.$store.state.vehicles.vehicle;
+      if (vehicle && vehicle.id) {
+        this.$router.push({
+          name: "CrewVehicleDetails",
+          params: {
+            callout_id: calloutId,
+            vehicle_id: vehicle.id,
+          },
+        });
+      } else {
+        this.$router.push({
+          name: "CrewVehicles",
+          params: {
+            callout_id: calloutId,
+          },
+        });
+      }
     },
   },
 };
