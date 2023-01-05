@@ -8,34 +8,27 @@ import PeopleModule from "./people";
 import ExporterModule from "./exporter";
 
 class AppModules {
-  modules: { [index: string]: AbstractModule } = {};
+  modules: AbstractModule[] = [];
   store?: Store<any>;
 
   install(store: Store<any>, router: VueRouter) {
     this.store = store;
 
-    this.modules.vehicles = new VehiclesModule(store, router);
-    this.modules.vehicles.install();
-
-    this.modules.callout = new CalloutModule(store, router);
-    this.modules.callout.install();
-
-    this.modules.clothes = new ClothesModule(store, router);
-    this.modules.clothes.install();
-
-    this.modules.people = new PeopleModule(store, router);
-    this.modules.people.install();
-
-    this.modules.exporter = new ExporterModule(store, router);
-    this.modules.exporter.install();
+    this.modules = [
+      new VehiclesModule(store, router),
+      new CalloutModule(store, router),
+      new ClothesModule(store, router),
+      new PeopleModule(store, router),
+      new ExporterModule(store, router),
+    ];
   }
 
   onLogin() {
-    Object.values(this.modules).forEach((module) => module.onLogin());
+    this.modules.forEach((module) => module.onLogin());
   }
 
   onLogout() {
-    Object.values(this.modules).forEach((module) => module.onLogout());
+    this.modules.forEach((module) => module.onLogout());
   }
 }
 

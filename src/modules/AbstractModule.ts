@@ -1,5 +1,4 @@
-import { NavLink } from "@/models/NavLink";
-import { AllRoles, Roles } from "@/models/User";
+import { AllRoles } from "@/models/User";
 import VueRouter from "vue-router";
 import { Module, Store } from "vuex";
 
@@ -10,6 +9,8 @@ export default abstract class AbstractModule {
   constructor(store: Store<any>, router: VueRouter) {
     this.store = store;
     this.router = router;
+
+    this.install();
   }
 
   abstract install(): void;
