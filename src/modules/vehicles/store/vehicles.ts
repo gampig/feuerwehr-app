@@ -62,9 +62,19 @@ export default {
       commit("setVehicles", []);
     },
 
-    bindVehicle({ commit, getters }, vehicleId: string) {
-      const vehicle = getters.find(vehicleId);
-      commit("setVehicle", vehicle);
+    bindVehicle({ commit }, vehicleId: string) {
+      return firebase
+        .database()
+        .ref("vehicles")
+        .child(vehicleId)
+        .get()
+        .then((snapshot) => {
+          const vehicle = {
+            id: snapshot.ref.key,
+            ...snapshot.val(),
+          };
+          commit("setVehicle", vehicle);
+        });
     },
     unbindVehicle({ commit }) {
       commit("setVehicle", null);
