@@ -2,16 +2,21 @@
   <v-form ref="form">
     <v-row>
       <v-col sm="6" cols="12">
-        <v-chip-group
-          multiple
-          active-class="primary"
+        <v-input
           :value="selectedTypesIndexes"
-          @change="updateType"
+          :rules="[ruleSelectionIsNotEmpty]"
         >
-          <v-chip v-for="t in availableTypes" :key="t" filter>
-            {{ t }}
-          </v-chip>
-        </v-chip-group>
+          <v-chip-group
+            multiple
+            active-class="primary"
+            :value="selectedTypesIndexes"
+            @change="updateType"
+          >
+            <v-chip v-for="t in availableTypes" :key="t" filter>
+              {{ t }}
+            </v-chip>
+          </v-chip-group>
+        </v-input>
       </v-col>
     </v-row>
 
@@ -93,6 +98,9 @@ export default FormMixin.extend({
       availableTypes: ["Brand", "THL", "UG-ÖEL"],
 
       showAlarmTimeDialog: false,
+
+      ruleSelectionIsNotEmpty: (value) =>
+        (value && value.length > 0) || "Bitte wähle mindestens einen Typ aus",
     };
   },
 
