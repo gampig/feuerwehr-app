@@ -47,7 +47,7 @@ export default Vue.extend({
       const paramVehicleId =
         this.$store.state.auth.vehicle || this.$route.params.vehicle_id;
       if (paramVehicleId) {
-        const vehicle = this.$store.state.callout.vehicle;
+        const vehicle = this.$store.state.vehicles.vehicle;
         if (!(vehicle && vehicle.id == paramVehicleId)) {
           //return store.dispatch("callout/bindVehicle", paramVehicleId);
           this.loadingVehicle = true;
