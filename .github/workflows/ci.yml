@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+
+      - name: Generate empty configuration
+        run: echo "{}" > ./src/firebase/config.ts
       
       - name: Install
         run: npm ci

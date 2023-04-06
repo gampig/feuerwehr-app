@@ -18,6 +18,9 @@ jobs:
           node-version: 16
           cache: 'npm'
 
+      - name: Configure project
+        run: mv ./src/firebase/config.prod.ts ./src/firebase/config.ts
+
       - name: Build Project with npm
         run: |
           npm ci
