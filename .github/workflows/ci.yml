@@ -27,7 +27,7 @@ jobs:
           cache: 'npm'
 
       - name: Generate empty configuration
-        run: echo "export default {}" > ./src/firebase/config.ts
+        run: echo "export default {};" > ./src/firebase/config.ts
       
       - name: Install
         run: npm ci
