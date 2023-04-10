@@ -33,18 +33,15 @@ Die App ist in TypeScript geschrieben, welches in reguläres JavaScript kompilie
 
 Als Backend bzw. Datenbank wird [Firebase](https://firebase.google.com/) eingesetzt, wodurch eine eigene Entwicklung und Wartung des Backends entfällt.
 
-Installation
-------------
+## Entwicklung mit Visual Studio Code
 
-- [Projekt in Firebase erstellen](https://firebase.google.com/docs/web/setup)
-  - Schritte 1 und 2 durchführen
-  - Config-Datei unter `src/firebase/config.ts` speichern
-- npm (bzw. Node.js) installieren
-- `npm install` ausführen (lädt benötigte Bibliotheken herunter)
-- `npm install -g @vue/cli`, um [Vue CLI](https://cli.vuejs.org/) global zu installieren
+### Einrichtung
+- WSL 2 und Docker Desktop installieren ([Anleitung](https://code.visualstudio.com/blogs/2020/07/01/containers-wsl))
+- Repository in einem WSL-Ordner clonen
 
-
-Lokal starten
--------------
-
-`npm start`
+### Öffnen
+- Ordner mit VS Code in WSL öffnen
+- Dev-Container öffnen (siehe dazu oben verlinkte Anleitung)
+- Terminal in VS Code öffnen
+  - `npm install` (nur erstmalig und bei Änderungen in NPM Dependencies)
+  - `npm start`
