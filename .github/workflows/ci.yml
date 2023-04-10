@@ -16,7 +16,6 @@ on:
 
 jobs:
   build:
-    name: Install and build project
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,3 +33,22 @@ jobs:
 
       - name: Build
         run: npm run build -- --modern
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Generate empty configuration
+        run: echo "export default {};" > ./src/firebase/config.ts
+      
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint -- --no-fix
