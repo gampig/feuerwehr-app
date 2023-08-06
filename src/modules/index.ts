@@ -6,6 +6,7 @@ import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
 import ExporterModule from "./exporter";
+import AppSettingsModule from "./appSettings";
 
 class AppModules {
   modules: AbstractModule[] = [];
@@ -15,6 +16,7 @@ class AppModules {
     this.store = store;
 
     this.modules = [
+      new AppSettingsModule(store, router),
       new VehiclesModule(store, router),
       new CalloutModule(store, router),
       new ClothesModule(store, router),

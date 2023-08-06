@@ -1,5 +1,10 @@
 {
   "rules": {
+    "appSettings": {
+      "feuerwehrGeraete": {
+        ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_VEHICLE').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val())"
+      }
+    },
     "callouts": {
       ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
       ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val()",
