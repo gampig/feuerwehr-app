@@ -122,6 +122,12 @@ export default {
           auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
         },
         {
+          title: "Fahrzeuge",
+          to: { name: "VehiclesHome" },
+          icon: "mdi-fire-truck",
+          auth: () => this.hasAnyRole(Acl.feuerwehrGeraete),
+        },
+        {
           title: "Kleidung",
           to: { name: "ClothesHome" },
           icon: "mdi-tshirt-crew",
