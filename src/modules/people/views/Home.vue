@@ -57,6 +57,11 @@
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-list dense>
+                  <v-list-item>
+                    <v-list-item-content class="text--secondary">
+                      Einsätze: {{ item.recentCalloutsCount || 0 }}
+                    </v-list-item-content>
+                  </v-list-item>
                   <v-list-item dense @click="edit(item.id)">
                     <v-list-item-content>
                       {{ item.status }}
