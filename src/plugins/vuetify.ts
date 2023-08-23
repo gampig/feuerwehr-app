@@ -7,6 +7,8 @@ Vue.use(Vuetify);
 
 import de from "vuetify/src/locale/de";
 
+const mq = window.window.matchMedia("(prefers-color-scheme: dark)");
+
 export const vuetify = new Vuetify({
   icons: {
     iconfont: "mdi",
@@ -26,5 +28,10 @@ export const vuetify = new Vuetify({
         primary: "#b71c1c",
       },
     },
+    dark: mq.matches,
   },
+});
+
+mq.addEventListener("change", (e) => {
+  vuetify.framework.theme.dark = e.matches;
 });
