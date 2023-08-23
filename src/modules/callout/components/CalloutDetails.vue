@@ -82,11 +82,11 @@
               :alt="calloutVehicle.vehicle.name"
             >
               <template #placeholder>
-                <v-icon>mdi-truck-outlined</v-icon>
+                <v-icon>mdi-truck-outline</v-icon>
               </template>
             </v-img>
           </v-avatar>
-          <v-icon v-else>mdi-truck-outlined</v-icon>
+          <v-icon v-else>mdi-truck-outline</v-icon>
         </template>
         <template #activator>
           <v-list-item-content>
