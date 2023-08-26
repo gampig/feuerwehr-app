@@ -1,0 +1,46 @@
+name: CD Staging
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '.devcontainer/**'
+      - 'docs/**'
+      - 'tools/**'
+      - '.editorconfig'
+      - '.git*'
+      - '**.md'
+
+env:
+  FTP_HOST: w01bad8e.kasserver.com
+  FTP_USER: f015f4cc
+
+jobs:
+  vue-client:
+    name: Deploy client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Configure project
+        run: mv ./src/firebase/config.prod.ts ./src/firebase/config.ts
+
+      - name: Build Project with npm
+        run: |
+          npm ci
+          npm run build -- --modern
+
+      - name: Upload app
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ${{ env.FTP_HOST }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ secrets.STAGING_FTP_PASSWORD }}
+          local-dir: ./dist/
+          state-name: ../.client-ftp-deploy-sync-state.json
