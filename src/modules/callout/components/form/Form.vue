@@ -1,22 +1,15 @@
 <template>
   <v-form ref="form">
     <v-row>
-      <v-col sm="6" cols="12">
-        <v-input
-          :value="selectedTypesIndexes"
-          :rules="[ruleSelectionIsNotEmpty]"
-        >
-          <v-chip-group
-            multiple
-            active-class="primary"
-            :value="selectedTypesIndexes"
-            @change="updateType"
-          >
-            <v-chip v-for="t in availableTypes" :key="t" filter>
-              {{ t }}
-            </v-chip>
-          </v-chip-group>
-        </v-input>
+      <v-col cols="12">
+        <v-checkbox
+          v-for="t in availableTypes"
+          :key="t"
+          :label="t"
+          :input-value="type && type[t]"
+          dense
+          @change="updateType(t, $event)"
+        />
       </v-col>
     </v-row>
 
@@ -114,26 +107,18 @@ export default FormMixin.extend({
       );
     },
 
-    selectedTypesIndexes() {
-      const typesEntries = (this.type && Object.entries(this.type)) || [];
-      return typesEntries
-        .filter((type) => type[1] === true)
-        .map((type) => this.availableTypes.indexOf(type[0]));
-    },
-
     alarmTimeFormatted() {
       return this.alarmTime ? formatDateTime(this.alarmTime) : "";
     },
   },
 
   methods: {
-    updateType(selectedIndexes) {
-      this.update(
-        "type",
-        Object.fromEntries(
-          selectedIndexes.map((index) => [this.availableTypes[index], true])
-        )
-      );
+    updateType(updatedType, value) {
+      const newTypes = {
+        ...this.type,
+        [updatedType]: value === true,
+      };
+      this.update("type", newTypes);
     },
   },
 });
