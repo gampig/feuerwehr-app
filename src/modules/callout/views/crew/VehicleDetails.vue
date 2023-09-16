@@ -18,22 +18,40 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <VehicleDetailsForm
-          ref="form"
-          :alarm-time="callout && callout.alarmTime"
-          v-bind.sync="item"
-      /></v-card-text>
+        <v-form ref="form">
+          <v-text-field
+            label="Einsatzende"
+            prepend-icon="mdi-calendar-check-outline"
+            :value="endTimeFormatted"
+            :rules="[rules.restrictFuture, calloutRules.endAfterAlarm]"
+            readonly
+            clearable
+            @click="showEndTimeDialog = true"
+            @click:clear="updateEndTime(null)"
+          />
+
+          <BaseDateTimeDialog
+            v-model="showEndTimeDialog"
+            :max-date="tomorrow"
+            :min-date="alarmDate"
+            :date="item.endTime"
+            @update:date="updateEndTime($event)"
+          />
+        </v-form>
+      </v-card-text>
     </v-card>
   </CrewPage>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import FormMixin from "@/mixins/FormMixin";
 import CrewPage from "../../components/CrewPage";
-import VehicleDetailsForm from "../../components/form/VehicleDetailsForm";
+import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
+import moment from "moment";
 
-export default {
-  components: { CrewPage, VehicleDetailsForm },
+export default FormMixin.extend({
+  components: { CrewPage },
 
   props: {
     loading: {
@@ -44,6 +62,15 @@ export default {
 
   data() {
     return {
+      calloutRules: {
+        endAfterAlarm: (value) =>
+          !value ||
+          !this.callout?.alarmTime ||
+          dateTimeToUnix(value) >= this.callout.alarmTime ||
+          "Ende kann nicht vor Alarm sein",
+      },
+
+      showEndTimeDialog: false,
       saving: false,
       item: {},
       emptyItem: {
@@ -58,6 +85,16 @@ export default {
 
     title() {
       return (this.vehicle && this.vehicle.name) || "Fahrzeug";
+    },
+
+    alarmDate() {
+      return this.callout?.alarmTime
+        ? moment.unix(this.callout.alarmTime).format("YYYY-MM-DD")
+        : "";
+    },
+
+    endTimeFormatted() {
+      return this.item.endTime ? formatDateTime(this.item.endTime) : "";
     },
   },
 
@@ -88,8 +125,12 @@ export default {
       );
     },
 
+    updateEndTime(endTime) {
+      this.item.endTime = endTime;
+    },
+
     submit() {
-      if (this.$refs.form.$refs.form.validate()) {
+      if (this.$refs.form.validate()) {
         this.saving = true;
         this.updateVehicleDetails({
           vehicleId: this.vehicle.id,
@@ -110,5 +151,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
