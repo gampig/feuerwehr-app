@@ -10,15 +10,25 @@
             />
             <v-icon v-else>mdi-fire-truck</v-icon>
           </v-avatar>
-          {{ vehicle.name }}
+          {{ vehicle.name }}:
         </template>
-        Einsatzende
+        Details
       </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
         <v-form ref="form">
+          <v-checkbox
+            v-if="vehicle?.isUgOeel"
+            v-model="isUgOeelCallout"
+            label="UG-ÖEL-Einsatz"
+            :indeterminate="
+              isUgOeelCallout === null || isUgOeelCallout === undefined
+            "
+            :rules="[calloutRules.ugOeelCalloutRequired]"
+          />
+
           <v-text-field
             label="Einsatzende"
             prepend-icon="mdi-calendar-check-outline"
@@ -68,6 +78,9 @@ export default FormMixin.extend({
           !this.callout?.alarmTime ||
           dateTimeToUnix(value) >= this.callout.alarmTime ||
           "Ende kann nicht vor Alarm sein",
+        ugOeelCalloutRequired: (value) =>
+          (value !== null && value !== undefined) ||
+          "Bitte fülle dieses Feld aus",
       },
 
       showEndTimeDialog: false,
@@ -76,6 +89,7 @@ export default FormMixin.extend({
       emptyItem: {
         endTime: null,
       },
+      isUgOeelCallout: null,
     };
   },
 
@@ -111,7 +125,7 @@ export default FormMixin.extend({
   },
 
   methods: {
-    ...mapActions("callout", ["updateVehicleDetails"]),
+    ...mapActions("callout", ["updateCallout", "updateVehicleDetails"]),
 
     setItem() {
       this.item = Object.assign(
@@ -123,6 +137,8 @@ export default FormMixin.extend({
           this.vehicle.id &&
           this.callout.vehicles[this.vehicle.id]
       );
+
+      this.isUgOeelCallout = this.callout?.type && this.callout.type["UG-ÖEL"];
     },
 
     updateEndTime(endTime) {
@@ -132,10 +148,19 @@ export default FormMixin.extend({
     submit() {
       if (this.$refs.form.validate()) {
         this.saving = true;
-        this.updateVehicleDetails({
-          vehicleId: this.vehicle.id,
-          details: this.item,
-        })
+
+        Promise.all([
+          this.updateCallout({
+            type: {
+              ...this.callout.type,
+              "UG-ÖEL": this.isUgOeelCallout,
+            },
+          }),
+          this.updateVehicleDetails({
+            vehicleId: this.vehicle.id,
+            details: this.item,
+          }),
+        ])
           .then(() =>
             this.$router.push({
               name: "CrewPeople",

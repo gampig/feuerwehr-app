@@ -5,6 +5,7 @@ export interface Vehicle {
   outOfServiceSince?: number;
   maxCrewNumber?: number;
   pictureUrl?: string;
+  isUgOeel?: boolean;
 }
 
 export type FahrzeugeMap = { [fahrzeugId: string]: Vehicle | undefined };
