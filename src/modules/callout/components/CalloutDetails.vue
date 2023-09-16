@@ -10,15 +10,10 @@
       (Dauer {{ duration(callout.endTime) }})
     </ListItem>
 
-    <ListItem v-if="callout.type" icon="mdi-clipboard-list" subtitle="Typ">
-      <v-chip
-        v-for="(val, type) in callout.type"
-        :key="type"
-        class="mr-1"
-        small
-        outlined
-        >{{ type }}</v-chip
-      >
+    <ListItem v-if="types.length > 0" icon="mdi-clipboard-list" subtitle="Typ">
+      <v-chip v-for="type in types" :key="type" class="mr-1" small outlined>{{
+        type
+      }}</v-chip>
     </ListItem>
 
     <ListItem
@@ -149,6 +144,14 @@ export default {
   computed: {
     ...mapState("callout", ["callout", "crew"]),
     ...mapGetters("vehicles", { findVehicle: "find" }),
+
+    types() {
+      return this.callout?.type
+        ? Object.entries(this.callout.type)
+            .filter((entry) => entry[1])
+            .map((entry) => entry[0])
+        : [];
+    },
 
     standbyCrew() {
       return (this.crew && this.crew.standby) || null;
