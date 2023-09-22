@@ -150,12 +150,15 @@ export default FormMixin.extend({
         this.saving = true;
 
         Promise.all([
-          this.updateCallout({
-            type: {
-              ...this.callout.type,
-              "UG-ÖEL": this.isUgOeelCallout,
-            },
-          }),
+          this.isUgOeelCallout !== undefined && this.isUgOeelCallout !== null
+            ? this.updateCallout({
+                type: {
+                  ...this.callout.type,
+                  "UG-ÖEL": this.isUgOeelCallout,
+                },
+              })
+            : Promise.resolve(null),
+
           this.updateVehicleDetails({
             vehicleId: this.vehicle.id,
             details: this.item,
