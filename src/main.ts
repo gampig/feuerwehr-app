@@ -27,6 +27,12 @@ Vue.filter("formatDateTimeFromNow", formatDateTimeFromNow);
 
 Vue.config.productionTip = false;
 
+Vue.config.errorHandler = function (err, vm, info) {
+  alert(
+    `Ein Fehler ist aufgetreten :-(\nBitte mache einen Screenshot dieser Meldung.\n\nFehlerinfo: ${info}\nFehlertext: ${err}`
+  );
+};
+
 modules.install(store, router);
 
 moment.locale("de");
