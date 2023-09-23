@@ -1,5 +1,6 @@
 import { showError } from "@/utils/notifications";
 import de from "@/firebase/locales/de";
+import ErrorReportBuilder from "@/services/errorReport";
 
 function translateError(code?: string): string | null {
   if (code === undefined) {
@@ -21,4 +22,6 @@ function translateError(code?: string): string | null {
 export default function (error: Error & { code?: string }) {
   const message = translateError(error.code) || error.message;
   showError(message);
+
+  new ErrorReportBuilder(false).addException(error).getReport().send();
 }
