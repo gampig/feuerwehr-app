@@ -85,7 +85,7 @@ const authModule = {
         .signInWithEmailAndPassword(email, password)
         .catch((error) => {
           commit("done");
-          handleError(commit, error);
+          handleError(error);
         });
     },
     logout({ commit }) {
@@ -95,7 +95,7 @@ const authModule = {
         .signOut()
         .catch((error) => {
           commit("done");
-          handleError(commit, error);
+          handleError(error);
         });
     },
     reauthenticate({ commit }, credential: firebase.auth.AuthCredential) {
@@ -108,7 +108,7 @@ const authModule = {
           () => {
             commit("reauthenticated");
           },
-          (error) => handleError(commit, error)
+          (error) => handleError(error)
         )
         .finally(() => commit("done"));
     },
@@ -116,9 +116,15 @@ const authModule = {
     updatePassword({ commit }, newPassword: string) {
       return getCurrentUser()
         .then((currentUser) => currentUser.updatePassword(newPassword))
-        .catch((error) => handleError(commit, error));
+        .catch((error) => {
+          if (error?.code === "auth/requires-recent-login") {
+            commit("reauthenticationRequired");
+          }
+
+          handleError(error);
+        });
     },
-    updateClientMetadata({ commit, state }, payload: Client) {
+    updateClientMetadata({ commit }, payload: Client) {
       return getCurrentUser()
         .then((currentUser) =>
           firebase
@@ -127,14 +133,14 @@ const authModule = {
             .child(deviceId)
             .update(payload)
         )
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
 
     requestReset({ commit }, email: string) {
       return firebase
         .auth()
         .sendPasswordResetEmail(email)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
     reset(
       { commit },
@@ -143,7 +149,7 @@ const authModule = {
       return firebase
         .auth()
         .confirmPasswordReset(code, newPassword)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
   },
 

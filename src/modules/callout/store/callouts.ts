@@ -112,7 +112,7 @@ export default {
           .catch((error) => {
             commit("setLoading", false);
             commit("removedAllCallouts");
-            return handleError(commit, error);
+            return handleError(error);
           });
       }
     ),

@@ -52,7 +52,7 @@ export default {
         "orders",
         firebase.database().ref("clothes/orders").orderByChild("submittedOn")
       )
-        .catch((error) => handleError(commit, error))
+        .catch((error) => handleError(error))
         .finally(() => {
           commit("setLoading", false);
         });
@@ -67,7 +67,7 @@ export default {
         "order",
         firebase.database().ref("clothes/orders").child(id)
       )
-        .catch((error) => handleError(commit, error))
+        .catch((error) => handleError(error))
         .finally(() => {
           commit("setLoadingOrder", false);
         });

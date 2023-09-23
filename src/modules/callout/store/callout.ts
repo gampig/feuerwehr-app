@@ -68,7 +68,7 @@ export default {
 
       return Promise.all([bindCallout, bindCrew])
         .catch((error) => {
-          return handleError(commit, error);
+          return handleError(error);
         })
         .finally(() => {
           commit("setLoading", false);
@@ -79,15 +79,12 @@ export default {
       unbindFirebaseRef("callout");
     }),
 
-    updateCallout({ commit, state }, payload: Callout) {
+    updateCallout({ state }, payload: Callout) {
       const item = { ...payload } as any;
       const key = (state.callout != null && state.callout.id) || payload.id;
 
       if (key == null) {
-        handleError(
-          commit,
-          new Error("Interner Fehler: Einsatz hat keine ID.")
-        );
+        handleError(new Error("Interner Fehler: Einsatz hat keine ID."));
         return;
       }
 
@@ -106,10 +103,10 @@ export default {
         .database()
         .ref("callouts/" + key)
         .update(item)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
     updateVehicleDetails(
-      { commit, state },
+      { state },
       { details, vehicleId }: { details: CalloutVehicle; vehicleId: string }
     ) {
       const item = { ...details } as any;
@@ -119,7 +116,7 @@ export default {
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -137,14 +134,14 @@ export default {
         .child("vehicles")
         .child(vehicleKey)
         .update(item)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
-    remove({ state, commit }) {
+    remove({ state }) {
       let calloutKey: string | null;
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -158,15 +155,15 @@ export default {
             .ref("callouts/" + calloutKey)
             .remove()
         )
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
 
-    addCrewMember({ commit, state }, { vehicleId, personId }: CrewMemberId) {
+    addCrewMember({ state }, { vehicleId, personId }: CrewMemberId) {
       let calloutKey: string | null;
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
       return firebase
@@ -175,14 +172,14 @@ export default {
         .child("vehicles/" + vehicleId)
         .child(personId)
         .set(true)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
-    addStandbyMember({ commit, state }, personId: string) {
+    addStandbyMember({ state }, personId: string) {
       let calloutKey: string | null;
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -192,10 +189,10 @@ export default {
         .child("standby")
         .child(personId)
         .set(true)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
     updateRole(
-      { commit, state },
+      { state },
       {
         vehicleId,
         personId,
@@ -206,7 +203,7 @@ export default {
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -216,14 +213,14 @@ export default {
         .child("vehicles/" + vehicleId)
         .child(personId)
         .set(role)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
-    removeCrewMember({ commit, state }, { vehicleId, personId }: CrewMemberId) {
+    removeCrewMember({ state }, { vehicleId, personId }: CrewMemberId) {
       let calloutKey: string | null;
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -233,14 +230,14 @@ export default {
         .child("vehicles/" + vehicleId)
         .child(personId)
         .remove()
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
-    removeStandbyMember({ commit, state }, personId: string) {
+    removeStandbyMember({ state }, personId: string) {
       let calloutKey: string | null;
       try {
         calloutKey = state.getCallout().id;
       } catch (e) {
-        handleError(commit, e);
+        handleError(e);
         return;
       }
 
@@ -250,7 +247,7 @@ export default {
         .child("standby")
         .child(personId)
         .remove()
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
   },
 };

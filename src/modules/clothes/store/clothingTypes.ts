@@ -51,7 +51,7 @@ export default {
           .ref("clothes/clothingTypes")
           .orderByChild("category")
       )
-        .catch((error) => handleError(commit, error))
+        .catch((error) => handleError(error))
         .finally(() => {
           commit("setLoading", false);
         });
@@ -66,7 +66,7 @@ export default {
         "type",
         firebase.database().ref("clothes/clothingTypes").child(id)
       )
-        .catch((error) => handleError(commit, error))
+        .catch((error) => handleError(error))
         .finally(() => {
           commit("setLoadingType", false);
         });

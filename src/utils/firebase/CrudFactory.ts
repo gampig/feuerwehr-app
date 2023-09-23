@@ -22,7 +22,7 @@ export default class<State, Payload extends FirebasePayload> {
         .database()
         .ref(this.ref)
         .push(item)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     });
   }
 
@@ -38,7 +38,7 @@ export default class<State, Payload extends FirebasePayload> {
         .ref(this.ref)
         .child(key)
         .set(item)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     });
   }
 
@@ -54,7 +54,7 @@ export default class<State, Payload extends FirebasePayload> {
         .ref(this.ref)
         .child(key)
         .update(item)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     });
   }
 
@@ -65,7 +65,7 @@ export default class<State, Payload extends FirebasePayload> {
         .ref(this.ref)
         .child(id)
         .remove()
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     });
   }
 

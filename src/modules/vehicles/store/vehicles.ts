@@ -53,7 +53,7 @@ export default {
           });
           commit("setVehicles", vehicles);
         })
-        .catch((error) => handleError(commit, error))
+        .catch((error) => handleError(error))
         .finally(() => {
           commit("setLoading", false);
         });

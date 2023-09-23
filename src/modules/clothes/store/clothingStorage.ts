@@ -41,7 +41,7 @@ export default {
           firebase.database().ref("clothes/storage").child(clothingType),
           { serialize: serializeClothingItems }
         )
-          .catch((error) => handleError(commit, error))
+          .catch((error) => handleError(error))
           .finally(() => {
             commit("setClothingItemId", clothingType);
             commit("setLoading", false);
@@ -53,12 +53,9 @@ export default {
       commit("setClothingItemId", null);
     }),
 
-    set: ({ commit, state }, clothingItem: ClothingItem) => {
+    set: ({ state }, clothingItem: ClothingItem) => {
       if (!state.clothingItemId) {
-        handleError(
-          commit,
-          Error("Interner Fehler: Kein Kleidungsstück ausgewählt")
-        );
+        handleError(Error("Interner Fehler: Kein Kleidungsstück ausgewählt"));
         return Promise.reject();
       }
 
@@ -70,7 +67,7 @@ export default {
         .child(state.clothingItemId)
         .child(clothingItem.size)
         .set(firebaseCount)
-        .catch((error) => handleError(commit, error));
+        .catch((error) => handleError(error));
     },
   },
 };
