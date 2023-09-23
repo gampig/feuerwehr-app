@@ -40,6 +40,14 @@ const routes: Array<AppRouteConfig> = [
     path: "/benutzer/" + encodeURI("gerät"),
     component: () => import("./views/user/DeviceSetup.vue"),
   },
+
+  // For testing
+  {
+    name: "FakeError",
+    path: "/test/fehler",
+    meta: { auth: { requiresAuth: true } },
+    component: () => import("./views/test/FakeError.vue"),
+  },
 ];
 
 const router = new VueRouter({
