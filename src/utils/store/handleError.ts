@@ -2,10 +2,7 @@ import { showError } from "@/utils/notifications";
 import de from "@/firebase/locales/de";
 import ErrorReportBuilder from "@/services/errorReport";
 
-function translateError(code?: string): string | null {
-  if (code === undefined) {
-    return null;
-  }
+function translateFirebaseError(code: string): string | null {
   const translation = code
     .split("/")
     .reduce(
@@ -19,9 +16,14 @@ function translateError(code?: string): string | null {
   return translation;
 }
 
-export default function (error: Error & { code?: string }) {
-  const message = translateError(error.code) || error.message;
-  showError(message);
+export default function (error: Error | firebase.default.FirebaseError) {
+  let translatedErrorMessage = null;
+
+  if ("code" in error) {
+    translatedErrorMessage = translateFirebaseError(error.code);
+  }
+
+  showError(translatedErrorMessage || error.message);
 
   new ErrorReportBuilder(false).addException(error).getReport().send();
 }
