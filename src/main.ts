@@ -5,6 +5,7 @@ import "./registerServiceWorker";
 import moment from "moment";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
+import { reportError } from "./services/errorReporter";
 
 import store from "./store";
 import router from "./router";
@@ -27,11 +28,7 @@ Vue.filter("formatDateTimeFromNow", formatDateTimeFromNow);
 
 Vue.config.productionTip = false;
 
-Vue.config.errorHandler = function (err, vm, info) {
-  alert(
-    `Ein Fehler ist aufgetreten :-(\nBitte mache einen Screenshot dieser Meldung.\n\nFehlerinfo: ${info}\nFehlertext: ${err}`
-  );
-};
+Vue.config.errorHandler = reportError;
 
 modules.install(store, router);
 

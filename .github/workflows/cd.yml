@@ -25,6 +25,9 @@ jobs:
         run: |
           npm ci
           npm run build -- --modern
+        env:
+          VUE_APP_API_ENDPOINT: https://api.app.feuerwehr-parkstetten.de/feuerwehr-app
+          VUE_APP_ANALYTICS_API_KEY: ${{ secrets.ANALYTICS_API_KEY }}
 
       - name: Upload app
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
