@@ -5,7 +5,7 @@ import "./registerServiceWorker";
 import moment from "moment";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
-import { reportError } from "./services/errorReporter";
+import unhandledErrorHandler from "./utils/unhandledErrorHandler";
 
 import store from "./store";
 import router from "./router";
@@ -28,7 +28,7 @@ Vue.filter("formatDateTimeFromNow", formatDateTimeFromNow);
 
 Vue.config.productionTip = false;
 
-Vue.config.errorHandler = reportError;
+Vue.config.errorHandler = unhandledErrorHandler;
 
 modules.install(store, router);
 
