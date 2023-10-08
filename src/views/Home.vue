@@ -29,7 +29,7 @@ export default Vue.extend({
       return this.$store.getters["auth/hasAnyRole"](roles);
     },
 
-    getStartPage(): string | Location {
+    getStartPage(): string | Location | null {
       const roles: Roles | undefined = this.$store.state.auth.roles;
       if (roles?.ROLE_ALARM_PC == true) {
         return { name: "SelectStandby" };
@@ -45,7 +45,7 @@ export default Vue.extend({
         return { name: "ClothesHome" };
       }
 
-      return { name: "UserLogin" };
+      return null;
     },
 
     redirect() {
