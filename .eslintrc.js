@@ -48,6 +48,7 @@ module.exports = {
     "vue/padding-line-between-blocks": ["error"],
     "vue/v-for-delimiter-style": ["error"],
     "vue/v-on-event-hyphenation": ["error"],
+    "vue/multi-word-component-names": 0,
   },
 
   extends: [
