@@ -10,6 +10,7 @@ import { mapState } from "vuex";
 import version from "@/utils/version";
 import modules from "./modules";
 import Loading from "@/components/Loading";
+import { requires } from "./utils/routerAuth";
 
 export default {
   components: { Loading },
@@ -53,7 +54,7 @@ export default {
     },
 
     toLoginPage() {
-      if (this.$route.meta?.auth?.requiresAuth) {
+      if (requires(this.$route, "requiresAuth")) {
         this.$router.replace({
           name: "UserLogin",
           params: { nextUrl: { name: "Home" } },

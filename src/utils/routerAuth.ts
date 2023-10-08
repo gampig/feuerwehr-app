@@ -2,7 +2,9 @@ import { AppRoute } from "@/models/Route";
 import { NavigationGuardNext } from "vue-router";
 import { Store } from "vuex";
 
-function requires(to: AppRoute, required: string) {
+type AuthTypes = "requiresAuth";
+
+export function requires(to: AppRoute, required: AuthTypes) {
   return to.matched.some(
     (record) => record.meta.auth && record.meta.auth[required]
   );
