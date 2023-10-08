@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.1",
+    "@vue/compat": "^3.3.0",
     "core-js": "^3.35.1",
     "firebase": "^8.10.1",
     "git-describe": "^4.1.0",
@@ -29,10 +30,10 @@
     "pinia": "^2.1.7",
     "register-service-worker": "^1.7.2",
     "router": "^2.0.0",
-    "vue": "^2.7.14",
+    "vue": "^3.3.0",
     "vue-router": "^3.5.3",
-    "vuetify": "^2.6.2",
-    "vuex": "^3.6.2",
+    "vuetify": "^3.3.20",
+    "vuex": "^4.0.0",
     "vuexfire": "^3.2.5"
   },
   "devDependencies": {
@@ -45,6 +46,7 @@
     "@vue/cli-plugin-router": "~5.0.8",
     "@vue/cli-plugin-typescript": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
+    "@vue/compiler-sfc": "^3.1.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
     "babel-eslint": "^10.1.0",
@@ -58,6 +60,6 @@
     "sass-loader": "^10.2.0",
     "typescript": "4.7",
     "vue-cli-plugin-vuetify": "~2.5.8",
-    "vuetify-loader": "^1.7.3"
+    "webpack-plugin-vuetify": "^2.0.1"
   }
 }
