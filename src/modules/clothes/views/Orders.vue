@@ -56,12 +56,12 @@
           locale="de-DE"
           item-key="id"
         >
-          <BaseActionCell
-            slot="item.action"
-            slot-scope="props"
-            :handle-edit="() => edit(props.item.id)"
-            :handle-delete="() => remove(props.item.id)"
-          />
+          <template #[`item.action`]="{ item }">
+            <BaseActionCell
+              :handle-edit="() => edit(item.id)"
+              :handle-delete="() => remove(item.id)"
+            />
+          </template>
         </v-data-table>
       </v-col>
     </v-row>

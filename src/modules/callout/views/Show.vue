@@ -2,7 +2,7 @@
   <BasePage page-title="Einsatz" back-button>
     <v-container>
       <BaseToolbar :handle-delete="userCanDeleteCallout ? del : null">
-        <template slot="left">
+        <template #left>
           <v-toolbar-title v-if="callout">
             {{ callout.keyword }} -
             {{ callout.alarmTime | formatDateTime }}

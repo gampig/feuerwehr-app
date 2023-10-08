@@ -25,11 +25,9 @@
                 >{{ type }}</v-chip
               >
             </template>
-            <BaseActionCell
-              slot="item.action"
-              slot-scope="props"
-              :handle-show="() => showHandler(props.item)"
-            />
+            <template #[`item.action`]="{ item }">
+              <BaseActionCell :handle-show="() => showHandler(item)" />
+            </template>
           </v-data-table>
         </v-col>
       </v-row>

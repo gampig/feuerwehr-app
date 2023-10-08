@@ -39,15 +39,13 @@
             <template v-else>-</template>
           </template>
 
-          <BaseActionCell
-            slot="item.action"
-            slot-scope="props"
-            :handle-edit="() => editHandler(props.item.id)"
-          >
-            <v-btn icon @click="storageHandler(props.item)">
-              <v-icon>mdi-wardrobe</v-icon>
-            </v-btn>
-          </BaseActionCell>
+          <template #[`item.action`]="{ item }">
+            <BaseActionCell :handle-edit="() => editHandler(item.id)">
+              <v-btn icon @click="storageHandler(item)">
+                <v-icon>mdi-wardrobe</v-icon>
+              </v-btn>
+            </BaseActionCell>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
