@@ -47,7 +47,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^7.32.0",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-vue": "^7.20.0",
     "moment-locales-webpack-plugin": "^1.2.0",
