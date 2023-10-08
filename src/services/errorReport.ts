@@ -1,7 +1,7 @@
-import Vue from "vue";
 import firebase from "firebase/app";
 import deviceCredentials, { deviceId } from "@/services/device";
 import version from "@/utils/version";
+import { ComponentPublicInstance } from "vue";
 
 type Severity = "error" | "warning" | "info";
 
@@ -105,8 +105,8 @@ export default class ErrorReportBuilder {
     return this;
   }
 
-  setVue(vm: Vue): ErrorReportBuilder {
-    this.report.context = vm.$route.fullPath;
+  setVue(instance: ComponentPublicInstance): ErrorReportBuilder {
+    this.report.context = instance.$route.fullPath;
     return this;
   }
 
