@@ -16,14 +16,17 @@ function translateFirebaseError(code: string): string | null {
   return translation;
 }
 
-export default function (error: Error | firebase.default.FirebaseError) {
-  let translatedErrorMessage = null;
+export default function (error: any) {
+  if (error instanceof Error) {
+    let translatedErrorMessage = null;
 
-  if ("code" in error) {
-    translatedErrorMessage = translateFirebaseError(error.code);
+    const firebaseError = error as Error | firebase.default.FirebaseError;
+    if ("code" in firebaseError) {
+      translatedErrorMessage = translateFirebaseError(firebaseError.code);
+    }
+
+    showError(translatedErrorMessage || error.message);
+
+    new ErrorReportBuilder(false).addException(error).getReport().send();
   }
-
-  showError(translatedErrorMessage || error.message);
-
-  new ErrorReportBuilder(false).addException(error).getReport().send();
 }
