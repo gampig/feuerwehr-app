@@ -29,7 +29,7 @@ export const ALL_CALLOUT_ROLES = [
   "Atemschutzüberwachung",
 ] as const;
 
-export type CalloutRole = typeof ALL_CALLOUT_ROLES[number];
+export type CalloutRole = (typeof ALL_CALLOUT_ROLES)[number];
 
 interface PeopleArray {
   [id: string]: CalloutRole | boolean;

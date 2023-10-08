@@ -1,4 +1,3 @@
-import { firebaseAction } from "vuexfire";
 import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 import { Vehicle } from "../models/Vehicle";

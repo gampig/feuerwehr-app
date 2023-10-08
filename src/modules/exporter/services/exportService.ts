@@ -1,6 +1,5 @@
 import storage from "../utils/storage";
 import { Crew } from "@/modules/callout/models/Callout";
-import { Person } from "@/modules/people/models/Person";
 import { FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
 import { CalloutFormatter } from "../utils/CalloutFormatter";
 import { isPersonInMannschaft, getGroupOfPerson } from "../utils/mannschaft";

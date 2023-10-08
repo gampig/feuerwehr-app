@@ -9,7 +9,7 @@ declare module "vue/types/vue" {
 }
 
 export default {
-  install(Vue: typeof _Vue, options?: any) {
+  install(Vue: typeof _Vue) {
     Vue.prototype.$showMessage = showMessage;
     Vue.prototype.$showError = showError;
   },

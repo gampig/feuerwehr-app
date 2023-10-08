@@ -1,4 +1,4 @@
-import { GetterTree, MutationTree } from "vuex";
+import { MutationTree } from "vuex";
 import { Notification } from "../../models/Notification";
 
 class State implements Notification {

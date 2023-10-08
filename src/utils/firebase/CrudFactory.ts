@@ -16,7 +16,7 @@ export default class<State, Payload extends FirebasePayload> {
   makeCreate(
     preprocessCallback: PreprocessCallback<Payload> = (payload) => payload
   ) {
-    return <Action<State, any>>(({ commit }, payload: Payload) => {
+    return <Action<State, any>>((context, payload: Payload) => {
       const item = this.processPayload(preprocessCallback({ ...payload }));
       return firebase
         .database()
@@ -29,7 +29,7 @@ export default class<State, Payload extends FirebasePayload> {
   makeSet(
     preprocessCallback: PreprocessCallback<Payload> = (payload) => payload
   ) {
-    return <Action<State, any>>(({ commit }, payload: Payload) => {
+    return <Action<State, any>>((context, payload: Payload) => {
       const key = payload.id;
       const item = this.processPayload(preprocessCallback({ ...payload }));
 
@@ -45,7 +45,7 @@ export default class<State, Payload extends FirebasePayload> {
   makeUpdate(
     preprocessCallback: PreprocessCallback<Payload> = (payload) => payload
   ) {
-    return <Action<State, any>>(({ commit }, payload: Payload) => {
+    return <Action<State, any>>((context, payload: Payload) => {
       const key = payload.id;
       const item = this.processPayload(preprocessCallback({ ...payload }));
 
@@ -59,7 +59,7 @@ export default class<State, Payload extends FirebasePayload> {
   }
 
   makeRemove() {
-    return <Action<State, any>>(({ commit }, id: string) => {
+    return <Action<State, any>>((context, id: string) => {
       return firebase
         .database()
         .ref(this.ref)

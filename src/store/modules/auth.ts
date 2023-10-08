@@ -124,7 +124,7 @@ const authModule = {
           handleError(error);
         });
     },
-    updateClientMetadata({ commit }, payload: Client) {
+    updateClientMetadata(context, payload: Client) {
       return getCurrentUser()
         .then((currentUser) =>
           firebase
@@ -136,14 +136,14 @@ const authModule = {
         .catch((error) => handleError(error));
     },
 
-    requestReset({ commit }, email: string) {
+    requestReset(context, email: string) {
       return firebase
         .auth()
         .sendPasswordResetEmail(email)
         .catch((error) => handleError(error));
     },
     reset(
-      { commit },
+      context,
       { code, newPassword }: { code: string; newPassword: string }
     ) {
       return firebase
