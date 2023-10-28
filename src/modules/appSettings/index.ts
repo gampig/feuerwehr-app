@@ -1,19 +1,19 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import store from "./store";
+import { useAppSettingsStore } from "./stores/appSettings";
 
 export default class AppSettingsModule extends AbstractModule {
-  install() {
-    this.installStore(store);
-  }
+  private appSettingsStore = useAppSettingsStore();
+
+  install() {}
 
   load() {
     if (this.hasAnyRole(Acl.feuerwehrGeraete)) {
-      return this.store.dispatch("appSettings/bindFeuerwehrGeraeteSettings");
+      return this.appSettingsStore.bindFeuerwehrGeraeteSettings();
     }
   }
 
   unload() {
-    return this.store.dispatch("appSettings/unbind");
+    return this.appSettingsStore.unbind();
   }
 }

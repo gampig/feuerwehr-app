@@ -14,28 +14,22 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable */
-import { FeuerwehrGeraeteSettings } from "@/modules/appSettings/models/AppSettings";
-/* eslint-enable */
+import { useAppSettingsStore } from "@/modules/appSettings/stores/appSettings";
+import { mapState } from "pinia";
 import Vue from "vue";
-import { mapState } from "vuex";
 
 export default Vue.extend({
   computed: {
-    ...mapState("appSettings", ["feuerwehrGeraete"]),
+    ...mapState(useAppSettingsStore, ["feuerwehrGeraete"]),
 
     showMapButton(): boolean {
-      return (
-        ((this.feuerwehrGeraete as FeuerwehrGeraeteSettings | undefined)
-          ?.fahrzeugPositionenLink?.length ?? 0) > 0
-      );
+      return (this.feuerwehrGeraete?.fahrzeugPositionenLink?.length ?? 0) > 0;
     },
   },
 
   methods: {
     showMap() {
-      var link = (this.feuerwehrGeraete as FeuerwehrGeraeteSettings | undefined)
-        ?.fahrzeugPositionenLink;
+      var link = this.feuerwehrGeraete?.fahrzeugPositionenLink;
       if (link) {
         window.open(link, "_blank");
       }
