@@ -3,6 +3,7 @@ import "./firebase";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
+import { createPinia, PiniaVuePlugin } from "pinia";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
 import unhandledErrorHandler from "./utils/unhandledErrorHandler";
@@ -15,6 +16,9 @@ import modules from "./modules";
 import "./components/globals";
 
 Vue.use(notifier);
+Vue.use(PiniaVuePlugin);
+
+const pinia = createPinia();
 
 // Filters
 import {
@@ -38,5 +42,6 @@ new Vue({
   store,
   router,
   vuetify,
+  pinia,
   render: (h) => h(App),
 }).$mount("#app");
