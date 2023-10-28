@@ -29,8 +29,16 @@
 
       <v-divider class="mb-3" />
 
-      <NavigationLinks v-if="showUserSettings" :links="userLinks" />
-      <NavigationLinks v-else :links="links" />
+      <template v-if="showUserSettings">
+        <NavigationLink
+          v-for="item in userLinks"
+          :key="item.title"
+          :item="item"
+        />
+      </template>
+      <template v-else>
+        <NavigationLink v-for="item in links" :key="item.title" :item="item" />
+      </template>
     </v-list>
 
     <template #append>
@@ -45,18 +53,21 @@
   </v-navigation-drawer>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import version from "@/utils/version";
-import NavigationLinks from "./NavigationLinks";
+import NavigationLink from "./NavigationLink.vue";
 import { Acl } from "@/acl";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
+import { NavLink } from "@/models/NavLink";
+import { AllRoles } from "@/models/User";
 
-const deviceRoles = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
+const deviceRoles: AllRoles[] = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
-export default {
+export default Vue.extend({
   components: {
-    NavigationLinks,
+    NavigationLink,
   },
 
   props: {
@@ -76,77 +87,8 @@ export default {
         params: { nextUrl: this.$route.fullPath },
       },
 
-      userLinks: [
-        {
-          title: "Gerät einrichten",
-          to: { name: "DeviceSetup" },
-          icon: "mdi-tablet",
-          auth: () => this.hasAnyRole(Acl.geraetEinrichten),
-        },
-        {
-          title: "Passwort ändern",
-          to: { name: "UserChangePassword" },
-          icon: "mdi-key",
-          auth: () => this.loggedIn && !this.hasAnyRole(deviceRoles),
-        },
-        {
-          title: "Abmelden",
-          click: () => this.logout(),
-          icon: "mdi-logout",
-          auth: () => this.loggedIn && !this.hasAnyRole(deviceRoles),
-        },
-        {
-          title: "Anmelden",
-          to: { name: "UserLogin" },
-          icon: "mdi-login",
-          auth: () => this.hasAnyRole(deviceRoles),
-        },
-      ],
-
-      links: [
-        {
-          title: "Mannschaft",
-          to: { name: "CrewCallouts" },
-          icon: "mdi-alarm-light",
-          auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
-        },
-        {
-          title: "Bereitschaft",
-          to: { name: "SelectStandby" },
-          icon: "mdi-alarm-light",
-          auth: () => this.hasAnyRole(Acl.bereitschaftsliste),
-        },
-        {
-          title: "Einsätze",
-          to: { name: "CalloutList" },
-          icon: "mdi-alarm-light",
-          auth: () => this.hasAnyRole(Acl.mannschaftsbuch),
-        },
-        {
-          title: "Fahrzeuge",
-          to: { name: "VehiclesHome" },
-          icon: "mdi-fire-truck",
-          auth: () => this.hasAnyRole(Acl.feuerwehrGeraete),
-        },
-        {
-          title: "Kleidung",
-          to: { name: "ClothesHome" },
-          icon: "mdi-tshirt-crew",
-          auth: () => this.hasAnyRole(Acl.kleiderverwaltung),
-        },
-        {
-          title: "Personen",
-          to: { name: "PeopleHome" },
-          icon: "mdi-account-multiple",
-          auth: () => this.hasAnyRole(Acl.personenBearbeiten),
-        },
-        {
-          title: "Datenexport",
-          to: { name: "ExporterHome" },
-          icon: "mdi-download",
-          auth: () => this.hasAnyRole(Acl.datenexport),
-        },
-      ],
+      userLinks: [] as NavLink[],
+      links: [] as NavLink[],
     };
   },
 
@@ -155,15 +97,95 @@ export default {
   },
 
   watch: {
-    loggedIn(loggedIn) {
-      if (!loggedIn) {
-        this.showUserSettings = false;
-      }
+    loggedIn() {
+      this.generateLinks();
     },
+  },
+
+  created() {
+    this.generateLinks();
   },
 
   methods: {
     ...mapActions(useAuthStore, ["logout"]),
+
+    generateLinks(): void {
+      if (!this.loggedIn) {
+        this.showUserSettings = false;
+      }
+
+      this.userLinks = [
+        {
+          title: "Gerät einrichten",
+          to: { name: "DeviceSetup" },
+          icon: "mdi-tablet",
+          auth: this.hasAnyRole(Acl.geraetEinrichten),
+        },
+        {
+          title: "Passwort ändern",
+          to: { name: "UserChangePassword" },
+          icon: "mdi-key",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Abmelden",
+          click: () => this.logout(),
+          icon: "mdi-logout",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Anmelden",
+          to: { name: "UserLogin" },
+          icon: "mdi-login",
+          auth: this.hasAnyRole(deviceRoles),
+        },
+      ];
+
+      this.links = [
+        {
+          title: "Mannschaft",
+          to: { name: "CrewCallouts" },
+          icon: "mdi-alarm-light",
+          auth: this.hasAnyRole(Acl.mannschaftsbuch),
+        },
+        {
+          title: "Bereitschaft",
+          to: { name: "SelectStandby" },
+          icon: "mdi-alarm-light",
+          auth: this.hasAnyRole(Acl.bereitschaftsliste),
+        },
+        {
+          title: "Einsätze",
+          to: { name: "CalloutList" },
+          icon: "mdi-alarm-light",
+          auth: this.hasAnyRole(Acl.mannschaftsbuch),
+        },
+        {
+          title: "Fahrzeuge",
+          to: { name: "VehiclesHome" },
+          icon: "mdi-fire-truck",
+          auth: this.hasAnyRole(Acl.feuerwehrGeraete),
+        },
+        {
+          title: "Kleidung",
+          to: { name: "ClothesHome" },
+          icon: "mdi-tshirt-crew",
+          auth: this.hasAnyRole(Acl.kleiderverwaltung),
+        },
+        {
+          title: "Personen",
+          to: { name: "PeopleHome" },
+          icon: "mdi-account-multiple",
+          auth: this.hasAnyRole(Acl.personenBearbeiten),
+        },
+        {
+          title: "Datenexport",
+          to: { name: "ExporterHome" },
+          icon: "mdi-download",
+          auth: this.hasAnyRole(Acl.datenexport),
+        },
+      ];
+    },
   },
-};
+});
 </script>

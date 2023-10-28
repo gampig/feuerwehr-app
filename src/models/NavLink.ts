@@ -8,5 +8,5 @@ export interface NavLink {
   href?: string;
   click?: (event: MouseEvent | KeyboardEvent) => void;
 
-  auth?: () => boolean;
+  auth: boolean;
 }
