@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts">
+import { useAuthStore } from "@/stores/auth";
+import { mapState } from "pinia";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -16,6 +18,7 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapState(useAuthStore, ["vehicle"]),
     loading(): boolean {
       return this.loadingCallout || this.loadingVehicle;
     },
@@ -44,8 +47,7 @@ export default Vue.extend({
         this.$store.dispatch("callout/unbind");
       }
 
-      const paramVehicleId =
-        this.$store.state.auth.vehicle || this.$route.params.vehicle_id;
+      const paramVehicleId = this.vehicle || this.$route.params.vehicle_id;
       if (paramVehicleId) {
         const vehicle = this.$store.state.vehicles.vehicle;
         if (!(vehicle && vehicle.id == paramVehicleId)) {

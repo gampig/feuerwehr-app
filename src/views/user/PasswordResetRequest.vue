@@ -10,10 +10,11 @@
   </BasePageCentered>
 </template>
 
-<script>
-import { mapActions } from "vuex";
+<script lang="ts">
 import Vue from "vue";
-import PasswordResetRequestCard from "@/components/user/PasswordResetRequestCard";
+import PasswordResetRequestCard from "@/components/user/PasswordResetRequestCard.vue";
+import { mapActions } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
 export default Vue.extend({
   components: {
@@ -27,11 +28,11 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions("auth", ["requestReset"]),
+    ...mapActions(useAuthStore, ["requestReset"]),
 
-    handleRequest(request) {
+    handleRequest(email: string) {
       this.loading = true;
-      this.requestReset(request)
+      this.requestReset(email)
         .then(() => {
           this.$showMessage(
             "Es wurde eine E-Mail mit einem Link an dich versendet, um die Anfrage zu bestätigen."

@@ -1,8 +1,10 @@
 import { AllRoles } from "@/models/User";
+import { useAuthStore } from "@/stores/auth";
 import VueRouter from "vue-router";
 import { Module, Store } from "vuex";
 
 export default abstract class AbstractModule {
+  protected authStore = useAuthStore();
   protected store: Store<any>;
   protected router: VueRouter;
 
@@ -42,10 +44,10 @@ export default abstract class AbstractModule {
   }
 
   protected isLoggedIn(): boolean {
-    return this.store.state.auth.loggedIn;
+    return this.authStore.loggedIn ?? false;
   }
 
   protected hasAnyRole(requiredRoles: AllRoles[]) {
-    return this.store.getters["auth/hasAnyRole"](requiredRoles);
+    return this.authStore.hasAnyRole(requiredRoles);
   }
 }

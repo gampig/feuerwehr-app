@@ -1,6 +1,6 @@
 import { AppRoute } from "@/models/Route";
+import { useAuthStore } from "@/stores/auth";
 import { NavigationGuardNext } from "vue-router";
-import { Store } from "vuex";
 
 type AuthTypes = "requiresAuth";
 
@@ -10,13 +10,12 @@ export function requires(to: AppRoute, required: AuthTypes) {
   );
 }
 
-export default function (
+export function checkAuth(
   to: AppRoute,
   from: AppRoute,
-  next: NavigationGuardNext<any>,
-  store: Store<any>
+  next: NavigationGuardNext<any>
 ) {
-  const loggedIn = store.state.auth.loggedIn;
+  const loggedIn = useAuthStore().loggedIn;
 
   if (requires(to, "requiresAuth")) {
     if (loggedIn === false) {

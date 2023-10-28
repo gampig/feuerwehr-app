@@ -10,11 +10,13 @@
   </BasePageCentered>
 </template>
 
-<script>
-import { mapActions } from "vuex";
-import PasswordResetCard from "@/components/user/PasswordResetCard";
+<script lang="ts">
+import Vue from "vue";
+import PasswordResetCard from "@/components/user/PasswordResetCard.vue";
+import { mapActions } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
-export default {
+export default Vue.extend({
   components: {
     PasswordResetCard,
   },
@@ -36,9 +38,13 @@ export default {
   },
 
   methods: {
-    ...mapActions("auth", ["reset"]),
+    ...mapActions(useAuthStore, ["reset"]),
 
-    handleSubmit(newPassword) {
+    handleSubmit(newPassword: string) {
+      if (typeof this.code !== "string") {
+        throw new Error("Code must be a string");
+      }
+
       this.loading = true;
       this.reset({
         newPassword,
@@ -53,5 +59,5 @@ export default {
         });
     },
   },
-};
+});
 </script>

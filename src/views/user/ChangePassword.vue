@@ -26,10 +26,11 @@
   </BasePageCentered>
 </template>
 
-<script>
-import { mapActions, mapMutations, mapState } from "vuex";
+<script lang="ts">
 import Vue from "vue";
-import ReauthenticationDialog from "@/components/user/ReauthenticationDialog";
+import ReauthenticationDialog from "@/components/user/ReauthenticationDialog.vue";
+import { mapActions, mapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
 export default Vue.extend({
   components: {
@@ -44,12 +45,14 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapState("auth", ["reauthenticationRequired"]),
+    ...mapState(useAuthStore, ["reauthenticationRequired"]),
   },
 
   methods: {
-    ...mapActions("auth", ["updatePassword"]),
-    ...mapMutations("auth", ["reauthenticated"]),
+    ...mapActions(useAuthStore, [
+      "updatePassword",
+      "setReauthenticationRequired",
+    ]),
 
     submit() {
       this.loading = true;
@@ -63,10 +66,10 @@ export default Vue.extend({
         });
     },
 
-    onDialogInput(open) {
+    onDialogInput(open: boolean) {
       if (!open) {
         if (this.reauthenticationRequired) {
-          this.reauthenticated();
+          this.setReauthenticationRequired(false);
         } else {
           this.submit();
         }

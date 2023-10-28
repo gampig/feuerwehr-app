@@ -25,6 +25,7 @@ import makeShowMixin from "@/mixins/ShowMixin";
 import CalloutDetails from "../components/CalloutDetails";
 import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
+import { useAuthStore } from "@/stores/auth";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
@@ -42,7 +43,7 @@ export default makeShowMixin("Callout", "callouts").extend({
     ...mapState("callout", ["callout"]),
 
     userCanDeleteCallout() {
-      return this.$store.getters["auth/hasAnyRole"](Acl.einsatzLoeschen);
+      return useAuthStore().hasAnyRole(Acl.einsatzLoeschen);
     },
   },
 

@@ -10,19 +10,22 @@
   </BasePageCentered>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
+<script lang="ts">
+import Vue from "vue";
 import firebase from "firebase/app";
-import LoginCard from "@/components/user/LoginCard";
+import LoginCard from "@/components/user/LoginCard.vue";
+import { mapActions, mapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
+import { LoginCredentials } from "@/models/User";
 
-export default {
+export default Vue.extend({
   components: {
     LoginCard,
   },
 
   computed: {
-    ...mapState("auth", ["loggedIn"]),
-    nextUrl() {
+    ...mapState(useAuthStore, ["loggedIn"]),
+    nextUrl(): string | null {
       return this.$route.params.nextUrl || null;
     },
   },
@@ -40,9 +43,9 @@ export default {
   },
 
   methods: {
-    ...mapActions("auth", ["login"]),
+    ...mapActions(useAuthStore, ["login"]),
 
-    handleLogin(user) {
+    handleLogin(user: LoginCredentials & { persist?: boolean }) {
       const persist =
         user.persist === true
           ? firebase.auth.Auth.Persistence.LOCAL
@@ -56,5 +59,5 @@ export default {
         });
     },
   },
-};
+});
 </script>

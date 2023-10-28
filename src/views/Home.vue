@@ -4,15 +4,16 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapState } from "vuex";
-/* eslint-disable no-unused-vars */
 import { Acl } from "../acl";
 import { Location } from "vue-router";
-import { AllRoles, Roles } from "@/models/User";
-/* eslint-enable */
+import { Roles } from "@/models/User";
+import { mapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
 export default Vue.extend({
-  computed: mapState("auth", ["loggedIn"]),
+  computed: {
+    ...mapState(useAuthStore, ["loggedIn", "roles", "hasAnyRole"]),
+  },
 
   watch: {
     loggedIn() {
@@ -25,12 +26,8 @@ export default Vue.extend({
   },
 
   methods: {
-    hasAnyRole(roles: AllRoles[]): boolean {
-      return this.$store.getters["auth/hasAnyRole"](roles);
-    },
-
     getStartPage(): string | Location | null {
-      const roles: Roles | undefined = this.$store.state.auth.roles;
+      const roles: Roles | undefined = this.roles;
       if (roles?.ROLE_ALARM_PC == true) {
         return { name: "SelectStandby" };
       }

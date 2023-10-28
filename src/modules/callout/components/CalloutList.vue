@@ -67,6 +67,7 @@
 import { Acl } from "@/acl";
 import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutListItem from "./CalloutListItem";
+import { useAuthStore } from "@/stores/auth";
 
 export default {
   components: { CalloutListItem },
@@ -83,7 +84,7 @@ export default {
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
-      return this.$store.getters["auth/hasAnyRole"](Acl.alleEinsaetzeAnzeigen);
+      return useAuthStore().hasAnyRole(Acl.alleEinsaetzeAnzeigen);
     },
   },
 

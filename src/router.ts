@@ -1,10 +1,6 @@
-import Vue from "vue";
 import VueRouter from "vue-router";
-import checkAuth from "./utils/routerAuth";
-import store from "./store";
+import { checkAuth } from "./utils/routerAuth";
 import { AppRouteConfig } from "./models/Route";
-
-Vue.use(VueRouter);
 
 const routes: Array<AppRouteConfig> = [
   {
@@ -54,6 +50,6 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => checkAuth(to, from, next, store));
+router.beforeEach((to, from, next) => checkAuth(to, from, next));
 
 export default router;

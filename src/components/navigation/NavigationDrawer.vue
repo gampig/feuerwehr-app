@@ -46,10 +46,11 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
 import version from "@/utils/version";
 import NavigationLinks from "./NavigationLinks";
 import { Acl } from "@/acl";
+import { mapActions, mapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
 const deviceRoles = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
@@ -150,8 +151,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth", ["loggedIn", "user"]),
-    ...mapGetters("auth", ["hasAnyRole"]),
+    ...mapState(useAuthStore, ["loggedIn", "user", "hasAnyRole"]),
   },
 
   watch: {
@@ -163,7 +163,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("auth", ["logout"]),
+    ...mapActions(useAuthStore, ["logout"]),
   },
 };
 </script>

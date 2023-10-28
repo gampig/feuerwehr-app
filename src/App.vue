@@ -6,17 +6,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import version from "@/utils/version";
 import modules from "./modules";
 import Loading from "@/components/Loading";
 import { requires } from "./utils/routerAuth";
+import { mapActions, mapState } from "pinia";
+import { useAuthStore } from "./stores/auth";
 
 export default {
   components: { Loading },
 
   computed: {
-    ...mapState("auth", ["loggedIn", "loading"]),
+    ...mapState(useAuthStore, ["loading", "loggedIn"]),
   },
 
   watch: {
@@ -30,6 +31,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(useAuthStore, ["updateClientMetadata"]),
+
     onStateChanged() {
       if (this.loggedIn === true) {
         this.onLogin();
@@ -42,7 +45,7 @@ export default {
       modules.onLogin();
 
       const lastOnline = new Date().toISOString();
-      this.$store.dispatch("auth/updateClientMetadata", {
+      this.updateClientMetadata({
         lastOnline,
         version,
       });

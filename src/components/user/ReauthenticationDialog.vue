@@ -12,12 +12,14 @@
   </v-dialog>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
+<script lang="ts">
+import Vue from "vue";
 import firebase from "firebase/app";
-import LoginCard from "./LoginCard";
+import LoginCard from "./LoginCard.vue";
+import { mapActions, mapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 
-export default {
+export default Vue.extend({
   components: {
     LoginCard,
   },
@@ -29,13 +31,17 @@ export default {
   },
 
   computed: {
-    ...mapState("auth", ["user", "reauthenticationRequired"]),
+    ...mapState(useAuthStore, ["user", "reauthenticationRequired"]),
   },
 
   methods: {
-    ...mapActions("auth", ["reauthenticate"]),
+    ...mapActions(useAuthStore, ["reauthenticate"]),
 
-    submit(formData) {
+    submit(formData: { password: string }) {
+      if (this.user === null || this.user.email === null) {
+        throw new Error("User cannot be null");
+      }
+
       this.loading = true;
       const cred = firebase.auth.EmailAuthProvider.credential(
         this.user.email,
@@ -46,5 +52,5 @@ export default {
       });
     },
   },
-};
+});
 </script>

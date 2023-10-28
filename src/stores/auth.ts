@@ -1,60 +1,36 @@
-import { GetterTree, MutationTree, ActionTree, ActionContext } from "vuex";
 import {
   Client,
   Roles,
   AllRoles,
   LoginCredentials,
   UserSettings,
-} from "../../models/User";
+} from "../models/User";
 import firebase from "firebase/app";
 import cloneDeep from "lodash/cloneDeep";
 
 import deviceService, { deviceId } from "@/services/device";
 
 import handleError from "@/utils/store/handleError";
+import { defineStore } from "pinia";
 
-class State {
-  loading = true;
-  loggedIn: boolean | null = null;
-  user: firebase.User | null = null;
+interface State {
+  loading: boolean;
+  loggedIn: boolean | null;
+  user: firebase.User | null;
   vehicle?: string;
   roles?: Roles;
-  reauthenticationRequired = false;
+  reauthenticationRequired: boolean;
 }
 
-function onLogin(context: ActionContext<any, any>, user: firebase.User) {
-  const userCopy = cloneDeep(user);
-  context.commit("setUser", userCopy);
-  firebase
-    .database()
-    .ref("users/" + context.state.user.uid)
-    .once("value", (snapshot) => {
-      const userSettings = snapshot.val() as UserSettings;
-      context.commit("setUserSettings", userSettings);
-      onLoginComplete(context);
-    });
-}
+export const useAuthStore = defineStore("auth", {
+  state: (): State => ({
+    loading: true,
+    loggedIn: null,
+    user: null,
+    reauthenticationRequired: false,
+  }),
 
-function onLoginComplete(context: ActionContext<any, any>) {
-  context.commit("login");
-}
-
-function onLogout(context: ActionContext<any, any>) {
-  context.commit("logout");
-  context.commit("setUserSettings");
-
-  const deviceCred = deviceService.get();
-  if (deviceCred) {
-    context.dispatch("login", deviceCred);
-  }
-}
-
-const authModule = {
-  namespaced: true,
-
-  state: new State(),
-
-  getters: <GetterTree<State, any>>{
+  getters: {
     hasAnyRole: (state) => (requiredRoles: AllRoles[]) => {
       if (requiredRoles.length == 0) {
         return true;
@@ -67,64 +43,83 @@ const authModule = {
     },
   },
 
-  actions: <ActionTree<State, any>>{
-    init(context) {
+  actions: {
+    init() {
       return firebase.auth().onIdTokenChanged((user) => {
         if (user) {
-          onLogin(context, user);
+          const userCopy = cloneDeep(user);
+          this.setUser(userCopy);
+          if (this.user === null) return;
+          firebase
+            .database()
+            .ref("users/" + this.user.uid)
+            .once("value", (snapshot) => {
+              const userSettings = snapshot.val() as UserSettings;
+              this.setUserSettings(userSettings);
+              this.setLoggedIn(true);
+              this.setLoading(false);
+            });
         } else {
-          onLogout(context);
+          this.setLoggedIn(false);
+          this.setUser(null);
+          this.setLoading(false);
+          this.setUserSettings();
+
+          const deviceCred = deviceService.get();
+          if (deviceCred) {
+            this.login(deviceCred);
+          }
         }
       });
     },
 
-    login({ commit }, { email, password }: LoginCredentials) {
-      commit("loading");
+    login({ email, password }: LoginCredentials) {
+      this.setLoading(true);
       return firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
         .catch((error) => {
-          commit("done");
+          this.setLoading(false);
           handleError(error);
         });
     },
-    logout({ commit }) {
-      commit("loading");
+    logout() {
+      this.setLoading(true);
       return firebase
         .auth()
         .signOut()
         .catch((error) => {
-          commit("done");
+          this.setLoading(false);
           handleError(error);
         });
     },
-    reauthenticate({ commit }, credential: firebase.auth.AuthCredential) {
-      commit("loading");
+    reauthenticate(credential: firebase.auth.AuthCredential) {
+      this.setLoading(true);
       return getCurrentUser()
         .then((currentUser) =>
           currentUser.reauthenticateWithCredential(credential)
         )
         .then(
           () => {
-            commit("reauthenticated");
+            this.setReauthenticationRequired(false);
           },
           (error) => handleError(error)
         )
-        .finally(() => commit("done"));
+        .finally(() => this.setLoading(false));
     },
 
-    updatePassword({ commit }, newPassword: string) {
+    updatePassword(newPassword: string) {
       return getCurrentUser()
         .then((currentUser) => currentUser.updatePassword(newPassword))
         .catch((error) => {
           if (error?.code === "auth/requires-recent-login") {
-            commit("reauthenticationRequired");
+            this.setReauthenticationRequired(true);
           }
 
           handleError(error);
         });
     },
-    updateClientMetadata(context, payload: Client) {
+    updateClientMetadata(payload: Client) {
       return getCurrentUser()
         .then((currentUser) =>
           firebase
@@ -136,52 +131,41 @@ const authModule = {
         .catch((error) => handleError(error));
     },
 
-    requestReset(context, email: string) {
+    requestReset(email: string) {
       return firebase
         .auth()
         .sendPasswordResetEmail(email)
         .catch((error) => handleError(error));
     },
-    reset(
-      context,
-      { code, newPassword }: { code: string; newPassword: string }
-    ) {
+    reset({ code, newPassword }: { code: string; newPassword: string }) {
       return firebase
         .auth()
         .confirmPasswordReset(code, newPassword)
         .catch((error) => handleError(error));
     },
-  },
 
-  mutations: <MutationTree<State>>{
-    loading(state) {
-      state.loading = true;
+    setLoading(loading: boolean) {
+      this.loading = loading;
     },
-    done(state) {
-      state.loading = false;
+    setLoggedIn(loggedIn: boolean | null) {
+      this.loggedIn = loggedIn;
     },
-    login(state) {
-      state.loggedIn = true;
-      state.loading = false;
+    setReauthenticationRequired(reauthenticationRequired: boolean) {
+      this.reauthenticationRequired = reauthenticationRequired;
     },
-    logout(state) {
-      state.loggedIn = false;
-      state.user = null;
-      state.loading = false;
+    setUser(user: firebase.User | null) {
+      this.user = user;
     },
-    setUser(state, user: firebase.User) {
-      state.user = user;
-    },
-    setUserSettings(state, userSettings?: UserSettings) {
-      state.roles = userSettings?.roles;
-      if (state.roles) {
-        state.roles.ROLE_USER = true;
+    setUserSettings(this, userSettings?: UserSettings) {
+      this.roles = userSettings?.roles;
+      if (this.roles) {
+        this.roles.ROLE_USER = true;
       }
 
-      state.vehicle = userSettings?.vehicle;
+      this.vehicle = userSettings?.vehicle;
     },
   },
-};
+});
 
 function getCurrentUser(): Promise<firebase.User> {
   return new Promise((resolve, reject) => {
@@ -198,5 +182,3 @@ function getCurrentUser(): Promise<firebase.User> {
     }
   });
 }
-
-export default authModule;

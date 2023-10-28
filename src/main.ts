@@ -4,9 +4,11 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
 import { createPinia, PiniaVuePlugin } from "pinia";
+import VueRouter from "vue-router";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
 import unhandledErrorHandler from "./utils/unhandledErrorHandler";
+import { useAuthStore } from "./stores/auth";
 
 import store from "./store";
 import router from "./router";
@@ -15,10 +17,11 @@ import modules from "./modules";
 // Globally register all `Base`-prefixed components
 import "./components/globals";
 
-Vue.use(notifier);
 Vue.use(PiniaVuePlugin);
-
 const pinia = createPinia();
+
+Vue.use(notifier);
+Vue.use(VueRouter);
 
 // Filters
 import {
@@ -34,14 +37,16 @@ Vue.config.productionTip = false;
 
 Vue.config.errorHandler = unhandledErrorHandler;
 
-modules.install(store, router);
-
 moment.locale("de");
 
 new Vue({
   store,
+  pinia,
   router,
   vuetify,
-  pinia,
   render: (h) => h(App),
 }).$mount("#app");
+
+useAuthStore().init();
+
+modules.install(store, router);
