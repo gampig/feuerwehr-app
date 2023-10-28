@@ -1,5 +1,5 @@
 import { Notification } from "@/models/Notification";
-import store from "@/store";
+import { useNotificationsStore } from "@/stores/notifications";
 
 export function showError(error: string) {
   showMessage(error, "error");
@@ -15,5 +15,6 @@ export function showMessage(message: string, color = "success") {
     text: message,
   };
 
-  store.commit("notifications/pushNotification", notification);
+  const store = useNotificationsStore();
+  store.pushNotification(notification);
 }

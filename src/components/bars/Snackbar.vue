@@ -19,25 +19,26 @@
   </v-snackbar>
 </template>
 
-<script>
-import { mapMutations, mapState } from "vuex";
+<script lang="ts">
+import { useNotificationsStore } from "@/stores/notifications";
+import { mapActions, mapState } from "pinia";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   data() {
     return {
-      timer: null,
+      timer: null as number | null,
     };
   },
 
   computed: {
-    ...mapState("notifications", [
-      "show",
+    ...mapState(useNotificationsStore, [
       "id",
-      "queue",
-      "color",
-      "subText",
-      "text",
+      "show",
       "timeout",
+      "text",
+      "subText",
+      "color",
     ]),
   },
 
@@ -50,7 +51,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations("notifications", ["setShow"]),
+    ...mapActions(useNotificationsStore, ["setShow"]),
 
     setTimer() {
       if (this.timer) {
@@ -65,5 +66,5 @@ export default {
       this.setShow(false);
     },
   },
-};
+});
 </script>
