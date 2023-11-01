@@ -48,6 +48,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <BaseConfirmDialog
+      v-model="showRemoveDialog"
+      confirm-text="Entfernen"
+      @confirm="onRemoveConfirmed"
+    >
+      Soll <strong>{{ personToRemove }}</strong> wirklich vom Einsatz entfernt
+      werden?
+    </BaseConfirmDialog>
   </v-card>
 </template>
 
@@ -62,6 +71,8 @@ export default {
     return {
       loading: false,
       showDoneNotice: false,
+      showRemoveDialog: false,
+      personToRemove: null,
     };
   },
 
@@ -87,9 +98,18 @@ export default {
     },
 
     onRemove(item) {
-      const personId = item;
+      this.personToRemove = item;
+      this.showRemoveDialog = true;
+    },
 
-      this.removeStandbyMember(personId);
+    onRemoveConfirmed() {
+      if (this.personToRemove) {
+        this.removeStandbyMember(this.personToRemove);
+      } else {
+        throw new Error(
+          "Konnte Person nicht entfernen wegen einem internen Fehler (personToRemove darf nicht NULL sein)."
+        );
+      }
     },
 
     back() {
