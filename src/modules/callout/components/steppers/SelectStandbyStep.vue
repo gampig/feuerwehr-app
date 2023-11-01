@@ -16,6 +16,10 @@
         @input="onAdd"
       ></PersonAutocomplete>
 
+      <div class="mb-4 ml-2">
+        {{ crewCount == 1 ? "1 Person" : `${crewCount} Personen` }} ausgewählt
+      </div>
+
       <transition-group name="list" tag="div">
         <v-chip
           v-for="(val, person) in crew"
@@ -80,6 +84,14 @@ export default {
     ...mapState("callout", { callout: "callout", loadingCallout: "loading" }),
     ...mapGetters("people", ["peopleWithoutCrew"]),
     ...mapGetters("callout", { crew: "standbyCrew" }),
+
+    crewCount() {
+      if (!this.crew) {
+        return 0;
+      }
+
+      return Object.keys(this.crew).length;
+    },
   },
 
   methods: {
