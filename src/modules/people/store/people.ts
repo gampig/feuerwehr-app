@@ -82,6 +82,6 @@ export default {
       commit("setPeople", []);
     },
 
-    set: crudFactory.makeSet((person) => person),
+    update: crudFactory.makeUpdate((person) => person),
   },
 };

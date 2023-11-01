@@ -86,7 +86,7 @@ export default Vue.extend({
 
       this.loading = true;
       this.$store
-        .dispatch("people/set", {
+        .dispatch("people/update", {
           id: this.personId,
           status: this.status,
         })
