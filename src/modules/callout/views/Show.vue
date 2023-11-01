@@ -1,18 +1,21 @@
 <template>
   <BasePage page-title="Einsatz" back-button>
     <v-container>
-      <BaseToolbar :handle-delete="userCanDeleteCallout ? del : null">
-        <template #left>
-          <v-toolbar-title v-if="callout">
-            {{ callout.keyword }} -
-            {{ callout.alarmTime | formatDateTime }}
-          </v-toolbar-title>
-        </template>
-      </BaseToolbar>
-
       <v-card>
         <CalloutDetails v-if="callout" />
+
+      <v-divider></v-divider>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn depressed @click="showDeleteDialog = true">
+          <v-icon left>mdi-delete</v-icon>
+          Löschen
+        </v-btn>
+      </v-card-actions>
       </v-card>
+
+    <BaseConfirmDialog v-model="showDeleteDialog" @confirm="handleDelete" />
     </v-container>
 
     <Loading :visible="loading" />
@@ -36,6 +39,7 @@ export default makeShowMixin("Callout", "callouts").extend({
   data() {
     return {
       loading: false,
+      showDeleteDialog: false,
     };
   },
 
@@ -58,7 +62,7 @@ export default makeShowMixin("Callout", "callouts").extend({
         this.loading = false;
       });
     },
-    del() {
+    handleDelete() {
       this.remove().then(() => {
         this.$showMessage("Einsatz wurde gelöscht.");
         this.$router.back();
