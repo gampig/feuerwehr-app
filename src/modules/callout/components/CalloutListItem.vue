@@ -7,6 +7,9 @@
       <v-list-item-subtitle>
         {{ callout.catchphrase }}
       </v-list-item-subtitle>
+      <v-list-item-subtitle v-if="callout.address">
+        {{ callout.address }}
+      </v-list-item-subtitle>
       <v-list-item-subtitle>
         {{ callout.alarmTime | formatDateTimeFromNow }} ({{
           callout.alarmTime | formatDateTime
