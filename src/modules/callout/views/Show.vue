@@ -1,29 +1,28 @@
 <template>
-  <BasePage page-title="Einsatz" back-button>
-    <v-container>
-      <v-card>
-        <CalloutDetails v-if="callout" />
+  <v-container>
+    <v-card :loading="loading">
+      <CalloutDetails v-if="callout" />
 
       <v-divider></v-divider>
 
       <v-card-actions>
+        <v-btn depressed @click="goBack">
+          <v-icon left>mdi-arrow-left</v-icon>
+          Zurück
+        </v-btn>
         <v-spacer></v-spacer>
         <v-btn depressed @click="showDeleteDialog = true">
           <v-icon left>mdi-delete</v-icon>
           Löschen
         </v-btn>
       </v-card-actions>
-      </v-card>
+    </v-card>
 
     <BaseConfirmDialog v-model="showDeleteDialog" @confirm="handleDelete" />
-    </v-container>
-
-    <Loading :visible="loading" />
-  </BasePage>
+  </v-container>
 </template>
 
 <script>
-import Loading from "@/components/Loading";
 import makeShowMixin from "@/mixins/ShowMixin";
 import CalloutDetails from "../components/CalloutDetails";
 import { mapActions, mapState } from "vuex";
@@ -32,7 +31,6 @@ import { useAuthStore } from "@/stores/auth";
 
 export default makeShowMixin("Callout", "callouts").extend({
   components: {
-    Loading,
     CalloutDetails,
   },
 
@@ -54,6 +52,10 @@ export default makeShowMixin("Callout", "callouts").extend({
 
   methods: {
     ...mapActions("callout", ["bind", "remove"]),
+
+    goBack() {
+      this.$router.back();
+    },
 
     retrieveItem() {
       this.loading = true;

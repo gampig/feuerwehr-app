@@ -1,7 +1,16 @@
 <template>
-  <BasePage v-bind="$attrs" back-button>
-    <template #actions>
+  <div>
+    <v-app-bar>
+      <v-btn icon @click="goBack">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+
+      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
+
+      <v-spacer />
+
       <slot name="actions" />
+
       <v-menu bottom left>
         <template #activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
@@ -30,7 +39,7 @@
       >
         {{ saveButtonLabel }}
       </v-btn>
-    </template>
+    </v-app-bar>
 
     <v-container>
       <slot />
@@ -40,7 +49,7 @@
       v-if="$store.state.callout.callout"
       v-model="showCalloutDetails"
     />
-  </BasePage>
+  </div>
 </template>
 
 <script>
@@ -50,6 +59,11 @@ import CalloutDetailsDialog from "./CalloutDetailsDialog.vue";
 export default {
   components: { CalloutDetailsDialog },
   props: {
+    pageTitle: {
+      type: String,
+      default: "Einsatz",
+    },
+
     saveButton: {
       type: Boolean,
       default: false,
@@ -74,6 +88,9 @@ export default {
 
   methods: {
     reload: () => modules.onLogin(),
+    goBack() {
+      this.$router.back();
+    },
   },
 };
 </script>

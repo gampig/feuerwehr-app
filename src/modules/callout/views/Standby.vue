@@ -1,17 +1,15 @@
 <template>
-  <BasePage page-title="Bereitschaft eintragen" navdrawer>
-    <v-stepper v-model="currentStep" vertical>
-      <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
-        <SelectCalloutStep @input="onCalloutSelect" />
-      </BaseStepperVerticalStep>
+  <v-stepper v-model="currentStep" vertical>
+    <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
+      <SelectCalloutStep @input="onCalloutSelect" />
+    </BaseStepperVerticalStep>
 
-      <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
-        <SelectStandbyStep @back="$router.back()" />
-      </BaseStepperVerticalStep>
-    </v-stepper>
+    <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
+      <SelectStandbyStep @back="$router.back()" />
+    </BaseStepperVerticalStep>
 
     <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
-  </BasePage>
+  </v-stepper>
 </template>
 
 <script>

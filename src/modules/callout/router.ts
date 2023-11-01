@@ -28,21 +28,25 @@ export default {
         {
           name: "CrewEditCallout",
           path: ":callout_id?/bearbeiten",
+          meta: { hideAppBar: true },
           component: () => import("./views/crew/UpdateCallout.vue"),
         },
         {
           name: "CrewVehicles",
           path: ":callout_id",
+          meta: { hideAppBar: true },
           component: () => import("./views/crew/SelectVehicle.vue"),
         },
         {
           name: "CrewVehicleDetails",
           path: ":callout_id/:vehicle_id?/fahrzeug",
+          meta: { hideAppBar: true },
           component: () => import("./views/crew/VehicleDetails.vue"),
         },
         {
           name: "CrewPeople",
           path: ":callout_id/:vehicle_id?/mannschaft",
+          meta: { hideAppBar: true },
           component: () => import("./views/crew/SelectCrew.vue"),
         },
       ],

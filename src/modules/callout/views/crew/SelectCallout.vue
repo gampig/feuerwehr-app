@@ -1,9 +1,7 @@
 <template>
-  <BasePage page-title="Mannschaft eintragen" navdrawer>
-    <v-container>
-      <CalloutList @input="next" />
-    </v-container>
-  </BasePage>
+  <v-container>
+    <CalloutList @input="next" />
+  </v-container>
 </template>
 
 <script>
