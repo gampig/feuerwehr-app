@@ -20,17 +20,15 @@
         {{ crewCount == 1 ? "1 Person" : `${crewCount} Personen` }} ausgewählt
       </div>
 
-      <transition-group name="list" tag="div">
-        <v-chip
-          v-for="(val, person) in crew"
-          :key="person + 0"
-          color="secondary"
-          class="ma-1"
-          close
-          @click:close="onRemove(person)"
-          >{{ person }}</v-chip
-        >
-      </transition-group>
+      <v-chip
+        v-for="(val, person) in crew"
+        :key="person + 0"
+        color="secondary"
+        class="ma-1"
+        close
+        @click:close="onRemove(person)"
+        >{{ person }}</v-chip
+      >
     </v-card-text>
 
     <v-divider></v-divider>
@@ -130,23 +128,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.list-enter-active {
-  transition: all 1.2s;
-}
-.list-leave-active {
-  transition: all 0.6s;
-}
-
-.list-enter {
-  background: green !important;
-}
-.list-leave-to {
-  background: red !important;
-}
-
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>
