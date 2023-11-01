@@ -84,7 +84,10 @@ export default {
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
-      return useAuthStore().hasAnyRole(Acl.alleEinsaetzeAnzeigen);
+      const authStore = useAuthStore();
+      return (
+        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeAnzeigen)
+      );
     },
   },
 

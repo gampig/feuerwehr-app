@@ -43,7 +43,8 @@ export default makeShowMixin("Callout", "callouts").extend({
     ...mapState("callout", ["callout"]),
 
     userCanDeleteCallout() {
-      return useAuthStore().hasAnyRole(Acl.einsatzLoeschen);
+      const authStore = useAuthStore();
+      return authStore.loggedIn && authStore.hasAnyRole(Acl.einsatzLoeschen);
     },
   },
 
