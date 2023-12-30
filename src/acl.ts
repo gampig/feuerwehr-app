@@ -14,6 +14,8 @@ export abstract class Acl {
   ];
 
   static readonly alleEinsaetzeAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
+  static readonly alleEinsaetzeBearbeiten: AllRoles[] =
+    Acl.alleEinsaetzeAnzeigen;
 
   static readonly einsatzLoeschen: AllRoles[] = ["ROLE_GROUPLEADER"];
 

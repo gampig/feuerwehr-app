@@ -7,7 +7,12 @@
   >
     <v-card :loading="loading">
       <v-card-text>
-        <CalloutForm ref="form" v-bind.sync="item" require-keyword />
+        <CalloutForm
+          ref="form"
+          v-bind.sync="item"
+          require-keyword
+          :limit-alarm-time-to-recently="!canEditAllCallouts"
+        />
       </v-card-text>
     </v-card>
   </CrewPage>
@@ -17,6 +22,8 @@
 import CrewPage from "../../components/CrewPage";
 import CalloutForm from "../../components/form/Form";
 import { mapActions, mapState } from "vuex";
+import { Acl } from "@/acl";
+import { useAuthStore } from "@/stores/auth";
 
 export default {
   components: {
@@ -47,6 +54,13 @@ export default {
 
   computed: {
     ...mapState("callout", ["callout"]),
+
+    canEditAllCallouts() {
+      const authStore = useAuthStore();
+      return (
+        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeBearbeiten)
+      );
+    },
   },
 
   watch: {

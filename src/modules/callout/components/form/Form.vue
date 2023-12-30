@@ -39,7 +39,7 @@
           label="Alarm"
           prepend-icon="mdi-alarm-light-outline"
           :value="alarmTimeFormatted"
-          :rules="[rules.required, rules.onlyPastAllowed, rules.recently]"
+          :rules="alarmTimeRules"
           readonly
           @click="showAlarmTimeDialog = true"
         />
@@ -60,7 +60,7 @@
     <BaseDateTimeDialog
       v-model="showAlarmTimeDialog"
       :max-date="today"
-      :min-date="aWeekAgo"
+      :min-date="limitAlarmTimeToRecently ? aWeekAgo : null"
       :date="alarmTime"
       @update:date="$emit('update:alarmTime', $event)"
     />
@@ -83,6 +83,10 @@ export default FormMixin.extend({
     requireKeyword: {
       type: Boolean,
       default: false,
+    },
+    limitAlarmTimeToRecently: {
+      type: Boolean,
+      default: true,
     },
   },
 
@@ -109,6 +113,18 @@ export default FormMixin.extend({
 
     alarmTimeFormatted() {
       return this.alarmTime ? formatDateTime(this.alarmTime) : "";
+    },
+
+    alarmTimeRules() {
+      if (this.limitAlarmTimeToRecently) {
+        return [
+          this.rules.required,
+          this.rules.onlyPastAllowed,
+          this.rules.recently,
+        ];
+      } else {
+        return [this.rules.required, this.rules.onlyPastAllowed];
+      }
     },
   },
 
