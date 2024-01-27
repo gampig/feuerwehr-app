@@ -1,6 +1,23 @@
 <template>
   <div>
     <router-view :loading="loading" />
+
+    <v-dialog v-model="showErrorDialog" width="500" persistent>
+      <v-card>
+        <v-card-title>Fehler</v-card-title>
+
+        <v-card-text>
+          <p>Die Einsatzdaten konnten nicht geladen werden.</p>
+          <p>Fehlermeldung: {{ errorMessage }}</p>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn text @click="goBack">Zurück</v-btn>
+          <v-spacer />
+          <v-btn text @click="tryAgain">Erneut versuchen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -14,6 +31,9 @@ export default Vue.extend({
     return {
       loadingCallout: false,
       loadingVehicle: false,
+
+      showErrorDialog: false,
+      errorMessage: "",
     };
   },
 
@@ -33,15 +53,40 @@ export default Vue.extend({
   },
 
   methods: {
+    goBack() {
+      this.showErrorDialog = false;
+      this.$router.back();
+    },
+
+    tryAgain() {
+      this.showErrorDialog = false;
+      this.fetchData();
+    },
+
+    handleError(error: Error | string) {
+      if (typeof error === "string") {
+        this.errorMessage = error;
+      } else {
+        this.errorMessage = error.name;
+      }
+
+      this.showErrorDialog = true;
+    },
+
     fetchData() {
+      this.showErrorDialog = false;
+
       const paramCalloutId = this.$route.params.callout_id;
       if (paramCalloutId) {
         const callout = this.$store.state.callout.callout;
         if (!(callout && callout.id == paramCalloutId)) {
           this.loadingCallout = true;
-          this.$store.dispatch("callout/bind", paramCalloutId).finally(() => {
-            this.loadingCallout = false;
-          });
+          this.$store
+            .dispatch("callout/bind", paramCalloutId)
+            .catch(this.handleError)
+            .finally(() => {
+              this.loadingCallout = false;
+            });
         }
       } else {
         this.$store.dispatch("callout/unbind");
@@ -55,6 +100,7 @@ export default Vue.extend({
           this.loadingVehicle = true;
           this.$store
             .dispatch("vehicles/bindVehicle", paramVehicleId)
+            .catch(this.handleError)
             .finally(() => {
               this.loadingVehicle = false;
             });
