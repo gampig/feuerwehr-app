@@ -2,22 +2,10 @@
   <div>
     <router-view :loading="loading" />
 
-    <v-dialog v-model="showErrorDialog" width="500" persistent>
-      <v-card>
-        <v-card-title>Fehler</v-card-title>
-
-        <v-card-text>
-          <p>Die Einsatzdaten konnten nicht geladen werden.</p>
-          <p>Fehlermeldung: {{ errorMessage }}</p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn text @click="goBack">Zurück</v-btn>
-          <v-spacer />
-          <v-btn text @click="tryAgain">Erneut versuchen</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <ErrorDialog v-model="showErrorDialog" @retry="fetchData">
+      <p>Die Einsatzdaten konnten nicht geladen werden.</p>
+      <p>Fehlermeldung: {{ errorMessage }}</p>
+    </ErrorDialog>
   </div>
 </template>
 
@@ -25,8 +13,11 @@
 import { useAuthStore } from "@/stores/auth";
 import { mapState } from "pinia";
 import Vue from "vue";
+import ErrorDialog from "@/components/dialogs/ErrorDialog.vue";
 
 export default Vue.extend({
+  components: { ErrorDialog },
+
   data() {
     return {
       loadingCallout: false,
@@ -53,16 +44,6 @@ export default Vue.extend({
   },
 
   methods: {
-    goBack() {
-      this.showErrorDialog = false;
-      this.$router.back();
-    },
-
-    tryAgain() {
-      this.showErrorDialog = false;
-      this.fetchData();
-    },
-
     handleError(error: Error | string) {
       if (typeof error === "string") {
         this.errorMessage = error;
