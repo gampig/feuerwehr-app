@@ -82,7 +82,7 @@ export default Vue.extend({
         capitalizeFirstLetter(this.firstName.trim());
 
       this.$store
-        .dispatch("people/set", {
+        .dispatch("people/update", {
           id: personId,
           status: this.status || "Aktiv",
         })
