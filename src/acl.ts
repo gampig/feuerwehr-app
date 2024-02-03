@@ -13,6 +13,8 @@ export abstract class Acl {
     "ROLE_ALARM_PC",
   ];
 
+  static readonly alarmPc: AllRoles[] = ["ROLE_ALARM_PC"];
+
   static readonly alleEinsaetzeAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
   static readonly alleEinsaetzeBearbeiten: AllRoles[] =
     Acl.alleEinsaetzeAnzeigen;
