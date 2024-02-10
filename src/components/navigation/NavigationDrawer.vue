@@ -179,6 +179,12 @@ export default Vue.extend({
           auth: this.hasAnyRole(Acl.personenBearbeiten),
         },
         {
+          title: "Benutzer",
+          to: { name: "UserList" },
+          icon: "mdi-account-multiple",
+          auth: this.hasAnyRole(Acl.benutzerVerwalten),
+        },
+        {
           title: "Datenexport",
           to: { name: "ExporterHome" },
           icon: "mdi-download",
