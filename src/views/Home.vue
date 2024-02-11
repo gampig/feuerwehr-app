@@ -6,13 +6,12 @@
 import Vue from "vue";
 import { Acl } from "../acl";
 import { Location } from "vue-router";
-import { Roles } from "@/models/User";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
 export default Vue.extend({
   computed: {
-    ...mapState(useAuthStore, ["loggedIn", "roles", "hasAnyRole"]),
+    ...mapState(useAuthStore, ["loggedIn", "hasAnyRole"]),
   },
 
   watch: {
@@ -27,8 +26,7 @@ export default Vue.extend({
 
   methods: {
     getStartPage(): string | Location | null {
-      const roles: Roles | undefined = this.roles;
-      if (roles?.ROLE_ALARM_PC == true) {
+      if (this.hasAnyRole(Acl.alarmPc)) {
         return { name: "SelectStandby" };
       }
 

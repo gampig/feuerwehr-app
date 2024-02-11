@@ -13,6 +13,8 @@ export abstract class Acl {
     "ROLE_ALARM_PC",
   ];
 
+  static readonly alarmPc: AllRoles[] = ["ROLE_ALARM_PC"];
+
   static readonly alleEinsaetzeAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
   static readonly alleEinsaetzeBearbeiten: AllRoles[] =
     Acl.alleEinsaetzeAnzeigen;
@@ -29,4 +31,6 @@ export abstract class Acl {
   static readonly personenBearbeiten: AllRoles[] = ["ROLE_GROUPLEADER"];
 
   static readonly datenexport: AllRoles[] = ["ROLE_GROUPLEADER"];
+
+  static readonly benutzerVerwalten: AllRoles[] = ["ROLE_ADMIN"];
 }

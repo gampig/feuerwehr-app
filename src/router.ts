@@ -37,6 +37,13 @@ const routes: Array<AppRouteConfig> = [
     component: () => import("./views/user/DeviceSetup.vue"),
   },
 
+  {
+    name: "UserList",
+    path: "/benutzer/liste",
+    meta: { auth: { requiresAuth: true } },
+    component: () => import("@/views/user/ListUsers.vue"),
+  },
+
   // For testing
   {
     name: "FakeError",
