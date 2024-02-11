@@ -19,7 +19,9 @@ jobs:
           cache: 'npm'
 
       - name: Configure project
-        run: mv ./src/firebase/config.prod.ts ./src/firebase/config.ts
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo "$FIREBASE_CONFIG" > ./src/firebase/config.ts
 
       - name: Build Project with npm
         run: |
