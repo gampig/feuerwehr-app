@@ -31,7 +31,7 @@ async function request(
   if (response.status != expectedResponseCode) {
     throw Error(response.statusText);
   }
-  return await response.json();
+  return response;
 }
 
 export const useUsersStore = defineStore("users", {
@@ -45,6 +45,7 @@ export const useUsersStore = defineStore("users", {
     fetchAll() {
       this.setLoading(true);
       request("GET", "")
+        .then((response) => response.json())
         .then((body: User[]) => {
           this.setUsers(body);
         })
@@ -52,6 +53,19 @@ export const useUsersStore = defineStore("users", {
         .finally(() => {
           this.setLoading(false);
         });
+    },
+
+    updateDisplayName(uid: string, displayName: string | null) {
+      this.setLoading(true);
+      return request(
+        "POST",
+        `/${uid}/name`,
+        JSON.stringify({
+          displayName: displayName,
+        })
+      ).finally(() => {
+        this.setLoading(false);
+      });
     },
 
     setLoading(loading: boolean) {

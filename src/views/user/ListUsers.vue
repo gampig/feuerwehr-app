@@ -6,6 +6,24 @@
 
     <v-container>
       <v-data-table :headers="headers" :items="users" :loading="loading">
+        <template #[`item.displayName`]="{ item }">
+          <v-edit-dialog
+            large
+            persistent
+            cancel-text="Abbrechen"
+            save-text="Speichern"
+            @open="editDisplayName = item.displayName"
+            @save="updateDisplayName(item)"
+          >
+            {{ item.displayName }}
+            <template #input>
+              <v-text-field
+                v-model="editDisplayName"
+                label="Name"
+              ></v-text-field>
+            </template>
+          </v-edit-dialog>
+        </template>
         <template #[`item.disabled`]="{ item }">
           <v-simple-checkbox v-model="item.disabled" disabled>
           </v-simple-checkbox>
@@ -21,6 +39,7 @@ import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { roleConfigById, User } from "@/models/User";
+import handleError from "@/utils/store/handleError";
 
 function filterAndMapRoles(roles: string[]): string[] {
   return roles
@@ -37,6 +56,8 @@ export default Vue.extend({
         { text: "Deaktiviert", value: "disabled" },
         { text: "Rollen", value: "roles" },
       ],
+
+      editDisplayName: "",
     };
   },
 
@@ -71,6 +92,15 @@ export default Vue.extend({
 
     loadUsers() {
       useUsersStore().fetchAll();
+    },
+
+    updateDisplayName(user: User) {
+      useUsersStore()
+        .updateDisplayName(user.uid, this.editDisplayName)
+        .then(() => {
+          user.displayName = this.editDisplayName;
+        })
+        .catch(handleError);
     },
   },
 });
