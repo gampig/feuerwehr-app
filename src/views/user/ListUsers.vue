@@ -44,7 +44,7 @@ import handleError from "@/utils/store/handleError";
 function filterAndMapRoles(roles: string[]): string[] {
   return roles
     .filter((role) => roleConfigById[role]?.hidden != true)
-    .map((role) => roleConfigById[role]?.description ?? role);
+    .map((role) => roleConfigById[role]?.name ?? role);
 }
 
 export default Vue.extend({

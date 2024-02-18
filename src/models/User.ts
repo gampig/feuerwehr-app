@@ -1,47 +1,52 @@
 export const rolesConfig: readonly {
+  id: string;
   name: string;
-  description: string;
+  description?: string;
   hidden?: boolean;
 }[] = [
   {
-    name: "ROLE_USER",
-    description: "Benutzer",
+    id: "ROLE_USER",
+    name: "Benutzer",
     hidden: true,
   },
   {
-    name: "ROLE_ADMIN",
-    description: "Administrator",
+    id: "ROLE_ADMIN",
+    name: "Administrator",
   },
   {
-    name: "ROLE_MAINTAINER_CLOTHES",
-    description: "Kleiderwart",
+    id: "ROLE_MAINTAINER_CLOTHES",
+    name: "Kleiderwart",
   },
   {
-    name: "ROLE_VEHICLE",
-    description: "Feuerwehrfahrzeug",
+    id: "ROLE_VEHICLE",
+    name: "Feuerwehrfahrzeug",
   },
   {
-    name: "ROLE_ALARM_PC",
-    description: "Alarm-PC",
+    id: "ROLE_ALARM_PC",
+    name: "Alarm-PC",
   },
   {
-    name: "ROLE_GROUPLEADER",
-    description: "Gruppenführer",
+    id: "ROLE_GROUPLEADER",
+    name: "Gruppenführer",
   },
   {
-    name: "ROLE_CALLOUT_EDITOR",
-    description: "Einsatz-Bearbeiter",
+    id: "ROLE_CALLOUT_EDITOR",
+    name: "Einsatz-Bearbeiter",
   },
 ] as const;
 
 export const roleConfigById = Object.fromEntries(
   rolesConfig.map((roleConfig) => [
-    roleConfig.name,
-    { description: roleConfig.description, hidden: roleConfig.hidden },
+    roleConfig.id,
+    {
+      name: roleConfig.name,
+      description: roleConfig.description,
+      hidden: roleConfig.hidden,
+    },
   ])
 );
 
-export type AllRoles = (typeof rolesConfig)[number]["name"];
+export type AllRoles = (typeof rolesConfig)[number]["id"];
 
 export type Roles = Partial<Record<AllRoles, boolean>>;
 
