@@ -91,7 +91,9 @@ export default Vue.extend({
     },
 
     loadUsers() {
-      useUsersStore().fetchAll();
+      if (this.loggedIn) {
+        useUsersStore().fetchAll();
+      }
     },
 
     updateDisplayName(user: User) {
