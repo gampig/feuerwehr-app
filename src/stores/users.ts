@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 
 import handleError from "@/utils/store/handleError";
 import { defineStore } from "pinia";
+import createClient, { Middleware } from "openapi-fetch";
+import { paths } from "@/models/FeuerwehrAppApi";
 import { User } from "@/models/User";
 
 interface State {
@@ -10,29 +12,25 @@ interface State {
   users: User[];
 }
 
-async function request(
-  method: string,
-  subPath: string,
-  requestBody?: BodyInit | null,
-  expectedResponseCode: number = 200
-) {
-  const apiEndpoint = process.env?.VUE_APP_API_ENDPOINT;
-  const idToken = await (firebase.auth().currentUser?.getIdToken() ??
-    Promise.reject());
-  const response = await fetch(`${apiEndpoint}/v1/benutzer${subPath}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: idToken,
-    },
-    body: requestBody,
-  });
-  if (response.status != expectedResponseCode) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
+const apiFirebaseAuthMiddleware: Middleware = {
+  async onRequest(req) {
+    const accessToken = await firebase.auth().currentUser?.getIdToken();
+    if (accessToken !== undefined) {
+      req.headers.set("Authorization", `Bearer ${accessToken}`);
+    } else {
+      throw new Error();
+    }
+    return req;
+  },
+};
+
+const client = createClient<paths>({
+  baseUrl: `${process.env.VUE_APP_API_ENDPOINT}/v1`,
+  headers: {
+    Accept: "application/json",
+  },
+});
+client.use(apiFirebaseAuthMiddleware);
 
 export const useUsersStore = defineStore("users", {
   state: (): State => ({
@@ -44,10 +42,14 @@ export const useUsersStore = defineStore("users", {
   actions: {
     fetchAll() {
       this.setLoading(true);
-      request("GET", "")
-        .then((response) => response.json())
-        .then((body: User[]) => {
-          this.setUsers(body);
+      client
+        .GET("/benutzer")
+        .then(({ data, error }) => {
+          if (error) {
+            handleError(new Error("Konnte Benutzer nicht laden"));
+          } else if (data) {
+            this.setUsers(data);
+          }
         })
         .catch(handleError)
         .finally(() => {
@@ -57,15 +59,20 @@ export const useUsersStore = defineStore("users", {
 
     updateDisplayName(uid: string, displayName: string | null) {
       this.setLoading(true);
-      return request(
-        "POST",
-        `/${uid}/name`,
-        JSON.stringify({
-          displayName: displayName,
+      return client
+        .POST("/benutzer/{userId}/name", {
+          body: {
+            displayName: displayName ?? undefined,
+          },
+          params: {
+            path: {
+              userId: uid,
+            },
+          },
         })
-      ).finally(() => {
-        this.setLoading(false);
-      });
+        .finally(() => {
+          this.setLoading(false);
+        });
     },
 
     setLoading(loading: boolean) {

@@ -67,9 +67,9 @@ export interface UserSettings {
 
 export interface User {
   uid: string;
-  email: string;
-  displayName: string | null;
+  email?: string;
+  displayName?: string;
   disabled: boolean;
-  vehicle: string | null;
+  vehicle?: string;
   roles: AllRoles[];
 }
