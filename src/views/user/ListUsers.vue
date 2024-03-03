@@ -39,7 +39,6 @@ import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { roleConfigById, User } from "@/models/User";
-import handleError from "@/utils/store/handleError";
 
 function filterAndMapRoles(roles: string[]): string[] {
   return roles
@@ -97,12 +96,7 @@ export default Vue.extend({
     },
 
     updateDisplayName(user: User) {
-      useUsersStore()
-        .updateDisplayName(user.uid, this.editDisplayName)
-        .then(() => {
-          user.displayName = this.editDisplayName;
-        })
-        .catch(handleError);
+      useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
     },
   },
 });

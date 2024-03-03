@@ -70,6 +70,17 @@ export const useUsersStore = defineStore("users", {
             },
           },
         })
+        .then((value) => {
+          if (value.error) {
+            handleError(new Error("Konnte Namen nicht ändern"));
+          } else {
+            const user = this.users.find((user) => user.uid === uid);
+            if (user) {
+              user.displayName = displayName ?? undefined;
+            }
+          }
+        })
+        .catch(handleError)
         .finally(() => {
           this.setLoading(false);
         });
