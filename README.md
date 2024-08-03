@@ -27,6 +27,32 @@ Die App wurde vor allem für Fahrzeug-Tablets erstellt. Daher ist eine Grundfunk
 
 Eine Live-Demo ist auf https://app.feuerwehr-parkstetten.de sichtbar. Da für die App ein Login benötigt wird, sind die unterstützten Funktionen dort allerdings nicht sichtbar.
 
+# Einrichtung
+
+Zur Einrichtung wird zum einen ein Web-Server benötigt, auf dem die App gehostet werden kann, und es muss ein [Firebase](https://firebase.google.com/)-Projekt erstellt werden, das als Datenbank dient.
+
+## Firebase-Projekt einrichten
+
+Nachdem ein Firebase-Projekt erstellt wurde, muss es über die sogenannte [Console](https://console.firebase.google.com) konfiguriert werden:
+
+- Benutzer werden im Menüpunkt "Authentication" angelegt
+- Als Datenbank wird die "Realtime Database" verwendet
+  - Zunächst müssen die "Regeln" konfiguriert werden. Diese können aus der Datei [database.rules.json](database.rules.json) kopiert werden
+  - In der Datenbank werden die Rollen der Benutzer konfiguriert:
+    - Die Liste der möglichen Rollen befindet sich [hier](/src/models/User.ts), deren Berechtigungen sind [hier](/src/acl.ts) zu sehen
+    - Die Zuweisung der Rollen erfolgt in folgendem Pfad in der Datenbank: `/users/[UID]/roles/[RoleId]`
+      - `[UID]`: ID des Benutzers; kann im Menüpunkt "Authentication" ausgelesen werden
+      - `[RoleId]`: Rollen-ID, wie in der oben genannten Datei hinterlegt
+      - Der Wert dieses Felds muss `true` sein, damit die Zuweisung als solche erkannt wird
+    - Jeder Benutzer kann mehrere Rollen besitzen
+  - Die Fahrzeuge müssen ebenfalls manuell in die Datenbank unter dem Pfad `/vehicles/[VehicleId]/` eingetragen werden:
+    - `[VehicleId]`: Beliebige ID des Fahrzeugs, wird normalerweise nicht zur Anzeige verwendet
+    - Unter diesem Pfad können folgende Unterpunkte für jedes Fahrzeug gesetzt werden:
+      - `inServiceSince: [Jahr]` (optional): Wird zur Sortierung verwendet
+      - `maxCrewNumber: [max. Mannschaftsstärke]`
+      - `name: [Name des Fahrzeugs]`: Wird zur Anzeige verwendet
+      - `pictureUrl: [URL zu Bild]` (optional): Bild des Fahrzeugs, das zur Anzeige verwendet werden soll
+
 # Hinweise für Entwickler
 
 Die App ist in TypeScript geschrieben, welches in reguläres JavaScript kompiliert wird. Es baut auf dem Framework [Vue.js](https://vuejs.org/) auf, und verwendet [Vuetify](https://vuetifyjs.com/) für die UI-Komponenten.
