@@ -11,6 +11,7 @@ export abstract class Acl {
   static readonly bereitschaftsliste: AllRoles[] = [
     "ROLE_GROUPLEADER",
     "ROLE_ALARM_PC",
+    "ROLE_VEHICLE",
   ];
 
   static readonly alarmPc: AllRoles[] = ["ROLE_ALARM_PC"];
