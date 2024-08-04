@@ -7,5 +7,3 @@ export interface Vehicle {
   pictureUrl?: string;
   isUgOeel?: boolean;
 }
-
-export type FahrzeugeMap = { [fahrzeugId: string]: Vehicle | undefined };

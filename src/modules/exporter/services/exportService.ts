@@ -1,8 +1,10 @@
 import storage from "../utils/storage";
 import { Crew } from "@/modules/callout/models/Callout";
-import { FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
 import { CalloutFormatter } from "../utils/CalloutFormatter";
-import { isPersonInMannschaft, getGroupOfPerson } from "../utils/mannschaft";
+import {
+  isPersonInMannschaft,
+  getGroupOfPerson,
+} from "@/modules/callout/utils/mannschaft";
 
 /**
  *
@@ -22,10 +24,6 @@ export function exportPeopleWithStatus(): string[][] {
 
 export async function exportMannschaftsbuch(): Promise<string[][]> {
   const fahrzeuge = storage.getFahrzeuge();
-  const fahrzeugeMap: FahrzeugeMap = fahrzeuge.reduce(
-    (map, fahrzeug) => ({ ...map, [fahrzeug.id]: fahrzeug }),
-    {}
-  );
   return Promise.all([
     storage.fetchEinsaetze(),
     storage.fetchMannschaften(),
@@ -54,8 +52,8 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
         einsatz.type?.["UG-ÖEL"] ? "x" : "",
       ]
         .concat(
-          personen.map((person) =>
-            getGroupOfPerson(person, mannschaft, fahrzeugeMap)
+          personen.map(
+            (person) => getGroupOfPerson(person, mannschaft, fahrzeuge) || ""
           )
         )
         .concat([einsatzFormatter.getBeginn(), einsatzFormatter.getEnde()])

@@ -1,6 +1,6 @@
 import { Crew } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
-import { FahrzeugeMap } from "@/modules/vehicles/models/Vehicle";
+import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 
 export function isPersonInMannschaft(
   person: Person,
@@ -17,19 +17,23 @@ export function isPersonInMannschaft(
 
   return isInBereitschaft || isInAnyFahrzeug;
 }
+
 export function getGroupOfPerson(
   person: Person,
   mannschaft: Crew,
-  fahrzeuge: FahrzeugeMap
-): string {
+  fahrzeuge: Vehicle[]
+): string | undefined {
   if (mannschaft.standby && mannschaft.standby[person.id]) {
     return "Bereitschaft";
   } else if (mannschaft.vehicles) {
     for (const fahrzeugId in mannschaft.vehicles) {
       if (mannschaft.vehicles[fahrzeugId][person.id]) {
-        return fahrzeuge[fahrzeugId]?.name || fahrzeugId;
+        return (
+          fahrzeuge.find((fahrzeug) => fahrzeug.id == fahrzeugId)?.name ||
+          fahrzeugId
+        );
       }
     }
   }
-  return "";
+  return undefined;
 }
