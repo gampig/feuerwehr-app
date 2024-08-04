@@ -24,9 +24,39 @@
             </template>
           </v-edit-dialog>
         </template>
+
         <template #[`item.disabled`]="{ item }">
           <v-simple-checkbox v-model="item.disabled" disabled>
           </v-simple-checkbox>
+        </template>
+
+        <template #[`item.roles`]="{ item }">
+          <v-edit-dialog
+            large
+            persistent
+            cancel-text="Abbrechen"
+            save-text="Speichern"
+            @open="editRoles = item.roles"
+            @save="updateRoles(item)"
+          >
+            <v-chip-group>
+              <v-chip v-for="role in item.roles" :key="role" small>
+                {{ role }}
+              </v-chip>
+            </v-chip-group>
+            <template #input>
+              <v-chip-group
+                :value="selectedRoles"
+                multiple
+                active-class="primary"
+                @change="changeSelectedRoles"
+              >
+                <v-chip v-for="role in allRoles" :key="role">
+                  {{ role }}
+                </v-chip>
+              </v-chip-group>
+            </template>
+          </v-edit-dialog>
         </template>
       </v-data-table>
     </v-container>
@@ -38,7 +68,7 @@ import Vue from "vue";
 import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { roleConfigById, User } from "@/models/User";
+import { AllRoles, roleConfigById, rolesConfig, User } from "@/models/User";
 
 function filterAndMapRoles(roles: string[]): string[] {
   return roles
@@ -56,7 +86,12 @@ export default Vue.extend({
         { text: "Rollen", value: "roles" },
       ],
 
+      allRoles: rolesConfig
+        .filter((value) => !value.hidden)
+        .map((value) => value.name),
+
       editDisplayName: "",
+      editRoles: [] as AllRoles[],
     };
   },
 
@@ -69,6 +104,10 @@ export default Vue.extend({
         ...user,
         roles: filterAndMapRoles(user.roles),
       }));
+    },
+
+    selectedRoles(): number[] {
+      return this.editRoles.map((value) => this.allRoles.indexOf(value));
     },
   },
 
@@ -97,6 +136,15 @@ export default Vue.extend({
 
     updateDisplayName(user: User) {
       useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
+    },
+
+    updateRoles(user: User) {
+      console.log(this.editRoles);
+      user.roles = this.editRoles;
+    },
+
+    changeSelectedRoles(selectedRoles: number[]) {
+      this.editRoles = selectedRoles.map((value) => this.allRoles[value]);
     },
   },
 });
