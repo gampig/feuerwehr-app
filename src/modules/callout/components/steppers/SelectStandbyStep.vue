@@ -11,7 +11,6 @@
 
     <v-card-text v-if="callout">
       <PersonAutocomplete
-        :items="peopleWithoutCrew"
         :loading="loading"
         @input="onAdd"
       ></PersonAutocomplete>
@@ -80,7 +79,6 @@ export default {
 
   computed: {
     ...mapState("callout", { callout: "callout", loadingCallout: "loading" }),
-    ...mapGetters("people", ["peopleWithoutCrew"]),
     ...mapGetters("callout", { crew: "standbyCrew" }),
 
     crewCount() {

@@ -3,7 +3,6 @@ import handleError from "@/utils/store/handleError";
 import { Person } from "../models/Person";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import CrudFactory from "@/utils/firebase/CrudFactory";
-import { PersonWithCrewName } from "@/modules/callout/models/Callout";
 
 class State {
   loading = false;
@@ -32,28 +31,6 @@ export default {
       [...state.people].sort(
         (a, b) => (b.recentCalloutsCount || 0) - (a.recentCalloutsCount || 0)
       ),
-    peopleWithoutCrew(state, getters, rootState, rootGetters) {
-      const people: Person[] = getters.peopleByActivity;
-      return people
-        .map<PersonWithCrewName>((item) => {
-          const crewOfPerson = rootGetters["callout/findCrewOfPerson"](
-            item.id
-          ) as string | undefined;
-          return {
-            ...item,
-            crewName: crewOfPerson,
-          };
-        })
-        .sort((a, b) => {
-          if (a.crewName == b.crewName) {
-            return 0;
-          } else if (a.crewName && !b.crewName) {
-            return 1;
-          } else {
-            return -1;
-          }
-        });
-    },
   },
 
   actions: <ActionTree<State, any>>{

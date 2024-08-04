@@ -17,7 +17,6 @@
 
       <v-card-text>
         <PersonAutocomplete
-          :items="peopleWithoutCrew"
           :loading="adding"
           @input="onAdd"
         ></PersonAutocomplete>
@@ -63,10 +62,6 @@ export default {
     }),
 
     ...mapState("vehicles", ["vehicle"]),
-
-    ...mapGetters("people", {
-      peopleWithoutCrew: "peopleWithoutCrew",
-    }),
 
     ...mapGetters("callout", ["crewOfVehicle"]),
 

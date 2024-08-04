@@ -46,7 +46,3 @@ export interface Crew {
 }
 
 export type MannschaftenMap = { [calloutId: string]: Crew | undefined };
-
-export interface PersonWithCrewName extends Person {
-  crewName?: string;
-}

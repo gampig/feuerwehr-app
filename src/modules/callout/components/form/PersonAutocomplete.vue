@@ -37,16 +37,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import { PersonWithCrewName } from "../../models/Callout";
+import { Person } from "@/modules/people/models/Person";
+import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    items: {
-      type: Array as PropType<Array<PersonWithCrewName>>,
-      required: true,
-    },
-
     loading: {
       type: Boolean,
       default: false,
@@ -65,15 +60,36 @@ export default Vue.extend({
   },
 
   computed: {
-    itemsForAutocomplete(): Array<PersonWithCrewName & { disabled: boolean }> {
-      return this.items.map((person) => {
-        return { ...person, disabled: person.crewName != null };
+    itemsForAutocomplete(): Array<
+      Person & { crewName?: string; disabled: boolean }
+    > {
+      const people: Person[] = this.$store.getters["people/peopleByActivity"];
+
+      const peopleWithCrewNames = people.map((item) => {
+        const crewOfPerson = this.$store.getters["callout/findCrewOfPerson"](
+          item.id
+        ) as string | undefined;
+        return {
+          ...item,
+          crewName: crewOfPerson,
+          disabled: crewOfPerson != undefined,
+        };
+      });
+
+      return peopleWithCrewNames.sort((a, b) => {
+        if (a.disabled == b.disabled) {
+          return 0;
+        } else if (a.disabled && !b.disabled) {
+          return 1;
+        } else {
+          return -1;
+        }
       });
     },
   },
 
   methods: {
-    onSelection(item: PersonWithCrewName) {
+    onSelection(item: Person) {
       if (item) {
         this.$emit("input", item);
         this.search = {};
