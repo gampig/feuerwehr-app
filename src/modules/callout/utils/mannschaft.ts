@@ -19,15 +19,15 @@ export function isPersonInMannschaft(
 }
 
 export function getGroupOfPerson(
-  person: Person,
+  personId: string,
   mannschaft: Crew,
   fahrzeuge: Vehicle[]
 ): string | undefined {
-  if (mannschaft.standby && mannschaft.standby[person.id]) {
+  if (mannschaft.standby && mannschaft.standby[personId]) {
     return "Bereitschaft";
   } else if (mannschaft.vehicles) {
     for (const fahrzeugId in mannschaft.vehicles) {
-      if (mannschaft.vehicles[fahrzeugId][person.id]) {
+      if (mannschaft.vehicles[fahrzeugId][personId]) {
         return (
           fahrzeuge.find((fahrzeug) => fahrzeug.id == fahrzeugId)?.name ||
           fahrzeugId

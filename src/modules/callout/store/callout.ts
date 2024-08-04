@@ -3,6 +3,8 @@ import firebase from "firebase/app";
 import handleError from "@/utils/store/handleError";
 import { Callout, CalloutVehicle, Crew, CalloutRole } from "../models/Callout";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { getGroupOfPerson } from "../utils/mannschaft";
+import { State as VehiclesState } from "@/modules/vehicles/store/vehicles";
 
 interface CrewMemberId {
   vehicleId: string;
@@ -41,10 +43,16 @@ export default {
           ])
         )) ||
       {},
-    findCrewMember: (state) => (personId: string) =>
-      (state.crew?.standby && state.crew.standby[personId]) ||
-      (state.crew?.vehicles &&
-        Object.values(state.crew.vehicles).find((item) => item[personId])),
+    findCrewOfPerson: (state, getters, rootState) => (personId: string) => {
+      if (state.crew === null) {
+        return undefined;
+      }
+      return getGroupOfPerson(
+        personId,
+        state.crew,
+        (rootState["vehicles"] as VehiclesState).vehicles
+      );
+    },
   },
 
   mutations: <MutationTree<State>>{

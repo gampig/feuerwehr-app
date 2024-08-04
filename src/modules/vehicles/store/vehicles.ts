@@ -3,7 +3,7 @@ import handleError from "@/utils/store/handleError";
 import { Vehicle } from "../models/Vehicle";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 
-class State {
+export class State {
   loading = false;
   vehicles: Vehicle[] = [];
   vehicle: Vehicle | null = null;

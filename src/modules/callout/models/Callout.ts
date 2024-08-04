@@ -1,3 +1,5 @@
+import { Person } from "@/modules/people/models/Person";
+
 type CalloutType = "THL" | "Brand" | "UG-ÖEL";
 
 export interface CalloutVehicle {
@@ -44,3 +46,7 @@ export interface Crew {
 }
 
 export type MannschaftenMap = { [calloutId: string]: Crew | undefined };
+
+export interface PersonWithCrewName extends Person {
+  crewName?: string;
+}

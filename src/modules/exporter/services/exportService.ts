@@ -53,7 +53,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       ]
         .concat(
           personen.map(
-            (person) => getGroupOfPerson(person, mannschaft, fahrzeuge) || ""
+            (person) => getGroupOfPerson(person.id, mannschaft, fahrzeuge) || ""
           )
         )
         .concat([einsatzFormatter.getBeginn(), einsatzFormatter.getEnde()])
