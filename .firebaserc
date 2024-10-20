@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "feuerwehr-parkstetten"
+    "default": "feuerwehr-parkstetten",
+    "test": "feuerwehr-parkstetten-test"
   }
 }
