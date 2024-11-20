@@ -1,16 +1,13 @@
 import { AllRoles } from "@/models/User";
 import { useAuthStore } from "@/stores/auth";
-import VueRouter from "vue-router";
 import { Module, Store } from "vuex";
 
 export default abstract class AbstractModule {
   protected authStore = useAuthStore();
   protected store: Store<any>;
-  protected router: VueRouter;
 
-  constructor(store: Store<any>, router: VueRouter) {
+  constructor(store: Store<any>) {
     this.store = store;
-    this.router = router;
 
     this.install();
   }

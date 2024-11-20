@@ -1,11 +1,9 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import route from "./router";
 import store from "./store";
 
 export default class CalloutModule extends AbstractModule {
   install() {
-    this.router.addRoute(route);
     this.installStore(store);
   }
 

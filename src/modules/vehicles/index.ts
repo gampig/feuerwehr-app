@@ -1,13 +1,11 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import store from "./store";
-import routes from "./router";
 
 export default class VehiclesModule extends AbstractModule {
   link = null;
 
   install() {
-    routes.forEach((route) => this.router.addRoute(route));
     this.installStore(store);
   }
 

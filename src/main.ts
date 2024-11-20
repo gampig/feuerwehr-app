@@ -49,4 +49,4 @@ new Vue({
 
 useAuthStore().init();
 
-modules.install(store, router);
+modules.install(store);
