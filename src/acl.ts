@@ -22,6 +22,8 @@ export abstract class Acl {
 
   static readonly einsatzLoeschen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
+  static readonly uebungenAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
+
   static readonly feuerwehrGeraete: AllRoles[] = [
     "ROLE_GROUPLEADER",
     "ROLE_VEHICLE",

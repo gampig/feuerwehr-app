@@ -161,6 +161,12 @@ export default Vue.extend({
           auth: this.hasAnyRole(Acl.mannschaftsbuch),
         },
         {
+          title: "Übungen",
+          to: { name: "TrainingHome" },
+          icon: "mdi-human-male-board-poll",
+          auth: this.hasAnyRole(Acl.uebungenAnzeigen),
+        },
+        {
           title: "Fahrzeuge",
           to: { name: "VehiclesHome" },
           icon: "mdi-fire-truck",

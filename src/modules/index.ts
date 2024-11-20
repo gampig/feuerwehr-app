@@ -6,8 +6,10 @@ import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
 import ExporterModule from "./exporter";
 import AppSettingsModule from "./appSettings";
+import TrainingModule from "./training";
 import vehicleRoutes from "./vehicles/router";
 import calloutRoute from "./callout/router";
+import trainingRoutes from "./training/router";
 import clothesRoutes from "./clothes/router";
 import peopleRoutes from "./people/router";
 import exporterRoutes from "./exporter/router";
@@ -24,6 +26,7 @@ class AppModules {
       new AppSettingsModule(store),
       new VehiclesModule(store),
       new CalloutModule(store),
+      new TrainingModule(store),
       new ClothesModule(store),
       new PeopleModule(store),
       new ExporterModule(store),
@@ -34,6 +37,7 @@ class AppModules {
     return [
       vehicleRoutes,
       [calloutRoute],
+      trainingRoutes,
       clothesRoutes,
       peopleRoutes,
       exporterRoutes,
