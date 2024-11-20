@@ -5,100 +5,84 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts" setup>
 import version from "@/utils/version";
 import modules from "./modules";
-import Loading from "@/components/Loading";
+import Loading from "@/components/Loading.vue";
 import { requires } from "./utils/routerAuth";
-import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "./stores/auth";
 import { useDatabaseSchemaStore } from "./stores/databaseSchema";
+import { computed, watch } from "vue";
+import router from "./router";
 
-export default {
-  components: { Loading },
+const authStore = useAuthStore();
+const databaseSchemaStore = useDatabaseSchemaStore();
 
-  computed: {
-    ...mapState(useAuthStore, { loadingAuth: "loading", loggedIn: "loggedIn" }),
-    ...mapState(useDatabaseSchemaStore, {
-      loadingDatabaseSchemaVersion: "loading",
-      updateIsRequired: "updateIsRequired",
-    }),
+const loadingAuth = computed(() => authStore.loading);
+const loggedIn = computed(() => authStore.loggedIn);
+const loadingDatabaseSchemaVersion = computed(
+  () => databaseSchemaStore.loading
+);
+const updateIsRequired = computed(() => databaseSchemaStore.updateIsRequired);
 
-    loading() {
-      return this.loadingAuth || this.loadingDatabaseSchemaVersion;
-    },
+const loading = computed(
+  () => loadingAuth.value || loadingDatabaseSchemaVersion.value
+);
+const loadingScreenText = computed(() => {
+  if (loadingAuth.value) {
+    return "Anmelden...";
+  } else {
+    return "Lade Daten...";
+  }
+});
 
-    loadingScreenText() {
-      if (this.loadingAuth) {
-        return "Anmelden...";
-      } else {
-        return "Lade Daten...";
-      }
-    },
-  },
+function onAuthStateChanged() {
+  if (loggedIn.value === true) {
+    onLogin();
+  } else if (loggedIn.value === false) {
+    onLogout();
+  }
+}
 
-  watch: {
-    loggedIn() {
-      this.onAuthStateChanged();
-    },
+function onLogin() {
+  modules.onLogin();
 
-    updateIsRequired() {
-      this.checkDatabaseSchemaVersion();
-    },
-  },
+  const lastOnline = new Date().toISOString();
+  authStore.updateClientMetadata({
+    lastOnline,
+    version,
+  });
+}
 
-  created() {
-    this.fetchDatabaseSchemaVersion();
-    this.onAuthStateChanged();
-  },
+function onLogout() {
+  modules.onLogout();
+  toLoginPage();
+}
 
-  methods: {
-    ...mapActions(useAuthStore, ["updateClientMetadata"]),
+function toLoginPage() {
+  if (requires(router.currentRoute, "requiresAuth")) {
+    router.replace({
+      name: "UserLogin",
+      params: { nextRouteName: "Home" },
+    });
+  }
+}
 
-    onAuthStateChanged() {
-      if (this.loggedIn === true) {
-        this.onLogin();
-      } else if (this.loggedIn === false) {
-        this.onLogout();
-      }
-    },
+function fetchDatabaseSchemaVersion() {
+  databaseSchemaStore.bind();
+}
 
-    onLogin() {
-      modules.onLogin();
+function checkDatabaseSchemaVersion() {
+  if (databaseSchemaStore.updateIsRequired) {
+    alert(
+      `Update erforderlich.\nVersion von Database: ${databaseSchemaStore.remoteSchemaVersion}\nMaximal unterstützte Version von FeuerwehrApp: ${databaseSchemaStore.localSchemaVersion}`
+    );
+  }
+}
 
-      const lastOnline = new Date().toISOString();
-      this.updateClientMetadata({
-        lastOnline,
-        version,
-      });
-    },
+watch(loggedIn, onAuthStateChanged);
+watch(updateIsRequired, checkDatabaseSchemaVersion);
 
-    onLogout() {
-      modules.onLogout();
-      this.toLoginPage();
-    },
-
-    toLoginPage() {
-      if (requires(this.$route, "requiresAuth")) {
-        this.$router.replace({
-          name: "UserLogin",
-          params: { nextUrl: { name: "Home" } },
-        });
-      }
-    },
-
-    fetchDatabaseSchemaVersion() {
-      useDatabaseSchemaStore().bind();
-    },
-
-    checkDatabaseSchemaVersion() {
-      const store = useDatabaseSchemaStore();
-      if (store.updateIsRequired) {
-        alert(
-          `Update erforderlich.\nVersion von Database: ${store.remoteSchemaVersion}\nMaximal unterstützte Version von FeuerwehrApp: ${store.localSchemaVersion}`
-        );
-      }
-    },
-  },
-};
+fetchDatabaseSchemaVersion();
+onAuthStateChanged();
 </script>

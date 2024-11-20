@@ -10,6 +10,20 @@ export function requires(to: AppRoute, required: AuthTypes) {
   );
 }
 
+function getParamsForNext(to: AppRoute): { [key: string]: string } {
+  if (to.name !== "UserLogin") {
+    return { nextUrl: to.fullPath };
+  } else {
+    if (to.params.nextUrl) {
+      return { nextUrl: to.params.nextUrl };
+    } else if (to.params.nextRouteName) {
+      return { nextRouteName: to.params.nextRouteName };
+    } else {
+      return {};
+    }
+  }
+}
+
 export function checkAuth(
   to: AppRoute,
   from: AppRoute,
@@ -21,10 +35,7 @@ export function checkAuth(
     if (loggedIn === false) {
       next({
         name: "UserLogin",
-        params:
-          to.name === "UserLogin"
-            ? { nextUrl: to.params.nextUrl }
-            : { nextUrl: to.fullPath },
+        params: getParamsForNext(to),
         replace: true,
       });
       return;
