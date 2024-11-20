@@ -1,7 +1,7 @@
 <template>
   <v-app id="feuerwehr-app">
-    <router-view />
-    <Loading :visible="loading" :text="loadingScreenText" />
+    <Loading v-if="loading" visible :text="loadingScreenText" />
+    <router-view v-else />
   </v-app>
 </template>
 
@@ -54,8 +54,12 @@ const loadingScreenText = computed(() => {
   }
 });
 
-function onAuthStateChanged() {
-  if (loggedIn.value === true) {
+function checkAuthState() {
+  if (
+    loggedIn.value === true &&
+    !loadingDatabaseSchemaVersion.value &&
+    !updateIsRequired.value
+  ) {
     onLogin();
   } else if (loggedIn.value === false) {
     onLogout();
@@ -130,9 +134,12 @@ document.addEventListener(
   { once: true }
 );
 
-watch(loggedIn, onAuthStateChanged);
+watch(
+  [loggedIn, loadingDatabaseSchemaVersion, updateIsRequired],
+  checkAuthState
+);
 watchEffect(checkDatabaseSchemaVersion);
 
 fetchDatabaseSchemaVersion();
-onAuthStateChanged();
+checkAuthState();
 </script>
