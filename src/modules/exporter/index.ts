@@ -1,11 +1,8 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import routes from "./router";
 
 export default class ExporterModule extends AbstractModule {
-  install() {
-    routes.forEach((route) => this.router.addRoute(route));
-  }
+  install() {}
 
   isAuthorized() {
     return this.hasAnyRole(Acl.datenexport);

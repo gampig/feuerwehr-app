@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import { checkAuth } from "./utils/routerAuth";
 import { AppRouteConfig } from "./models/Route";
+import modules from "./modules";
 
 const routes: Array<AppRouteConfig> = [
   {
@@ -54,7 +55,7 @@ const routes: Array<AppRouteConfig> = [
 ];
 
 const router = new VueRouter({
-  routes,
+  routes: routes.concat(modules.getRoutes()),
 });
 
 router.beforeEach((to, from, next) => checkAuth(to, from, next));

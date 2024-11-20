@@ -2,27 +2,42 @@ import VehiclesModule from "./vehicles";
 import CalloutModule from "./callout";
 import ClothesModule from "./clothes";
 import { Store } from "vuex";
-import VueRouter from "vue-router";
 import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
 import ExporterModule from "./exporter";
 import AppSettingsModule from "./appSettings";
+import vehicleRoutes from "./vehicles/router";
+import calloutRoute from "./callout/router";
+import clothesRoutes from "./clothes/router";
+import peopleRoutes from "./people/router";
+import exporterRoutes from "./exporter/router";
+import { AppRouteConfig } from "@/models/Route";
 
 class AppModules {
   modules: AbstractModule[] = [];
   store?: Store<any>;
 
-  install(store: Store<any>, router: VueRouter) {
+  install(store: Store<any>) {
     this.store = store;
 
     this.modules = [
-      new AppSettingsModule(store, router),
-      new VehiclesModule(store, router),
-      new CalloutModule(store, router),
-      new ClothesModule(store, router),
-      new PeopleModule(store, router),
-      new ExporterModule(store, router),
+      new AppSettingsModule(store),
+      new VehiclesModule(store),
+      new CalloutModule(store),
+      new ClothesModule(store),
+      new PeopleModule(store),
+      new ExporterModule(store),
     ];
+  }
+
+  getRoutes(): Array<AppRouteConfig> {
+    return [
+      vehicleRoutes,
+      [calloutRoute],
+      clothesRoutes,
+      peopleRoutes,
+      exporterRoutes,
+    ].flat();
   }
 
   onLogin() {
