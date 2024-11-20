@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === "production") {
     },
     updatefound() {
       console.log("New content is downloading.");
+      document.dispatchEvent(new CustomEvent("swUpdateFound"));
     },
     updated(registration) {
       if (router.currentRoute.meta?.skipWaiting) {
@@ -28,6 +29,9 @@ if (process.env.NODE_ENV === "production") {
         }
       } else {
         console.log("New content is available; please refresh.");
+        document.dispatchEvent(
+          new CustomEvent("swUpdated", { detail: registration })
+        );
       }
     },
     offline() {

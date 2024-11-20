@@ -28,6 +28,10 @@ export default Vue.extend({
     nextUrl(): string | null {
       return this.$route.params.nextUrl || null;
     },
+
+    nextRouteName(): string | null {
+      return this.$route.params.nextRouteName || null;
+    },
   },
 
   watch: {
@@ -35,6 +39,8 @@ export default Vue.extend({
       if (loggedIn) {
         if (this.nextUrl) {
           this.$router.replace(this.nextUrl);
+        } else if (this.nextRouteName) {
+          this.$router.replace({ name: this.nextRouteName });
         } else {
           this.$router.replace({ name: "Home" });
         }

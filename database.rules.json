@@ -1,5 +1,10 @@
 {
   "rules": {
+    "schemaVersion": {
+      ".read": true,
+      ".write": false
+    },
+
     "appSettings": {
       "feuerwehrGeraete": {
         ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_VEHICLE').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val())"
