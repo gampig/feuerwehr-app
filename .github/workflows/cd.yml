@@ -2,6 +2,9 @@ name: CD
 
 on: workflow_dispatch
 
+concurrency:
+  group: ${{ github.workflow }}
+
 env:
   FTP_HOST: w01bad8e.kasserver.com
   FTP_USER: f013bb2a

@@ -12,6 +12,9 @@ on:
       - '.git*'
       - '**.md'
 
+concurrency:
+  group: ${{ github.workflow }}
+
 env:
   FTP_HOST: w01bad8e.kasserver.com
   FTP_USER: f015f4cc
