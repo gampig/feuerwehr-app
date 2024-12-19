@@ -17,7 +17,6 @@ export const trainings: Training[] = [
         name: "Brandlhuber, Muk",
         group: "Zug A",
       },
-      { name: "Gschaftlhuber, Sepp" },
     ],
   },
 ];
