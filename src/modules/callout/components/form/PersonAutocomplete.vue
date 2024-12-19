@@ -38,6 +38,7 @@
 
 <script lang="ts">
 import { Person } from "@/modules/people/models/Person";
+import { usePeopleStore } from "@/modules/people/stores/people";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -63,7 +64,7 @@ export default Vue.extend({
     itemsForAutocomplete(): Array<
       Person & { crewName?: string; disabled: boolean }
     > {
-      const people: Person[] = this.$store.getters["people/peopleByActivity"];
+      const people: Person[] = usePeopleStore().peopleByActivity;
 
       const peopleWithCrewNames = people.map((item) => {
         const crewOfPerson = this.$store.getters["callout/findCrewOfPerson"](

@@ -107,8 +107,10 @@
 
 <script>
 import FormMixin from "@/mixins/FormMixin";
-import { mapState } from "vuex";
+import { mapState as vuexMapState } from "vuex";
+import { mapState as piniaMapState } from "pinia";
 import moment from "moment";
+import { usePeopleStore } from "@/modules/people/stores/people";
 
 export default FormMixin.extend({
   props: {
@@ -123,8 +125,14 @@ export default FormMixin.extend({
   },
 
   computed: {
-    ...mapState("people", { loadingPeople: "loading", people: "people" }),
-    ...mapState("clothingTypes", { loadingTypes: "loading", types: "types" }),
+    ...piniaMapState(usePeopleStore, {
+      loadingPeople: "loading",
+      people: "people",
+    }),
+    ...vuexMapState("clothingTypes", {
+      loadingTypes: "loading",
+      types: "types",
+    }),
 
     clothingTypeObject() {
       return (

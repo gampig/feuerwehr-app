@@ -1,21 +1,19 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import store from "./store";
+import { usePeopleStore } from "./stores/people";
 
 export default class PeopleModule extends AbstractModule {
-  install() {
-    this.installStore(store);
-  }
+  install() {}
 
   isAuthorizedForLink() {
     return this.hasAnyRole(Acl.personenBearbeiten);
   }
 
   load() {
-    return this.store.dispatch("people/bindPeople");
+    return usePeopleStore().bindPeople();
   }
 
   unload() {
-    return this.store.dispatch("people/unbind");
+    return usePeopleStore().unbind();
   }
 }

@@ -89,9 +89,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
+import { usePeopleStore } from "../stores/people";
 /* eslint-disable no-unused-vars */
 import { Person, ALL_PERSON_STATUS_VALUES } from "../models/Person";
 /* eslint-enable */
@@ -110,7 +111,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapState("people", ["people", "loading"]),
+    ...mapState(usePeopleStore, ["people", "loading"]),
   },
 
   watch: {
@@ -146,7 +147,7 @@ export default Vue.extend({
     },
 
     reloadPeople() {
-      this.$store.dispatch("people/bindPeople");
+      usePeopleStore().bindPeople();
     },
   },
 });

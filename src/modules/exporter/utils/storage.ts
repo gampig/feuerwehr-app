@@ -3,10 +3,11 @@ import firebase from "firebase/app";
 import { Callout, MannschaftenMap } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { usePeopleStore } from "@/modules/people/stores/people";
 
 export default {
   getPersonen(): Person[] {
-    return store.state.people.people as Person[];
+    return usePeopleStore().people as Person[];
   },
 
   getFahrzeuge(): Vehicle[] {

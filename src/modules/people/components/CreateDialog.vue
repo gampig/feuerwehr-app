@@ -37,6 +37,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { PersonStatus } from "../models/Person";
+import { usePeopleStore } from "../stores/people";
 import SelectStatus from "./SelectStatus.vue";
 
 function capitalizeFirstLetter(str: string) {
@@ -62,7 +64,7 @@ export default Vue.extend({
 
       firstName: "",
       lastName: "",
-      status: null as null | string,
+      status: null as null | PersonStatus,
     };
   },
 
@@ -81,8 +83,8 @@ export default Vue.extend({
         ", " +
         capitalizeFirstLetter(this.firstName.trim());
 
-      this.$store
-        .dispatch("people/update", {
+      usePeopleStore()
+        .update({
           id: personId,
           status: this.status || "Aktiv",
         })

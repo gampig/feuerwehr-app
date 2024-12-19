@@ -23,7 +23,8 @@
 import Vue from "vue";
 import SelectStatus from "./SelectStatus.vue";
 /* eslint-disable no-unused-vars */
-import { Person } from "../models/Person";
+import { Person, PersonStatus } from "../models/Person";
+import { usePeopleStore } from "../stores/people";
 /* eslint-enable */
 
 export default Vue.extend({
@@ -43,14 +44,14 @@ export default Vue.extend({
   data() {
     return {
       loading: false,
-      status: "Aktiv",
+      status: "Aktiv" as PersonStatus,
     };
   },
 
   computed: {
-    person(): null | Person {
+    person(): null | Person | undefined {
       if (!this.personId) return null;
-      return this.$store.state.people.people.find(
+      return usePeopleStore().people.find(
         (person: Person) => person.id == this.personId
       );
     },
@@ -85,8 +86,8 @@ export default Vue.extend({
       if (this.status === null) return;
 
       this.loading = true;
-      this.$store
-        .dispatch("people/update", {
+      usePeopleStore()
+        .update({
           id: this.personId,
           status: this.status,
         })
