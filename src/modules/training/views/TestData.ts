@@ -3,8 +3,8 @@ import { Training } from "../models/Training";
 export const trainings: Training[] = [
   {
     id: "randomId",
-    startTime: "20.11.2024 19:30",
-    endTime: "",
+    startTime: 1734633000,
+    endTime: undefined,
     groups: ["Zug A", "Zug B", "Jugend"],
     title: "UVV (Test)",
     location: "Gerätehaus",

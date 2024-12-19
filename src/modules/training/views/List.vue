@@ -1,11 +1,11 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
     <template #actions>
-      <v-btn icon><v-icon>mdi-plus</v-icon></v-btn>
+      <v-btn icon disabled><v-icon>mdi-plus</v-icon></v-btn>
     </template>
 
     <v-container fluid>
-      <v-alert color="warning" dismissible>
+      <v-alert type="warning" dismissible dense>
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
@@ -15,6 +15,9 @@
       <v-row>
         <v-col cols="12">
           <v-data-table :headers="headers" :items="items">
+            <template #[`item.startTime`]="{ item }">
+              {{ item.startTime | formatDateTime }}
+            </template>
             <template #[`item.actions`]="{ item }">
               <v-btn depressed @click="showTraining(item)">Auswählen</v-btn>
             </template>
@@ -31,7 +34,7 @@ import { Training } from "../models/Training";
 import { trainings } from "./TestData";
 
 const headers = [
-  { text: "Start", value: "startTime" },
+  { text: "Datum", value: "startTime" },
   { text: "Gruppen", value: "groups" },
   { text: "Titel", value: "title" },
   { text: "", value: "actions", sortable: false },

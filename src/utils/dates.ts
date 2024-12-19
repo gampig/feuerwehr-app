@@ -1,18 +1,30 @@
 import moment from "moment";
 
-const formatDateTime = function (date: number) {
+const formatDateTime = function (date?: number) {
+  if (date === undefined) {
+    return "";
+  }
   return moment.unix(date).format("L LT");
 };
 
-const formatDate = function (date: number) {
+const formatDate = function (date?: number) {
+  if (date === undefined) {
+    return "";
+  }
   return moment.unix(date).format("L");
 };
 
-const formatDateWithoutYear = function (date: number) {
+const formatDateWithoutYear = function (date?: number) {
+  if (date === undefined) {
+    return "";
+  }
   return moment.unix(date).format("DD.MM.");
 };
 
-const formatDateTimeFromNow = function (date: number) {
+const formatDateTimeFromNow = function (date?: number) {
+  if (date === undefined) {
+    return "";
+  }
   return moment.unix(date).fromNow();
 };
 
