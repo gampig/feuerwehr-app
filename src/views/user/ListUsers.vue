@@ -16,6 +16,7 @@
             @save="updateDisplayName(item)"
           >
             {{ item.displayName }}
+            <v-btn icon><v-icon>mdi-pencil</v-icon></v-btn>
             <template #input>
               <v-text-field
                 v-model="editDisplayName"
