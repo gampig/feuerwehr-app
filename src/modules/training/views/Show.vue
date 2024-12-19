@@ -148,6 +148,7 @@
 </template>
 
 <script setup lang="ts">
+import { usePeopleStore } from "@/modules/people/stores/people";
 import { capitalizeFirstLetter } from "@/utils/strings";
 import { reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
@@ -178,7 +179,9 @@ const availableGroups = [
   "Anderes",
 ];
 
-const availablePeople = ["Mustermann, Max"];
+const availablePeople: string[] = usePeopleStore()
+  .people.filter((person) => person.status !== "Ausgetreten")
+  .map((person) => person.id);
 
 const headers = [
   {
