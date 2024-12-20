@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
 
-    <BaseSearchRow :search.sync="search" />
+    <BaseSearchRow v-model:search="search" />
 
     <v-row>
       <v-col cols="12">
@@ -46,12 +46,12 @@
 
         <v-data-table
           v-else
+          v-model:options="options"
           :headers="headers"
           :items="orders"
           :search="search"
           :loading="loading"
           loading-text="Laden..."
-          :options.sync="options"
           class="elevation-1"
           locale="de-DE"
           item-key="id"

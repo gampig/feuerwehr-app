@@ -1,7 +1,7 @@
 <template>
   <BaseListPage
+    v-model:search="search"
     page-title="Lager"
-    :search.sync="search"
     :handle-add="() => (showAddDialog = true)"
   >
     <template v-if="type" #topRow>
@@ -26,7 +26,7 @@
     >
       <template #[`item.action`]="{ item }">
         <v-edit-dialog
-          :return-value.sync="item.count"
+          v-model:return-value="item.count"
           cancel-text="Abbrechen"
           save-text="Speichern"
           large
@@ -130,7 +130,7 @@ export default {
     this.retrieveItem();
   },
 
-  destroyed() {
+  unmounted() {
     this.unbindType();
     this.unbindStorage();
   },

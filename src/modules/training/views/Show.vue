@@ -73,7 +73,7 @@
                 </v-card-title>
                 <v-card-text>
                   <v-combobox
-                    :search.sync="newParticipantName"
+                    v-model:search="newParticipantName"
                     :items="availablePeople"
                     clearable
                     label="Teilnehmer"
