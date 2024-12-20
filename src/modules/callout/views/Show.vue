@@ -22,14 +22,14 @@
   </v-container>
 </template>
 
-<script>
-import makeShowMixin from "@/mixins/ShowMixin";
+<script lang="ts">
 import CalloutDetails from "../components/CalloutDetails.vue";
 import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
+import { defineComponent } from "vue";
 
-export default makeShowMixin("Callout", "callouts").extend({
+export default defineComponent({
   components: {
     CalloutDetails,
   },
@@ -44,10 +44,24 @@ export default makeShowMixin("Callout", "callouts").extend({
   computed: {
     ...mapState("callout", ["callout"]),
 
+    id() {
+      return this.$route.params.id;
+    },
+
     userCanDeleteCallout() {
       const authStore = useAuthStore();
       return authStore.loggedIn && authStore.hasAnyRole(Acl.einsatzLoeschen);
     },
+  },
+
+  watch: {
+    id() {
+      this.retrieveItem();
+    },
+  },
+
+  mounted() {
+    this.retrieveItem();
   },
 
   methods: {
@@ -64,6 +78,7 @@ export default makeShowMixin("Callout", "callouts").extend({
         this.loading = false;
       });
     },
+
     handleDelete() {
       this.remove().then(() => {
         this.$showMessage("Einsatz wurde gelöscht.");

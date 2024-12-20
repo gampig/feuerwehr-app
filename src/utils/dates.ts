@@ -32,10 +32,26 @@ const dateTimeToUnix = function (dateTime: string) {
   return moment(dateTime, "L LT").unix();
 };
 
+const sortDateTime = function (a: any, b: any) {
+  const diff = moment(a, "L LT").diff(moment(b, "L LT"));
+  if (diff > 0) return 1;
+  else if (diff < 0) return -1;
+  else return 0;
+};
+
+const sortDate = function (a: any, b: any) {
+  const diff = moment(a, "L").diff(moment(b, "L"));
+  if (diff > 0) return 1;
+  else if (diff < 0) return -1;
+  else return 0;
+};
+
 export {
   formatDate,
   formatDateWithoutYear,
   formatDateTime,
   formatDateTimeFromNow,
   dateTimeToUnix,
+  sortDateTime,
+  sortDate,
 };

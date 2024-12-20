@@ -78,13 +78,13 @@
 
 <script lang="ts">
 import { mapActions, mapState } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
 import Loading from "@/components/Loading.vue";
 import OrderCard from "../components/orders/OrderCard.vue";
 import CreateDialog from "../components/orders/CreateDialog.vue";
 import EditDialog from "../components/orders/EditDialog.vue";
-import { formatDate } from "@/utils/dates";
+import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
+import { defineComponent } from "vue";
 /* eslint-disable no-unused-vars */
 import { Order } from "../models/Order";
 import { ClothingType } from "../models/ClothingType";
@@ -102,7 +102,7 @@ function latestTimestampOfOrder(order: Order) {
   );
 }
 
-export default makeListMixin("ClothesOrder", "orders").extend({
+export default defineComponent({
   components: { Loading, OrderCard, CreateDialog, EditDialog },
 
   data() {
@@ -111,10 +111,10 @@ export default makeListMixin("ClothesOrder", "orders").extend({
         {
           text: "Eingereicht",
           value: "submittedOn",
-          sort: this.sortDate,
+          sort: sortDate,
         },
-        { text: "Bestellt", value: "orderedOn", sort: this.sortDate },
-        { text: "Erledigt", value: "doneOn", sort: this.sortDate },
+        { text: "Bestellt", value: "orderedOn", sort: sortDate },
+        { text: "Erledigt", value: "doneOn", sort: sortDate },
         { text: "Kleidung", value: "clothingType" },
         { text: "Person", value: "person" },
         {
@@ -123,6 +123,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
           sortable: false,
         },
       ],
+
       options: {
         sortBy: ["submittedOn"],
         sortDesc: [true],
@@ -142,7 +143,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
   },
 
   computed: {
-    ...mapState("orders", { allOrders: "orders" }),
+    ...mapState("orders", { allOrders: "orders", loading: "loading" }),
     ...mapState("clothingTypes", ["types"]),
 
     orders(): Order[] {
@@ -203,6 +204,19 @@ export default makeListMixin("ClothesOrder", "orders").extend({
     askForConfirmationToRemove(orderId: string) {
       this.orderToRemove = orderId;
       this.showRemoveConfirmationDialog = true;
+    },
+
+    filterList(list: Array<any>, search: string) {
+      if (search) {
+        const searchLowerCase = search.toLowerCase();
+        return list.filter((item) =>
+          Object.values(item).some((value) =>
+            String(value).toLowerCase().includes(searchLowerCase)
+          )
+        );
+      } else {
+        return list;
+      }
     },
   },
 });

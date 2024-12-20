@@ -12,9 +12,8 @@
   </v-stepper>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapState } from "vuex";
-import StepperMixin from "@/mixins/StepperMixin";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep.vue";
 import SelectStandbyStep from "../components/steppers/SelectStandbyStep.vue";
 import CreateDialog from "../components/CreateDialog.vue";
@@ -27,8 +26,6 @@ export default {
     CreateDialog,
   },
 
-  mixins: [StepperMixin],
-
   data() {
     return {
       showCreateDialog: false,
@@ -38,8 +35,8 @@ export default {
   computed: {
     ...mapState("callout", ["callout"]),
 
-    id() {
-      return this.$route.params.id;
+    id(): string | null | undefined {
+      return this.$route.params.id as string | null | undefined;
     },
 
     steps() {
@@ -60,10 +57,14 @@ export default {
         },
       ];
     },
+
+    currentStep(): number {
+      return this.getStepNumber(this.$route.name);
+    },
   },
 
   watch: {
-    id(id) {
+    id(id: string) {
       this.init(id);
     },
   },
@@ -75,7 +76,7 @@ export default {
   methods: {
     ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
 
-    init(id) {
+    init(id?: string | null) {
       if (id) {
         this.bindCallout(id);
       } else {
@@ -83,7 +84,7 @@ export default {
       }
     },
 
-    onCalloutSelect(calloutId) {
+    onCalloutSelect(calloutId: string | null) {
       if (!calloutId) {
         this.showCreateDialog = true;
       } else {
@@ -91,8 +92,19 @@ export default {
       }
     },
 
-    onDialogClose(calloutId) {
+    onDialogClose(calloutId: string) {
       this.goTo("StandbyPeople", { id: calloutId });
+    },
+
+    getStepNumber(stepName?: string | symbol | null): number {
+      if (!stepName) return 1;
+      const stepIndex =
+        this.steps.findIndex((step) => step.name === stepName) + 1;
+      return stepIndex > 0 ? stepIndex : 1;
+    },
+
+    goTo(name: string, params: any): void {
+      this.$router.push({ name, params });
     },
   },
 };

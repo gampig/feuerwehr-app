@@ -57,11 +57,11 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
 import CreateDialog from "../components/types/CreateDialog.vue";
 import EditDialog from "../components/types/EditDialog.vue";
+import { defineComponent } from "vue";
 
-export default makeListMixin("ClothesType", "clothingTypes").extend({
+export default defineComponent({
   components: { CreateDialog, EditDialog },
 
   data() {
@@ -76,6 +76,7 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
           sortable: false,
         },
       ],
+
       options: {
         sortBy: ["category", "name"],
         sortDesc: [false, false],
@@ -93,7 +94,7 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
   },
 
   computed: {
-    ...mapState("clothingTypes", { allTypes: "types" }),
+    ...mapState("clothingTypes", { allTypes: "types", loading: "loading" }),
 
     types() {
       if (this.showUnavailableTypes) {

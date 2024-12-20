@@ -81,10 +81,9 @@
 </template>
 
 <script>
-import makeUpdateMixin from "@/mixins/UpdateMixin";
 import { mapActions, mapState } from "vuex";
 
-export default makeUpdateMixin("", "").extend({
+export default {
   data() {
     return {
       rules: {
@@ -108,6 +107,7 @@ export default makeUpdateMixin("", "").extend({
           sortable: false,
         },
       ],
+
       search: "",
     };
   },
@@ -115,6 +115,19 @@ export default makeUpdateMixin("", "").extend({
   computed: {
     ...mapState("clothingTypes", ["type"]),
     ...mapState("clothingStorage", { remoteClothingItems: "clothingItems" }),
+    id() {
+      return this.$route.params.id;
+    },
+  },
+
+  watch: {
+    id() {
+      this.retrieveItem();
+    },
+  },
+
+  mounted() {
+    this.retrieveItem();
   },
 
   destroyed() {
@@ -133,6 +146,7 @@ export default makeUpdateMixin("", "").extend({
     decrementCount(item) {
       if (item.count > 0) item.count -= 1;
     },
+
     incrementCount(item) {
       item.count += 1;
     },
@@ -173,11 +187,12 @@ export default makeUpdateMixin("", "").extend({
         }
       );
     },
+
     resetItems() {
       this.clothingItems = this.remoteClothingItems.map((item) => {
         return { ...item };
       });
     },
   },
-});
+};
 </script>

@@ -30,15 +30,17 @@
   </v-container>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
+<script lang="ts">
+import { mapGetters, mapState } from "vuex";
+import { defineComponent } from "vue";
+import { Callout } from "../models/Callout";
+import { sortDateTime } from "@/utils/dates";
 
-export default makeListMixin("Callout", "callouts").extend({
+export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Alarm", value: "alarmTimeFormatted", sort: this.sortDateTime },
+        { text: "Alarm", value: "alarmTimeFormatted", sort: sortDateTime },
         { text: "Stichwort", value: "keyword" },
         { text: "Schlagwort", value: "catchphrase" },
         { text: "Adresse", value: "address" },
@@ -48,6 +50,7 @@ export default makeListMixin("Callout", "callouts").extend({
           sortable: false,
         },
       ],
+
       selected: [],
       options: {
         sortBy: ["alarmTimeFormatted"],
@@ -55,12 +58,23 @@ export default makeListMixin("Callout", "callouts").extend({
         page: 1,
         itemsPerPage: 15,
       },
+
       search: "",
     };
   },
 
   computed: {
     ...mapGetters("callouts", { callouts: "calloutsWithFormattedDateTime" }),
+    ...mapState("callouts", ["loading"]),
+  },
+
+  methods: {
+    showHandler(item: Callout) {
+      this.$router.push({
+        name: "CalloutShow",
+        params: { id: item.id },
+      });
+    },
   },
 });
 </script>
