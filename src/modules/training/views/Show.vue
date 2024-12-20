@@ -19,7 +19,7 @@
       <v-tabs-items v-model="currentTab" touchless>
         <v-tab-item>
           <v-form>
-            <v-card>
+            <v-card outlined>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
                 <v-text-field
@@ -64,71 +64,73 @@
         </v-tab-item>
 
         <v-tab-item>
-          <v-form ref="addParticipantForm">
+          <v-card outlined>
+            <v-form ref="addParticipantForm">
+              <v-card flat>
+                <v-card-title>
+                  <v-icon left>mdi-plus</v-icon>
+                  Teilnehmer hinzufügen
+                </v-card-title>
+                <v-card-text>
+                  <v-combobox
+                    :search-input.sync="newParticipantName"
+                    :items="availablePeople"
+                    clearable
+                    label="Teilnehmer"
+                    filled
+                    :rules="[isNotEmpty, isValidName]"
+                  >
+                  </v-combobox>
+                  <v-radio-group
+                    v-if="training.groups?.length > 0"
+                    v-model="newParticipantGroup"
+                    row
+                    :rules="[isNotEmpty]"
+                  >
+                    <v-radio
+                      v-for="group in training.groups"
+                      :key="group"
+                      :label="group"
+                      :value="group"
+                    >
+                    </v-radio>
+                  </v-radio-group>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="addParticipant">Hinzufügen</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-form>
+            <v-divider />
             <v-card flat>
               <v-card-title>
-                <v-icon left>mdi-plus</v-icon>
-                Teilnehmer hinzufügen
+                <v-icon left>mdi-check</v-icon>
+                Eingetragene Teilnehmer
               </v-card-title>
               <v-card-text>
-                <v-combobox
-                  :search-input.sync="newParticipantName"
-                  :items="availablePeople"
-                  clearable
-                  label="Teilnehmer"
-                  filled
-                  :rules="[isNotEmpty, isValidName]"
-                >
-                </v-combobox>
-                <v-radio-group
-                  v-if="training.groups?.length > 0"
-                  v-model="newParticipantGroup"
-                  row
-                  :rules="[isNotEmpty]"
-                >
-                  <v-radio
-                    v-for="group in training.groups"
-                    :key="group"
-                    :label="group"
-                    :value="group"
-                  >
-                  </v-radio>
-                </v-radio-group>
+                <v-text-field
+                  v-model="search"
+                  prepend-inner-icon="mdi-magnify"
+                  label="Suche"
+                  single-line
+                  hide-details
+                />
               </v-card-text>
-              <v-card-actions>
-                <v-btn @click="addParticipant">Hinzufügen</v-btn>
-              </v-card-actions>
+              <v-data-table
+                :headers="headers"
+                :items="training.participants"
+                :items-per-page="-1"
+                no-data-text="Keine Teilnehmer vorhanden"
+                sort-by="name"
+                :search="search"
+              >
+                <template #[`item.actions`]="{ item }">
+                  <v-btn icon @click="removeParticipant(item)"
+                    ><v-icon>mdi-delete</v-icon></v-btn
+                  >
+                </template>
+              </v-data-table>
             </v-card>
-          </v-form>
-          <v-divider />
-          <v-card flat>
-            <v-card-title>
-              <v-icon left>mdi-check</v-icon>
-              Eingetragene Teilnehmer
-            </v-card-title>
-            <v-card-text>
-              <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                label="Suche"
-                single-line
-                hide-details
-              />
-            </v-card-text>
-            <v-data-table
-              :headers="headers"
-              :items="training.participants"
-              :items-per-page="-1"
-              no-data-text="Keine Teilnehmer vorhanden"
-              sort-by="name"
-              :search="search"
-            >
-              <template #[`item.actions`]="{ item }">
-                <v-btn icon @click="removeParticipant(item)"
-                  ><v-icon>mdi-delete</v-icon></v-btn
-                >
-              </template>
-            </v-data-table>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
