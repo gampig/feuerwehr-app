@@ -16,7 +16,7 @@
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
-      <v-tabs-items v-model="currentTab">
+      <v-tabs-items v-model="currentTab" touchless>
         <v-tab-item>
           <v-form>
             <v-card>
