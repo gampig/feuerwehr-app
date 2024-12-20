@@ -1,5 +1,5 @@
 import store from "@/store";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { Callout, MannschaftenMap } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";

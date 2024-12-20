@@ -1,5 +1,5 @@
 import { ActionTree, MutationTree } from "vuex";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import handleError from "@/utils/store/handleError";
 import { firebaseAction } from "vuexfire";
 import { ClothingItem } from "../models/ClothingItem";

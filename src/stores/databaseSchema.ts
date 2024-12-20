@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 interface State {
   loading: Boolean;

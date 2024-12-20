@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { defineStore } from "pinia";
 import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";

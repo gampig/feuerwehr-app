@@ -5,7 +5,7 @@ import {
   LoginCredentials,
   UserSettings,
 } from "../models/User";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import cloneDeep from "lodash/cloneDeep";
 
 import deviceService, { deviceId } from "@/services/device";

@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import handleError from "@/utils/store/handleError";
 import { Action } from "vuex";
 

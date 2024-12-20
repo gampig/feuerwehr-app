@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
