@@ -1,5 +1,3 @@
-import { Person } from "@/modules/people/models/Person";
-
 type CalloutType = "THL" | "Brand" | "UG-ÖEL";
 
 export interface CalloutVehicle {
