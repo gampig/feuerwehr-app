@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import firebase from "firebase/app";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     LoginCard,
   },

@@ -1,8 +1,8 @@
-import Vue from "vue";
 import moment from "moment";
 import { dateTimeToUnix } from "@/utils/dates";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       rules: {

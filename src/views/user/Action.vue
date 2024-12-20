@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import PasswordResetCard from "@/components/user/PasswordResetCard.vue";
 import { mapActions } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     PasswordResetCard,
   },

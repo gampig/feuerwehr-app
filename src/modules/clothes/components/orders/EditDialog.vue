@@ -13,14 +13,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import OrderForm from "./OrderForm.vue";
 import { mapState } from "vuex";
 /* eslint-disable no-unused-vars */
 import { Order } from "../../models/Order";
 /* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     OrderForm,
   },

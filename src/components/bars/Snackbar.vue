@@ -21,9 +21,9 @@
 <script lang="ts">
 import { useNotificationsStore } from "@/stores/notifications";
 import { mapActions, mapState } from "pinia";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       timer: null as number | null,

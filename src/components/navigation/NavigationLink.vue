@@ -17,9 +17,9 @@
 
 <script lang="ts">
 import { NavLink } from "@/models/NavLink";
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     item: {
       type: Object as PropType<NavLink>,

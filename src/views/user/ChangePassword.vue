@@ -27,12 +27,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import ReauthenticationDialog from "@/components/user/ReauthenticationDialog.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ReauthenticationDialog,
   },

@@ -85,16 +85,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapState } from "pinia";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
 import { usePeopleStore } from "../stores/people";
-/* eslint-disable no-unused-vars */
 import { Person, ALL_PERSON_STATUS_VALUES } from "../models/Person";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: { CreateDialog, EditDialog },
   data() {
     return {

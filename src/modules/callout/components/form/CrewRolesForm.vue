@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import Vue from "vue";
+import { defineComponent } from "vue";
 import crewMemberCard from "../cards/CrewMemberCard.vue";
 
-export default Vue.extend({
+export default defineComponent({
   components: { crewMemberCard },
 
   props: {

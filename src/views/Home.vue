@@ -3,13 +3,16 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Acl } from "../acl";
-import { Location } from "vue-router";
+import {
+  RouteLocationAsPathGeneric,
+  RouteLocationAsRelativeGeneric,
+} from "vue-router";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapState(useAuthStore, ["loggedIn", "hasAnyRole"]),
   },
@@ -25,7 +28,11 @@ export default Vue.extend({
   },
 
   methods: {
-    getStartPage(): string | Location | null {
+    getStartPage():
+      | string
+      | RouteLocationAsPathGeneric
+      | RouteLocationAsRelativeGeneric
+      | null {
       if (this.hasAnyRole(Acl.alarmPc)) {
         return { name: "SelectStandby" };
       }

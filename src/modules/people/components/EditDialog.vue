@@ -20,14 +20,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import SelectStatus from "./SelectStatus.vue";
-/* eslint-disable no-unused-vars */
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: { SelectStatus },
 
   props: {

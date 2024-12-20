@@ -16,9 +16,9 @@
 <script lang="ts">
 import { useAppSettingsStore } from "@/modules/appSettings/stores/appSettings";
 import { mapState } from "pinia";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapState(useAppSettingsStore, ["feuerwehrGeraete"]),
 

@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
@@ -46,7 +46,7 @@ function filterAndMapRoles(roles: string[]): string[] {
     .map((role) => roleConfigById[role]?.name ?? role);
 }
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       headers: [

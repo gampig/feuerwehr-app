@@ -12,13 +12,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
-/* eslint-disable no-unused-vars */
 import { ClothingType } from "../../models/ClothingType";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TypeForm,
   },
@@ -50,7 +48,7 @@ export default Vue.extend({
 
     reset() {
       (this.$refs?.form as any)?.$refs?.form?.reset();
-      this.$set(this.item, "isAvailable", true);
+      this.item.isAvailable = true;
     },
 
     closeDialog() {

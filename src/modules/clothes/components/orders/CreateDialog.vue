@@ -12,14 +12,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import OrderForm from "./OrderForm.vue";
 import moment from "moment";
+import { defineComponent } from "vue";
 /* eslint-disable no-unused-vars */
 import { Order } from "../../models/Order";
 /* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     OrderForm,
   },

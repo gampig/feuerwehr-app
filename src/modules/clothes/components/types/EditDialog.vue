@@ -15,14 +15,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
 import { mapState } from "vuex";
-/* eslint-disable no-unused-vars */
 import { ClothingType } from "../../models/ClothingType";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TypeForm,
   },

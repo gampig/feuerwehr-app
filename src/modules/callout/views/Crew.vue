@@ -12,10 +12,10 @@
 <script lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { mapState } from "pinia";
-import Vue from "vue";
+import { defineComponent } from "vue";
 import ErrorDialog from "@/components/dialogs/ErrorDialog.vue";
 
-export default Vue.extend({
+export default defineComponent({
   components: { ErrorDialog },
 
   data() {

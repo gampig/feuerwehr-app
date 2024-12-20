@@ -10,12 +10,10 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { StepperStep } from "@/models/StepperStep";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Number,

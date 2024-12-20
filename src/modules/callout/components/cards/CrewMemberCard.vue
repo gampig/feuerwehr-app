@@ -25,12 +25,10 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { ALL_CALLOUT_ROLES, CalloutRole } from "../../models/Callout";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     person: {
       type: String,

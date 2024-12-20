@@ -18,13 +18,11 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { Callout } from "../models/Callout";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     callout: {
       type: Object as PropType<Callout>,

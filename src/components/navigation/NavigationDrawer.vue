@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import version from "@/utils/version";
 import NavigationLink from "./NavigationLink.vue";
 import { Acl } from "@/acl";
@@ -68,7 +68,7 @@ import { AllRoles } from "@/models/User";
 
 const deviceRoles: AllRoles[] = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     NavigationLink,
   },

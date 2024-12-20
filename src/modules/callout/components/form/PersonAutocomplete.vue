@@ -37,9 +37,9 @@
 <script lang="ts">
 import { Person } from "@/modules/people/models/Person";
 import { usePeopleStore } from "@/modules/people/stores/people";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     loading: {
       type: Boolean,

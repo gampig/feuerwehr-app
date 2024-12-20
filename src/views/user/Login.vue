@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import firebase from "firebase/app";
 import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { LoginCredentials } from "@/models/User";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     LoginCard,
   },
@@ -26,11 +26,11 @@ export default Vue.extend({
   computed: {
     ...mapState(useAuthStore, ["loggedIn"]),
     nextUrl(): string | null {
-      return this.$route.params.nextUrl || null;
+      return (this.$route.params.nextUrl || null) as string | null;
     },
 
     nextRouteName(): string | null {
-      return this.$route.params.nextRouteName || null;
+      return (this.$route.params.nextRouteName || null) as string | null;
     },
   },
 

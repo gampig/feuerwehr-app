@@ -13,12 +13,10 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { ALL_PERSON_STATUS_VALUES, PersonStatus } from "../models/Person";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: String as PropType<PersonStatus>,
