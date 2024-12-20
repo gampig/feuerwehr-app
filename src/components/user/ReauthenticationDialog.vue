@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";

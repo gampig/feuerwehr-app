@@ -1,5 +1,5 @@
 import { firebaseAction } from "vuexfire";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import handleError from "@/utils/store/handleError";
 import { Callout, CalloutVehicle, Crew, CalloutRole } from "../models/Callout";
 import { ActionTree, GetterTree, MutationTree } from "vuex";

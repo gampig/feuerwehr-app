@@ -1,5 +1,5 @@
 import Vue from "vue";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import deviceCredentials, { deviceId } from "@/services/device";
 import version from "@/utils/version";
 

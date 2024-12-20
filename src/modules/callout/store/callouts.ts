@@ -1,6 +1,6 @@
 import CrudFactory from "@/utils/firebase/CrudFactory";
 import { firebaseAction } from "vuexfire";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import moment from "moment";
 import { formatDateTime } from "@/utils/dates";
 import handleError from "@/utils/store/handleError";

@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { isObject } from "@posva/vuefire-core/src/shared";
 
 export default (snapshot: firebase.database.DataSnapshot) => {
