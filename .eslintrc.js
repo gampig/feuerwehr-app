@@ -11,8 +11,6 @@ module.exports = {
   },
 
   rules: {
-    "no-console": import.meta.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": import.meta.env.NODE_ENV === "production" ? "warn" : "off",
     "vue/component-name-in-template-casing": [
       "error",
       "PascalCase",
@@ -53,7 +51,7 @@ module.exports = {
   },
 
   extends: [
-    "plugin:vue/recommended",
+    "plugin:vue/vue3-recommended",
     "eslint:recommended",
     "@vue/prettier",
     "@vue/typescript",
