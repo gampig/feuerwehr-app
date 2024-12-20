@@ -17,7 +17,7 @@
           <v-card>
             <v-data-table :headers="headers" :items="items">
               <template #[`item.startTime`]="{ item }">
-                {{ item.startTime | formatDateTime }}
+                {{ formatDateTime(item.startTime) }}
               </template>
               <template #[`item.actions`]="{ item }">
                 <v-btn variant="flat" @click="showTraining(item)">Öffnen</v-btn>
@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import router from "@/router";
+import { formatDateTime } from "@/utils/dates";
 import { Training } from "../models/Training";
 import { trainings } from "./TestData";
 

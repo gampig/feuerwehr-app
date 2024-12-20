@@ -23,14 +23,14 @@
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
                 <v-text-field
-                  :model-value="training.startTime | formatDateTime"
+                  :model-value="formatDateTime(training.startTime)"
                   label="Start"
                   append-icon="mdi-calendar"
                   readonly
                   @click="showStartTimeDialog = true"
                 />
                 <v-text-field
-                  :model-value="training.endTime | formatDateTime"
+                  :model-value="formatDateTime(training.endTime)"
                   label="Ende"
                   append-icon="mdi-calendar"
                   readonly
@@ -157,6 +157,7 @@ import { capitalizeFirstLetter } from "@/utils/strings";
 import { reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
 import { trainings } from "./TestData";
+import { formatDateTime } from "@/utils/dates";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);

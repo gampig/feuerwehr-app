@@ -1,12 +1,12 @@
 <template>
   <v-list v-if="callout">
     <ListItem icon="mdi-alarm-light" subtitle="Alarm">
-      {{ callout.alarmTime | formatDateTime }}
-      ({{ callout.alarmTime | formatDateTimeFromNow }})
+      {{ formatDateTime(callout.alarmTime) }}
+      ({{ formatDateTimeFromNow(callout.alarmTime) }})
     </ListItem>
 
     <ListItem v-if="callout.endTime" icon="mdi-calendar-check" subtitle="Ende">
-      {{ callout.endTime | formatDateTime }}
+      {{ formatDateTime(callout.endTime) }}
       (Dauer {{ duration(callout.endTime) }})
     </ListItem>
 
@@ -105,7 +105,7 @@
             "
           >
             Einsatzende:
-            {{ calloutVehicle.calloutDetails.endTime | formatDateTime }}
+            {{ formatDateTime(calloutVehicle.calloutDetails.endTime) }}
             (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
           </v-list-item-subtitle>
         </template>
@@ -131,6 +131,7 @@
 import moment from "moment";
 import ListItem from "@/components/ListItem.vue";
 import { mapGetters, mapState } from "vuex";
+import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 
 export default {
   components: {
@@ -194,6 +195,9 @@ export default {
       const end = moment.unix(endTime);
       return moment.duration(alarm.diff(end)).humanize();
     },
+
+    formatDateTime: formatDateTime,
+    formatDateTimeFromNow: formatDateTimeFromNow,
   },
 };
 </script>

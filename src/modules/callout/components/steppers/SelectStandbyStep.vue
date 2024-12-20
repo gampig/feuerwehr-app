@@ -3,8 +3,8 @@
     <v-card-title>Bereitschaft</v-card-title>
     <v-card-subtitle v-if="callout">
       {{ callout.keyword }} -
-      {{ callout.alarmTime | formatDateTimeFromNow }}
-      ({{ callout.alarmTime | formatDateTime }})
+      {{ formatDateTimeFromNow(callout.alarmTime) }}
+      ({{ formatDateTime(callout.alarmTime) }})
     </v-card-subtitle>
 
     <v-divider v-if="callout"></v-divider>
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 import { mapState, mapActions, mapGetters } from "vuex";
 import PersonAutocomplete from "../form/PersonAutocomplete.vue";
 
@@ -125,6 +126,9 @@ export default {
     back() {
       this.$emit("back");
     },
+
+    formatDateTime: formatDateTime,
+    formatDateTimeFromNow: formatDateTimeFromNow,
   },
 };
 </script>

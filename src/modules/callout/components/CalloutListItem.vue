@@ -10,8 +10,8 @@
       {{ callout.address }}
     </v-list-item-subtitle>
     <v-list-item-subtitle>
-      {{ callout.alarmTime | formatDateTimeFromNow }} ({{
-        callout.alarmTime | formatDateTime
+      {{ formatDateTimeFromNow(callout.alarmTime) }} ({{
+        formatDateTime(callout.alarmTime)
       }})
     </v-list-item-subtitle>
   </v-list-item>
@@ -19,6 +19,7 @@
 
 <script lang="ts">
 /* eslint-disable no-unused-vars */
+import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 import Vue, { PropType } from "vue";
 import { Callout } from "../models/Callout";
 /* eslint-enable */
@@ -29,6 +30,11 @@ export default Vue.extend({
       type: Object as PropType<Callout>,
       default: null,
     },
+  },
+
+  methods: {
+    formatDateTime: formatDateTime,
+    formatDateTimeFromNow: formatDateTimeFromNow,
   },
 });
 </script>

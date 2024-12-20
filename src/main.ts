@@ -23,16 +23,6 @@ const pinia = createPinia();
 Vue.use(notifier);
 Vue.use(VueRouter);
 
-// Filters
-import {
-  formatDate,
-  formatDateTime,
-  formatDateTimeFromNow,
-} from "./utils/dates";
-Vue.filter("formatDate", formatDate);
-Vue.filter("formatDateTime", formatDateTime);
-Vue.filter("formatDateTimeFromNow", formatDateTimeFromNow);
-
 Vue.config.productionTip = false;
 
 Vue.config.errorHandler = unhandledErrorHandler;
