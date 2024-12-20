@@ -14,10 +14,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import firebase from "firebase/compat/app";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
+import { EmailAuthProvider } from "firebase/auth";
 
 export default Vue.extend({
   components: {
@@ -43,7 +43,7 @@ export default Vue.extend({
       }
 
       this.loading = true;
-      const cred = firebase.auth.EmailAuthProvider.credential(
+      const cred = EmailAuthProvider.credential(
         this.user.email,
         formData.password
       );

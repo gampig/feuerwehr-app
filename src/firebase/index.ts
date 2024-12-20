@@ -5,6 +5,6 @@ import config from "./config";
 import "firebase/compat/auth";
 import "firebase/compat/database";
 
-firebase.initializeApp(config);
+export const firebaseApp = firebase.initializeApp(config);
 
 import "./vuexfire";

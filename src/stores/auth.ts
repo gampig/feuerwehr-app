@@ -6,6 +6,19 @@ import {
   UserSettings,
 } from "../models/User";
 import firebase from "firebase/compat/app";
+import {
+  AuthCredential,
+  confirmPasswordReset,
+  getAuth,
+  onIdTokenChanged,
+  reauthenticateWithCredential,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  User,
+} from "firebase/auth";
+import { firebaseApp } from "@/firebase";
 import cloneDeep from "lodash/cloneDeep";
 
 import deviceService, { deviceId } from "@/services/device";
@@ -16,11 +29,13 @@ import { defineStore } from "pinia";
 interface State {
   loading: boolean;
   loggedIn: boolean | null;
-  user: firebase.User | null;
+  user: User | null;
   vehicle?: string;
   roles?: Roles;
   reauthenticationRequired: boolean;
 }
+
+const auth = getAuth(firebaseApp);
 
 export const useAuthStore = defineStore("auth", {
   state: (): State => ({
@@ -45,7 +60,7 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     init() {
-      return firebase.auth().onIdTokenChanged((user) => {
+      return onIdTokenChanged(auth, (user) => {
         if (user) {
           const userCopy = cloneDeep(user);
           this.setUser(userCopy);
@@ -75,29 +90,25 @@ export const useAuthStore = defineStore("auth", {
 
     login({ email, password }: LoginCredentials) {
       this.setLoading(true);
-      return firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .catch((error) => {
+      return signInWithEmailAndPassword(auth, email, password).catch(
+        (error) => {
           this.setLoading(false);
           handleError(error);
-        });
+        }
+      );
     },
     logout() {
       this.setLoading(true);
-      return firebase
-        .auth()
-        .signOut()
-        .catch((error) => {
-          this.setLoading(false);
-          handleError(error);
-        });
+      return signOut(auth).catch((error) => {
+        this.setLoading(false);
+        handleError(error);
+      });
     },
-    reauthenticate(credential: firebase.auth.AuthCredential) {
+    reauthenticate(credential: AuthCredential) {
       this.setLoading(true);
       return getCurrentUser()
         .then((currentUser) =>
-          currentUser.reauthenticateWithCredential(credential)
+          reauthenticateWithCredential(currentUser, credential)
         )
         .then(
           () => {
@@ -110,7 +121,7 @@ export const useAuthStore = defineStore("auth", {
 
     updatePassword(newPassword: string) {
       return getCurrentUser()
-        .then((currentUser) => currentUser.updatePassword(newPassword))
+        .then((currentUser) => updatePassword(currentUser, newPassword))
         .catch((error) => {
           if (error?.code === "auth/requires-recent-login") {
             this.setReauthenticationRequired(true);
@@ -132,16 +143,14 @@ export const useAuthStore = defineStore("auth", {
     },
 
     requestReset(email: string) {
-      return firebase
-        .auth()
-        .sendPasswordResetEmail(email)
-        .catch((error) => handleError(error));
+      return sendPasswordResetEmail(auth, email).catch((error) =>
+        handleError(error)
+      );
     },
     reset({ code, newPassword }: { code: string; newPassword: string }) {
-      return firebase
-        .auth()
-        .confirmPasswordReset(code, newPassword)
-        .catch((error) => handleError(error));
+      return confirmPasswordReset(auth, code, newPassword).catch((error) =>
+        handleError(error)
+      );
     },
 
     setLoading(loading: boolean) {
@@ -153,7 +162,7 @@ export const useAuthStore = defineStore("auth", {
     setReauthenticationRequired(reauthenticationRequired: boolean) {
       this.reauthenticationRequired = reauthenticationRequired;
     },
-    setUser(user: firebase.User | null) {
+    setUser(user: User | null) {
       this.user = user;
     },
     setUserSettings(this, userSettings?: UserSettings) {
@@ -167,9 +176,9 @@ export const useAuthStore = defineStore("auth", {
   },
 });
 
-function getCurrentUser(): Promise<firebase.User> {
+function getCurrentUser(): Promise<User> {
   return new Promise((resolve, reject) => {
-    const currentUser = firebase.auth().currentUser;
+    const currentUser = auth.currentUser;
 
     if (currentUser) {
       resolve(currentUser);

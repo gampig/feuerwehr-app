@@ -12,11 +12,20 @@
 
 <script lang="ts">
 import Vue from "vue";
-import firebase from "firebase/compat/app";
 import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { LoginCredentials } from "@/models/User";
+import {
+  getAuth,
+  setPersistence,
+  Persistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { firebaseApp } from "@/firebase";
+
+const auth = getAuth(firebaseApp);
 
 export default Vue.extend({
   components: {
@@ -52,17 +61,14 @@ export default Vue.extend({
     ...mapActions(useAuthStore, ["login"]),
 
     handleLogin(user: LoginCredentials & { persist?: boolean }) {
-      const persist =
+      const persist: Persistence =
         user.persist === true
-          ? firebase.auth.Auth.Persistence.LOCAL
-          : firebase.auth.Auth.Persistence.SESSION;
+          ? browserLocalPersistence
+          : browserSessionPersistence;
 
-      firebase
-        .auth()
-        .setPersistence(persist)
-        .then(() => {
-          this.login(user);
-        });
+      setPersistence(auth, persist).then(() => {
+        this.login(user);
+      });
     },
   },
 });
