@@ -15,9 +15,9 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import StepperMixin from "@/mixins/StepperMixin";
-import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
-import SelectStandbyStep from "../components/steppers/SelectStandbyStep";
-import CreateDialog from "../components/CreateDialog";
+import SelectCalloutStep from "../components/steppers/SelectCalloutStep.vue";
+import SelectStandbyStep from "../components/steppers/SelectStandbyStep.vue";
+import CreateDialog from "../components/CreateDialog.vue";
 import { formatDateTime } from "@/utils/dates";
 
 export default {

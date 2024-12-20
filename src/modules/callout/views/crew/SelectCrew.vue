@@ -35,9 +35,9 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import CrewPage from "../../components/CrewPage";
-import CrewRolesForm from "../../components/form/CrewRolesForm";
-import PersonAutocomplete from "../../components/form/PersonAutocomplete";
+import CrewPage from "../../components/CrewPage.vue";
+import CrewRolesForm from "../../components/form/CrewRolesForm.vue";
+import PersonAutocomplete from "../../components/form/PersonAutocomplete.vue";
 
 export default {
   components: { CrewPage, CrewRolesForm, PersonAutocomplete },

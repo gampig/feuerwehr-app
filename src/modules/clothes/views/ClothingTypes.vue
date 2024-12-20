@@ -58,8 +58,8 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import makeListMixin from "@/mixins/ListMixin";
-import CreateDialog from "../components/types/CreateDialog";
-import EditDialog from "../components/types/EditDialog";
+import CreateDialog from "../components/types/CreateDialog.vue";
+import EditDialog from "../components/types/EditDialog.vue";
 
 export default makeListMixin("ClothesType", "clothingTypes").extend({
   components: { CreateDialog, EditDialog },

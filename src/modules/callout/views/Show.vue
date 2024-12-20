@@ -24,7 +24,7 @@
 
 <script>
 import makeShowMixin from "@/mixins/ShowMixin";
-import CalloutDetails from "../components/CalloutDetails";
+import CalloutDetails from "../components/CalloutDetails.vue";
 import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";

@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import CrewPage from "../../components/CrewPage";
-import CalloutForm from "../../components/form/Form";
+import CrewPage from "../../components/CrewPage.vue";
+import CalloutForm from "../../components/form/Form.vue";
 import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";

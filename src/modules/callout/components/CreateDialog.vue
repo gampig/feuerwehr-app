@@ -24,7 +24,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import CalloutForm from "./form/Form";
+import CalloutForm from "./form/Form.vue";
 
 export default {
   components: { CalloutForm },

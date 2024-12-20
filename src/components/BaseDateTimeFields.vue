@@ -37,7 +37,7 @@
 
 <script>
 import moment from "moment";
-import DateTimeFieldsDateDialog from "./DateTimeFieldsDateDialog";
+import DateTimeFieldsDateDialog from "./DateTimeFieldsDateDialog.vue";
 
 export default {
   components: { DateTimeFieldsDateDialog },

@@ -56,7 +56,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import FormMixin from "@/mixins/FormMixin";
-import CrewPage from "../../components/CrewPage";
+import CrewPage from "../../components/CrewPage.vue";
 import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
 import moment from "moment";
 

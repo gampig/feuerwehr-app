@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import CalloutList from "../../components/CalloutList";
+import CalloutList from "../../components/CalloutList.vue";
 
 export default {
   components: { CalloutList },

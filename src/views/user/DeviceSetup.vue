@@ -20,7 +20,7 @@
 
 <script>
 import deviceService from "@/services/device";
-import LoginCard from "@/components/user/LoginCard";
+import LoginCard from "@/components/user/LoginCard.vue";
 
 export default {
   components: {

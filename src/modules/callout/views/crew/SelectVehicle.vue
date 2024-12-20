@@ -66,8 +66,8 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
-import CrewPage from "../../components/CrewPage";
-import VehicleCard from "../../components/cards/VehicleCard";
+import CrewPage from "../../components/CrewPage.vue";
+import VehicleCard from "../../components/cards/VehicleCard.vue";
 
 export default {
   components: { CrewPage, VehicleCard },

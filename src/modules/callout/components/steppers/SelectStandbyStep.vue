@@ -63,7 +63,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import PersonAutocomplete from "../form/PersonAutocomplete";
+import PersonAutocomplete from "../form/PersonAutocomplete.vue";
 
 export default {
   components: { PersonAutocomplete },

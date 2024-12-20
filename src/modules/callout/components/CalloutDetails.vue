@@ -133,7 +133,7 @@
 
 <script>
 import moment from "moment";
-import ListItem from "@/components/ListItem";
+import ListItem from "@/components/ListItem.vue";
 import { mapGetters, mapState } from "vuex";
 
 export default {

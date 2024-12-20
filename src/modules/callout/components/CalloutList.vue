@@ -66,7 +66,7 @@
 <script>
 import { Acl } from "@/acl";
 import { mapActions, mapGetters, mapState } from "vuex";
-import CalloutListItem from "./CalloutListItem";
+import CalloutListItem from "./CalloutListItem.vue";
 import { useAuthStore } from "@/stores/auth";
 
 export default {

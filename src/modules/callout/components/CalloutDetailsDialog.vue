@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import CalloutDetails from "./CalloutDetails";
+import CalloutDetails from "./CalloutDetails.vue";
 
 export default {
   components: { CalloutDetails },

@@ -33,7 +33,7 @@
 
 <script>
 import Vue from "vue";
-import crewMemberCard from "../cards/CrewMemberCard";
+import crewMemberCard from "../cards/CrewMemberCard.vue";
 
 export default Vue.extend({
   components: { crewMemberCard },

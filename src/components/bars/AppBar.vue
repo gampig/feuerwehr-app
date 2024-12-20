@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import Snackbar from "./Snackbar";
-import NavigationDrawer from "../navigation/NavigationDrawer";
+import Snackbar from "./Snackbar.vue";
+import NavigationDrawer from "../navigation/NavigationDrawer.vue";
 
 export default {
   components: {

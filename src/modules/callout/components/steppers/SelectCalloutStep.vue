@@ -12,7 +12,7 @@
 
 <script>
 import modules from "@/modules";
-import CalloutList from "../CalloutList";
+import CalloutList from "../CalloutList.vue";
 
 export default {
   components: { CalloutList },
