@@ -20,12 +20,21 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import firebase from "firebase/compat/app";
 import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import handleError from "@/utils/store/handleError";
 import { VForm } from "vuetify/components";
+import {
+  getAuth,
+  setPersistence,
+  Persistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { firebaseApp } from "@/firebase";
+
+const auth = getAuth(firebaseApp);
 
 export default defineComponent({
   components: {
@@ -67,14 +76,12 @@ export default defineComponent({
 
     async handleLogin() {
       if ((await (this.$refs.form as VForm).validate()).valid) {
-        const persist =
+        const persist: Persistence =
           this.persist === true
-            ? firebase.auth.Auth.Persistence.LOCAL
-            : firebase.auth.Auth.Persistence.SESSION;
+            ? browserLocalPersistence
+            : browserSessionPersistence;
 
-        firebase
-          .auth()
-          .setPersistence(persist)
+        setPersistence(auth, persist)
           .then(() => {
             return this.login({ email: this.email, password: this.password });
           })

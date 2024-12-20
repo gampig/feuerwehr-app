@@ -1,4 +1,5 @@
-import firebase from "firebase/compat/app";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "@/firebase";
 import deviceCredentials, { deviceId } from "@/services/device";
 import version from "@/utils/version";
 import { ComponentPublicInstance } from "vue";
@@ -121,7 +122,7 @@ export default class ErrorReportBuilder {
   }
 
   private prepareReport() {
-    const firebaseAuth = firebase.auth();
+    const firebaseAuth = getAuth(firebaseApp);
     if (firebaseAuth.currentUser) {
       this.report.user = {
         id: firebaseAuth.currentUser.uid,

@@ -20,11 +20,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import firebase from "firebase/compat/app";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { VForm } from "vuetify/components";
+import { EmailAuthProvider } from "firebase/auth";
 
 export default defineComponent({
   components: {
@@ -52,7 +52,7 @@ export default defineComponent({
         }
 
         this.loading = true;
-        const cred = firebase.auth.EmailAuthProvider.credential(
+        const cred = EmailAuthProvider.credential(
           this.user.email,
           this.password
         );
