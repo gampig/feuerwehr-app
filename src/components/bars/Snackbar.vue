@@ -11,7 +11,7 @@
       <p>{{ subText }}</p>
     </template>
     <template #actions="{ attrs }">
-      <v-btn v-bind="attrs" icon @click.native="close">
+      <v-btn v-bind="attrs" icon @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </template>
