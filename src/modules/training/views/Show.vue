@@ -97,7 +97,9 @@
                   </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn @click="addParticipant">Hinzufügen</v-btn>
+                  <v-btn depressed color="primary" @click="addParticipant">
+                    Hinzufügen
+                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-form>
