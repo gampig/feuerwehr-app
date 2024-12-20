@@ -1,10 +1,13 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { createStore, Store } from "vuex";
 import { vuexfireMutations } from "vuexfire";
 
-Vue.use(Vuex);
+declare module "vue" {
+  interface ComponentCustomProperties {
+    $store: Store<any>;
+  }
+}
 
-const store = new Vuex.Store({
+const store = createStore({
   mutations: vuexfireMutations,
 
   strict: process.env.NODE_ENV !== "production",

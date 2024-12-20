@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { App } from "vue";
 
 const requireComponent = require.context(
   ".",
@@ -6,18 +6,20 @@ const requireComponent = require.context(
   /Base[A-Z]\w+\.(vue|js|ts)$/
 );
 
-requireComponent.keys().forEach((fileName) => {
-  const baseComponentConfig = requireComponent(fileName);
+export function registerGlobalComponents(app: App) {
+  requireComponent.keys().forEach((fileName) => {
+    const baseComponentConfig = requireComponent(fileName);
 
-  const baseComponentName =
-    baseComponentConfig.name ||
-    fileName
-      .replace(/^.+\//, "")
-      // Remove the file extension
-      .replace(/\.\w+$/, "");
+    const baseComponentName =
+      baseComponentConfig.name ||
+      fileName
+        .replace(/^.+\//, "")
+        // Remove the file extension
+        .replace(/\.\w+$/, "");
 
-  Vue.component(
-    baseComponentName,
-    baseComponentConfig.default || baseComponentConfig
-  );
-});
+    app.component(
+      baseComponentName,
+      baseComponentConfig.default || baseComponentConfig
+    );
+  });
+}

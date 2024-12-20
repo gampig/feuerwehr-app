@@ -1,10 +1,8 @@
-import Vue from "vue";
 import "./firebase";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
-import { createPinia, PiniaVuePlugin } from "pinia";
-import VueRouter from "vue-router";
+import { createPinia } from "pinia";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
 import unhandledErrorHandler from "./utils/unhandledErrorHandler";
@@ -16,26 +14,29 @@ import modules from "./modules";
 
 // Globally register all `Base`-prefixed components
 import "./components/globals";
+import { createApp } from "vue";
+import { registerGlobalComponents } from "./components/globals";
 
-Vue.use(PiniaVuePlugin);
 const pinia = createPinia();
 
-Vue.use(notifier);
-Vue.use(VueRouter);
+const app = createApp(App);
 
-Vue.config.productionTip = false;
+app.use(router);
+app.use(pinia);
+app.use(store);
+app.use(notifier);
+app.use(vuetify);
 
-Vue.config.errorHandler = unhandledErrorHandler;
+registerGlobalComponents(app);
+
+app.config.errorHandler = unhandledErrorHandler;
 
 moment.locale("de");
 
-new Vue({
-  store,
-  pinia,
-  router,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+router
+  .isReady()
+  .then(() => app.mount("#app"))
+  .catch((e) => console.error(e));
 
 useAuthStore().init();
 

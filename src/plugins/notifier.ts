@@ -1,16 +1,16 @@
-import _Vue from "vue";
 import { showMessage, showError } from "@/utils/notifications";
+import { App } from "vue";
 
-declare module "vue/types/vue" {
-  interface Vue {
+declare module "vue" {
+  interface ComponentCustomProperties {
     $showMessage: typeof showMessage;
     $showError: typeof showError;
   }
 }
 
 export default {
-  install(Vue: typeof _Vue) {
-    Vue.prototype.$showMessage = showMessage;
-    Vue.prototype.$showError = showError;
+  install(app: App) {
+    app.config.globalProperties.$showMessage = showMessage;
+    app.config.globalProperties.$showError = showError;
   },
 };

@@ -1,37 +1,42 @@
 import "@fontsource/roboto";
-import "@mdi/font/css/materialdesignicons.css";
-import Vue from "vue";
-import Vuetify from "vuetify/lib";
-
-Vue.use(Vuetify);
-
-import de from "vuetify/src/locale/de";
+import { createVuetify } from "vuetify";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
+import { de } from "vuetify/locale";
 
 const mq = window.window.matchMedia("(prefers-color-scheme: dark)");
 
-export const vuetify = new Vuetify({
+export const vuetify = createVuetify({
   icons: {
-    iconfont: "mdi",
+    defaultSet: "mdi",
+    aliases,
+    sets: { mdi },
   },
-  lang: {
-    locales: { de },
-    current: "de",
+  locale: {
+    locale: "de",
+    fallback: "de",
+    messages: { de },
   },
   theme: {
+    defaultTheme: mq.matches ? "dark" : "light",
     themes: {
       light: {
-        primary: "#f44336",
-        secondary: "#607d8b",
-        accent: "#3f51b5",
+        dark: false,
+        colors: {
+          primary: "#f44336",
+          secondary: "#607d8b",
+          accent: "#3f51b5",
+        },
       },
       dark: {
-        primary: "#b71c1c",
+        dark: true,
+        colors: {
+          primary: "#b71c1c",
+        },
       },
     },
-    dark: mq.matches,
   },
 });
 
 mq.addEventListener("change", (e) => {
-  vuetify.framework.theme.dark = e.matches;
+  vuetify.theme.global.name.value = e.matches ? "dark" : "light";
 });
