@@ -12,7 +12,7 @@
     <v-card-text v-if="callout">
       <PersonAutocomplete
         :loading="loading"
-        @input="onAdd"
+        @update:model-value="onAdd"
       ></PersonAutocomplete>
 
       <div class="mb-4 ml-2">

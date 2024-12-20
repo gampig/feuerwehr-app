@@ -1,10 +1,10 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="value"
     max-width="900"
     :loading="loading"
     title="Neue Bestellung"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="save"
   >
     <OrderForm ref="form" v-bind.sync="item" />

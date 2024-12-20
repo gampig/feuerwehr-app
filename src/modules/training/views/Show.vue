@@ -91,7 +91,7 @@
                       v-for="group in training.groups"
                       :key="group"
                       :label="group"
-                      :value="group"
+                      :model-value="group"
                     >
                     </v-radio>
                   </v-radio-group>

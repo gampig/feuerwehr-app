@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <CalloutList @input="next" />
+    <CalloutList @update:model-value="next" />
   </v-container>
 </template>
 

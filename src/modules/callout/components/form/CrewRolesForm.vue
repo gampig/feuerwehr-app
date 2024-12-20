@@ -13,14 +13,14 @@
         :role="crewMember.role"
         :loading="loading[crewMember.person]"
         :outlined="cardsOutlined"
-        @input="submit(crewMember.person, $event)"
+        @update:model-value="submit(crewMember.person, $event)"
         @delete="remove(crewMember.person)"
       >
       </crew-member-card>
     </v-col>
 
     <BaseConfirmDialog
-      :value="personToRemove !== null"
+      :model-value="personToRemove !== null"
       confirm-text="Entfernen"
       width="300"
       @cancel="cancelRemoval"

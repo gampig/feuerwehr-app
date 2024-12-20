@@ -1,5 +1,5 @@
 <template>
-  <v-card v-bind="$attrs" append-inner v-on="$listeners">
+  <v-card v-bind="$attrs" append-inner>
     <v-img
       v-if="value.pictureUrl"
       :src="value.pictureUrl"

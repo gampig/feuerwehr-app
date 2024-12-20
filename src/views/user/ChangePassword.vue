@@ -20,8 +20,8 @@
     </v-form>
 
     <ReauthenticationDialog
-      :value="reauthenticationRequired"
-      @input="onDialogInput"
+      :model-value="reauthenticationRequired"
+      @update:model-value="onDialogInput"
     ></ReauthenticationDialog>
   </BasePageCentered>
 </template>

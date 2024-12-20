@@ -1,10 +1,10 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="value"
     max-width="500"
     :loading="loading"
     title="Person hinzufügen"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="create"
   >
     <v-form ref="form">

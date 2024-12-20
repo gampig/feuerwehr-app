@@ -1,5 +1,5 @@
 <template>
-  <BasePage v-bind="$attrs" v-on="$listeners">
+  <BasePage v-bind="$attrs">
     <v-container>
       <v-row justify="center">
         <v-col cols="11" sm="10" md="8" lg="6">

@@ -1,11 +1,11 @@
 <template>
   <BaseEditDialog
-    :value="value"
+    :model-value="value"
     max-width="900"
     title="Bestellung bearbeiten"
     :loading="loading"
     :saving="saving"
-    @input="cancel"
+    @update:model-value="cancel"
     @save="save"
   >
     <OrderForm ref="form" v-bind.sync="item" />

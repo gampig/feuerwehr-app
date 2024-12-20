@@ -3,7 +3,7 @@
     <PasswordResetCard
       v-if="mode === 'resetPassword'"
       :loading="loading"
-      @input="handleSubmit"
+      @update:model-value="handleSubmit"
     />
 
     <h3 v-else>Modus unbekannt!</h3>

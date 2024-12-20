@@ -10,7 +10,7 @@
         lg="2"
       >
         <VehicleCard
-          :value="vehicle"
+          :model-value="vehicle"
           color="secondary"
           dark
           @click="selectVehicle(vehicle.id)"
@@ -28,7 +28,7 @@
         md="3"
         lg="2"
       >
-        <VehicleCard :value="vehicle" @click="selectVehicle(vehicle.id)">
+        <VehicleCard :model-value="vehicle" @click="selectVehicle(vehicle.id)">
         </VehicleCard>
       </v-col>
     </v-row>
@@ -56,7 +56,10 @@
           md="3"
           lg="2"
         >
-          <VehicleCard :value="vehicle" @click="selectVehicle(vehicle.id)">
+          <VehicleCard
+            :model-value="vehicle"
+            @click="selectVehicle(vehicle.id)"
+          >
           </VehicleCard>
         </v-col>
       </v-row>

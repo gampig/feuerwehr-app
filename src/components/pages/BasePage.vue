@@ -1,6 +1,6 @@
 <template>
   <div class="full-height">
-    <AppBar v-bind="$attrs" v-on="$listeners">
+    <AppBar v-bind="$attrs">
       <slot name="actions"></slot>
       <template #extension>
         <slot name="extension"></slot>

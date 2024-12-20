@@ -1,10 +1,18 @@
 <template>
   <v-stepper v-model="currentStep" vertical>
-    <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
-      <SelectCalloutStep @input="onCalloutSelect" />
+    <BaseStepperVerticalStep
+      :index="1"
+      :step="steps[0]"
+      :model-value="currentStep"
+    >
+      <SelectCalloutStep @update:model-value="onCalloutSelect" />
     </BaseStepperVerticalStep>
 
-    <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
+    <BaseStepperVerticalStep
+      :index="2"
+      :step="steps[1]"
+      :model-value="currentStep"
+    >
       <SelectStandbyStep @back="$router.back()" />
     </BaseStepperVerticalStep>
 

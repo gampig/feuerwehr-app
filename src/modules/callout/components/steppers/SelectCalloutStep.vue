@@ -1,5 +1,5 @@
 <template>
-  <CalloutList class="ma-1" @input="selectCallout">
+  <CalloutList class="ma-1" @update:model-value="selectCallout">
     <v-card-title>
       Einsatz auswählen
       <v-spacer />

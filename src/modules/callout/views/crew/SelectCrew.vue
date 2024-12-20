@@ -18,14 +18,14 @@
       <v-card-text>
         <PersonAutocomplete
           :loading="adding"
-          @input="onAdd"
+          @update:model-value="onAdd"
         ></PersonAutocomplete>
 
         <CrewRolesForm
           :crew="crew"
           :loading="savingMap"
           cards-outlined
-          @input="onUpdate"
+          @update:model-value="onUpdate"
           @delete="onRemove"
         />
       </v-card-text>

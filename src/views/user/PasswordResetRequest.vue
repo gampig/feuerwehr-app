@@ -1,6 +1,6 @@
 <template>
   <BasePageCentered navdrawer>
-    <PasswordResetRequestCard @input="handleRequest">
+    <PasswordResetRequestCard @update:model-value="handleRequest">
       <v-btn variant="text" @click="$router.back()">Zurück</v-btn>
       <v-spacer />
       <v-btn type="submit" :loading="loading" color="primary">

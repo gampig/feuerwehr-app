@@ -1,6 +1,6 @@
 <template>
   <BasePageCentered navdrawer>
-    <LoginCard ask-for-persistence @input="handleLogin">
+    <LoginCard ask-for-persistence @update:model-value="handleLogin">
       <v-btn :to="{ name: 'UserPasswordResetRequest' }" variant="text"
         >Passwort vergessen</v-btn
       >

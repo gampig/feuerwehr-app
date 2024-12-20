@@ -1,10 +1,10 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="value"
     max-width="900"
     :loading="loading"
     title="Neues Kleidungsstück"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="save"
   >
     <TypeForm ref="form" v-bind.sync="item" />

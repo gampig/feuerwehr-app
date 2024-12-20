@@ -1,10 +1,10 @@
 <template>
   <BaseEditDialog
-    :value="value"
+    :model-value="value"
     max-width="700"
     :title="personId"
     :saving="loading"
-    @input="cancel"
+    @update:model-value="cancel"
     @save="save"
   >
     <v-form ref="form">

@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-bind="$attrs" width="500" v-on="$listeners">
+  <v-dialog v-bind="$attrs" width="500">
     <LoginCard
       :card-title="user && (user.displayName || user.email)"
       no-email
-      @input="submit"
+      @update:model-value="submit"
     >
       <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
       <v-spacer />

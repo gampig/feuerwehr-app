@@ -1,5 +1,5 @@
 <template>
-  <v-card v-bind="$attrs" v-on="$listeners">
+  <v-card v-bind="$attrs">
     <v-toolbar color="secondary" dark flat>
       <v-toolbar-title>
         {{ person }}

@@ -60,7 +60,7 @@
       </v-list-item>
     </v-list-group>
 
-    <v-list-group v-if="vehicles" :value="true">
+    <v-list-group v-if="vehicles" :model-value="true">
       <template #activator>
         <v-list-item prepend-avatar="mdi-truck" title="Fahrzeuge">
         </v-list-item>
