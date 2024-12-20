@@ -14,14 +14,16 @@
 
       <v-row>
         <v-col cols="12">
-          <v-data-table :headers="headers" :items="items">
-            <template #[`item.startTime`]="{ item }">
-              {{ item.startTime | formatDateTime }}
-            </template>
-            <template #[`item.actions`]="{ item }">
-              <v-btn depressed @click="showTraining(item)">Auswählen</v-btn>
-            </template>
-          </v-data-table>
+          <v-card>
+            <v-data-table :headers="headers" :items="items">
+              <template #[`item.startTime`]="{ item }">
+                {{ item.startTime | formatDateTime }}
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-btn depressed @click="showTraining(item)">Öffnen</v-btn>
+              </template>
+            </v-data-table>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
