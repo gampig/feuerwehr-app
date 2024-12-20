@@ -12,8 +12,7 @@ export default class CalloutModule extends AbstractModule {
   }
 
   load() {
-    const loadAllCallouts = this.store.state.callouts.allCalloutsLoaded;
-    return this.store.dispatch("callouts/bind", { loadAllCallouts });
+    return this.store.dispatch("callouts/bind");
   }
 
   unload() {

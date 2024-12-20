@@ -15,9 +15,6 @@ export default {
   },
 
   async fetchEinsaetze(): Promise<Callout[]> {
-    if (!store.state.callouts.allCalloutsLoaded) {
-      await store.dispatch("callouts/bind", { loadAllCallouts: true });
-    }
     return store.state.callouts.callouts as Callout[];
   },
 

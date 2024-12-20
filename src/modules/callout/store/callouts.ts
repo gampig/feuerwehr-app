@@ -9,7 +9,6 @@ import { ActionTree, GetterTree, MutationTree } from "vuex";
 
 class State {
   loading = false;
-  allCalloutsLoaded = false;
   callouts: Callout[] = [];
 }
 
@@ -21,15 +20,9 @@ function preprocessCallout(callout: Callout): Callout {
   return callout;
 }
 
-function getFilterTime(loadAll: boolean): number {
+function getFilterTime(): number {
   let filterTimeObject = moment();
-
-  if (loadAll) {
-    filterTimeObject = filterTimeObject.subtract(1, "year");
-  } else {
-    filterTimeObject = filterTimeObject.subtract(1, "day");
-  }
-
+  filterTimeObject = filterTimeObject.subtract(1, "year");
   return filterTimeObject.unix();
 }
 
@@ -48,9 +41,6 @@ export default {
         .reverse();
     },
     calloutsBeforeToday: (state) => {
-      if (!state.allCalloutsLoaded) {
-        return [];
-      }
       const aDayAgo = moment().subtract(1, "day").unix();
       return state.callouts
         .filter((callout) => callout.alarmTime <= aDayAgo)
@@ -71,53 +61,28 @@ export default {
     setLoading(state, loading: boolean) {
       state.loading = loading;
     },
-
-    loadedAllCallouts(state) {
-      state.allCalloutsLoaded = true;
-    },
-    removedAllCallouts(state) {
-      state.allCalloutsLoaded = false;
-    },
   },
 
   actions: <ActionTree<State, any>>{
     create: crudFactory.makeCreate(preprocessCallout),
 
-    bind: firebaseAction(
-      (
-        { bindFirebaseRef, commit },
-        { loadAllCallouts }: { loadAllCallouts: boolean }
-      ) => {
-        commit("setLoading", true);
-
-        const filterTime = getFilterTime(loadAllCallouts);
-
-        return bindFirebaseRef(
-          "callouts",
-          firebase
-            .database()
-            .ref("callouts")
-            .orderByChild("alarmTime")
-            .startAt(filterTime)
-        )
-          .then((ref) => {
-            commit("setLoading", false);
-            if (loadAllCallouts) {
-              commit("loadedAllCallouts");
-            } else {
-              commit("removedAllCallouts");
-            }
-            return ref;
-          })
-          .catch((error) => {
-            commit("setLoading", false);
-            commit("removedAllCallouts");
-            return handleError(error);
-          });
-      }
-    ),
-    unbind: firebaseAction(({ unbindFirebaseRef, commit }) => {
-      commit("removedAllCallouts");
+    bind: firebaseAction(({ bindFirebaseRef, commit }) => {
+      commit("setLoading", true);
+      const filterTime = getFilterTime();
+      return bindFirebaseRef(
+        "callouts",
+        firebase
+          .database()
+          .ref("callouts")
+          .orderByChild("alarmTime")
+          .startAt(filterTime)
+      )
+        .catch(handleError)
+        .finally(() => {
+          commit("setLoading", false);
+        });
+    }),
+    unbind: firebaseAction(({ unbindFirebaseRef }) => {
       unbindFirebaseRef("callouts");
     }),
   },

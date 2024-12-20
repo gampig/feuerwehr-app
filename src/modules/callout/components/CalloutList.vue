@@ -26,7 +26,7 @@
               <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
             </v-list-item-content>
           </template>
-          <template v-if="allCalloutsLoaded && calloutsBeforeToday.length > 0">
+          <template v-if="calloutsBeforeToday.length > 0">
             <CalloutListItem
               v-for="callout in calloutsBeforeToday"
               :key="callout.id"
@@ -80,7 +80,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callouts", ["loading", "allCalloutsLoaded"]),
+    ...mapState("callouts", ["loading"]),
     ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
 
     canViewAllCallouts() {
@@ -88,14 +88,6 @@ export default {
       return (
         authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeAnzeigen)
       );
-    },
-  },
-
-  watch: {
-    showAllCallouts(showAllCallouts) {
-      if (showAllCallouts === true && this.allCalloutsLoaded === false) {
-        this.bind({ loadAllCallouts: true });
-      }
     },
   },
 
