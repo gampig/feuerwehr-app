@@ -8,7 +8,17 @@
     @update:model-value="cancel"
     @save="save"
   >
-    <OrderForm ref="form" v-bind.sync="item" />
+    <OrderForm
+      ref="form"
+      v-model:person="item.person"
+      v-model:clothing-type="item.clothingType"
+      v-model:size="item.size"
+      v-model:count="item.count"
+      v-model:paid="item.paid"
+      v-model:submitted-on="item.submittedOn"
+      v-model:ordered-on="item.orderedOn"
+      v-model:done-on="item.doneOn"
+    />
   </BaseEditDialog>
 </template>
 

@@ -9,7 +9,11 @@
       <v-card-text>
         <CalloutForm
           ref="form"
-          v-bind.sync="item"
+          v-model:type="item.type"
+          v-model:keyword="item.keyword"
+          v-model:catchphrase="item.catchphrase"
+          v-model:alarm-time="item.alarmTime"
+          v-model:address="item.address"
           require-keyword
           :limit-alarm-time-to-recently="!canEditAllCallouts"
         />

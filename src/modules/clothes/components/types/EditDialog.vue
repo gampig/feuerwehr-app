@@ -9,7 +9,14 @@
     @save="save"
   >
     <v-container fluid>
-      <TypeForm ref="form" v-bind.sync="item" />
+      <TypeForm
+        ref="form"
+        v-model:category="item.category"
+        v-model:name="item.name"
+        v-model:price="item.price"
+        v-model:is-available="item.isAvailable"
+        v-model:sizes="item.sizes"
+      />
     </v-container>
   </BaseEditDialog>
 </template>

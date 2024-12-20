@@ -11,7 +11,14 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <CalloutForm ref="form" v-bind.sync="item"></CalloutForm>
+        <CalloutForm
+          ref="form"
+          v-model:type="item.type"
+          v-model:keyword="item.keyword"
+          v-model:catchphrase="item.catchphrase"
+          v-model:alarm-time="item.alarmTime"
+          v-model:address="item.address"
+        ></CalloutForm>
       </v-card-text>
 
       <v-divider></v-divider>
