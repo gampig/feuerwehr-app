@@ -21,7 +21,7 @@
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
                 clearable
-                solo
+                variant="solo"
                 hide-details
                 label="Suche"
               ></v-text-field>
@@ -31,7 +31,7 @@
               <v-select
                 v-model="selectedStatus"
                 clearable
-                solo
+                variant="solo"
                 hide-details
                 label="Status"
                 :items="availableStatusValues"
@@ -56,19 +56,16 @@
                   {{ item.id }}
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-list dense>
+                <v-list density="compact">
                   <v-list-item>
-                    <v-list-item-content class="text--secondary">
-                      Einsätze: {{ item.recentCalloutsCount || 0 }}
-                    </v-list-item-content>
+                    Einsätze: {{ item.recentCalloutsCount || 0 }}
                   </v-list-item>
-                  <v-list-item dense @click="edit(item.id)">
-                    <v-list-item-content>
-                      {{ item.status }}
-                    </v-list-item-content>
-                    <v-list-item-icon>
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-list-item-icon>
+                  <v-list-item
+                    density="compact"
+                    append-icon="mdi-pencil"
+                    @click="edit(item.id)"
+                  >
+                    {{ item.status }}
                   </v-list-item>
                 </v-list>
               </v-card>

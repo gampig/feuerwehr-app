@@ -5,7 +5,7 @@
         :label="'Datum ' + label"
         type="date"
         :prepend-icon="prependIcon"
-        :value="date"
+        :model-value="date"
         :rules="rulesDate"
         :clearable="clearable"
         readonly
@@ -18,10 +18,10 @@
         :label="'Uhrzeit ' + label"
         type="time"
         :prepend-icon="prependIcon"
-        :value="time"
+        :model-value="time"
         :rules="rulesTime"
         :clearable="clearable"
-        @input="updateTime"
+        @update:model-value="updateTime"
       />
     </v-col>
 

@@ -4,7 +4,7 @@
 
     <NavigationDrawer v-if="navdrawer" v-model="drawer" />
 
-    <v-app-bar app>
+    <v-app-bar>
       <v-app-bar-nav-icon v-if="navdrawer" @click.stop="drawer = !drawer" />
 
       <v-btn v-if="backButton" icon @click="goBack">

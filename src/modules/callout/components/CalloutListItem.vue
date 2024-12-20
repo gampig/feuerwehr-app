@@ -1,21 +1,19 @@
 <template>
-  <v-list-item two-line @click="$emit('click')">
-    <v-list-item-content>
-      <v-list-item-title>
-        {{ callout.keyword }}
-      </v-list-item-title>
-      <v-list-item-subtitle>
-        {{ callout.catchphrase }}
-      </v-list-item-subtitle>
-      <v-list-item-subtitle v-if="callout.address">
-        {{ callout.address }}
-      </v-list-item-subtitle>
-      <v-list-item-subtitle>
-        {{ callout.alarmTime | formatDateTimeFromNow }} ({{
-          callout.alarmTime | formatDateTime
-        }})
-      </v-list-item-subtitle>
-    </v-list-item-content>
+  <v-list-item lines="two" @click="$emit('click')">
+    <v-list-item-title>
+      {{ callout.keyword }}
+    </v-list-item-title>
+    <v-list-item-subtitle>
+      {{ callout.catchphrase }}
+    </v-list-item-subtitle>
+    <v-list-item-subtitle v-if="callout.address">
+      {{ callout.address }}
+    </v-list-item-subtitle>
+    <v-list-item-subtitle>
+      {{ callout.alarmTime | formatDateTimeFromNow }} ({{
+        callout.alarmTime | formatDateTime
+      }})
+    </v-list-item-subtitle>
   </v-list-item>
 </template>
 

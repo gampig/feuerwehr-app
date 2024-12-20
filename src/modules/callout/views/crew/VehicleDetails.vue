@@ -32,7 +32,7 @@
           <v-text-field
             label="Einsatzende"
             prepend-icon="mdi-calendar-check-outline"
-            :value="endTimeFormatted"
+            :model-value="endTimeFormatted"
             :rules="[rules.restrictFuture, calloutRules.endAfterAlarm]"
             readonly
             clearable

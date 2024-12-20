@@ -5,7 +5,7 @@
     </template>
 
     <v-container fluid>
-      <v-alert type="warning" dismissible dense>
+      <v-alert type="warning" closable density="compact">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
@@ -20,7 +20,7 @@
                 {{ item.startTime | formatDateTime }}
               </template>
               <template #[`item.actions`]="{ item }">
-                <v-btn depressed @click="showTraining(item)">Öffnen</v-btn>
+                <v-btn variant="flat" @click="showTraining(item)">Öffnen</v-btn>
               </template>
             </v-data-table>
           </v-card>

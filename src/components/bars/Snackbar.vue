@@ -1,17 +1,16 @@
 <template>
   <v-snackbar
-    :value="show"
+    :model-value="show"
     :color="color"
     :multi-line="true"
     :timeout="timeout"
-    right
-    top
+    location="right top"
   >
     {{ text }}
     <template v-if="subText">
       <p>{{ subText }}</p>
     </template>
-    <template #action="{ attrs }">
+    <template #actions="{ attrs }">
       <v-btn v-bind="attrs" icon @click.native="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>

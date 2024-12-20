@@ -1,10 +1,10 @@
 <template>
   <v-chip-group
-    :value="selectedStatusIndex"
-    active-class="primary"
+    :model-value="selectedStatusIndex"
+    selected-class="primary"
     mandatory
     column
-    @change="changeStatus"
+    @update:model-value="changeStatus"
   >
     <v-chip v-for="status in availableStatusValues" :key="status">
       {{ status }}

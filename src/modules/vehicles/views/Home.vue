@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <v-btn v-if="showMapButton" @click="showMap">
-            <v-icon left>mdi-map</v-icon>
+            <v-icon start>mdi-map</v-icon>
             Karte
           </v-btn>
         </v-col>

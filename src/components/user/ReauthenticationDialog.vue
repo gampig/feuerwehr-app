@@ -5,7 +5,7 @@
       no-email
       @input="submit"
     >
-      <v-btn text @click="$emit('input', false)">Abbrechen</v-btn>
+      <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
       <v-spacer />
       <v-btn type="submit" :loading="loading" color="primary"> Weiter </v-btn>
     </LoginCard>

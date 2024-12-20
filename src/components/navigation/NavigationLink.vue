@@ -5,12 +5,13 @@
     :href="item.href"
     v-on="item.click !== undefined ? { click: item.click } : {}"
   >
-    <v-list-item-avatar v-if="item.icon">
-      <v-icon>{{ item.icon }}</v-icon>
-    </v-list-item-avatar>
-    <v-list-item-content>
-      <v-list-item-title>{{ item.title }}</v-list-item-title>
-    </v-list-item-content>
+    <template v-if="item.icon" #prepend>
+      <v-avatar>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-avatar>
+    </template>
+
+    <v-list-item-title>{{ item.title }}</v-list-item-title>
   </v-list-item>
 </template>
 

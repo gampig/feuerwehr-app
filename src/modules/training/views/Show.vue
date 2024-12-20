@@ -8,29 +8,29 @@
     </template>
 
     <v-container>
-      <v-alert type="warning" dismissible dense border="left">
+      <v-alert type="warning" closable density="compact" border="start">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
-      <v-alert type="info" dense border="left" colored-border>
+      <v-alert type="info" density="compact" border="start" border-color>
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
-      <v-tabs-items v-model="currentTab" touchless>
-        <v-tab-item>
+      <v-tabs-window v-model="currentTab" touchless>
+        <v-tabs-window-item>
           <v-form>
-            <v-card outlined>
+            <v-card border>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
                 <v-text-field
-                  :value="training.startTime | formatDateTime"
+                  :model-value="training.startTime | formatDateTime"
                   label="Start"
                   append-icon="mdi-calendar"
                   readonly
                   @click="showStartTimeDialog = true"
                 />
                 <v-text-field
-                  :value="training.endTime | formatDateTime"
+                  :model-value="training.endTime | formatDateTime"
                   label="Ende"
                   append-icon="mdi-calendar"
                   readonly
@@ -55,36 +55,36 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn depressed disabled>
-                  <v-icon left>mdi-delete</v-icon>Löschen
+                <v-btn variant="flat" disabled>
+                  <v-icon start>mdi-delete</v-icon>Löschen
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-form>
-        </v-tab-item>
+        </v-tabs-window-item>
 
-        <v-tab-item>
-          <v-card outlined>
+        <v-tabs-window-item>
+          <v-card border>
             <v-form ref="addParticipantForm">
               <v-card flat>
                 <v-card-title>
-                  <v-icon left>mdi-plus</v-icon>
+                  <v-icon start>mdi-plus</v-icon>
                   Teilnehmer hinzufügen
                 </v-card-title>
                 <v-card-text>
                   <v-combobox
-                    :search-input.sync="newParticipantName"
+                    :search.sync="newParticipantName"
                     :items="availablePeople"
                     clearable
                     label="Teilnehmer"
-                    filled
+                    variant="filled"
                     :rules="[isNotEmpty, isValidName]"
                   >
                   </v-combobox>
                   <v-radio-group
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
-                    row
+                    inline
                     :rules="[isNotEmpty]"
                   >
                     <v-radio
@@ -97,7 +97,7 @@
                   </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn depressed color="primary" @click="addParticipant">
+                  <v-btn variant="flat" color="primary" @click="addParticipant">
                     Hinzufügen
                   </v-btn>
                 </v-card-actions>
@@ -106,7 +106,7 @@
             <v-divider />
             <v-card flat>
               <v-card-title>
-                <v-icon left>mdi-check</v-icon>
+                <v-icon start>mdi-check</v-icon>
                 Eingetragene Teilnehmer
               </v-card-title>
               <v-card-text>
@@ -134,8 +134,8 @@
               </v-data-table>
             </v-card>
           </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+        </v-tabs-window-item>
+      </v-tabs-window>
     </v-container>
 
     <BaseDateTimeDialog

@@ -9,25 +9,25 @@
       </p>
 
       <div v-if="size" class="mb-3">
-        <v-icon left>mdi-ruler</v-icon>
+        <v-icon start>mdi-ruler</v-icon>
         {{ size }}
       </div>
 
       <div v-if="count && count >= 2" class="mb-3">
-        <v-icon left>mdi-cart-variant</v-icon>
+        <v-icon start>mdi-cart-variant</v-icon>
         {{ count }}
       </div>
 
       <div v-if="totalPrice" class="mb-3">
-        <v-icon left>mdi-cash</v-icon>
+        <v-icon start>mdi-cash</v-icon>
         {{ formatCurrency(paid || 0) }} / {{ formatCurrency(totalPrice) }} €
       </div>
 
-      <v-timeline class="mt-5" dense>
+      <v-timeline class="mt-5" density="compact">
         <v-timeline-item
-          :color="!orderedOn && !doneOn ? 'red' : null"
+          :dot-color="!orderedOn && !doneOn ? 'red' : null"
           :icon-color="!orderedOn && !doneOn ? 'white' : 'grey'"
-          dark
+          theme="dark"
           icon="mdi-plus"
           fill-dot
           :class="!orderedOn && !doneOn ? null : 'text--disabled'"
@@ -38,7 +38,7 @@
 
         <v-timeline-item
           v-if="orderedOn"
-          :color="!doneOn ? 'orange' : null"
+          :dot-color="!doneOn ? 'orange' : null"
           :icon-color="!doneOn ? 'white' : 'grey'"
           icon="mdi-package-variant-closed"
           fill-dot
@@ -48,7 +48,12 @@
           <div>Bestellt</div>
         </v-timeline-item>
 
-        <v-timeline-item v-if="doneOn" color="green" icon="mdi-check" fill-dot>
+        <v-timeline-item
+          v-if="doneOn"
+          dot-color="green"
+          icon="mdi-check"
+          fill-dot
+        >
           <div>{{ doneOn }}</div>
           <div>Erledigt</div>
         </v-timeline-item>
@@ -62,7 +67,7 @@
         <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn text @click="$emit('edit')">Bearbeiten</v-btn>
+      <v-btn variant="text" @click="$emit('edit')">Bearbeiten</v-btn>
     </v-card-actions>
   </v-card>
 </template>

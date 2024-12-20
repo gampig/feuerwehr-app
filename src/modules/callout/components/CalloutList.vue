@@ -15,16 +15,12 @@
           />
         </template>
         <v-list-item v-else>
-          <v-list-item-content>
-            Kein Einsatz aus den letzten 24 Stunden vorhanden.
-          </v-list-item-content>
+          Kein Einsatz aus den letzten 24 Stunden vorhanden.
         </v-list-item>
 
         <v-list-group v-if="canViewAllCallouts" v-model="showAllCallouts">
           <template #activator>
-            <v-list-item-content>
-              <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
           </template>
           <template v-if="calloutsBeforeToday.length > 0">
             <CalloutListItem
@@ -34,17 +30,13 @@
               @click="selectCallout(callout.id)"
             />
           </template>
-          <v-list-item v-else>
-            <v-list-item-content>
-              Keine weiteren Einsätze vorhanden.
-            </v-list-item-content>
-          </v-list-item>
+          <v-list-item v-else> Keine weiteren Einsätze vorhanden. </v-list-item>
         </v-list-group>
       </v-list>
     </template>
 
     <v-card-actions>
-      <v-btn :disabled="loading" text @click="showUserConfirm = true">
+      <v-btn :disabled="loading" variant="text" @click="showUserConfirm = true">
         Neuer Einsatz
       </v-btn>
     </v-card-actions>

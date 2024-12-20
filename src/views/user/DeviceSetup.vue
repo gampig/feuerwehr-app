@@ -7,7 +7,7 @@
       <v-card-title>{{ device.email }}</v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="handleLogout">Abmelden</v-btn>
+        <v-btn variant="text" @click="handleLogout">Abmelden</v-btn>
       </v-card-actions>
     </v-card>
 

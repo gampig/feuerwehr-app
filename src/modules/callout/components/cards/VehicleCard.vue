@@ -1,5 +1,5 @@
 <template>
-  <v-card v-bind="$attrs" append v-on="$listeners">
+  <v-card v-bind="$attrs" append-inner v-on="$listeners">
     <v-img
       v-if="value.pictureUrl"
       :src="value.pictureUrl"
@@ -13,10 +13,10 @@
 
     <v-card-subtitle
       v-if="value.crewNumber && value.maxCrewNumber"
-      class="subtitle-1"
+      class="text-subtitle-1"
     >
       {{ value.crewNumber }}
-      <span class="overline">/{{ value.maxCrewNumber }}</span>
+      <span class="text-overline">/{{ value.maxCrewNumber }}</span>
       Besatzung
     </v-card-subtitle>
   </v-card>

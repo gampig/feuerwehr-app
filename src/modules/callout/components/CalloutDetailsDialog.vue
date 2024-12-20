@@ -1,10 +1,14 @@
 <template>
-  <v-dialog :value="value" max-width="700" @input="$emit('input', false)">
+  <v-dialog
+    :model-value="value"
+    max-width="700"
+    @update:model-value="$emit('input', false)"
+  >
     <v-card>
-      <v-card-title class="headline">
+      <v-card-title class="text-h5">
         Details zum Einsatz
         <v-spacer></v-spacer>
-        <v-btn large icon @click="$emit('input', false)">
+        <v-btn size="large" icon @click="$emit('input', false)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>

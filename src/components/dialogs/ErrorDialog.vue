@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" width="500" persistent>
+  <v-dialog :model-value="value" width="500" persistent>
     <v-card>
       <v-card-title>Fehler</v-card-title>
 
@@ -8,9 +8,9 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn text @click="goBack">Zurück</v-btn>
+        <v-btn variant="text" @click="goBack">Zurück</v-btn>
         <v-spacer />
-        <v-btn text @click="tryAgain">Erneut versuchen</v-btn>
+        <v-btn variant="text" @click="tryAgain">Erneut versuchen</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

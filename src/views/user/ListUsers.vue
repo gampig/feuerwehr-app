@@ -26,8 +26,7 @@
           </v-edit-dialog>
         </template>
         <template #[`item.disabled`]="{ item }">
-          <v-simple-checkbox v-model="item.disabled" disabled>
-          </v-simple-checkbox>
+          <v-checkbox-btn v-model="item.disabled" disabled> </v-checkbox-btn>
         </template>
       </v-data-table>
     </v-container>

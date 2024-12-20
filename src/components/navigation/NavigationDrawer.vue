@@ -1,28 +1,31 @@
 <template>
-  <v-navigation-drawer :value="value" app @input="$emit('input', $event)">
+  <v-navigation-drawer
+    :model-value="value"
+    @update:model-value="$emit('input', $event)"
+  >
     <v-list nav>
-      <v-list-item v-if="!loggedIn" :to="loginRoute" replace>
-        <v-list-item-avatar>
-          <v-icon>mdi-login</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title> Anmelden </v-list-item-title>
-        </v-list-item-content>
+      <v-list-item
+        v-if="!loggedIn"
+        :to="loginRoute"
+        replace
+        prepend-avatar="mdi-login"
+      >
+        <v-list-item-title> Anmelden </v-list-item-title>
       </v-list-item>
 
-      <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
-        <v-list-item-avatar>
-          <v-icon>mdi-account-circle</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ user.displayName }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ user.email }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-icon right>
+      <v-list-item
+        v-else
+        prepend-avatar="mdi-account-circle"
+        @click.stop="showUserSettings = !showUserSettings"
+      >
+        <v-list-item-title>
+          {{ user.displayName }}
+        </v-list-item-title>
+        <v-list-item-subtitle>
+          {{ user.email }}
+        </v-list-item-subtitle>
+
+        <v-icon end>
           {{ showUserSettings ? "mdi-menu-up" : "mdi-menu-down" }}
         </v-icon>
       </v-list-item>
@@ -42,7 +45,7 @@
     </v-list>
 
     <template #append>
-      <v-list v-if="loggedIn != true || showUserSettings" dense>
+      <v-list v-if="loggedIn != true || showUserSettings" density="compact">
         <v-list-item>
           <v-list-item-subtitle class="text-xs text--disabled">
             Version: {{ version }}<br />Entwickelt von Jonas Gampig

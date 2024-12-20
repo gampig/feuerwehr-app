@@ -1,7 +1,7 @@
 <template>
   <BasePageCentered navdrawer>
     <PasswordResetRequestCard @input="handleRequest">
-      <v-btn text @click="$router.back()">Zurück</v-btn>
+      <v-btn variant="text" @click="$router.back()">Zurück</v-btn>
       <v-spacer />
       <v-btn type="submit" :loading="loading" color="primary">
         Passwort zurücksetzen

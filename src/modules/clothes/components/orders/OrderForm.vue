@@ -6,12 +6,12 @@
           label="Person"
           prepend-icon="mdi-account"
           :items="people"
-          item-text="id"
-          :value="person"
+          item-title="id"
+          :model-value="person"
           :loading="loadingPeople"
           single-line
           :rules="[rules.required]"
-          @input="update('person', $event)"
+          @update:model-value="update('person', $event)"
         />
       </v-col>
       <v-col cols="12">
@@ -19,13 +19,13 @@
           label="Kleidungsstück"
           prepend-icon="mdi-tshirt-crew"
           :items="types"
-          :item-text="getTypeText"
+          :item-title="getTypeText"
           item-value="id"
-          :value="clothingType"
+          :model-value="clothingType"
           :loading="loadingTypes"
           single-line
           :rules="[rules.required]"
-          @input="update('clothingType', $event)"
+          @update:model-value="update('clothingType', $event)"
         />
       </v-col>
     </v-row>
@@ -36,8 +36,8 @@
           label="Größe"
           prepend-icon="mdi-ruler"
           :items="sizes"
-          :value="size"
-          @input="update('size', $event)"
+          :model-value="size"
+          @update:model-value="update('size', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
@@ -45,9 +45,9 @@
           label="Anzahl"
           type="number"
           prepend-icon="mdi-cart-variant"
-          :value="count"
+          :model-value="count"
           :rules="[rules.required]"
-          @input="update('count', $event)"
+          @update:model-value="update('count', $event)"
         />
       </v-col>
     </v-row>
@@ -64,15 +64,15 @@
             suffix="€"
             prepend-icon="mdi-cash"
             :error="totalPrice > 0 && paid != totalPrice"
-            :value="paid"
-            @input="update('paid', $event)"
+            :model-value="paid"
+            @update:model-value="update('paid', $event)"
           />
         </v-col>
 
         <v-col cols="6">
           <v-text-field
             label="Gesamtkosten"
-            :value="totalPrice + ' €'"
+            :model-value="totalPrice + ' €'"
             disabled
           />
         </v-col>
@@ -81,7 +81,7 @@
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Eingereicht', submittedOn)"
-          input-value="true"
+          model-value="true"
           disabled
         />
       </v-col>
@@ -89,16 +89,16 @@
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Bestellt', orderedOn)"
-          :input-value="orderedOn"
-          @change="updateCheckbox('orderedOn', $event)"
+          :model-value="orderedOn"
+          @update:model-value="updateCheckbox('orderedOn', $event)"
         />
       </v-col>
 
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Erledigt', doneOn)"
-          :input-value="doneOn"
-          @change="updateCheckbox('doneOn', $event)"
+          :model-value="doneOn"
+          @update:model-value="updateCheckbox('doneOn', $event)"
         />
       </v-col>
     </v-row>

@@ -24,7 +24,7 @@
         :key="person + 0"
         color="secondary"
         class="ma-1"
-        close
+        closable
         @click:close="onRemove(person)"
         >{{ person }}</v-chip
       >
@@ -33,7 +33,7 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn text @click="back"> Zurück </v-btn>
+      <v-btn variant="text" @click="back"> Zurück </v-btn>
       <v-spacer />
       <v-btn color="primary" @click="showDoneNotice = true">Fertig</v-btn>
     </v-card-actions>
@@ -45,7 +45,9 @@
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="showDoneNotice = false">Abbrechen</v-btn>
+          <v-btn variant="text" @click="showDoneNotice = false"
+            >Abbrechen</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>

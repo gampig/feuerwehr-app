@@ -40,7 +40,7 @@
           @click="showAllInactiveVehicles = !showAllInactiveVehicles"
         >
           Ehemalige Fahrzeuge
-          <v-icon right>{{
+          <v-icon end>{{
             showAllInactiveVehicles ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon>
         </v-btn>

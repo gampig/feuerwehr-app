@@ -1,13 +1,18 @@
 <template>
-  <v-dialog :value="value" persistent max-width="600" @input="cancel">
+  <v-dialog
+    :model-value="value"
+    persistent
+    max-width="600"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-tabs v-model="dateTabs" fixed-tabs>
         <v-tab key="time"> Uhrzeit </v-tab>
         <v-tab key="date"> Datum </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="dateTabs">
-        <v-tab-item key="time">
+      <v-tabs-window v-model="dateTabs">
+        <v-tabs-window-item key="time">
           <v-toolbar color="primary" dark>
             <v-toolbar-title> Zeit einstellen </v-toolbar-title>
           </v-toolbar>
@@ -41,23 +46,22 @@
               </v-layout>
             </v-container>
           </v-form>
-        </v-tab-item>
-        <v-tab-item key="date">
+        </v-tabs-window-item>
+        <v-tabs-window-item key="date">
           <v-date-picker
             v-model="dateVal"
             :max="maxDate"
             :min="minDate"
-            first-day-of-week="1"
             color="primary"
             class="elevation-0"
             style="border-radius: 0"
             full-width
           />
-        </v-tab-item>
-      </v-tabs-items>
+        </v-tabs-window-item>
+      </v-tabs-window>
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
         <v-btn color="primary" @click="save"> Speichern </v-btn>
       </v-card-actions>

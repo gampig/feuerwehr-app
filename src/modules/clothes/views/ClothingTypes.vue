@@ -10,7 +10,7 @@
 
       <v-col cols="4" class="d-flex justify-end align-center">
         <v-btn @click="addHandler">
-          <v-icon left>mdi-plus</v-icon>
+          <v-icon start>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>

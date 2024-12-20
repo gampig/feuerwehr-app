@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :value="value" persistent :max-width="maxWidth" @input="cancel">
+  <v-dialog
+    :model-value="value"
+    persistent
+    :max-width="maxWidth"
+    @update:model-value="cancel"
+  >
     <v-card :loading="loading">
       <v-card-title>{{ title }}</v-card-title>
 
@@ -12,9 +17,9 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn :loading="saving" color="primary" text @click="save">
+        <v-btn :loading="saving" color="primary" variant="text" @click="save">
           Speichern
         </v-btn>
       </v-card-actions>

@@ -35,17 +35,17 @@
         >
           <v-btn icon><v-icon>mdi-pencil</v-icon></v-btn>
           <template #input>
-            <div class="mt-4 title">Anzahl ändern</div>
+            <div class="mt-4 text-h6">Anzahl ändern</div>
             <v-text-field
               v-model="item.count"
               prepend-icon="mdi-minus"
-              append-outer-icon="mdi-plus"
+              append-icon="mdi-plus"
               type="number"
               min="0"
               label="Anzahl"
               single-line
               @click:prepend="decrementCount(item)"
-              @click:append-outer="incrementCount(item)"
+              @click:append="incrementCount(item)"
             />
           </template>
         </v-edit-dialog>

@@ -11,9 +11,9 @@
 
       <slot name="actions" />
 
-      <v-menu bottom left>
-        <template #activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+      <v-menu location="bottom left">
+        <template #activator="{ props }">
+          <v-btn icon v-bind="props">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>

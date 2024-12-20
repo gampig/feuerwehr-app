@@ -6,9 +6,8 @@
           v-for="t in availableTypes"
           :key="t"
           :label="t"
-          :input-value="type && type[t]"
-          dense
-          @change="updateType(t, $event)"
+          :model-value="type && type[t]"
+          @update:model-value="updateType(t, $event)"
         />
       </v-col>
     </v-row>
@@ -18,17 +17,17 @@
         <v-combobox
           label="Stichwort"
           :items="keywords"
-          :value="keyword"
+          :model-value="keyword"
           :rules="(requireKeyword && [rules.required]) || []"
-          @input="$emit('update:keyword', $event)"
+          @update:model-value="$emit('update:keyword', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
         <v-combobox
           label="Schlagwort"
           :items="catchphrases"
-          :value="catchphrase"
-          @input="$emit('update:catchphrase', $event)"
+          :model-value="catchphrase"
+          @update:model-value="$emit('update:catchphrase', $event)"
         />
       </v-col>
     </v-row>
@@ -38,7 +37,7 @@
         <v-text-field
           label="Alarm"
           prepend-icon="mdi-alarm-light-outline"
-          :value="alarmTimeFormatted"
+          :model-value="alarmTimeFormatted"
           :rules="alarmTimeRules"
           readonly
           @click="showAlarmTimeDialog = true"
@@ -51,8 +50,8 @@
         <v-text-field
           label="Adresse"
           prepend-icon="mdi-map-marker-outline"
-          :value="address"
-          @input="$emit('update:address', $event)"
+          :model-value="address"
+          @update:model-value="$emit('update:address', $event)"
         />
       </v-col>
     </v-row>

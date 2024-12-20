@@ -6,13 +6,13 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn depressed @click="goBack">
-          <v-icon left>mdi-arrow-left</v-icon>
+        <v-btn variant="flat" @click="goBack">
+          <v-icon start>mdi-arrow-left</v-icon>
           Zurück
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn depressed @click="showDeleteDialog = true">
-          <v-icon left>mdi-delete</v-icon>
+        <v-btn variant="flat" @click="showDeleteDialog = true">
+          <v-icon start>mdi-delete</v-icon>
           Löschen
         </v-btn>
       </v-card-actions>

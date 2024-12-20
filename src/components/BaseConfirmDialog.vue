@@ -1,14 +1,16 @@
 <template>
-  <v-dialog :value="value" :width="width" @input="cancel">
+  <v-dialog :model-value="value" :width="width" @update:model-value="cancel">
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
       <v-card-text>
         <slot> Möchtest du diesen Eintrag wirklich löschen? </slot>
       </v-card-text>
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn color="primary" text @click="confirm"> {{ confirmText }} </v-btn>
+        <v-btn color="primary" variant="text" @click="confirm">
+          {{ confirmText }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

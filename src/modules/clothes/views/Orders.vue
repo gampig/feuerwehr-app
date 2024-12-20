@@ -10,7 +10,7 @@
 
       <v-col cols="6" class="d-flex justify-end align-center">
         <v-btn color="primary" @click="create">
-          <v-icon left>mdi-plus</v-icon>
+          <v-icon start>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>

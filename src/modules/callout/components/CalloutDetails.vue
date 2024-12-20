@@ -11,9 +11,14 @@
     </ListItem>
 
     <ListItem v-if="types.length > 0" icon="mdi-clipboard-list" subtitle="Typ">
-      <v-chip v-for="type in types" :key="type" class="mr-1" small outlined>{{
-        type
-      }}</v-chip>
+      <v-chip
+        v-for="type in types"
+        :key="type"
+        class="mr-1"
+        size="small"
+        variant="outlined"
+        >{{ type }}</v-chip
+      >
     </ListItem>
 
     <ListItem
@@ -40,17 +45,15 @@
 
     <v-list-group v-if="standbyCrew">
       <template #activator>
-        <v-list-item-avatar>
-          <v-icon>mdi-account-group</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title> Bereitschaft </v-list-item-title>
+        <v-list-item prepend-avatar="mdi-account-group" title="Bereitschaft">
+        </v-list-item>
       </template>
 
       <v-list-item
         v-for="(value, person) in standbyCrew"
         :key="'standby' + person"
+        prepend-avatar=""
       >
-        <v-list-item-avatar></v-list-item-avatar>
         <v-list-item-title>
           {{ person }}
         </v-list-item-title>
@@ -59,16 +62,13 @@
 
     <v-list-group v-if="vehicles" :value="true">
       <template #activator>
-        <v-list-item-avatar>
-          <v-icon>mdi-truck</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title> Fahrzeuge </v-list-item-title>
+        <v-list-item prepend-avatar="mdi-truck" title="Fahrzeuge">
+        </v-list-item>
       </template>
 
       <v-list-group
         v-for="calloutVehicle in vehicles"
         :key="calloutVehicle.vehicle.id"
-        sub-group
       >
         <template #prependIcon>
           <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
@@ -84,47 +84,43 @@
           <v-icon v-else>mdi-truck-outline</v-icon>
         </template>
         <template #activator>
-          <v-list-item-content>
-            <v-list-item-title>{{
-              calloutVehicle.vehicle.name
-            }}</v-list-item-title>
-            <v-list-item-subtitle>
-              Besatzung:
-              {{
-                (calloutVehicle.crewMembers &&
-                  Object.keys(calloutVehicle.crewMembers).length) ||
-                "0"
-              }}
-              <template v-if="calloutVehicle.vehicle.maxCrewNumber">
-                / {{ calloutVehicle.vehicle.maxCrewNumber }}
-              </template>
-            </v-list-item-subtitle>
-            <v-list-item-subtitle
-              v-if="
-                calloutVehicle.calloutDetails &&
-                calloutVehicle.calloutDetails.endTime
-              "
-            >
-              Einsatzende:
-              {{ calloutVehicle.calloutDetails.endTime | formatDateTime }}
-              (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
-            </v-list-item-subtitle>
-          </v-list-item-content>
+          <v-list-item-title>{{
+            calloutVehicle.vehicle.name
+          }}</v-list-item-title>
+          <v-list-item-subtitle>
+            Besatzung:
+            {{
+              (calloutVehicle.crewMembers &&
+                Object.keys(calloutVehicle.crewMembers).length) ||
+              "0"
+            }}
+            <template v-if="calloutVehicle.vehicle.maxCrewNumber">
+              / {{ calloutVehicle.vehicle.maxCrewNumber }}
+            </template>
+          </v-list-item-subtitle>
+          <v-list-item-subtitle
+            v-if="
+              calloutVehicle.calloutDetails &&
+              calloutVehicle.calloutDetails.endTime
+            "
+          >
+            Einsatzende:
+            {{ calloutVehicle.calloutDetails.endTime | formatDateTime }}
+            (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
+          </v-list-item-subtitle>
         </template>
 
         <v-list-item
           v-for="(role, person) in calloutVehicle.crewMembers"
           :key="calloutVehicle.vehicle.id + person"
+          prepend-avatar=""
         >
-          <v-list-item-avatar></v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ person }}
-            </v-list-item-title>
-            <v-list-item-subtitle v-if="role != true">
-              {{ role }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
+          <v-list-item-title>
+            {{ person }}
+          </v-list-item-title>
+          <v-list-item-subtitle v-if="role != true">
+            {{ role }}
+          </v-list-item-subtitle>
         </v-list-item>
       </v-list-group>
     </v-list-group>

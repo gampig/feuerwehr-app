@@ -5,12 +5,12 @@
         label="Suche"
         :search="search"
         prepend-inner-icon="mdi-magnify"
-        solo
-        dense
+        variant="solo"
+        density="compact"
         single-line
         hide-details
         clearable
-        @input="$emit('update:search', $event)"
+        @update:model-value="$emit('update:search', $event)"
       ></v-text-field>
     </v-col>
 

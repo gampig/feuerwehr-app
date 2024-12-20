@@ -9,13 +9,13 @@
     </v-toolbar>
     <v-card-text>
       <v-select
-        :value="role"
+        :model-value="role"
         :items="roles"
         label="Funktion"
         :loading="loading"
         :disabled="loading"
         clearable
-        @input="update"
+        @update:model-value="update"
       ></v-select>
     </v-card-text>
     <v-card-actions>

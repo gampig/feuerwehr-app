@@ -5,9 +5,9 @@
         <v-text-field
           label="Bezeichnung"
           append-icon="mdi-form-textbox"
-          :value="name"
+          :model-value="name"
           :rules="[rules.required]"
-          @input="update('name', $event)"
+          @update:model-value="update('name', $event)"
         />
       </v-col>
 
@@ -16,9 +16,9 @@
           label="Kategorie"
           append-icon="mdi-clipboard-list"
           :items="categories"
-          :value="category"
+          :model-value="category"
           :rules="[rules.required]"
-          @input="update('category', $event)"
+          @update:model-value="update('category', $event)"
         />
       </v-col>
 
@@ -26,12 +26,11 @@
         <v-combobox
           label="Größen"
           append-icon="mdi-ruler"
-          :value="sizes"
+          :model-value="sizes"
           chips
-          small-chips
-          deletable-chips
+          closable-chips
           multiple
-          @input="update('sizes', $event)"
+          @update:model-value="update('sizes', $event)"
         />
       </v-col>
 
@@ -41,16 +40,16 @@
           type="number"
           min="0"
           suffix="€"
-          :value="price"
-          @input="updatePrice($event)"
+          :model-value="price"
+          @update:model-value="updatePrice($event)"
         />
       </v-col>
 
       <v-col cols="12">
         <v-checkbox
           label="Ist noch erhältlich"
-          :input-value="isAvailable"
-          @change="update('isAvailable', $event)"
+          :model-value="isAvailable"
+          @update:model-value="update('isAvailable', $event)"
         />
       </v-col>
     </v-row>

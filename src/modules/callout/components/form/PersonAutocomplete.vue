@@ -1,36 +1,34 @@
 <template>
   <v-autocomplete
     :items="itemsForAutocomplete"
-    item-text="id"
-    :value="search"
+    item-title="id"
+    :model-value="search"
     auto-select-first
     return-object
     :label="label"
     :loading="loading"
-    filled
+    variant="filled"
     single-line
-    @change="onSelection"
+    @update:model-value="onSelection"
   >
     <template #item="data">
       <template v-if="typeof data.item !== 'object'">
-        <v-list-item-content>{{ data.item }}</v-list-item-content>
+        {{ data.item }}
       </template>
       <template v-else>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ data.item.id }}
-          </v-list-item-title>
-          <template v-if="data.item.crewName">
-            <v-list-item-subtitle>
-              {{ data.item.crewName }}
-            </v-list-item-subtitle>
-          </template>
-          <template v-else-if="data.item.status && data.item.status != 'Aktiv'">
-            <v-list-item-subtitle>
-              {{ data.item.status }}
-            </v-list-item-subtitle>
-          </template>
-        </v-list-item-content>
+        <v-list-item-title>
+          {{ data.item.id }}
+        </v-list-item-title>
+        <template v-if="data.item.crewName">
+          <v-list-item-subtitle>
+            {{ data.item.crewName }}
+          </v-list-item-subtitle>
+        </template>
+        <template v-else-if="data.item.status && data.item.status != 'Aktiv'">
+          <v-list-item-subtitle>
+            {{ data.item.status }}
+          </v-list-item-subtitle>
+        </template>
       </template>
     </template>
   </v-autocomplete>
