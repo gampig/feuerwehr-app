@@ -1,13 +1,11 @@
-const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
-const { VuetifyPlugin } = require("webpack-plugin-vuetify");
 const { gitDescribeSync } = require("git-describe");
 
-process.env.VUE_APP_GIT_HASH = gitDescribeSync().hash;
+import.meta.env.VITE_GIT_HASH = gitDescribeSync().hash;
 
 module.exports = {
   transpileDependencies: true,
   pwa: {
-    name: process.env.VUE_APP_TITLE,
+    name: import.meta.env.VITE_TITLE,
     themeColor: "#ba000d",
     iconPaths: {
       maskIcon: null,
@@ -39,31 +37,5 @@ module.exports = {
         },
       ],
     },
-  },
-  configureWebpack: {
-    devtool: "source-map",
-    plugins: [
-      new MomentLocalesPlugin({
-        localesToKeep: ["de"],
-      }),
-      new VuetifyPlugin({ autoImport: true }),
-    ],
-  },
-  chainWebpack: (config) => {
-    config.resolve.alias.set("vue", "@vue/compat");
-
-    config.module
-      .rule("vue")
-      .use("vue-loader")
-      .tap((options) => {
-        return {
-          ...options,
-          compilerOptions: {
-            compatConfig: {
-              MODE: 2,
-            },
-          },
-        };
-      });
   },
 };

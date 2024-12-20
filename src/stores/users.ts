@@ -25,7 +25,7 @@ const apiFirebaseAuthMiddleware: Middleware = {
 };
 
 const client = createClient<paths>({
-  baseUrl: `${process.env.VUE_APP_API_ENDPOINT}/v1`,
+  baseUrl: `${import.meta.env.VITE_API_ENDPOINT}/v1`,
   headers: {
     Accept: "application/json",
   },

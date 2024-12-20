@@ -43,7 +43,7 @@ class ErrorReport {
 
   send(): void {
     const body = JSON.stringify(this.report);
-    const apiEndpoint = process.env?.VUE_APP_API_ENDPOINT;
+    const apiEndpoint = import.meta.env?.VITE_API_ENDPOINT;
 
     if (apiEndpoint) {
       fetch(`${apiEndpoint}/v1/analytics`, {
@@ -81,7 +81,7 @@ export default class ErrorReportBuilder {
 
   constructor(unhandled: boolean, severity: Severity = "error") {
     this.report = {
-      apiKey: process.env?.VUE_APP_ANALYTICS_API_KEY,
+      apiKey: import.meta.env?.VITE_ANALYTICS_API_KEY,
       exceptions: [],
       unhandled: unhandled,
       severity: severity,

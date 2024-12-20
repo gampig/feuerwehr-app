@@ -10,7 +10,7 @@ interface State {
 export const useDatabaseSchemaStore = defineStore("databaseSchema", {
   state: (): State => ({
     loading: true,
-    localSchemaVersion: process.env.VUE_APP_SUPPORTED_DATABASE_SCHEMA_VERSION,
+    localSchemaVersion: import.meta.env.VITE_SUPPORTED_DATABASE_SCHEMA_VERSION,
     remoteSchemaVersion: undefined,
   }),
 

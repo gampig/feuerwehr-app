@@ -10,6 +10,6 @@ if (buildTimestampUtc !== undefined) {
   version = year + month + day;
 }
 
-version += " (" + process.env.VUE_APP_GIT_HASH + ")";
+version += " (" + import.meta.env.VITE_GIT_HASH + ")";
 
 export default version;

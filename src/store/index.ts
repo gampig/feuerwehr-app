@@ -10,7 +10,7 @@ declare module "vue" {
 const store = createStore({
   mutations: vuexfireMutations,
 
-  strict: process.env.NODE_ENV !== "production",
+  strict: import.meta.env.NODE_ENV !== "production",
 });
 
 export default store;

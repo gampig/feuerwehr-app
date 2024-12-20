@@ -41,7 +41,7 @@ export default {
   props: {
     pageTitle: {
       type: String,
-      default: process.env.VUE_APP_TITLE,
+      default: import.meta.env.VITE_TITLE,
     },
 
     navdrawer: {

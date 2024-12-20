@@ -1,25 +1,16 @@
 import { App } from "vue";
 
-const requireComponent = require.context(
-  ".",
-  true,
-  /Base[A-Z]\w+\.(vue|js|ts)$/
-);
+const components = import.meta.glob(["./Base*.*", "./*/Base*.*"], {
+  eager: true,
+});
 
 export function registerGlobalComponents(app: App) {
-  requireComponent.keys().forEach((fileName) => {
-    const baseComponentConfig = requireComponent(fileName);
+  Object.entries(components).forEach(([path, component]) => {
+    const baseComponentName = path
+      .replace(/^.+\//, "")
+      // Remove the file extension
+      .replace(/\.\w+$/, "");
 
-    const baseComponentName =
-      baseComponentConfig.name ||
-      fileName
-        .replace(/^.+\//, "")
-        // Remove the file extension
-        .replace(/\.\w+$/, "");
-
-    app.component(
-      baseComponentName,
-      baseComponentConfig.default || baseComponentConfig
-    );
+    app.component(baseComponentName, (component as any).default);
   });
 }
