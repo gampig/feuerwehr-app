@@ -1,5 +1,7 @@
 import "@fontsource/roboto";
+import "@mdi/font/css/materialdesignicons.css";
 import { createVuetify } from "vuetify";
+import "vuetify/styles";
 import { aliases, mdi } from "vuetify/iconsets/mdi";
 import { de } from "vuetify/locale";
 
