@@ -6,9 +6,7 @@
     v-on="item.click !== undefined ? { click: item.click } : {}"
   >
     <template v-if="item.icon" #prepend>
-      <v-avatar>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-avatar>
+      <v-avatar :icon="item.icon"></v-avatar>
     </template>
 
     <v-list-item-title>{{ item.title }}</v-list-item-title>
