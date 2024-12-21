@@ -20,6 +20,7 @@
   },
   "include": [
     "vite.config.ts",
+    "vite-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
