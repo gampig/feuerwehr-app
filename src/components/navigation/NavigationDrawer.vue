@@ -3,7 +3,7 @@
     :model-value="value"
     @update:model-value="$emit('input', $event)"
   >
-    <v-list nav>
+    <v-list nav density="compact">
       <v-list-item
         v-if="!loggedIn"
         :to="loginRoute"
