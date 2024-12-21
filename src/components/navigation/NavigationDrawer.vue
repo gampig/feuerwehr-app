@@ -13,11 +13,11 @@
         <v-list-item-title> Anmelden </v-list-item-title>
       </v-list-item>
 
-      <v-list-item
-        v-else
-        prepend-avatar="mdi-account-circle"
-        @click.stop="showUserSettings = !showUserSettings"
-      >
+      <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
+        <template #prepend>
+          <v-avatar icon="mdi-account-circle" />
+        </template>
+
         <v-list-item-title>
           {{ user.displayName }}
         </v-list-item-title>
@@ -25,9 +25,11 @@
           {{ user.email }}
         </v-list-item-subtitle>
 
-        <v-icon end>
-          {{ showUserSettings ? "mdi-menu-up" : "mdi-menu-down" }}
-        </v-icon>
+        <template #append>
+          <v-icon>
+            {{ showUserSettings ? "mdi-menu-up" : "mdi-menu-down" }}
+          </v-icon>
+        </template>
       </v-list-item>
 
       <v-divider class="mb-3" />
@@ -47,9 +49,9 @@
     <template #append>
       <v-list v-if="loggedIn != true || showUserSettings" density="compact">
         <v-list-item>
-          <v-list-item-subtitle class="text-xs text--disabled">
+          <v-list-item-title class="text-caption text-disabled">
             Version: {{ version }}<br />Entwickelt von Jonas Gampig
-          </v-list-item-subtitle>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
