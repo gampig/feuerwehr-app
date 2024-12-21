@@ -29,7 +29,7 @@
           v-model:return-value="item.count"
           cancel-text="Abbrechen"
           save-text="Speichern"
-          large
+          size="large"
           persistent
           @save="onEdit(item)"
         >

@@ -8,7 +8,7 @@
       <v-data-table :headers="headers" :items="users" :loading="loading">
         <template #[`item.displayName`]="{ item }">
           <v-edit-dialog
-            large
+            size="large"
             persistent
             cancel-text="Abbrechen"
             save-text="Speichern"
