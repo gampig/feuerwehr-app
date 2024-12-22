@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div>
     <v-overlay :model-value="visible">
       <v-progress-circular indeterminate size="64" />
       <h2 v-if="text" class="mt-5">{{ text }}</h2>
@@ -22,3 +22,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-overlay {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+</style>
