@@ -1,6 +1,6 @@
 <template>
   <BasePageCentered navdrawer>
-    <LoginCard ask-for-persistence @update:model-value="handleLogin">
+    <LoginCard ask-for-persistence @submit="handleLogin">
       <v-btn :to="{ name: 'UserPasswordResetRequest' }" variant="text"
         >Passwort vergessen</v-btn
       >
@@ -17,6 +17,7 @@ import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { LoginCredentials } from "@/models/User";
+import handleError from "@/utils/store/handleError";
 
 export default defineComponent({
   components: {
@@ -61,8 +62,9 @@ export default defineComponent({
         .auth()
         .setPersistence(persist)
         .then(() => {
-          this.login(user);
-        });
+          return this.login(user);
+        })
+        .catch(handleError);
     },
   },
 });

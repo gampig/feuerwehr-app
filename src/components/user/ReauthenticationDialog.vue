@@ -3,7 +3,7 @@
     <LoginCard
       :card-title="user && (user.displayName || user.email)"
       no-email
-      @update:model-value="submit"
+      @submit="submit"
     >
       <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
       <v-spacer />

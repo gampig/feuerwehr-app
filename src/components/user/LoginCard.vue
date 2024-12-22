@@ -1,24 +1,24 @@
 <template>
   <v-card v-bind="$attrs">
-    <v-form ref="form" @submit.prevent="submit">
+    <v-form ref="form" @submit.stop="submit">
       <v-card-title>{{ cardTitle }}</v-card-title>
 
       <v-card-text>
         <v-text-field
           v-if="!noEmail"
-          v-model="item.email"
+          v-model="email"
           label="E-Mail"
           :rules="emailRules"
         />
         <v-text-field
-          v-model="item.password"
+          v-model="password"
           type="password"
           label="Passwort"
           :rules="passwordRules"
         />
         <v-checkbox
           v-if="askForPersistence"
-          v-model="item.persist"
+          v-model="persist"
           label="Angemeldet bleiben"
         ></v-checkbox>
       </v-card-text>
@@ -33,11 +33,6 @@
 <script>
 export default {
   props: {
-    values: {
-      type: Object,
-      default: null,
-    },
-
     cardTitle: {
       type: String,
       default: "Anmelden",
@@ -58,25 +53,20 @@ export default {
     return {
       emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
       passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
+      email: "",
+      password: "",
+      persist: false,
     };
   },
 
-  computed: {
-    item() {
-      return (
-        this.values || {
-          email: "",
-          password: "",
-          persist: false,
-        }
-      );
-    },
-  },
-
   methods: {
-    submit() {
-      if (this.$refs.form.validate()) {
-        this.$emit("input", this.item);
+    async submit() {
+      if ((await this.$refs.form.validate()).valid) {
+        this.$emit("submit", {
+          email: this.email,
+          password: this.password,
+          persist: this.persist,
+        });
       }
     },
   },
