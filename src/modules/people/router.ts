@@ -1,3 +1,5 @@
+import { RouteRecordRaw } from "vue-router";
+
 export default [
   {
     path: "/personen",
@@ -5,4 +7,4 @@ export default [
     meta: { auth: { requiresAuth: true }, skipWaiting: true },
     component: () => import("./views/Home.vue"),
   },
-];
+] satisfies RouteRecordRaw[];

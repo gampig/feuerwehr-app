@@ -1,3 +1,5 @@
+import { RouteRecordRaw } from "vue-router";
+
 export default {
   path: encodeURI("/einsätze"),
   redirect: { name: "CrewCallouts" },
@@ -55,12 +57,7 @@ export default {
     {
       name: "SelectStandby",
       path: "bereitschaft",
-      redirect: { name: "StandbyCallout" },
       component: () => import("./views/Standby.vue"),
-      children: [
-        { name: "StandbyCallout", path: "" },
-        { name: "StandbyPeople", path: ":id" },
-      ],
     },
   ],
-};
+} satisfies RouteRecordRaw;

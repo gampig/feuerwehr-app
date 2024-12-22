@@ -1,16 +1,19 @@
-import { AppRoute } from "@/models/Route";
 import { useAuthStore } from "@/stores/auth";
-import { NavigationGuardNext } from "vue-router";
+import {
+  NavigationGuardNext,
+  RouteLocationNormalizedGeneric,
+  RouteLocationNormalizedLoadedGeneric,
+} from "vue-router";
 
-type AuthTypes = "requiresAuth";
-
-export function requires(to: AppRoute, required: AuthTypes) {
+export function requiresAuth(to: RouteLocationNormalizedGeneric) {
   return to.matched.some(
-    (record) => record.meta.auth && record.meta.auth[required]
+    (record) => record.meta.auth && record.meta.auth.requiresAuth
   );
 }
 
-function getParamsForNext(to: AppRoute): { [key: string]: string } {
+function getParamsForNext(to: RouteLocationNormalizedGeneric): {
+  [key: string]: string | string[];
+} {
   if (to.name !== "UserLogin") {
     return { nextUrl: to.fullPath };
   } else {
@@ -25,13 +28,13 @@ function getParamsForNext(to: AppRoute): { [key: string]: string } {
 }
 
 export function checkAuth(
-  to: AppRoute,
-  from: AppRoute,
-  next: NavigationGuardNext<any>
+  to: RouteLocationNormalizedGeneric,
+  from: RouteLocationNormalizedLoadedGeneric,
+  next: NavigationGuardNext
 ) {
   const loggedIn = useAuthStore().loggedIn;
 
-  if (requires(to, "requiresAuth")) {
+  if (requiresAuth(to)) {
     if (loggedIn === false) {
       next({
         name: "UserLogin",

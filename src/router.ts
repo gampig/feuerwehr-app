@@ -1,9 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { checkAuth } from "./utils/routerAuth";
-import { AppRouteConfig } from "./models/Route";
 import modules from "./modules";
 
-const routes: Array<AppRouteConfig> = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",

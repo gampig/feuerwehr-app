@@ -9,7 +9,7 @@
 import version from "@/utils/version";
 import modules from "./modules";
 import Loading from "@/components/Loading.vue";
-import { requires } from "./utils/routerAuth";
+import { requiresAuth } from "./utils/routerAuth";
 import { useAuthStore } from "./stores/auth";
 import { useDatabaseSchemaStore } from "./stores/databaseSchema";
 import { computed, ref, watch, watchEffect } from "vue";
@@ -82,7 +82,7 @@ function onLogout() {
 }
 
 function toLoginPage() {
-  if (requires(router.currentRoute, "requiresAuth")) {
+  if (requiresAuth(route)) {
     router.replace({
       name: "UserLogin",
       params: { nextRouteName: "Home" },

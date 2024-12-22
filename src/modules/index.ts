@@ -13,7 +13,7 @@ import trainingRoutes from "./training/router";
 import clothesRoutes from "./clothes/router";
 import peopleRoutes from "./people/router";
 import exporterRoutes from "./exporter/router";
-import { AppRouteConfig } from "@/models/Route";
+import { RouteRecordRaw } from "vue-router";
 
 class AppModules {
   modules: AbstractModule[] = [];
@@ -33,7 +33,7 @@ class AppModules {
     ];
   }
 
-  getRoutes(): Array<AppRouteConfig> {
+  getRoutes(): Array<RouteRecordRaw> {
     return [
       vehicleRoutes,
       [calloutRoute],
