@@ -76,12 +76,12 @@ export default {
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.reset();
     },
 
     save() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("update:date", this.dateVal);
     },
   },

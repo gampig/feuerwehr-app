@@ -46,7 +46,7 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.$emit("input", this.item.newPassword);
+        this.$emit("update:model-value", this.item.newPassword);
       }
     },
   },

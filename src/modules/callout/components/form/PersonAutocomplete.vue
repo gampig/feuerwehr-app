@@ -90,7 +90,7 @@ export default defineComponent({
   methods: {
     onSelection(item: Person) {
       if (item) {
-        this.$emit("input", item);
+        this.$emit("update:model-value", item);
         this.search = {};
       }
     },

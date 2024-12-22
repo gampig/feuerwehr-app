@@ -49,7 +49,10 @@ export default defineComponent({
     },
 
     changeStatus(newStatusIndex: number) {
-      this.$emit("input", this.availableStatusValues[newStatusIndex]);
+      this.$emit(
+        "update:model-value",
+        this.availableStatusValues[newStatusIndex]
+      );
     },
   },
 });

@@ -75,7 +75,7 @@ export default defineComponent({
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       (this.$refs.form as any).reset();
     },
 
@@ -90,7 +90,7 @@ export default defineComponent({
           status: this.status,
         })
         .then(() => {
-          this.$emit("input", false);
+          this.$emit("update:model-value", false);
           (this.$refs.form as any).reset();
         })
         .finally(() => {

@@ -60,7 +60,7 @@ export default defineComponent({
 
   methods: {
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     save() {

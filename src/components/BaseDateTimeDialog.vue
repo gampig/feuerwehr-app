@@ -136,7 +136,7 @@ export default {
 
     cancel() {
       this.dateTabs = null;
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     save() {
@@ -144,7 +144,7 @@ export default {
         this.dateTabs = "time";
       } else {
         this.dateTabs = null;
-        this.$emit("input", false);
+        this.$emit("update:model-value", false);
 
         // Pad: MomentJS expects a leading zero for the hour and minute
         const date = moment(

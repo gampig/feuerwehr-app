@@ -19,7 +19,7 @@ export default {
 
   methods: {
     selectCallout(calloutId) {
-      this.$emit("input", calloutId);
+      this.$emit("update:model-value", calloutId);
     },
 
     reload: () => modules.onLogin(),

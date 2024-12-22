@@ -28,12 +28,12 @@ export default defineComponent({
 
   methods: {
     goBack() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$router.back();
     },
 
     tryAgain() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("retry");
     },
   },

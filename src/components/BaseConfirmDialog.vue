@@ -42,12 +42,12 @@ export default {
 
   methods: {
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("cancel");
     },
 
     confirm() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("confirm");
     },
   },

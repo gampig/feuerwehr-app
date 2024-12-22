@@ -121,7 +121,7 @@ export default {
         this.date && this.time
           ? moment(this.date + " " + this.time).unix()
           : null;
-      this.$emit("input", value);
+      this.$emit("update:model-value", value);
     },
   },
 };

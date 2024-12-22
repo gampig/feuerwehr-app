@@ -54,7 +54,7 @@ export default defineComponent({
 
   methods: {
     update(role: CalloutRole): void {
-      this.$emit("input", role);
+      this.$emit("update:model-value", role);
     },
   },
 });

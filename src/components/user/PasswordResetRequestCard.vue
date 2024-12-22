@@ -38,7 +38,7 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.$emit("input", this.item.email);
+        this.$emit("update:model-value", this.item.email);
       }
     },
   },

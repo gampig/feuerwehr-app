@@ -75,7 +75,7 @@ export default {
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.reset();
     },
 
@@ -84,7 +84,7 @@ export default {
         this.loading = true;
         this.create(this.item).then((ref) => {
           this.bind(ref.key);
-          this.$emit("input", false);
+          this.$emit("update:model-value", false);
           this.$emit("save", ref.key);
           this.reset();
         });

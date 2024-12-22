@@ -60,7 +60,7 @@ export default defineComponent({
 
     closeDialog() {
       this.reset();
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     cancel() {

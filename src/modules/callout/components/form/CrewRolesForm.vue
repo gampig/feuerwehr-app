@@ -66,7 +66,7 @@ export default defineComponent({
   methods: {
     submit(person, role) {
       if (role != this.crew.find((item) => item.person === person).role) {
-        this.$emit("input", { person, role });
+        this.$emit("update:model-value", { person, role });
       }
     },
 

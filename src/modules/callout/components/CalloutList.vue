@@ -92,7 +92,7 @@ export default {
     },
 
     selectCallout(calloutId) {
-      this.$emit("input", calloutId);
+      this.$emit("update:model-value", calloutId);
     },
   },
 };
