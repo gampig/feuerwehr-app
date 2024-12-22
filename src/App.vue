@@ -13,9 +13,11 @@ import { requiresAuth } from "./utils/routerAuth";
 import { useAuthStore } from "./stores/auth";
 import { useDatabaseSchemaStore } from "./stores/databaseSchema";
 import { computed, ref, watch, watchEffect } from "vue";
-import router from "./router";
 import handleError from "./utils/store/handleError";
+import { useRoute, useRouter } from "vue-router";
 
+const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const databaseSchemaStore = useDatabaseSchemaStore();
 

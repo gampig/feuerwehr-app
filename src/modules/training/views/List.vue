@@ -31,10 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router";
 import { formatDateTime } from "@/utils/dates";
 import { Training } from "../models/Training";
 import { trainings } from "./TestData";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const headers = [
   { text: "Datum", value: "startTime" },
