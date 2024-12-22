@@ -2,6 +2,7 @@ import "./firebase";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import moment from "moment";
+import "moment/dist/locale/de";
 import { createPinia } from "pinia";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
