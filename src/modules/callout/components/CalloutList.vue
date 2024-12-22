@@ -19,8 +19,8 @@
         </v-list-item>
 
         <v-list-group v-if="canViewAllCallouts" v-model="showAllCallouts">
-          <template #activator>
-            <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" title="Weitere Einsätze anzeigen" />
           </template>
           <template v-if="calloutsBeforeToday.length > 0">
             <CalloutListItem
@@ -43,7 +43,7 @@
 
     <BaseConfirmDialog
       v-model="showUserConfirm"
-      width="400"
+      width="450"
       title="Einsatz wirklich nicht vorhanden?"
       confirm-text="Neuer Einsatz"
       @confirm="onUserConfirm"
