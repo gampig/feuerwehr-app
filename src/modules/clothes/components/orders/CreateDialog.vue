@@ -1,6 +1,6 @@
 <template>
   <BaseCreateDialog
-    :model-value="value"
+    :model-value="modelValue"
     max-width="900"
     :loading="loading"
     title="Neue Bestellung"
@@ -35,7 +35,7 @@ export default defineComponent({
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },

@@ -78,7 +78,7 @@ export default {
       default: false,
     },
 
-    value: {
+    modelValue: {
       type: Number,
       default: null,
     },
@@ -93,9 +93,9 @@ export default {
   },
 
   watch: {
-    value(value) {
-      if (value) {
-        const dateObj = moment.unix(value);
+    modelValue(modelValue) {
+      if (modelValue) {
+        const dateObj = moment.unix(modelValue);
         this.date = dateObj.format("YYYY-MM-DD");
         this.time = dateObj.format("HH:mm");
       } else {

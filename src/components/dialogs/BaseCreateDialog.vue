@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :model-value="value"
+    :model-value="modelValue"
     persistent
     :max-width="maxWidth"
     @update:model-value="cancel"
@@ -32,7 +32,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },

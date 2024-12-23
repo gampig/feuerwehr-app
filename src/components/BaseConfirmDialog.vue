@@ -1,5 +1,9 @@
 <template>
-  <v-dialog :model-value="value" :width="width" @update:model-value="cancel">
+  <v-dialog
+    :model-value="modelValue"
+    :width="width"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
       <v-card-text>
@@ -19,7 +23,7 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },

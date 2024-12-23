@@ -1,6 +1,6 @@
 <template>
   <BaseEditDialog
-    :model-value="value"
+    :model-value="modelValue"
     max-width="700"
     :title="personId"
     :saving="loading"
@@ -29,7 +29,7 @@ export default defineComponent({
   components: { SelectStatus },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
 
@@ -60,7 +60,7 @@ export default defineComponent({
       this.loadData();
     },
 
-    value(showDialog) {
+    modelValue(showDialog) {
       if (showDialog) this.loadData();
     },
   },

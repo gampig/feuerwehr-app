@@ -1,6 +1,6 @@
 <template>
   <BaseCreateDialog
-    :model-value="value"
+    :model-value="modelValue"
     max-width="500"
     :loading="loading"
     title="Person hinzufügen"
@@ -49,7 +49,7 @@ export default defineComponent({
   components: { SelectStatus },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },

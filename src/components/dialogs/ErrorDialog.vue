@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :model-value="value" width="500" persistent>
+  <v-dialog :model-value="modelValue" width="500" persistent>
     <v-card>
       <v-card-title>Fehler</v-card-title>
 
@@ -20,7 +20,7 @@
 import { defineComponent } from "vue";
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },

@@ -1,14 +1,14 @@
 <template>
   <v-dialog
-    :model-value="value"
+    :model-value="modelValue"
     max-width="700"
-    @update:model-value="$emit('input', false)"
+    @update:model-value="$emit('update:model-value', false)"
   >
     <v-card>
       <v-card-title class="text-h5">
         Details zum Einsatz
         <v-spacer></v-spacer>
-        <v-btn size="large" icon @click="$emit('input', false)">
+        <v-btn size="large" icon @click="$emit('update:model-value', false)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -27,7 +27,7 @@ export default {
   components: { CalloutDetails },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },

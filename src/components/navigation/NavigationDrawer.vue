@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
-    :model-value="value"
-    @update:model-value="$emit('input', $event)"
+    :model-value="modelValue"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <v-list nav density="compact">
       <v-list-item
@@ -76,7 +76,7 @@ export default defineComponent({
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },

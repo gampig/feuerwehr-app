@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-stepper-step :step="index" :complete="value > index">
+    <v-stepper-step :step="index" :complete="modelValue > index">
       {{ step && step.label }}
     </v-stepper-step>
     <v-stepper-content :step="index">
@@ -15,7 +15,7 @@ import { StepperStep } from "@/models/StepperStep";
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Number,
       default: 1,
     },

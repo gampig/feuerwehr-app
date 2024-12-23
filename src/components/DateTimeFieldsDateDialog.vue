@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :model-value="value"
+    :model-value="modelValue"
     persistent
     max-width="600"
     @update:model-value="cancel"
@@ -30,7 +30,7 @@ import moment from "moment";
 
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
 

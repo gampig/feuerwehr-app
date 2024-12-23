@@ -6,7 +6,9 @@
         :card-title="user && (user.displayName || user.email)"
         no-email
       >
-        <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
+        <v-btn variant="text" @click="$emit('update:model-value', false)">
+          Abbrechen
+        </v-btn>
         <v-spacer />
         <v-btn :loading="loading" color="primary" @click="submit">
           Weiter

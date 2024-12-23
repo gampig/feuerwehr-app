@@ -18,7 +18,7 @@ import { ALL_PERSON_STATUS_VALUES, PersonStatus } from "../models/Person";
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: String as PropType<PersonStatus>,
       default: "Aktiv",
     },
@@ -32,7 +32,7 @@ export default defineComponent({
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.loadData();
     },
   },
@@ -44,7 +44,7 @@ export default defineComponent({
   methods: {
     loadData() {
       this.selectedStatusIndex = this.availableStatusValues.indexOf(
-        this.value as PersonStatus
+        this.modelValue as PersonStatus
       );
     },
 

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :model-value="value"
+    :model-value="modelValue"
     persistent
     max-width="900"
     @update:model-value="cancel"
@@ -42,7 +42,7 @@ export default {
   components: { CalloutForm },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },

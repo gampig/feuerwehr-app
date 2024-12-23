@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :model-value="value"
+    :model-value="modelValue"
     persistent
     max-width="600"
     @update:model-value="cancel"
@@ -81,7 +81,7 @@ function pad(n) {
 
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
 
@@ -117,8 +117,8 @@ export default {
   },
 
   watch: {
-    value(value) {
-      if (value) {
+    modelValue(modelValue) {
+      if (modelValue) {
         this.reset();
       }
     },

@@ -1,22 +1,22 @@
 <template>
   <v-card v-bind="$attrs" append-inner>
     <v-img
-      v-if="value.pictureUrl"
-      :src="value.pictureUrl"
-      :alt="value.name"
+      v-if="modelValue.pictureUrl"
+      :src="modelValue.pictureUrl"
+      :alt="modelValue.name"
       height="100px"
     />
 
     <v-card-title>
-      {{ value.name }}
+      {{ modelValue.name }}
     </v-card-title>
 
     <v-card-subtitle
-      v-if="value.crewNumber && value.maxCrewNumber"
+      v-if="modelValue.crewNumber && modelValue.maxCrewNumber"
       class="text-subtitle-1"
     >
-      {{ value.crewNumber }}
-      <span class="text-overline">/{{ value.maxCrewNumber }}</span>
+      {{ modelValue.crewNumber }}
+      <span class="text-overline">/{{ modelValue.maxCrewNumber }}</span>
       Besatzung
     </v-card-subtitle>
   </v-card>
@@ -25,7 +25,7 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Object,
       default: () => {
         return {
