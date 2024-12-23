@@ -1,9 +1,13 @@
 <template>
   <v-card v-bind="$attrs">
     <v-toolbar color="secondary" dark flat>
-      <v-toolbar-title>
-        {{ person }}
-      </v-toolbar-title>
+      <v-tooltip :text="person" location="top">
+        <template #activator="{ props }">
+          <v-toolbar-title v-bind="props">
+            {{ person }}
+          </v-toolbar-title>
+        </template>
+      </v-tooltip>
       <v-spacer />
       <v-btn icon @click="$emit('delete')"><v-icon>mdi-close</v-icon></v-btn>
     </v-toolbar>
@@ -18,9 +22,6 @@
         @update:model-value="update"
       ></v-select>
     </v-card-text>
-    <v-card-actions>
-      <slot name="actions" />
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -37,7 +38,7 @@ export default defineComponent({
 
     role: {
       type: String as PropType<CalloutRole>,
-      default: null,
+      default: undefined,
     },
 
     loading: {
@@ -53,7 +54,7 @@ export default defineComponent({
   },
 
   methods: {
-    update(role: CalloutRole): void {
+    update(role?: CalloutRole): void {
       this.$emit("update:model-value", role);
     },
   },

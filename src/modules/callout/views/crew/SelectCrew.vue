@@ -33,11 +33,13 @@
   </CrewPage>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState, mapActions, mapGetters } from "vuex";
 import CrewPage from "../../components/CrewPage.vue";
 import CrewRolesForm from "../../components/form/CrewRolesForm.vue";
 import PersonAutocomplete from "../../components/form/PersonAutocomplete.vue";
+import { Person } from "@/modules/people/models/Person";
+import { CalloutRole } from "../../models/Callout";
 
 export default {
   components: { CrewPage, CrewRolesForm, PersonAutocomplete },
@@ -52,7 +54,7 @@ export default {
   data() {
     return {
       adding: false,
-      savingMap: {},
+      savingMap: {} as { [key: string]: boolean | undefined },
     };
   },
 
@@ -72,7 +74,7 @@ export default {
       return crewEntries.map((entry) => {
         return {
           person: entry[0],
-          role: (typeof entry[1] === "string" && entry[1]) || "",
+          role: (typeof entry[1] === "string" && entry[1]) || undefined,
         };
       });
     },
@@ -91,37 +93,37 @@ export default {
       });
     },
 
-    onAdd(item) {
+    onAdd(person?: Person) {
+      if (!person) {
+        return;
+      }
       this.adding = true;
-
-      const personId = item.id;
-
       this.addCrewMember({
         vehicleId: this.vehicle.id,
-        personId,
+        personId: person.id,
       }).finally(() => {
         this.adding = false;
       });
     },
 
-    onUpdate({ person, role }) {
-      this.$set(this.savingMap, person, true);
+    onUpdate({ person, role }: { person: string; role?: CalloutRole }) {
+      this.savingMap[person] = true;
       this.updateRole({
         vehicleId: this.vehicle.id,
         personId: person,
         role: role ? role : true,
       }).then(() => {
-        this.$delete(this.savingMap, person);
+        delete this.savingMap[person];
       });
     },
 
-    onRemove(personId) {
-      this.$set(this.savingMap, personId, true);
+    onRemove(personId: string) {
+      this.savingMap[personId] = true;
       this.removeCrewMember({
         vehicleId: this.vehicle.id,
         personId,
       }).then(() => {
-        this.$delete(this.savingMap, personId);
+        delete this.savingMap[personId];
       });
     },
   },

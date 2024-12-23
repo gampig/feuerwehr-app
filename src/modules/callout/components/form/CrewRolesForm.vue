@@ -31,21 +31,31 @@
   </v-row>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
 import crewMemberCard from "../cards/CrewMemberCard.vue";
+import { CalloutRole } from "../../models/Callout";
+
+interface CrewMember {
+  person: string;
+  role?: CalloutRole;
+}
+
+interface LoadingMap {
+  [personId: string]: boolean;
+}
 
 export default defineComponent({
   components: { crewMemberCard },
 
   props: {
     crew: {
-      type: Array,
+      type: Array as PropType<CrewMember[]>,
       required: true,
     },
 
     loading: {
-      type: Object,
+      type: Object as PropType<LoadingMap>,
       default: () => {
         return {};
       },
@@ -59,18 +69,18 @@ export default defineComponent({
 
   data() {
     return {
-      personToRemove: null,
+      personToRemove: null as string | null,
     };
   },
 
   methods: {
-    submit(person, role) {
-      if (role != this.crew.find((item) => item.person === person).role) {
-        this.$emit("update:model-value", { person, role });
+    submit(personId: string, role?: CalloutRole) {
+      if (role != this.crew.find((item) => item.person === personId)?.role) {
+        this.$emit("update:model-value", { person: personId, role });
       }
     },
 
-    remove(personId) {
+    remove(personId: string) {
       this.personToRemove = personId;
     },
 
