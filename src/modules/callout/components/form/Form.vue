@@ -36,7 +36,7 @@
       <v-col cols="12">
         <v-text-field
           label="Alarm"
-          prepend-icon="mdi-alarm-light-outline"
+          append-inner-icon="mdi-alarm-light-outline"
           :model-value="alarmTimeFormatted"
           :rules="alarmTimeRules"
           readonly
@@ -49,7 +49,7 @@
       <v-col cols="12">
         <v-text-field
           label="Adresse"
-          prepend-icon="mdi-map-marker-outline"
+          append-inner-icon="mdi-map-marker-outline"
           :model-value="address"
           @update:model-value="emit('update:address', $event)"
         />
@@ -131,7 +131,7 @@ const alarmTimeRules = computed(() => {
 
 function updateType(updatedType: string, value: boolean | null) {
   const newTypes = {
-    type: props.type,
+    ...props.type,
     [updatedType]: value === true,
   };
   emit("update:type", newTypes);
