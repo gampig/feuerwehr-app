@@ -31,7 +31,7 @@
 
           <v-text-field
             label="Einsatzende"
-            prepend-icon="mdi-calendar-check-outline"
+            append-inner-icon="mdi-calendar-check-outline"
             :model-value="endTimeFormatted"
             :rules="[rules.restrictFuture, calloutRules.endAfterAlarm]"
             readonly
@@ -104,9 +104,7 @@ export default defineComponent({
     ...mapState("callout", { callout: "callout" }),
     ...mapState("vehicles", { vehicle: "vehicle" }),
 
-    tomorrow() {
-      return tomorrow();
-    },
+    tomorrow: () => tomorrow.value,
 
     title() {
       return (this.vehicle && this.vehicle.name) || "Fahrzeug";
