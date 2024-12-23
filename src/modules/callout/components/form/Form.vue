@@ -7,6 +7,7 @@
           :key="t"
           :label="t"
           :model-value="type && type[t]"
+          density="compact"
           @update:model-value="updateType(t, $event)"
         />
       </v-col>
