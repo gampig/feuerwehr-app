@@ -35,6 +35,7 @@
         class="ml-3"
         :loading="loading"
         color="primary"
+        variant="flat"
         @click="$emit('submit')"
       >
         {{ saveButtonLabel }}
