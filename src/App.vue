@@ -91,7 +91,7 @@ function toLoginPage() {
   if (requiresAuth(route)) {
     router.replace({
       name: "UserLogin",
-      params: { nextRouteName: "Home" },
+      query: { next: route.fullPath },
     });
   }
 }

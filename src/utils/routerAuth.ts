@@ -11,18 +11,16 @@ export function requiresAuth(to: RouteLocationNormalizedGeneric) {
   );
 }
 
-function getParamsForNext(to: RouteLocationNormalizedGeneric): {
-  [key: string]: string | string[];
-} {
+function getNextAfterLogin(
+  to: RouteLocationNormalizedGeneric
+): string | undefined {
   if (to.name !== "UserLogin") {
-    return { nextUrl: to.fullPath };
+    return to.fullPath;
   } else {
-    if (to.params.nextUrl) {
-      return { nextUrl: to.params.nextUrl };
-    } else if (to.params.nextRouteName) {
-      return { nextRouteName: to.params.nextRouteName };
+    if (typeof to.query.next === "string") {
+      return to.query.next;
     } else {
-      return {};
+      return undefined;
     }
   }
 }
@@ -38,7 +36,9 @@ export function checkAuth(
     if (loggedIn === false) {
       next({
         name: "UserLogin",
-        params: getParamsForNext(to),
+        query: {
+          next: getNextAfterLogin(to),
+        },
         replace: true,
       });
       return;

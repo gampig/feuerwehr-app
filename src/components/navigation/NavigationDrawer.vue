@@ -8,21 +8,21 @@
         v-if="!loggedIn"
         :to="loginRoute"
         replace
-        prepend-avatar="mdi-login"
+        prepend-icon="mdi-login"
       >
         <v-list-item-title> Anmelden </v-list-item-title>
       </v-list-item>
 
-      <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
+      <v-list-item v-else @click.stop="userSettingsButton = !showUserSettings">
         <template #prepend>
           <v-avatar icon="mdi-account-circle" />
         </template>
 
         <v-list-item-title>
-          {{ user.displayName }}
+          {{ user?.displayName }}
         </v-list-item-title>
         <v-list-item-subtitle>
-          {{ user.email }}
+          {{ user?.email }}
         </v-list-item-subtitle>
 
         <template #append>
@@ -47,7 +47,7 @@
     </v-list>
 
     <template #append>
-      <v-list v-if="loggedIn != true || showUserSettings" density="compact">
+      <v-list v-if="loggedIn == true && showUserSettings" density="compact">
         <v-list-item>
           <v-list-item-title class="text-caption text-disabled">
             Version: {{ version }}<br />Entwickelt von Jonas Gampig
@@ -84,69 +84,26 @@ export default defineComponent({
   data: function () {
     return {
       version,
-
-      showUserSettings: false,
-
-      loginRoute: {
-        name: "UserLogin",
-        params: { nextUrl: this.$route.fullPath },
-      },
-
-      userLinks: [] as NavLink[],
-      links: [] as NavLink[],
+      userSettingsButton: false,
     };
   },
 
   computed: {
     ...mapState(useAuthStore, ["loggedIn", "user", "hasAnyRole"]),
-  },
 
-  watch: {
-    loggedIn() {
-      this.generateLinks();
+    showUserSettings() {
+      return !this.loggedIn || this.userSettingsButton;
     },
-  },
 
-  created() {
-    this.generateLinks();
-  },
+    loginRoute() {
+      return {
+        name: "UserLogin",
+        query: { next: this.$route.fullPath },
+      };
+    },
 
-  methods: {
-    ...mapActions(useAuthStore, ["logout"]),
-
-    generateLinks(): void {
-      if (!this.loggedIn) {
-        this.showUserSettings = false;
-      }
-
-      this.userLinks = [
-        {
-          title: "Gerät einrichten",
-          to: { name: "DeviceSetup" },
-          icon: "mdi-tablet",
-          auth: this.hasAnyRole(Acl.geraetEinrichten),
-        },
-        {
-          title: "Passwort ändern",
-          to: { name: "UserChangePassword" },
-          icon: "mdi-key",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Abmelden",
-          click: () => this.logout(),
-          icon: "mdi-logout",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Anmelden",
-          to: { name: "UserLogin" },
-          icon: "mdi-login",
-          auth: this.hasAnyRole(deviceRoles),
-        },
-      ];
-
-      this.links = [
+    links(): NavLink[] {
+      return [
         {
           title: "Mannschaft",
           to: { name: "CrewCallouts" },
@@ -203,6 +160,39 @@ export default defineComponent({
         },
       ];
     },
+
+    userLinks(): NavLink[] {
+      return [
+        {
+          title: "Gerät einrichten",
+          to: { name: "DeviceSetup" },
+          icon: "mdi-tablet",
+          auth: this.hasAnyRole(Acl.geraetEinrichten),
+        },
+        {
+          title: "Passwort ändern",
+          to: { name: "UserChangePassword" },
+          icon: "mdi-key",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Abmelden",
+          click: () => this.logout(),
+          icon: "mdi-logout",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Anmelden",
+          to: this.loginRoute,
+          icon: "mdi-login",
+          auth: this.hasAnyRole(deviceRoles),
+        },
+      ];
+    },
+  },
+
+  methods: {
+    ...mapActions(useAuthStore, ["logout"]),
   },
 });
 </script>

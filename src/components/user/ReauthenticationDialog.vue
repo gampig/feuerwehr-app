@@ -1,14 +1,18 @@
 <template>
   <v-dialog v-bind="$attrs" width="500">
-    <LoginCard
-      :card-title="user && (user.displayName || user.email)"
-      no-email
-      @submit="submit"
-    >
-      <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
-      <v-spacer />
-      <v-btn type="submit" :loading="loading" color="primary"> Weiter </v-btn>
-    </LoginCard>
+    <v-form ref="form">
+      <LoginCard
+        v-model:password="password"
+        :card-title="user && (user.displayName || user.email)"
+        no-email
+      >
+        <v-btn variant="text" @click="$emit('input', false)">Abbrechen</v-btn>
+        <v-spacer />
+        <v-btn :loading="loading" color="primary" @click="submit">
+          Weiter
+        </v-btn>
+      </LoginCard>
+    </v-form>
   </v-dialog>
 </template>
 
@@ -18,6 +22,7 @@ import firebase from "firebase/app";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
+import { VForm } from "vuetify/components";
 
 export default defineComponent({
   components: {
@@ -27,6 +32,7 @@ export default defineComponent({
   data() {
     return {
       loading: false,
+      password: "",
     };
   },
 
@@ -37,19 +43,21 @@ export default defineComponent({
   methods: {
     ...mapActions(useAuthStore, ["reauthenticate"]),
 
-    submit(formData: { password: string }) {
-      if (this.user === null || this.user.email === null) {
-        throw new Error("User cannot be null");
-      }
+    async submit() {
+      if ((await (this.$refs.form as VForm).validate()).valid) {
+        if (this.user === null || this.user.email === null) {
+          throw new Error("User cannot be null");
+        }
 
-      this.loading = true;
-      const cred = firebase.auth.EmailAuthProvider.credential(
-        this.user.email,
-        formData.password
-      );
-      this.reauthenticate(cred).finally(() => {
-        this.loading = false;
-      });
+        this.loading = true;
+        const cred = firebase.auth.EmailAuthProvider.credential(
+          this.user.email,
+          this.password
+        );
+        this.reauthenticate(cred).finally(() => {
+          this.loading = false;
+        });
+      }
     },
   },
 });

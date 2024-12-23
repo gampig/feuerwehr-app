@@ -78,6 +78,10 @@ export const useAuthStore = defineStore("auth", {
       return firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
+        .then((value) => {
+          this.setLoggedIn(null);
+          return value;
+        })
         .catch((error) => {
           this.setLoading(false);
           handleError(error);
