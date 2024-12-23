@@ -55,12 +55,13 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import FormMixin from "@/mixins/FormMixin";
 import CrewPage from "../../components/CrewPage.vue";
-import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
+import { dateTimeToUnix, formatDateTime, tomorrow } from "@/utils/dates";
 import moment from "moment";
+import { defineComponent } from "vue";
+import { restrictFuture } from "@/utils/rules";
 
-export default FormMixin.extend({
+export default defineComponent({
   components: { CrewPage },
 
   props: {
@@ -72,12 +73,17 @@ export default FormMixin.extend({
 
   data() {
     return {
+      rules: {
+        restrictFuture,
+      },
+
       calloutRules: {
         endAfterAlarm: (value) =>
           !value ||
           !this.callout?.alarmTime ||
           dateTimeToUnix(value) >= this.callout.alarmTime ||
           "Ende kann nicht vor Alarm sein",
+
         ugOeelCalloutRequired: (value) =>
           (value !== null && value !== undefined) ||
           "Bitte fülle dieses Feld aus",
@@ -89,6 +95,7 @@ export default FormMixin.extend({
       emptyItem: {
         endTime: null,
       },
+
       isUgOeelCallout: null,
     };
   },
@@ -96,6 +103,10 @@ export default FormMixin.extend({
   computed: {
     ...mapState("callout", { callout: "callout" }),
     ...mapState("vehicles", { vehicle: "vehicle" }),
+
+    tomorrow() {
+      return tomorrow();
+    },
 
     title() {
       return (this.vehicle && this.vehicle.name) || "Fahrzeug";

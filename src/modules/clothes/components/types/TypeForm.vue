@@ -7,7 +7,7 @@
           append-icon="mdi-form-textbox"
           :model-value="name"
           :rules="[rules.required]"
-          @update:model-value="update('name', $event)"
+          @update:model-value="$emit('update:name', $event)"
         />
       </v-col>
 
@@ -18,7 +18,7 @@
           :items="categories"
           :model-value="category"
           :rules="[rules.required]"
-          @update:model-value="update('category', $event)"
+          @update:model-value="$emit('update:category', $event)"
         />
       </v-col>
 
@@ -30,7 +30,7 @@
           chips
           closable-chips
           multiple
-          @update:model-value="update('sizes', $event)"
+          @update:model-value="$emit('update:sizes', $event)"
         />
       </v-col>
 
@@ -49,7 +49,7 @@
         <v-checkbox
           label="Ist noch erhältlich"
           :model-value="isAvailable"
-          @update:model-value="update('isAvailable', $event)"
+          @update:model-value="$emit('update:isAvailable', $event)"
         />
       </v-col>
     </v-row>
@@ -57,46 +57,62 @@
 </template>
 
 <script lang="ts">
-import FormMixin from "@/mixins/FormMixin";
-/* eslint-disable no-unused-vars */
-import { PropType } from "vue";
+import { PropType, defineComponent } from "vue";
+import { required } from "@/utils/rules";
 import {
   ALL_CLOTHING_TYPE_CATEGORIES,
   ClothingTypeCategory,
 } from "../../models/ClothingType";
-/* eslint-enable */
 
-export default FormMixin.extend({
+export default defineComponent({
   props: {
     category: {
       type: String as PropType<ClothingTypeCategory>,
+      default: undefined,
     },
+
     name: {
       type: String,
+      default: undefined,
     },
+
     price: {
       type: Number,
       default: 0,
     },
+
     isAvailable: {
       type: Boolean,
       default: true,
     },
+
     sizes: {
       type: Array as PropType<Array<string | number>>,
       default: () => [],
     },
   },
 
+  emits: [
+    "update:price",
+    "update:name",
+    "update:category",
+    "update:sizes",
+    "update:isAvailable",
+  ],
+
   data() {
     return {
+      rules: {
+        required,
+      },
+
       categories: ALL_CLOTHING_TYPE_CATEGORIES,
     };
   },
 
   methods: {
     updatePrice(price: any) {
-      this.update("price", Number(price));
+      this.$emit("update:price", Number(price));
     },
   },
 });

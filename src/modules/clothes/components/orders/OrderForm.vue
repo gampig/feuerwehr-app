@@ -11,7 +11,7 @@
           :loading="loadingPeople"
           single-line
           :rules="[rules.required]"
-          @update:model-value="update('person', $event)"
+          @update:model-value="$emit('update:person', $event)"
         />
       </v-col>
       <v-col cols="12">
@@ -25,7 +25,7 @@
           :loading="loadingTypes"
           single-line
           :rules="[rules.required]"
-          @update:model-value="update('clothingType', $event)"
+          @update:model-value="$emit('update:clothingType', $event)"
         />
       </v-col>
     </v-row>
@@ -37,7 +37,7 @@
           prepend-icon="mdi-ruler"
           :items="sizes"
           :model-value="size"
-          @update:model-value="update('size', $event)"
+          @update:model-value="$emit('update:size', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
@@ -47,7 +47,7 @@
           prepend-icon="mdi-cart-variant"
           :model-value="count"
           :rules="[rules.required]"
-          @update:model-value="update('count', $event)"
+          @update:model-value="$emit('update:count', $event)"
         />
       </v-col>
     </v-row>
@@ -65,7 +65,7 @@
             prepend-icon="mdi-cash"
             :error="totalPrice > 0 && paid != totalPrice"
             :model-value="paid"
-            @update:model-value="update('paid', $event)"
+            @update:model-value="$emit('update:paid', $event)"
           />
         </v-col>
 
@@ -106,22 +106,54 @@
 </template>
 
 <script>
-import FormMixin from "@/mixins/FormMixin";
 import { mapState as vuexMapState } from "vuex";
 import { mapState as piniaMapState } from "pinia";
 import moment from "moment";
 import { usePeopleStore } from "@/modules/people/stores/people";
+import { defineComponent } from "vue";
+import { required } from "@/utils/rules";
 
-export default FormMixin.extend({
+export default defineComponent({
   props: {
-    person: null,
-    clothingType: null,
-    size: null,
-    count: null,
-    paid: null,
-    submittedOn: null,
-    orderedOn: null,
-    doneOn: null,
+    person: {
+      type: String,
+      default: "",
+    },
+
+    clothingType: {
+      type: String,
+      default: undefined,
+    },
+
+    size: {
+      type: String,
+      default: "",
+    },
+
+    count: { type: Number, default: undefined },
+
+    paid: { type: Number, default: undefined },
+
+    submittedOn: { type: Number, default: undefined },
+    orderedOn: { type: Number, default: undefined },
+    doneOn: { type: Number, default: undefined },
+  },
+
+  emits: [
+    "update:name",
+    "update:person",
+    "update:clothingType",
+    "update:size",
+    "update:count",
+    "update:paid",
+  ],
+
+  data() {
+    return {
+      rules: {
+        required,
+      },
+    };
   },
 
   computed: {
@@ -129,6 +161,7 @@ export default FormMixin.extend({
       loadingPeople: "loading",
       people: "people",
     }),
+
     ...vuexMapState("clothingTypes", {
       loadingTypes: "loading",
       types: "types",
@@ -140,9 +173,11 @@ export default FormMixin.extend({
         this.types.find((item) => item.id == this.clothingType)
       );
     },
+
     sizes() {
       return (this.clothingTypeObject && this.clothingTypeObject.sizes) || [];
     },
+
     totalPrice() {
       if (
         !this.clothingTypeObject ||
@@ -188,7 +223,7 @@ export default FormMixin.extend({
         value = moment().unix();
       }
 
-      this.update(name, value);
+      this.$emit("update:name", value);
     },
   },
 });

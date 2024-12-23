@@ -1,4 +1,13 @@
 import moment from "moment";
+import { computed } from "vue";
+
+export const today = computed(() => moment().format("YYYY-MM-DD"));
+export const tomorrow = computed(() =>
+  moment().add(1, "day").format("YYYY-MM-DD")
+);
+export const aWeekAgo = computed(() =>
+  moment().subtract(1, "week").format("YYYY-MM-DD")
+);
 
 const formatDateTime = function (date?: number) {
   if (date === undefined) {
