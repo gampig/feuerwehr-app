@@ -1,7 +1,7 @@
 <template>
   <v-app id="feuerwehr-app">
-    <Loading v-if="loading" visible :text="loadingScreenText" />
-    <router-view v-else />
+    <Loading :visible="loading" :text="loadingScreenText" />
+    <router-view v-if="!initializing" />
   </v-app>
 </template>
 
@@ -32,8 +32,10 @@ const updateFound = ref(false);
 const updateDownloaded = ref(false);
 const updateIsRequired = computed(() => databaseSchemaStore.updateIsRequired);
 
+const initializing = ref(true);
 const loading = computed(
   () =>
+    initializing.value ||
     loadingAuth.value ||
     loadingDatabaseSchemaVersion.value ||
     updateIsRequired.value
@@ -62,8 +64,10 @@ function checkAuthState() {
     !loadingDatabaseSchemaVersion.value &&
     !updateIsRequired.value
   ) {
+    initializing.value = false;
     onLogin();
   } else if (loggedIn.value === false) {
+    initializing.value = false;
     onLogout();
   }
 }
