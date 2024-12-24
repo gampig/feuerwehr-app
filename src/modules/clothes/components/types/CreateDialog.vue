@@ -22,6 +22,7 @@
 import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
 import { ClothingType } from "../../models/ClothingType";
+import { VForm } from "vuetify/components";
 
 export default defineComponent({
   components: {
@@ -49,8 +50,9 @@ export default defineComponent({
   },
 
   methods: {
-    validate() {
-      return (this.$refs?.form as any)?.$refs?.form?.validate();
+    async validate() {
+      const form = (this.$refs?.form as any)?.$refs?.form as VForm | undefined;
+      return form ? (await form.validate()).valid : false;
     },
 
     reset() {
@@ -67,10 +69,10 @@ export default defineComponent({
       this.closeDialog();
     },
 
-    save() {
+    async save() {
       const item = { ...this.item };
 
-      if (this.validate()) {
+      if (await this.validate()) {
         this.loading = true;
 
         this.$store

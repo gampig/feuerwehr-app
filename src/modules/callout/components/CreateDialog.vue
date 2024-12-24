@@ -79,8 +79,8 @@ export default {
       this.reset();
     },
 
-    save() {
-      if (this.$refs.form.$refs.form.validate()) {
+    async save() {
+      if ((await this.$refs.form.$refs.form.validate()).valid) {
         this.loading = true;
         this.create(this.item).then((ref) => {
           this.bind(ref.key);

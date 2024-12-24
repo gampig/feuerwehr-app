@@ -139,8 +139,8 @@ export default {
       this.$emit("update:model-value", false);
     },
 
-    save() {
-      if (!this.$refs.timeForm.validate()) {
+    async save() {
+      if (!(await this.$refs.timeForm.validate()).valid) {
         this.dateTabs = "time";
       } else {
         this.dateTabs = null;

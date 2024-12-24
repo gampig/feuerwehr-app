@@ -69,8 +69,9 @@ export default defineComponent({
   },
 
   methods: {
-    validate() {
-      return (this.$refs?.form as any)?.$refs?.form?.validate();
+    async validate() {
+      const form = (this.$refs?.form as any)?.$refs?.form as VForm | undefined;
+      return form ? (await form.validate()).valid : false;
     },
 
     reset() {
@@ -90,8 +91,8 @@ export default defineComponent({
       this.closeDialog();
     },
 
-    save() {
-      if (this.validate()) {
+    async save() {
+      if (await this.validate()) {
         this.saving = true;
 
         this.$store

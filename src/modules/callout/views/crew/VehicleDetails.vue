@@ -154,8 +154,8 @@ export default defineComponent({
       this.item.endTime = endTime;
     },
 
-    submit() {
-      if (this.$refs.form.validate()) {
+    async submit() {
+      if ((await this.$refs.form.validate()).valid) {
         this.saving = true;
 
         Promise.all([

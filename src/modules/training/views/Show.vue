@@ -18,7 +18,7 @@
 
       <v-tabs-window v-model="currentTab" touchless>
         <v-tabs-window-item>
-          <v-form>
+          <VForm>
             <v-card border>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
@@ -60,12 +60,12 @@
                 </v-btn>
               </v-card-actions>
             </v-card>
-          </v-form>
+          </VForm>
         </v-tabs-window-item>
 
         <v-tabs-window-item>
           <v-card border>
-            <v-form ref="addParticipantForm">
+            <VForm ref="addParticipantForm">
               <v-card flat>
                 <v-card-title>
                   <v-icon start>mdi-plus</v-icon>
@@ -102,7 +102,7 @@
                   </v-btn>
                 </v-card-actions>
               </v-card>
-            </v-form>
+            </VForm>
             <v-divider />
             <v-card flat>
               <v-card-title>
@@ -158,6 +158,7 @@ import { reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
 import { trainings } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
+import { VForm } from "vuetify/components";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -207,10 +208,14 @@ const headers = [
 
 const training = reactive<Training>(trainings[0]);
 
-const addParticipantForm = ref<HTMLFormElement | null>(null);
+const addParticipantForm = ref<VForm>();
 
-function addParticipant() {
-  if (addParticipantForm.value?.validate()) {
+async function addParticipant() {
+  if (!addParticipantForm.value) {
+    return;
+  }
+
+  if ((await addParticipantForm.value.validate()).valid) {
     const nameParts = newParticipantName.value.split(" ");
     const formattedName = nameParts
       .map((namePart) => capitalizeFirstLetter(namePart))

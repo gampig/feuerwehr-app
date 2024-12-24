@@ -24,6 +24,7 @@ import { defineComponent } from "vue";
 import SelectStatus from "./SelectStatus.vue";
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
+import { VForm } from "vuetify/components";
 
 export default defineComponent({
   components: { SelectStatus },
@@ -79,8 +80,8 @@ export default defineComponent({
       (this.$refs.form as any).reset();
     },
 
-    save() {
-      if (!(this.$refs.form as any).validate()) return;
+    async save() {
+      if (!(await (this.$refs.form as VForm).validate()).valid) return;
       if (this.status === null) return;
 
       this.loading = true;

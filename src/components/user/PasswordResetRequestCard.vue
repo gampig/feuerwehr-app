@@ -36,8 +36,8 @@ export default {
   },
 
   methods: {
-    submit() {
-      if (this.$refs.form.validate()) {
+    async submit() {
+      if ((await this.$refs.form.validate()).valid) {
         this.$emit("update:model-value", this.item.email);
       }
     },

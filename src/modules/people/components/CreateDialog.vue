@@ -40,6 +40,7 @@ import { defineComponent } from "vue";
 import { PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
 import SelectStatus from "./SelectStatus.vue";
+import { VForm } from "vuetify/components";
 
 function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -74,8 +75,8 @@ export default defineComponent({
       (this.$refs.form as any).reset();
     },
 
-    create() {
-      if (!(this.$refs.form as any).validate()) return;
+    async create() {
+      if (!(await (this.$refs.form as VForm).validate()).valid) return;
 
       this.loading = true;
       const personId =

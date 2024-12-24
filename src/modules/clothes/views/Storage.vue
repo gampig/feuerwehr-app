@@ -151,8 +151,8 @@ export default {
       item.count += 1;
     },
 
-    onAdd() {
-      if (this.$refs.addForm.validate()) {
+    async onAdd() {
+      if ((await this.$refs.addForm.validate()).valid) {
         this.adding = true;
 
         const existingItem = this.clothingItems.find(
