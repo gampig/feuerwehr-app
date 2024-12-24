@@ -15,8 +15,6 @@
     >
       <SelectStandbyStep @back="$router.back()" />
     </BaseStepperVerticalStep>
-
-    <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
   </v-stepper>
 </template>
 
@@ -24,20 +22,12 @@
 import { mapActions, mapState } from "vuex";
 import SelectCalloutStep from "../components/steppers/SelectCalloutStep.vue";
 import SelectStandbyStep from "../components/steppers/SelectStandbyStep.vue";
-import CreateDialog from "../components/CreateDialog.vue";
 import { formatDateTime } from "@/utils/dates";
 
 export default {
   components: {
     SelectCalloutStep,
     SelectStandbyStep,
-    CreateDialog,
-  },
-
-  data() {
-    return {
-      showCreateDialog: false,
-    };
   },
 
   computed: {
@@ -92,15 +82,7 @@ export default {
       }
     },
 
-    onCalloutSelect(calloutId: string | null) {
-      if (!calloutId) {
-        this.showCreateDialog = true;
-      } else {
-        this.goTo("StandbyPeople", { id: calloutId });
-      }
-    },
-
-    onDialogClose(calloutId: string) {
+    onCalloutSelect(calloutId: string) {
       this.goTo("StandbyPeople", { id: calloutId });
     },
 

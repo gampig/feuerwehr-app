@@ -29,7 +29,7 @@ export default {
         },
         {
           name: "CrewEditCallout",
-          path: ":callout_id?/bearbeiten",
+          path: ":callout_id/bearbeiten",
           meta: { hideAppBar: true },
           component: () => import("./views/crew/UpdateCallout.vue"),
         },

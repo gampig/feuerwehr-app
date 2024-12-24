@@ -52,22 +52,26 @@
       <br />
       bitte den vorhandenen Eintrag verwenden!
     </BaseConfirmDialog>
+
+    <CreateDialog v-model="showCreateDialog" @save="onCalloutCreated" />
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 import { Acl } from "@/acl";
 import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutListItem from "./CalloutListItem.vue";
+import CreateDialog from "./CreateDialog.vue";
 import { useAuthStore } from "@/stores/auth";
 
 export default {
-  components: { CalloutListItem },
+  components: { CalloutListItem, CreateDialog },
 
   data() {
     return {
       showAllCallouts: false,
       showUserConfirm: false,
+      showCreateDialog: false,
     };
   },
 
@@ -88,10 +92,14 @@ export default {
 
     onUserConfirm() {
       this.showUserConfirm = false;
-      this.selectCallout();
+      this.showCreateDialog = true;
     },
 
-    selectCallout(calloutId) {
+    onCalloutCreated(calloutId: string) {
+      this.selectCallout(calloutId);
+    },
+
+    selectCallout(calloutId: string) {
       this.$emit("update:model-value", calloutId);
     },
   },

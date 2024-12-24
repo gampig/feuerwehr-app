@@ -22,14 +22,18 @@
   </CrewPage>
 </template>
 
-<script>
+<script lang="ts">
 import CrewPage from "../../components/CrewPage.vue";
 import CalloutForm from "../../components/form/Form.vue";
 import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
+import { defineComponent } from "vue";
+import { Callout } from "../../models/Callout";
+import handleError from "@/utils/store/handleError";
+import { VForm } from "vuetify/components";
 
-export default {
+export default defineComponent({
   components: {
     CrewPage,
     CalloutForm,
@@ -45,7 +49,7 @@ export default {
   data() {
     return {
       saving: false,
-      item: {},
+      item: {} as Callout,
       emptyItem: {
         type: null,
         keyword: null,
@@ -80,45 +84,44 @@ export default {
   },
 
   methods: {
-    ...mapActions("callouts", ["create"]),
     ...mapActions("callout", ["updateCallout"]),
 
     setItem() {
       this.item = Object.assign({}, this.emptyItem, this.callout);
     },
 
-    submit() {
-      if (this.$refs.form.$refs.form.validate()) {
+    async submit() {
+      if (
+        (
+          await (
+            (this.$refs.form as typeof CalloutForm).$refs.form as VForm
+          ).validate()
+        ).valid
+      ) {
         const submittedData = this.item;
 
-        this.saving = true;
-        if (this.callout) {
-          this.updateCallout(submittedData)
-            .then(() => this.next(this.callout.id))
-            .finally(() => {
-              this.saving = false;
-            });
-        } else {
-          this.create(submittedData)
-            .then((ref) => {
-              this.updateRoute(ref.key);
-              this.next(ref.key);
-            })
-            .finally(() => {
-              this.saving = false;
-            });
+        if (!submittedData.id) {
+          handleError("Einsatz-Id ist nicht bekannt.");
+          return;
         }
+
+        this.saving = true;
+        this.updateCallout(submittedData)
+          .then(() => this.next(this.callout.id))
+          .finally(() => {
+            this.saving = false;
+          });
       }
     },
 
-    updateRoute(calloutId) {
+    updateRoute(calloutId: string) {
       this.$router.replace({
         name: this.$route.name,
         params: { callout_id: calloutId },
       });
     },
 
-    next(calloutId) {
+    next(calloutId: string) {
       const vehicle = this.$store.state.vehicles.vehicle;
       if (vehicle && vehicle.id) {
         this.$router.push({
@@ -138,5 +141,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
