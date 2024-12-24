@@ -2,14 +2,17 @@
   <v-form ref="form">
     <v-row>
       <v-col cols="12">
-        <v-checkbox
-          v-for="t in availableTypes"
-          :key="t"
-          :label="t"
-          :model-value="type && type[t]"
-          density="compact"
-          @update:model-value="updateType(t, $event)"
-        />
+        <v-layout wrap>
+          <v-checkbox
+            v-for="t in availableTypes"
+            :key="t"
+            :label="t"
+            :model-value="type && type[t]"
+            density="comfortable"
+            class="mr-5"
+            @update:model-value="updateType(t, $event)"
+          />
+        </v-layout>
       </v-col>
     </v-row>
 
