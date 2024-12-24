@@ -40,7 +40,7 @@ jobs:
       - name: Build Project with npm
         run: |
           npm ci
-          npm run build -- --modern
+          npm run build
         env:
           VITE_API_ENDPOINT: https://api.app.feuerwehr-parkstetten.de/feuerwehr-app
           VITE_ANALYTICS_API_KEY: ${{ secrets.ANALYTICS_API_KEY }}
