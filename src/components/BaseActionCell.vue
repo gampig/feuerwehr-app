@@ -2,13 +2,18 @@
   <div>
     <div class="btn-container">
       <slot />
-      <v-btn v-if="handleShow" icon @click="handleShow">
+      <v-btn v-if="handleShow" icon variant="text" @click="handleShow">
         <v-icon> mdi-eye </v-icon>
       </v-btn>
-      <v-btn v-if="handleEdit" icon @click="handleEdit">
+      <v-btn v-if="handleEdit" icon variant="text" @click="handleEdit">
         <v-icon> mdi-pencil </v-icon>
       </v-btn>
-      <v-btn v-if="handleDelete" icon @click="confirmDelete = true">
+      <v-btn
+        v-if="handleDelete"
+        icon
+        variant="text"
+        @click="confirmDelete = true"
+      >
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </div>
