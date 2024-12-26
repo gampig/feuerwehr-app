@@ -44,15 +44,17 @@
     <v-divider v-if="standbyCrew || vehicles"></v-divider>
 
     <v-list-group v-if="standbyCrew">
-      <template #activator>
-        <v-list-item prepend-avatar="mdi-account-group" title="Bereitschaft">
+      <template #activator="{ props }">
+        <v-list-item v-bind="props" title="Bereitschaft">
+          <template #prepend>
+            <v-avatar icon="mdi-account-group"></v-avatar>
+          </template>
         </v-list-item>
       </template>
 
       <v-list-item
         v-for="(value, person) in standbyCrew"
         :key="'standby' + person"
-        prepend-avatar=""
       >
         <v-list-item-title>
           {{ person }}
@@ -60,30 +62,25 @@
       </v-list-item>
     </v-list-group>
 
-    <v-list-group v-if="vehicles" :model-value="true">
-      <template #activator>
-        <v-list-item prepend-avatar="mdi-truck" title="Fahrzeuge">
-        </v-list-item>
-      </template>
-
-      <v-list-group
-        v-for="calloutVehicle in vehicles"
-        :key="calloutVehicle.vehicle.id"
-      >
-        <template #prependIcon>
-          <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
-            <v-img
-              :src="calloutVehicle.vehicle.pictureUrl"
-              :alt="calloutVehicle.vehicle.name"
-            >
-              <template #placeholder>
-                <v-icon>mdi-truck-outline</v-icon>
-              </template>
-            </v-img>
-          </v-avatar>
-          <v-icon v-else>mdi-truck-outline</v-icon>
-        </template>
-        <template #activator>
+    <v-list-group
+      v-for="calloutVehicle in vehicles"
+      :key="calloutVehicle.vehicle.id"
+    >
+      <template #activator="{ props }">
+        <v-list-item v-bind="props">
+          <template #prepend>
+            <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
+              <v-img
+                :src="calloutVehicle.vehicle.pictureUrl"
+                :alt="calloutVehicle.vehicle.name"
+              >
+                <template #placeholder>
+                  <v-icon>mdi-fire-truck</v-icon>
+                </template>
+              </v-img>
+            </v-avatar>
+            <v-avatar v-else icon="mdi-fire-truck"></v-avatar>
+          </template>
           <v-list-item-title>{{
             calloutVehicle.vehicle.name
           }}</v-list-item-title>
@@ -108,21 +105,20 @@
             {{ formatDateTime(calloutVehicle.calloutDetails.endTime) }}
             (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
           </v-list-item-subtitle>
-        </template>
-
-        <v-list-item
-          v-for="(role, person) in calloutVehicle.crewMembers"
-          :key="calloutVehicle.vehicle.id + person"
-          prepend-avatar=""
-        >
-          <v-list-item-title>
-            {{ person }}
-          </v-list-item-title>
-          <v-list-item-subtitle v-if="role != true">
-            {{ role }}
-          </v-list-item-subtitle>
         </v-list-item>
-      </v-list-group>
+      </template>
+
+      <v-list-item
+        v-for="(role, person) in calloutVehicle.crewMembers"
+        :key="calloutVehicle.vehicle.id + person"
+      >
+        <v-list-item-title>
+          {{ person }}
+        </v-list-item-title>
+        <v-list-item-subtitle v-if="role != true">
+          {{ role }}
+        </v-list-item-subtitle>
+      </v-list-item>
     </v-list-group>
   </v-list>
 </template>
