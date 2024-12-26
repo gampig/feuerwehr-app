@@ -88,8 +88,8 @@ const props = withDefaults(
     catchphrase?: string;
     alarmTime?: number;
     address?: string;
-    requireKeyword: boolean;
-    limitAlarmTimeToRecently: boolean;
+    requireKeyword?: boolean;
+    limitAlarmTimeToRecently?: boolean;
   }>(),
   {
     type: undefined,
@@ -97,7 +97,7 @@ const props = withDefaults(
     catchphrase: undefined,
     alarmTime: undefined,
     address: undefined,
-    requireKeyword: false,
+    requireKeyword: true,
     limitAlarmTimeToRecently: true,
   }
 );
