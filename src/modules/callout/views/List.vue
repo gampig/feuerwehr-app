@@ -5,8 +5,7 @@
     <v-row>
       <v-col cols="12">
         <v-data-table
-          v-model="selected"
-          v-model:options="options"
+          v-model:sort-by="sortBy"
           :headers="headers"
           :items="callouts"
           :search="search"
@@ -40,24 +39,21 @@ export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Alarm", value: "alarmTimeFormatted", sort: sortDateTime },
-        { text: "Stichwort", value: "keyword" },
-        { text: "Schlagwort", value: "catchphrase" },
-        { text: "Adresse", value: "address" },
+        { title: "Alarm", value: "alarmTimeFormatted", sort: sortDateTime },
+        { title: "Stichwort", value: "keyword" },
+        { title: "Schlagwort", value: "catchphrase" },
+        { title: "Adresse", value: "address" },
         {
-          text: "Aktionen",
+          title: "Aktionen",
           value: "action",
           sortable: false,
         },
       ],
 
-      selected: [],
-      options: {
-        sortBy: ["alarmTimeFormatted"],
-        sortDesc: [true],
-        page: 1,
-        itemsPerPage: 15,
-      },
+      sortBy: [{ key: "alarmTimeFormatted", order: "desc" }] as Array<{
+        key: string;
+        order?: "asc" | "desc";
+      }>,
 
       search: "",
     };
