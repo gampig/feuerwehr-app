@@ -82,6 +82,7 @@ export default {
   },
 
   computed: {
+    ...mapState("callout", ["callout"]),
     ...mapGetters("callout", ["crewCounts"]),
     ...mapState("vehicles", {
       vehicles: "vehicles",
