@@ -9,7 +9,6 @@
           item-title="id"
           :model-value="person"
           :loading="loadingPeople"
-          single-line
           :rules="[rules.required]"
           @update:model-value="$emit('update:person', $event)"
         />
@@ -23,7 +22,6 @@
           item-value="id"
           :model-value="clothingType"
           :loading="loadingTypes"
-          single-line
           :rules="[rules.required]"
           @update:model-value="$emit('update:clothingType', $event)"
         />

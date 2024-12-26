@@ -114,7 +114,6 @@
                   v-model="search"
                   prepend-inner-icon="mdi-magnify"
                   label="Suche"
-                  single-line
                   hide-details
                 />
               </v-card-text>

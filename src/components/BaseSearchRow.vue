@@ -7,7 +7,6 @@
         prepend-inner-icon="mdi-magnify"
         variant="solo"
         density="compact"
-        single-line
         hide-details
         clearable
         @update:model-value="$emit('update:search', $event)"

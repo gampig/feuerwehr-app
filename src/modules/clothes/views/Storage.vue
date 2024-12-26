@@ -43,7 +43,6 @@
               type="number"
               min="0"
               label="Anzahl"
-              single-line
               @click:prepend="decrementCount(item)"
               @click:append="incrementCount(item)"
             />
