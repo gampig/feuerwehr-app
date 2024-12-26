@@ -1,16 +1,8 @@
 <template>
-  <v-card v-bind="$attrs">
-    <v-toolbar color="secondary" dark flat>
-      <v-tooltip :text="person" location="top">
-        <template #activator="{ props }">
-          <v-toolbar-title v-bind="props">
-            {{ person }}
-          </v-toolbar-title>
-        </template>
-      </v-tooltip>
-      <v-spacer />
-      <v-btn icon @click="$emit('delete')"><v-icon>mdi-close</v-icon></v-btn>
-    </v-toolbar>
+  <v-card v-bind="$attrs" variant="outlined">
+    <v-card-title>
+      {{ person }}
+    </v-card-title>
     <v-card-text>
       <v-select
         :model-value="role"
@@ -18,10 +10,15 @@
         label="Funktion"
         :loading="loading"
         :disabled="loading"
+        variant="underlined"
         clearable
+        class="hide-input-details"
         @update:model-value="update"
       ></v-select>
     </v-card-text>
+    <v-card-actions>
+      <v-btn variant="plain" @click="$emit('delete')">Entfernen</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -60,3 +57,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.hide-input-details :deep(.v-input__details) {
+  display: none;
+}
+</style>
