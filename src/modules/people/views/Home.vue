@@ -10,13 +10,13 @@
       <v-data-iterator
         :items="people"
         :search="search"
-        :custom-filter="filterPeople"
         :items-per-page="12"
         :loading="loading"
+        :page="page"
       >
         <template #header>
           <v-row class="mb-2">
-            <v-col cols="12" sm="6">
+            <v-col cols="12">
               <v-text-field
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
@@ -26,26 +26,14 @@
                 label="Suche"
               ></v-text-field>
             </v-col>
-
-            <v-col cols="12" sm="6">
-              <v-select
-                v-model="selectedStatus"
-                clearable
-                variant="solo"
-                hide-details
-                label="Status"
-                :items="availableStatusValues"
-              >
-              </v-select>
-            </v-col>
           </v-row>
         </template>
 
         <template #default="{ items }">
           <v-row>
             <v-col
-              v-for="item in items"
-              :key="item.id"
+              v-for="(item, i) in items"
+              :key="i"
               cols="12"
               sm="6"
               md="4"
@@ -53,24 +41,32 @@
             >
               <v-card>
                 <v-card-title>
-                  {{ item.id }}
+                  {{ item.raw.id }}
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-list density="compact">
                   <v-list-item>
-                    Einsätze: {{ item.recentCalloutsCount || 0 }}
+                    Einsätze: {{ item.raw.recentCalloutsCount || 0 }}
                   </v-list-item>
                   <v-list-item
                     density="compact"
                     append-icon="mdi-pencil"
-                    @click="edit(item.id)"
+                    @click="edit(item.raw.id)"
                   >
-                    {{ item.status }}
+                    {{ item.raw.status }}
                   </v-list-item>
                 </v-list>
               </v-card>
             </v-col>
           </v-row>
+        </template>
+
+        <template #footer="{ pageCount }">
+          <v-pagination
+            v-model="page"
+            :length="pageCount"
+            class="mt-4"
+          ></v-pagination>
         </template>
       </v-data-iterator>
     </v-container>
@@ -90,7 +86,6 @@ import { mapState } from "pinia";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
 import { usePeopleStore } from "../stores/people";
-import { Person, ALL_PERSON_STATUS_VALUES } from "../models/Person";
 
 export default defineComponent({
   components: { CreateDialog, EditDialog },
@@ -100,8 +95,7 @@ export default defineComponent({
       showEditDialog: false,
       personToBeEdited: "",
       search: "",
-      selectedStatus: null,
-      availableStatusValues: ALL_PERSON_STATUS_VALUES,
+      page: 1,
     };
   },
 
@@ -131,14 +125,6 @@ export default defineComponent({
     edit(id: string) {
       this.personToBeEdited = id;
       this.showEditDialog = true;
-    },
-
-    filterPeople(items: Person[], search: string) {
-      return items.filter(
-        (item) =>
-          (!this.selectedStatus || item.status === this.selectedStatus) &&
-          (!search || item.id.toLowerCase().includes(search.toLowerCase()))
-      );
     },
 
     reloadPeople() {

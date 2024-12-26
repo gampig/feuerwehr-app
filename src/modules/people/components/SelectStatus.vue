@@ -1,12 +1,16 @@
 <template>
   <v-chip-group
-    :model-value="selectedStatusIndex"
-    selected-class="primary"
+    :model-value="selectedStatus"
+    selected-class="bg-primary"
     mandatory
     column
     @update:model-value="changeStatus"
   >
-    <v-chip v-for="status in availableStatusValues" :key="status">
+    <v-chip
+      v-for="status in availableStatusValues"
+      :key="status"
+      :value="status"
+    >
       {{ status }}
     </v-chip>
   </v-chip-group>
@@ -27,7 +31,7 @@ export default defineComponent({
   data() {
     return {
       availableStatusValues: ALL_PERSON_STATUS_VALUES,
-      selectedStatusIndex: 0,
+      selectedStatus: undefined as PersonStatus | undefined,
     };
   },
 
@@ -43,16 +47,11 @@ export default defineComponent({
 
   methods: {
     loadData() {
-      this.selectedStatusIndex = this.availableStatusValues.indexOf(
-        this.modelValue as PersonStatus
-      );
+      this.selectedStatus = this.modelValue;
     },
 
-    changeStatus(newStatusIndex: number) {
-      this.$emit(
-        "update:model-value",
-        this.availableStatusValues[newStatusIndex]
-      );
+    changeStatus(newStatus: PersonStatus) {
+      this.$emit("update:model-value", newStatus);
     },
   },
 });
