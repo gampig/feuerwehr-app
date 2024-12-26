@@ -20,49 +20,25 @@
 
     <v-row>
       <v-col cols="12">
-        <template v-if="$vuetify.breakpoint.mobile">
-          <Loading :visible="loading" />
+        <Loading :visible="loading" />
 
-          <v-row v-if="filteredOrders && filteredOrders.length > 0">
-            <v-col
-              v-for="item in filteredOrders"
-              :key="item.id"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <OrderCard
-                v-bind="item"
-                @edit="edit(item.id)"
-                @remove="askForConfirmationToRemove(item.id)"
-              />
-            </v-col>
-          </v-row>
-
-          <div v-else class="text--secondary">
-            Keine Bestellungen vorhanden.
-          </div>
-        </template>
-
-        <v-data-table
-          v-else
-          v-model:options="options"
-          :headers="headers"
-          :items="orders"
-          :search="search"
-          :loading="loading"
-          loading-text="Laden..."
-          class="elevation-1"
-          locale="de-DE"
-          item-key="id"
-        >
-          <template #[`item.action`]="{ item }">
-            <BaseActionCell
-              :handle-edit="() => edit(item.id)"
-              :handle-delete="() => remove(item.id)"
+        <v-row v-if="filteredOrders && filteredOrders.length > 0">
+          <v-col
+            v-for="item in filteredOrders"
+            :key="item.id"
+            cols="12"
+            sm="6"
+            md="4"
+          >
+            <OrderCard
+              v-bind="item"
+              @edit="edit(item.id)"
+              @remove="askForConfirmationToRemove(item.id)"
             />
-          </template>
-        </v-data-table>
+          </v-col>
+        </v-row>
+
+        <div v-else class="text--secondary">Keine Bestellungen vorhanden.</div>
       </v-col>
     </v-row>
 

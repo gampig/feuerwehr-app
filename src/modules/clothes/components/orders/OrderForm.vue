@@ -45,7 +45,7 @@
           prepend-icon="mdi-cart-variant"
           :model-value="count"
           :rules="[rules.required]"
-          @update:model-value="$emit('update:count', $event)"
+          @update:model-value="$emit('update:count', Number($event))"
         />
       </v-col>
     </v-row>
@@ -79,7 +79,7 @@
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Eingereicht', submittedOn)"
-          model-value="true"
+          :model-value="true"
           disabled
         />
       </v-col>
@@ -87,16 +87,16 @@
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Bestellt', orderedOn)"
-          :model-value="orderedOn"
-          @update:model-value="updateCheckbox('orderedOn', $event)"
+          :model-value="!!orderedOn"
+          @update:model-value="updateOrderedOn"
         />
       </v-col>
 
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Erledigt', doneOn)"
-          :model-value="doneOn"
-          @update:model-value="updateCheckbox('doneOn', $event)"
+          :model-value="!!doneOn"
+          @update:model-value="updateDoneOn"
         />
       </v-col>
     </v-row>
@@ -144,6 +144,8 @@ export default defineComponent({
     "update:size",
     "update:count",
     "update:paid",
+    "update:orderedOn",
+    "update:doneOn",
   ],
 
   data() {
@@ -214,14 +216,16 @@ export default defineComponent({
       return moment.unix(timestamp).format("L");
     },
 
-    updateCheckbox(name, checked) {
-      let value = null;
+    updateOrderedOn(checked) {
+      this.$emit("update:orderedOn", this.getTimestampForCheckbox(checked));
+    },
 
-      if (checked) {
-        value = moment().unix();
-      }
+    updateDoneOn(checked) {
+      this.$emit("update:doneOn", this.getTimestampForCheckbox(checked));
+    },
 
-      this.$emit("update:name", value);
+    getTimestampForCheckbox(checked) {
+      return checked ? moment().unix() : null;
     },
   },
 });
