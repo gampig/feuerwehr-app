@@ -6,7 +6,7 @@
     :model-value="search"
     auto-select-first
     return-object
-    :label="label"
+    :placeholder="label"
     :loading="loading"
     variant="filled"
     @update:model-value="onSelection"

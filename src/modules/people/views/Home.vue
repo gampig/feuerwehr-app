@@ -23,7 +23,7 @@
                 clearable
                 variant="solo"
                 hide-details
-                label="Suche"
+                placeholder="Suche"
               ></v-text-field>
             </v-col>
           </v-row>

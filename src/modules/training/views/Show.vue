@@ -113,7 +113,7 @@
                 <v-text-field
                   v-model="search"
                   prepend-inner-icon="mdi-magnify"
-                  label="Suche"
+                  placeholder="Suche"
                   hide-details
                 />
               </v-card-text>
