@@ -7,4 +7,4 @@ import "firebase/compat/database";
 
 export const firebaseApp = firebase.initializeApp(config);
 
-import "./vuexfire";
+import "./vuefire";
