@@ -42,7 +42,7 @@ interface CrewMember {
 }
 
 interface LoadingMap {
-  [personId: string]: boolean;
+  [personId: string]: boolean | undefined;
 }
 
 export default defineComponent({
