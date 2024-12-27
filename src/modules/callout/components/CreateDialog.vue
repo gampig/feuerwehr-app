@@ -35,10 +35,10 @@
 </template>
 
 <script>
-import { mapActions as vuexMapActions } from "vuex";
 import { mapActions } from "pinia";
 import CalloutForm from "./form/Form.vue";
 import { useCalloutStore } from "../stores/callout";
+import { useCalloutsStore } from "../stores/callouts";
 
 export default {
   components: { CalloutForm },
@@ -61,7 +61,7 @@ export default {
   },
 
   methods: {
-    ...vuexMapActions("callouts", ["create"]),
+    ...mapActions(useCalloutsStore, ["create"]),
     ...mapActions(useCalloutStore, ["selectCallout"]),
 
     reset() {

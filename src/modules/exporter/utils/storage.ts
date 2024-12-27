@@ -6,6 +6,7 @@ import { usePeopleStore } from "@/modules/people/stores/people";
 import { get, getDatabase, ref } from "firebase/database";
 import { firebaseApp } from "@/firebase";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutsStore } from "@/modules/callout/stores/callouts";
 
 export default {
   getPersonen(): Person[] {
@@ -17,7 +18,7 @@ export default {
   },
 
   async fetchEinsaetze(): Promise<Callout[]> {
-    return store.state.callouts.callouts as Callout[];
+    return useCalloutsStore().callouts;
   },
 
   async fetchMannschaften() {

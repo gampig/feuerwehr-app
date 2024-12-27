@@ -59,10 +59,11 @@
 
 <script lang="ts">
 import { Acl } from "@/acl";
-import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutListItem from "./CalloutListItem.vue";
 import CreateDialog from "./CreateDialog.vue";
 import { useAuthStore } from "@/stores/auth";
+import { mapState } from "pinia";
+import { useCalloutsStore } from "../stores/callouts";
 
 export default {
   components: { CalloutListItem, CreateDialog },
@@ -76,8 +77,11 @@ export default {
   },
 
   computed: {
-    ...mapState("callouts", ["loading"]),
-    ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
+    ...mapState(useCalloutsStore, [
+      "loading",
+      "calloutsBeforeToday",
+      "calloutsOfToday",
+    ]),
 
     canViewAllCallouts() {
       const authStore = useAuthStore();
@@ -88,8 +92,6 @@ export default {
   },
 
   methods: {
-    ...mapActions("callouts", ["bind"]),
-
     onUserConfirm() {
       this.showUserConfirm = false;
       this.showCreateDialog = true;

@@ -30,10 +30,11 @@
 </template>
 
 <script lang="ts">
-import { mapGetters, mapState } from "vuex";
 import { defineComponent } from "vue";
 import { Callout } from "../models/Callout";
 import { sortDateTime } from "@/utils/dates";
+import { mapState } from "pinia";
+import { useCalloutsStore } from "../stores/callouts";
 
 export default defineComponent({
   data() {
@@ -60,8 +61,10 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapGetters("callouts", { callouts: "calloutsWithFormattedDateTime" }),
-    ...mapState("callouts", ["loading"]),
+    ...mapState(useCalloutsStore, {
+      loading: "loading",
+      callouts: "calloutsWithFormattedDateTime",
+    }),
   },
 
   methods: {
