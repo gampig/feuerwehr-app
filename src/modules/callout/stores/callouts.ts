@@ -14,6 +14,10 @@ import { Callout } from "../models/Callout";
 import handleError from "@/utils/store/handleError";
 import moment from "moment";
 import { formatDateTime } from "@/utils/dates";
+import {
+  deleteUndefinedProperties,
+  extractId,
+} from "@/utils/firebase/serialization";
 
 export const useCalloutsStore = defineStore("callouts", () => {
   const db = getDatabase(firebaseApp);
@@ -57,7 +61,8 @@ export const useCalloutsStore = defineStore("callouts", () => {
 
   async function create(newCallout: Callout) {
     try {
-      return await push(calloutsRef, newCallout);
+      const { value } = extractId(deleteUndefinedProperties(newCallout));
+      return await push(calloutsRef, value);
     } catch (error) {
       return handleError(error);
     }

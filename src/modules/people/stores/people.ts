@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 import { defineStore } from "pinia";
 import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";
+import { extractId } from "@/utils/firebase/serialization";
 
 interface State {
   loading: boolean;
@@ -47,9 +48,7 @@ export const usePeopleStore = defineStore("people", {
     },
 
     async update(person: Person) {
-      const key = person.id;
-      const firebasePerson: any = person;
-      delete firebasePerson["id"];
+      const { id: key, value: firebasePerson } = extractId(person);
       try {
         return await firebase
           .database()
