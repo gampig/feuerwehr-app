@@ -7,7 +7,7 @@
       hide-actions
     >
       <template #[`item.1`]>
-        <CalloutList @update:model-value="selectCallout">
+        <CalloutList @update:model-value="onSelectCalloutClicked">
           <v-card-title> Einsatz auswählen </v-card-title>
         </CalloutList>
       </template>
@@ -84,11 +84,12 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters, mapState } from "vuex";
 import CalloutList from "../components/CalloutList.vue";
 import PersonAutocomplete from "../components/form/PersonAutocomplete.vue";
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 import { Person } from "@/modules/people/models/Person";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
   components: {
@@ -130,35 +131,37 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
-    ...mapGetters("callout", { crew: "standbyCrew" }),
+    ...mapState(useCalloutStore, ["callout", "crew"]),
+
+    standbyCrew() {
+      return this.crew?.standby ?? {};
+    },
 
     crewCount() {
-      return this.crew ? Object.keys(this.crew).length : 0;
+      return this.standbyCrew ? Object.keys(this.standbyCrew).length : 0;
     },
 
     crewTableItems(): Array<{ person: string }> {
-      return Object.keys(this.crew).map((person) => ({
+      return Object.keys(this.standbyCrew).map((person) => ({
         person: person,
       }));
     },
   },
 
   methods: {
-    ...mapActions("callout", {
-      bindCallout: "bind",
-      unbindCallout: "unbind",
-      addStandbyMember: "addStandbyMember",
-      removeStandbyMember: "removeStandbyMember",
-    }),
+    ...mapActions(useCalloutStore, [
+      "selectCallout",
+      "addStandbyMember",
+      "removeStandbyMember",
+    ]),
 
-    selectCallout(calloutId: string) {
-      this.bindCallout(calloutId);
+    onSelectCalloutClicked(calloutId: string) {
+      this.selectCallout(calloutId);
       this.currentStep = 2;
     },
 
     back() {
-      this.unbindCallout();
+      this.selectCallout();
       this.currentStep = 1;
     },
 

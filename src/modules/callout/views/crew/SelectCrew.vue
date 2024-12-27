@@ -34,12 +34,13 @@
 </template>
 
 <script lang="ts">
-import { mapState, mapActions, mapGetters } from "vuex";
 import CrewPage from "../../components/CrewPage.vue";
 import CrewRolesForm from "../../components/form/CrewRolesForm.vue";
 import PersonAutocomplete from "../../components/form/PersonAutocomplete.vue";
 import { Person } from "@/modules/people/models/Person";
 import { CalloutRole } from "../../models/Callout";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../../stores/callout";
 
 export default {
   components: { CrewPage, CrewRolesForm, PersonAutocomplete },
@@ -59,16 +60,15 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", {
-      crew: "crew",
-    }),
-
-    ...mapState("vehicles", ["vehicle"]),
-
-    ...mapGetters("callout", ["crewOfVehicle"]),
+    ...mapState(useCalloutStore, ["vehicle"]),
 
     crew() {
-      const crew = this.crewOfVehicle(this.vehicle && this.vehicle.id) || {};
+      const calloutStore = useCalloutStore();
+      const crew =
+        (this.vehicle &&
+          calloutStore.crew?.vehicles &&
+          calloutStore.crew.vehicles[this.vehicle.id]) ||
+        {};
       const crewEntries = Object.entries(crew);
 
       return crewEntries.map((entry) => {
@@ -81,11 +81,11 @@ export default {
   },
 
   methods: {
-    ...mapActions("callout", {
-      addCrewMember: "addCrewMember",
-      updateRole: "updateRole",
-      removeCrewMember: "removeCrewMember",
-    }),
+    ...mapActions(useCalloutStore, [
+      "addCrewMember",
+      "updateRole",
+      "removeCrewMember",
+    ]),
 
     submit() {
       this.$router.push({
@@ -98,31 +98,21 @@ export default {
         return;
       }
       this.adding = true;
-      this.addCrewMember({
-        vehicleId: this.vehicle.id,
-        personId: person.id,
-      }).finally(() => {
+      this.addCrewMember(person.id).finally(() => {
         this.adding = false;
       });
     },
 
     onUpdate({ person, role }: { person: string; role?: CalloutRole }) {
       this.savingMap[person] = true;
-      this.updateRole({
-        vehicleId: this.vehicle.id,
-        personId: person,
-        role: role ? role : true,
-      }).then(() => {
+      this.updateRole(person, role ? role : true).then(() => {
         delete this.savingMap[person];
       });
     },
 
     onRemove(personId: string) {
       this.savingMap[personId] = true;
-      this.removeCrewMember({
-        vehicleId: this.vehicle.id,
-        personId,
-      }).then(() => {
+      this.removeCrewMember(personId).then(() => {
         delete this.savingMap[personId];
       });
     },

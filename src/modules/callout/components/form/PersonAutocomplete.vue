@@ -39,7 +39,9 @@ import { Person } from "@/modules/people/models/Person";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { computed, ref } from "vue";
 import { VAutocomplete } from "vuetify/components";
-import { useStore } from "vuex";
+import { useCalloutStore } from "../../stores/callout";
+import { getGroupOfPerson } from "../../utils/mannschaft";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 type ExtendedPerson = Person & { crewName?: string; disabled: boolean };
 
@@ -52,15 +54,15 @@ const { loading = false, label = "Person suchen..." } = defineProps<{
 
 const autocomplete = ref<VAutocomplete>();
 const search = ref<ExtendedPerson | null>(null);
-const store = useStore();
 
 const itemsForAutocomplete = computed((): ExtendedPerson[] => {
   const people: Person[] = usePeopleStore().peopleByActivity;
+  const crew = useCalloutStore().crew;
+  const vehicles = useVehiclesStore().vehicles;
 
   const peopleWithCrewNames = people.map((item) => {
-    const crewOfPerson = store.getters["callout/findCrewOfPerson"](item.id) as
-      | string
-      | undefined;
+    const crewOfPerson =
+      crew == undefined ? undefined : getGroupOfPerson(item.id, crew, vehicles);
     return {
       ...item,
       crewName: crewOfPerson,

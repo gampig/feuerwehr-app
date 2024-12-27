@@ -25,13 +25,14 @@
 <script lang="ts">
 import CrewPage from "../../components/CrewPage.vue";
 import CalloutForm from "../../components/form/Form.vue";
-import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
 import { defineComponent } from "vue";
 import { Callout } from "../../models/Callout";
 import handleError from "@/utils/store/handleError";
 import { VForm } from "vuetify/components";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../../stores/callout";
 
 export default defineComponent({
   components: {
@@ -61,7 +62,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
+    ...mapState(useCalloutStore, ["callout"]),
 
     canEditAllCallouts() {
       const authStore = useAuthStore();
@@ -84,7 +85,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions("callout", ["updateCallout"]),
+    ...mapActions(useCalloutStore, ["updateCallout"]),
 
     setItem() {
       this.item = Object.assign({}, this.emptyItem, this.callout);
@@ -107,7 +108,7 @@ export default defineComponent({
 
         this.saving = true;
         this.updateCallout(submittedData)
-          .then(() => this.next(this.callout.id))
+          .then(() => this.next(this.callout?.id ?? submittedData.id))
           .finally(() => {
             this.saving = false;
           });
@@ -122,8 +123,8 @@ export default defineComponent({
     },
 
     next(calloutId: string) {
-      const vehicle = this.$store.state.vehicles.vehicle;
-      if (vehicle && vehicle.id) {
+      const vehicle = useCalloutStore().vehicle;
+      if (vehicle) {
         this.$router.push({
           name: "CrewVehicleDetails",
           params: {

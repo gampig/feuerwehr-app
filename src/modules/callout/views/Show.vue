@@ -24,10 +24,11 @@
 
 <script lang="ts">
 import CalloutDetails from "../components/CalloutDetails.vue";
-import { mapActions, mapState } from "vuex";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
+import { mapActions, mapState } from "pinia";
 import { defineComponent } from "vue";
+import { useCalloutStore } from "../stores/callout";
 
 export default defineComponent({
   components: {
@@ -36,16 +37,15 @@ export default defineComponent({
 
   data() {
     return {
-      loading: false,
       showDeleteDialog: false,
     };
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
+    ...mapState(useCalloutStore, ["callout", "loading"]),
 
     id() {
-      return this.$route.params.id;
+      return this.$route.params.id as string;
     },
 
     userCanDeleteCallout() {
@@ -65,22 +65,18 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions("callout", ["bind", "remove"]),
+    ...mapActions(useCalloutStore, ["selectCallout", "deleteSelectedCallout"]),
 
     goBack() {
       this.$router.back();
     },
 
     retrieveItem() {
-      this.loading = true;
-
-      return this.bind(this.id).finally(() => {
-        this.loading = false;
-      });
+      this.selectCallout(this.id);
     },
 
     handleDelete() {
-      this.remove().then(() => {
+      this.deleteSelectedCallout().then(() => {
         this.$showMessage("Einsatz wurde gelöscht.");
         this.$router.back();
       });

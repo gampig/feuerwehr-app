@@ -54,12 +54,13 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
 import CrewPage from "../../components/CrewPage.vue";
 import { dateTimeToUnix, formatDateTime, tomorrow } from "@/utils/dates";
 import moment from "moment";
 import { defineComponent } from "vue";
 import { restrictFuture } from "@/utils/rules";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../../stores/callout";
 
 export default defineComponent({
   components: { CrewPage },
@@ -101,8 +102,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("callout", { callout: "callout" }),
-    ...mapState("vehicles", { vehicle: "vehicle" }),
+    ...mapState(useCalloutStore, ["callout", "vehicle"]),
 
     tomorrow: () => tomorrow.value,
 
@@ -134,7 +134,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions("callout", ["updateCallout", "updateVehicleDetails"]),
+    ...mapActions(useCalloutStore, ["updateCallout", "updateVehicleDetails"]),
 
     setItem() {
       this.item = Object.assign(

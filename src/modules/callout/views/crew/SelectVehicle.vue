@@ -67,12 +67,18 @@
   </CrewPage>
 </template>
 
-<script>
-import { mapGetters as vuexMapGetters, mapState as vuexMapState } from "vuex";
+<script lang="ts">
 import { mapState } from "pinia";
 import CrewPage from "../../components/CrewPage.vue";
 import VehicleCard from "../../components/cards/VehicleCard.vue";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutStore } from "../../stores/callout";
+import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+
+interface VehicleWithIdAndCrewNumber extends Vehicle {
+  id: string;
+  crewNumber?: number;
+}
 
 export default {
   components: { CrewPage, VehicleCard },
@@ -84,14 +90,27 @@ export default {
   },
 
   computed: {
-    ...vuexMapState("callout", ["callout"]),
-    ...vuexMapGetters("callout", ["crewCounts"]),
+    ...mapState(useCalloutStore, ["callout", "crew"]),
     ...mapState(useVehiclesStore, {
       vehicles: "vehicles",
     }),
 
+    crewCounts() {
+      if (!this.crew || !this.crew.vehicles) {
+        return {};
+      }
+      const crewCountsEntries = Object.entries(this.crew.vehicles).map(
+        (entry) => [entry[0], Object.keys(entry[1]).length]
+      );
+      return Object.fromEntries(crewCountsEntries);
+    },
+
     sortedVehicles() {
-      const sortedList = {
+      const sortedList: {
+        used: VehicleWithIdAndCrewNumber[];
+        active: VehicleWithIdAndCrewNumber[];
+        inactive: VehicleWithIdAndCrewNumber[];
+      } = {
         used: [],
         active: [],
         inactive: [],
@@ -101,13 +120,11 @@ export default {
         return sortedList;
       }
 
-      const calloutHasVehicles = this.callout && this.callout.vehicles;
-
       for (const vehicleIdx in this.vehicles) {
         const vehicle = this.vehicles[vehicleIdx];
         const isUsed =
           (this.crewCounts && this.crewCounts[vehicle.id]) ||
-          (calloutHasVehicles && this.callout.vehicles[vehicle.id]);
+          (this.callout?.vehicles && this.callout.vehicles[vehicle.id]);
 
         if (isUsed) {
           sortedList.used.push({
@@ -128,11 +145,11 @@ export default {
   },
 
   methods: {
-    selectVehicle(id) {
+    selectVehicle(id: string) {
       this.$router.push({
         name: "CrewVehicleDetails",
         params: {
-          callout_id: this.$store.state.callout.callout.id,
+          callout_id: useCalloutStore().callout?.id,
           vehicle_id: id,
         },
       });

@@ -35,8 +35,10 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions as vuexMapActions } from "vuex";
+import { mapActions } from "pinia";
 import CalloutForm from "./form/Form.vue";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
   components: { CalloutForm },
@@ -59,8 +61,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("callouts", ["create"]),
-    ...mapActions("callout", ["bind"]),
+    ...vuexMapActions("callouts", ["create"]),
+    ...mapActions(useCalloutStore, ["selectCallout"]),
 
     reset() {
       this.item = {
@@ -83,7 +85,7 @@ export default {
       if ((await this.$refs.form.$refs.form.validate()).valid) {
         this.loading = true;
         this.create(this.item).then((ref) => {
-          this.bind(ref.key);
+          this.selectCallout(ref.key);
           this.$emit("update:model-value", false);
           this.$emit("save", ref.key);
           this.reset();

@@ -126,9 +126,10 @@
 <script>
 import moment from "moment";
 import ListItem from "@/components/ListItem.vue";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
   components: {
@@ -136,7 +137,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout", "crew"]),
+    ...mapState(useCalloutStore, ["callout", "crew"]),
 
     types() {
       return this.callout?.type

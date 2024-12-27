@@ -1,6 +1,7 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
 import store from "./store";
+import { useCalloutStore } from "./stores/callout";
 
 export default class CalloutModule extends AbstractModule {
   install() {
@@ -16,9 +17,11 @@ export default class CalloutModule extends AbstractModule {
   }
 
   unload() {
+    const calloutStore = useCalloutStore();
     return Promise.all([
       this.store.dispatch("callouts/unbind"),
-      this.store.dispatch("callout/unbind"),
+      calloutStore.selectCallout(),
+      calloutStore.selectVehicle(),
     ]);
   }
 }
