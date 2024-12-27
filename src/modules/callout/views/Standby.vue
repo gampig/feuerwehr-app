@@ -5,7 +5,6 @@
       :items="steps"
       color="primary"
       hide-actions
-      flat
     >
       <template #[`item.1`]>
         <CalloutList @update:model-value="selectCallout">
@@ -46,6 +45,7 @@
               </template>
             </v-data-table>
           </v-card-text>
+          <v-divider />
           <v-card-actions>
             <v-btn @click="back">Zurück</v-btn>
             <v-spacer />
@@ -189,3 +189,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+:deep(.v-stepper-window) {
+  margin: 0px;
+  margin-top: 10px;
+}
+</style>
