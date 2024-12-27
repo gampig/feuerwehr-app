@@ -50,8 +50,6 @@
       </v-col>
     </v-row>
 
-    <v-divider></v-divider>
-
     <v-row>
       <template v-if="totalPrice > 0">
         <v-col cols="6">
@@ -71,6 +69,7 @@
           <v-text-field
             label="Gesamtkosten"
             :model-value="totalPrice + ' €'"
+            prepend-icon="mdi-cash"
             disabled
           />
         </v-col>
@@ -82,17 +81,13 @@
           :model-value="true"
           disabled
         />
-      </v-col>
 
-      <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Bestellt', orderedOn)"
           :model-value="!!orderedOn"
           @update:model-value="updateOrderedOn"
         />
-      </v-col>
 
-      <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Erledigt', doneOn)"
           :model-value="!!doneOn"
@@ -115,7 +110,7 @@ export default defineComponent({
   props: {
     person: {
       type: String,
-      default: "",
+      default: undefined,
     },
 
     clothingType: {
@@ -125,7 +120,7 @@ export default defineComponent({
 
     size: {
       type: String,
-      default: "",
+      default: undefined,
     },
 
     count: { type: Number, default: undefined },
