@@ -39,13 +39,13 @@ export default defineComponent({
   data() {
     return {
       headers: [
-        { title: "Alarm", value: "alarmTimeFormatted", sort: sortDateTime },
-        { title: "Stichwort", value: "keyword" },
-        { title: "Schlagwort", value: "catchphrase" },
-        { title: "Adresse", value: "address" },
+        { title: "Alarm", key: "alarmTimeFormatted", sort: sortDateTime },
+        { title: "Stichwort", key: "keyword" },
+        { title: "Schlagwort", key: "catchphrase" },
+        { title: "Adresse", key: "address" },
         {
           title: "Aktionen",
-          value: "action",
+          key: "action",
           sortable: false,
         },
       ],
