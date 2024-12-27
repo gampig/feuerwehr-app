@@ -1,23 +1,21 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import store from "./store";
+import { useVehiclesStore } from "./stores/vehicles";
 
 export default class VehiclesModule extends AbstractModule {
   link = null;
 
-  install() {
-    this.installStore(store);
-  }
+  install() {}
 
   load() {
     if (this.hasAnyRole(Acl.mannschaftsbuch)) {
-      return this.store.dispatch("vehicles/bindVehicles");
+      return useVehiclesStore().bind();
     } else {
-      return this.store.dispatch("vehicles/unbind");
+      return this.unload();
     }
   }
 
   unload() {
-    return this.store.dispatch("vehicles/unbind");
+    return useVehiclesStore().unbind();
   }
 }

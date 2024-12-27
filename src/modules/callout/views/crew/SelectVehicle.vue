@@ -68,9 +68,11 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapGetters as vuexMapGetters, mapState as vuexMapState } from "vuex";
+import { mapState } from "pinia";
 import CrewPage from "../../components/CrewPage.vue";
 import VehicleCard from "../../components/cards/VehicleCard.vue";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 export default {
   components: { CrewPage, VehicleCard },
@@ -82,11 +84,10 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
-    ...mapGetters("callout", ["crewCounts"]),
-    ...mapState("vehicles", {
+    ...vuexMapState("callout", ["callout"]),
+    ...vuexMapGetters("callout", ["crewCounts"]),
+    ...mapState(useVehiclesStore, {
       vehicles: "vehicles",
-      loadingVehicles: "loading",
     }),
 
     sortedVehicles() {
@@ -96,7 +97,7 @@ export default {
         inactive: [],
       };
 
-      if (!this.vehicles || this.vehicles.length == 0) {
+      if (this.vehicles.length == 0) {
         return sortedList;
       }
 

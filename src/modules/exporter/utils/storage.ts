@@ -5,6 +5,7 @@ import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { get, getDatabase, ref } from "firebase/database";
 import { firebaseApp } from "@/firebase";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 export default {
   getPersonen(): Person[] {
@@ -12,7 +13,7 @@ export default {
   },
 
   getFahrzeuge(): Vehicle[] {
-    return store.state.vehicles.vehicles as Vehicle[];
+    return useVehiclesStore().vehicles;
   },
 
   async fetchEinsaetze(): Promise<Callout[]> {

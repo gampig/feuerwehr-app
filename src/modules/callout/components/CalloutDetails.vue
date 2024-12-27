@@ -126,8 +126,9 @@
 <script>
 import moment from "moment";
 import ListItem from "@/components/ListItem.vue";
-import { mapGetters, mapState } from "vuex";
+import { mapState } from "vuex";
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 export default {
   components: {
@@ -136,7 +137,6 @@ export default {
 
   computed: {
     ...mapState("callout", ["callout", "crew"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
 
     types() {
       return this.callout?.type
@@ -154,11 +154,12 @@ export default {
       if (!this.callout) return null;
 
       let vehicles = {};
+      const vehiclesStore = useVehiclesStore();
 
       if (this.crew && this.crew.vehicles) {
         for (const vehicleIdx in this.crew.vehicles) {
           vehicles[vehicleIdx] = {
-            vehicle: this.findVehicle(vehicleIdx),
+            vehicle: vehiclesStore.find(vehicleIdx),
             crewMembers: this.crew.vehicles[vehicleIdx],
           };
         }
@@ -168,7 +169,7 @@ export default {
         for (const vehicleIdx in this.callout.vehicles) {
           if (!vehicles[vehicleIdx]) {
             vehicles[vehicleIdx] = {
-              vehicle: this.findVehicle(vehicleIdx),
+              vehicle: vehiclesStore.find(vehicleIdx),
             };
           }
 

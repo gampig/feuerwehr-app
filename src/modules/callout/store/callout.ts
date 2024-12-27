@@ -4,7 +4,7 @@ import handleError from "@/utils/store/handleError";
 import { Callout, CalloutVehicle, Crew, CalloutRole } from "../models/Callout";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { getGroupOfPerson } from "../utils/mannschaft";
-import { State as VehiclesState } from "@/modules/vehicles/store/vehicles";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 interface CrewMemberId {
   vehicleId: string;
@@ -50,7 +50,7 @@ export default {
       return getGroupOfPerson(
         personId,
         state.crew,
-        (rootState["vehicles"] as VehiclesState).vehicles
+        useVehiclesStore().vehicles
       );
     },
   },
