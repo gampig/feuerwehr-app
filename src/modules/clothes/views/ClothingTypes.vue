@@ -22,7 +22,7 @@
       <v-col cols="12">
         <v-data-table
           v-model="selected"
-          v-model:options="options"
+          v-model:sort-by="sortBy"
           :headers="headers"
           :items="types"
           :search="search"
@@ -41,7 +41,7 @@
 
           <template #[`item.action`]="{ item }">
             <BaseActionCell :handle-edit="() => editHandler(item.id)">
-              <v-btn icon @click="storageHandler(item)">
+              <v-btn icon variant="text" @click="storageHandler(item)">
                 <v-icon>mdi-wardrobe</v-icon>
               </v-btn>
             </BaseActionCell>
@@ -67,22 +67,20 @@ export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Kategorie", value: "category" },
-        { text: "Bezeichnung", value: "name" },
-        { text: "Preis", value: "price" },
+        { title: "Kategorie", key: "category" },
+        { title: "Bezeichnung", key: "name" },
+        { title: "Preis", key: "price" },
         {
-          text: "Aktionen",
-          value: "action",
+          title: "Aktionen",
+          key: "action",
           sortable: false,
         },
       ],
 
-      options: {
-        sortBy: ["category", "name"],
-        sortDesc: [false, false],
-        page: 1,
-        itemsPerPage: 15,
-      },
+      sortBy: [
+        { key: "category", order: "asc" },
+        { key: "name", order: "asc" },
+      ],
 
       selected: [],
       search: "",

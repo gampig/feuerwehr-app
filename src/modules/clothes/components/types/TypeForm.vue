@@ -4,7 +4,7 @@
       <v-col sm="8" cols="12">
         <v-text-field
           label="Bezeichnung"
-          append-icon="mdi-form-textbox"
+          prepend-icon="mdi-form-textbox"
           :model-value="name"
           :rules="[rules.required]"
           @update:model-value="$emit('update:name', $event)"
@@ -14,7 +14,7 @@
       <v-col sm="4" cols="12">
         <v-select
           label="Kategorie"
-          append-icon="mdi-clipboard-list"
+          prepend-icon="mdi-clipboard-list"
           :items="categories"
           :model-value="category"
           :rules="[rules.required]"
@@ -25,7 +25,7 @@
       <v-col sm="8" cols="12">
         <v-combobox
           label="Größen"
-          append-icon="mdi-ruler"
+          prepend-icon="mdi-ruler"
           :model-value="sizes"
           chips
           closable-chips
@@ -37,6 +37,7 @@
       <v-col sm="4" cols="12">
         <v-text-field
           label="Preis"
+          prepend-icon="mdi-cash"
           type="number"
           min="0"
           suffix="€"
