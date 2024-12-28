@@ -3,20 +3,23 @@ import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useDatabaseList } from "vuefire";
-import { computed, shallowRef } from "vue";
+import { computed } from "vue";
 import {
-  DatabaseReference,
   getDatabase,
   ref as dbRef,
   update as dbUpdate,
   child,
 } from "firebase/database";
 import { firebaseApp } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 export const usePeopleStore = defineStore("people", () => {
   const db = getDatabase(firebaseApp);
   const peopleRef = dbRef(db, "people");
-  const peopleSource = shallowRef<DatabaseReference>();
+  const peopleSource = computed(() =>
+    useAuthStore().hasAnyRole(Acl.personenAnzeigen) ? peopleRef : undefined
+  );
   const people = useDatabaseList<Person>(peopleSource);
   const loading = people.pending;
 
@@ -26,14 +29,6 @@ export const usePeopleStore = defineStore("people", () => {
       (a, b) => (b.recentCalloutsCount || 0) - (a.recentCalloutsCount || 0)
     )
   );
-
-  function bind() {
-    peopleSource.value = peopleRef;
-  }
-
-  function unbind() {
-    peopleSource.value = undefined;
-  }
 
   async function update(id: string, person: Person) {
     const firebasePerson = deleteUndefinedProperties(person);
@@ -49,8 +44,6 @@ export const usePeopleStore = defineStore("people", () => {
     loading,
     peopleReversed,
     peopleByActivity,
-    bind,
-    unbind,
     update,
   };
 });

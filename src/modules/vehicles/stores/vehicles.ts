@@ -1,18 +1,18 @@
 import { defineStore } from "pinia";
 import { Vehicle } from "../models/Vehicle";
 import { firebaseApp } from "@/firebase";
-import {
-  getDatabase,
-  ref as dbRef,
-  DatabaseReference,
-} from "firebase/database";
+import { getDatabase, ref as dbRef } from "firebase/database";
 import { useDatabaseList, VueDatabaseDocumentData } from "vuefire";
-import { shallowRef } from "vue";
+import { computed } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 export const useVehiclesStore = defineStore("vehicles", () => {
   const db = getDatabase(firebaseApp);
   const vehiclesRef = dbRef(db, "vehicles");
-  const vehiclesSource = shallowRef<DatabaseReference>();
+  const vehiclesSource = computed(() =>
+    useAuthStore().hasAnyRole(Acl.mannschaftsbuch) ? vehiclesRef : undefined
+  );
   const vehicles = useDatabaseList<Vehicle>(vehiclesSource);
   const loading = vehicles.pending;
 
@@ -22,13 +22,5 @@ export const useVehiclesStore = defineStore("vehicles", () => {
     );
   }
 
-  function bind() {
-    vehiclesSource.value = vehiclesRef;
-  }
-
-  function unbind() {
-    vehiclesSource.value = undefined;
-  }
-
-  return { vehicles, loading, find, bind, unbind };
+  return { vehicles, loading, find };
 });

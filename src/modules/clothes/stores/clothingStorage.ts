@@ -1,34 +1,34 @@
 import { defineStore } from "pinia";
 import { useDatabaseList } from "vuefire";
 import { ClothingItem } from "../models/ClothingItem";
-import { shallowRef } from "vue";
+import { computed, ref } from "vue";
 import {
   child,
-  DatabaseReference,
   ref as dbRef,
   set as dbSet,
   getDatabase,
 } from "firebase/database";
 import { firebaseApp } from "@/firebase";
 import handleError from "@/utils/store/handleError";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 export const useClothingStorageStore = defineStore("clothingStorage", () => {
+  const selectedClothingTypeId = ref<string>();
+
   const db = getDatabase(firebaseApp);
 
-  const clothingItemsSource = shallowRef<DatabaseReference>();
+  const clothingItemsSource = computed(() =>
+    selectedClothingTypeId.value === undefined ||
+    !useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
+      ? undefined
+      : child(dbRef(db, "clothes/storage"), selectedClothingTypeId.value)
+  );
   const clothingItems = useDatabaseList<ClothingItem>(clothingItemsSource);
   const loading = clothingItems.pending;
 
-  function bind(clothingTypeId: string) {
-    const clothingItemsRef = child(
-      dbRef(db, "clothes/storage"),
-      clothingTypeId
-    );
-    clothingItemsSource.value = clothingItemsRef;
-  }
-
-  function unbind() {
-    clothingItemsSource.value = undefined;
+  function selectClothingType(clothingTypeId?: string) {
+    selectedClothingTypeId.value = clothingTypeId;
   }
 
   async function set(clothingItem: ClothingItem) {
@@ -46,5 +46,5 @@ export const useClothingStorageStore = defineStore("clothingStorage", () => {
     }
   }
 
-  return { clothingItems, loading, bind, unbind, set };
+  return { clothingItems, loading, selectClothingType, set };
 });

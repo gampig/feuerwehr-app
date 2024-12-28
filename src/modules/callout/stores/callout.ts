@@ -14,6 +14,8 @@ import { firebaseApp } from "@/firebase";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 import handleError from "@/utils/store/handleError";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 export const useCalloutStore = defineStore("callout", () => {
   const selectedCalloutId = ref<string>();
@@ -21,15 +23,19 @@ export const useCalloutStore = defineStore("callout", () => {
 
   const db = getDatabase(firebaseApp);
 
+  const isAuthorized = computed(() =>
+    useAuthStore().hasAnyRole(Acl.einsaetzeAnzeigen)
+  );
+
   const calloutSource = computed(() =>
-    selectedCalloutId.value === undefined
+    selectedCalloutId.value === undefined || !isAuthorized.value
       ? undefined
       : dbRef(db, "callouts/" + selectedCalloutId.value)
   );
   const callout = useDatabaseObject<Callout>(calloutSource);
 
   const crewSource = computed(() =>
-    selectedCalloutId.value === undefined
+    selectedCalloutId.value === undefined || !isAuthorized.value
       ? undefined
       : dbRef(db, "crew/" + selectedCalloutId.value)
   );

@@ -138,10 +138,10 @@ function unbindType() {
   store.dispatch("clothingTypes/unbindType");
 }
 function bindStorage(id: string) {
-  clothingStorageStore.bind(id);
+  clothingStorageStore.selectClothingType(id);
 }
 function unbindStorage() {
-  clothingStorageStore.unbind();
+  clothingStorageStore.selectClothingType();
 }
 function setCount(item: ClothingItem) {
   return clothingStorageStore.set(item);
