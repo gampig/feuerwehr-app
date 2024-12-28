@@ -1,63 +1,61 @@
-import firebase from "firebase/compat/app";
 import { defineStore } from "pinia";
 import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";
-import { extractId } from "@/utils/firebase/serialization";
+import {
+  deleteUndefinedProperties,
+  extractId,
+} from "@/utils/firebase/serialization";
+import { useDatabaseList } from "vuefire";
+import { computed, shallowRef } from "vue";
+import {
+  DatabaseReference,
+  getDatabase,
+  ref as dbRef,
+  update as dbUpdate,
+  child,
+} from "firebase/database";
+import { firebaseApp } from "@/firebase";
 
-interface State {
-  loading: boolean;
-  people: Person[];
-}
+export const usePeopleStore = defineStore("people", () => {
+  const db = getDatabase(firebaseApp);
+  const peopleRef = dbRef(db, "people");
+  const peopleSource = shallowRef<DatabaseReference>();
+  const people = useDatabaseList<Person>(peopleSource);
+  const loading = people.pending;
 
-export const usePeopleStore = defineStore("people", {
-  state: (): State => ({
-    loading: false,
-    people: [],
-  }),
+  const peopleReversed = computed(() => [...people.value].reverse());
+  const peopleByActivity = computed(() =>
+    [...people.value].sort(
+      (a, b) => (b.recentCalloutsCount || 0) - (a.recentCalloutsCount || 0)
+    )
+  );
 
-  getters: {
-    peopleReversed: (state) => [...state.people].reverse(),
-    peopleByActivity: (state) =>
-      [...state.people].sort(
-        (a, b) => (b.recentCalloutsCount || 0) - (a.recentCalloutsCount || 0)
-      ),
-  },
+  function bind() {
+    peopleSource.value = peopleRef;
+  }
 
-  actions: {
-    async bindPeople() {
-      this.loading = true;
-      try {
-        const snapshot = await firebase.database().ref("people").get();
-        const people: Person[] = [];
-        snapshot.forEach((child) => {
-          people.push({
-            id: child.ref.key,
-            ...child.val(),
-          });
-        });
-        this.people = people;
-      } catch (error) {
-        handleError(error);
-      } finally {
-        this.loading = false;
-      }
-    },
+  function unbind() {
+    peopleSource.value = undefined;
+  }
 
-    unbind() {
-      this.people = [];
-    },
+  async function update(person: Person) {
+    const { id: key, value: firebasePerson } = extractId(
+      deleteUndefinedProperties(person)
+    );
+    try {
+      return await dbUpdate(child(peopleRef, key), firebasePerson);
+    } catch (error) {
+      handleError(error);
+    }
+  }
 
-    async update(person: Person) {
-      const { id: key, value: firebasePerson } = extractId(person);
-      try {
-        return await firebase
-          .database()
-          .ref("people")
-          .child(key)
-          .update(firebasePerson);
-      } catch (error) {
-        handleError(error);
-      }
-    },
-  },
+  return {
+    people,
+    loading,
+    peopleReversed,
+    peopleByActivity,
+    bind,
+    unbind,
+    update,
+  };
 });

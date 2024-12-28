@@ -10,7 +10,7 @@ export default class PeopleModule extends AbstractModule {
   }
 
   load() {
-    return usePeopleStore().bindPeople();
+    return usePeopleStore().bind();
   }
 
   unload() {

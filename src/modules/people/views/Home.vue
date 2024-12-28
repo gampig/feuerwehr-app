@@ -128,7 +128,7 @@ export default defineComponent({
     },
 
     reloadPeople() {
-      usePeopleStore().bindPeople();
+      usePeopleStore().bind();
     },
   },
 });
