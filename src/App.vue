@@ -22,6 +22,8 @@ const authStore = useAuthStore();
 const databaseSchemaStore = useDatabaseSchemaStore();
 
 const loggedIn = computed(() => authStore.loggedIn);
+const loadingDatabaseSchema = computed(() => databaseSchemaStore.loading);
+const updateIsRequired = computed(() => databaseSchemaStore.updateIsRequired);
 
 const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null);
 const updateFound = ref(false);
@@ -32,15 +34,15 @@ const loading = computed(
   () =>
     initializing.value ||
     loggedIn.value === undefined ||
-    databaseSchemaStore.loading ||
-    databaseSchemaStore.updateIsRequired
+    loadingDatabaseSchema.value ||
+    updateIsRequired.value
 );
 const loadingScreenText = computed(() => {
   if (loggedIn.value === undefined) {
     return "Anmelden...";
-  } else if (databaseSchemaStore.loading) {
+  } else if (loadingDatabaseSchema.value) {
     return "Lade Daten...";
-  } else if (databaseSchemaStore.updateIsRequired) {
+  } else if (updateIsRequired.value) {
     if (updateFound.value) {
       return "Lade Update herunter...";
     } else if (updateDownloaded.value) {
@@ -56,8 +58,8 @@ const loadingScreenText = computed(() => {
 function checkAuthState() {
   if (
     loggedIn.value === true &&
-    !databaseSchemaStore.loading &&
-    !databaseSchemaStore.updateIsRequired
+    !loadingDatabaseSchema.value &&
+    !updateIsRequired.value
   ) {
     initializing.value = false;
     onLogin();
@@ -92,7 +94,7 @@ function toLoginPage() {
 }
 
 function checkDatabaseSchemaVersion() {
-  if (databaseSchemaStore.updateIsRequired) {
+  if (updateIsRequired.value) {
     if (updateDownloaded.value) {
       if (serviceWorkerRegistration.value?.waiting) {
         alert(
@@ -131,10 +133,7 @@ document.addEventListener(
   { once: true }
 );
 
-watch(
-  [loggedIn, databaseSchemaStore.loading, databaseSchemaStore.updateIsRequired],
-  checkAuthState
-);
+watch([loggedIn, loadingDatabaseSchema, updateIsRequired], checkAuthState);
 watchEffect(checkDatabaseSchemaVersion);
 
 checkAuthState();
