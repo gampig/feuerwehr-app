@@ -25,11 +25,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import OrderForm from "./OrderForm.vue";
-import { mapState } from "vuex";
 import { VForm } from "vuetify/components";
-/* eslint-disable no-unused-vars */
 import { Order } from "../../models/Order";
-/* eslint-enable */
+import { mapState } from "pinia";
+import { useOrdersStore } from "../../stores/orders";
 
 export default defineComponent({
   components: {
@@ -61,7 +60,10 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("orders", { order: "order", loading: "loadingOrder" }),
+    ...mapState(useOrdersStore, {
+      order: "selectedOrder",
+      loading: "selectedOrderLoading",
+    }),
   },
 
   watch: {
@@ -99,8 +101,8 @@ export default defineComponent({
       if (await this.validate()) {
         this.saving = true;
 
-        this.$store
-          .dispatch("orders/set", this.item)
+        useOrdersStore()
+          .set(this.item as Order)
           .then(() => {
             this.$showMessage("Gespeichert");
             this.closeDialog();

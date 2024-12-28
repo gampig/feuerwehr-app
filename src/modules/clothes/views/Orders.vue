@@ -53,7 +53,6 @@
 </template>
 
 <script lang="ts">
-import { mapActions as vuexMapActions, mapState as vuexMapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import OrderCard from "../components/orders/OrderCard.vue";
 import CreateDialog from "../components/orders/CreateDialog.vue";
@@ -62,9 +61,10 @@ import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
 import { defineComponent } from "vue";
 import { Order } from "../models/Order";
-import { ClothingType } from "../models/ClothingType";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useClothingTypesStore } from "../stores/clothingTypes";
+import { useOrdersStore } from "../stores/orders";
+import { VueDatabaseQueryData } from "vuefire";
 
 function latestTimestampOfOrder(order: Order) {
   function dateToTimestamp(date: any) {
@@ -119,14 +119,14 @@ export default defineComponent({
   },
 
   computed: {
-    ...vuexMapState("orders", { allOrders: "orders", loading: "loading" }),
+    ...mapState(useOrdersStore, { allOrders: "orders", loading: "loading" }),
     ...mapState(useClothingTypesStore, ["types"]),
 
-    orders(): Order[] {
-      return (this.allOrders as Order[])
+    orders(): VueDatabaseQueryData<Order> {
+      return this.allOrders
         .filter((item) => this.showDoneOrders == !!item.doneOn)
         .map((order) => {
-          const orderFormatted = { ...order } as any;
+          const orderFormatted = { ...order, id: order.id } as any;
 
           orderFormatted.submittedOn =
             order.submittedOn && formatDate(order.submittedOn);
@@ -135,9 +135,7 @@ export default defineComponent({
           orderFormatted.doneOn = order.doneOn && formatDate(order.doneOn);
 
           const clothingType = order.clothingType
-            ? (this.types as ClothingType[]).find(
-                (type) => type.id === order.clothingType
-              )
+            ? this.types.find((type) => type.id === order.clothingType)
             : undefined;
           orderFormatted.clothingType = clothingType && clothingType.name;
 
@@ -149,7 +147,7 @@ export default defineComponent({
         });
     },
 
-    filteredOrders(): Order[] {
+    filteredOrders() {
       const sortedOrders = [...this.orders].sort(
         (a, b) => latestTimestampOfOrder(b) - latestTimestampOfOrder(a)
       );
@@ -159,14 +157,14 @@ export default defineComponent({
   },
 
   methods: {
-    ...vuexMapActions("orders", ["bindOrder", "unbindOrder"]),
+    ...mapActions(useOrdersStore, ["selectOrder"]),
 
     create() {
       this.showCreateDialog = true;
     },
 
     edit(orderId: string) {
-      this.bindOrder(orderId);
+      this.selectOrder(orderId);
       this.showEditDialog = true;
     },
 
@@ -174,7 +172,7 @@ export default defineComponent({
       const orderToRemove =
         orderId === undefined ? this.orderToRemove : orderId;
       this.showRemoveConfirmationDialog = false;
-      this.$store.dispatch("orders/remove", orderToRemove);
+      useOrdersStore().remove(orderToRemove);
     },
 
     askForConfirmationToRemove(orderId: string) {

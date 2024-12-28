@@ -1,21 +1,14 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import store from "./store";
 
 export default class ClothesModule extends AbstractModule {
-  install() {
-    this.installStore(store);
-  }
+  install() {}
 
   isAuthorized() {
     return this.hasAnyRole(Acl.kleiderverwaltung);
   }
 
-  load() {
-    return Promise.all([this.store.dispatch("orders/bindOrders")]);
-  }
+  load() {}
 
-  unload() {
-    return Promise.all([this.store.dispatch("orders/unbind")]);
-  }
+  unload() {}
 }

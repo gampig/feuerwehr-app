@@ -26,9 +26,8 @@ import OrderForm from "./OrderForm.vue";
 import moment from "moment";
 import { defineComponent } from "vue";
 import { VForm } from "vuetify/components";
-/* eslint-disable no-unused-vars */
 import { Order } from "../../models/Order";
-/* eslint-enable */
+import { useOrdersStore } from "../../stores/orders";
 
 export default defineComponent({
   components: {
@@ -78,14 +77,14 @@ export default defineComponent({
     },
 
     async save() {
-      const item = { ...this.item };
+      const item = { ...(this.item as Order) };
       item.submittedOn = moment().unix();
 
       if (await this.validate()) {
         this.loading = true;
 
-        this.$store
-          .dispatch("orders/create", item)
+        useOrdersStore()
+          .create(item)
           .then(() => {
             this.$showMessage("Bestellung wurde erstellt.");
             this.closeDialog();
