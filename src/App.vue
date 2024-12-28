@@ -21,7 +21,6 @@ const route = useRoute();
 const authStore = useAuthStore();
 const databaseSchemaStore = useDatabaseSchemaStore();
 
-const loadingAuth = computed(() => authStore.loading);
 const loggedIn = computed(() => authStore.loggedIn);
 
 const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null);
@@ -32,12 +31,12 @@ const initializing = ref(true);
 const loading = computed(
   () =>
     initializing.value ||
-    loadingAuth.value ||
+    loggedIn.value === undefined ||
     databaseSchemaStore.loading ||
     databaseSchemaStore.updateIsRequired
 );
 const loadingScreenText = computed(() => {
-  if (loadingAuth.value) {
+  if (loggedIn.value === undefined) {
     return "Anmelden...";
   } else if (databaseSchemaStore.loading) {
     return "Lade Daten...";

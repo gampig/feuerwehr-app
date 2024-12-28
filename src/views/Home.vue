@@ -9,12 +9,12 @@ import {
   RouteLocationAsPathGeneric,
   RouteLocationAsRelativeGeneric,
 } from "vue-router";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
 export default defineComponent({
   computed: {
-    ...mapState(useAuthStore, ["loggedIn", "hasAnyRole"]),
+    ...mapState(useAuthStore, ["loggedIn"]),
   },
 
   watch: {
@@ -28,6 +28,8 @@ export default defineComponent({
   },
 
   methods: {
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
+
     getStartPage():
       | string
       | RouteLocationAsPathGeneric

@@ -49,10 +49,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions(useAuthStore, [
-      "updatePassword",
-      "setReauthenticationRequired",
-    ]),
+    ...mapActions(useAuthStore, ["updatePassword", "cancelReauthentication"]),
 
     submit() {
       this.loading = true;
@@ -69,7 +66,7 @@ export default defineComponent({
     onDialogInput(open: boolean) {
       if (!open) {
         if (this.reauthenticationRequired) {
-          this.setReauthenticationRequired(false);
+          this.cancelReauthentication();
         } else {
           this.submit();
         }

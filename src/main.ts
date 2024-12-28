@@ -7,7 +7,6 @@ import { createPinia } from "pinia";
 import { vuetify } from "./plugins/vuetify";
 import notifier from "./plugins/notifier";
 import unhandledErrorHandler from "./utils/unhandledErrorHandler";
-import { useAuthStore } from "./stores/auth";
 
 import router from "./router";
 
@@ -35,5 +34,3 @@ router
   .isReady()
   .then(() => app.mount("#app"))
   .catch((e) => console.error(e));
-
-useAuthStore().init();

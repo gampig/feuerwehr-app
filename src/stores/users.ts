@@ -1,10 +1,10 @@
-import firebase from "firebase/compat/app";
-
 import handleError from "@/utils/store/handleError";
 import { defineStore } from "pinia";
 import createClient, { Middleware } from "openapi-fetch";
 import { paths } from "@/models/FeuerwehrAppApi";
 import { User } from "@/models/User";
+import { firebaseApp } from "@/firebase";
+import { getAuth } from "firebase/auth";
 
 interface State {
   loading: boolean;
@@ -12,9 +12,11 @@ interface State {
   users: User[];
 }
 
+const auth = getAuth(firebaseApp);
+
 const apiFirebaseAuthMiddleware: Middleware = {
   async onRequest(req) {
-    const accessToken = await firebase.auth().currentUser?.getIdToken();
+    const accessToken = await auth.currentUser?.getIdToken();
     if (accessToken !== undefined) {
       req.headers.set("Authorization", `Bearer ${accessToken}`);
     } else {

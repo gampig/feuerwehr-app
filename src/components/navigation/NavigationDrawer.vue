@@ -89,7 +89,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState(useAuthStore, ["loggedIn", "user", "hasAnyRole"]),
+    ...mapState(useAuthStore, ["loggedIn", "user"]),
 
     showUserSettings() {
       return !this.loggedIn || this.userSettingsButton;
@@ -192,7 +192,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions(useAuthStore, ["logout"]),
+    ...mapActions(useAuthStore, ["logout", "hasAnyRole"]),
   },
 });
 </script>

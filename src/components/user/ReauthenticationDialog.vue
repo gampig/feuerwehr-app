@@ -3,7 +3,7 @@
     <v-form ref="form">
       <LoginCard
         v-model:password="password"
-        :card-title="user && (user.displayName || user.email)"
+        :card-title="(user && (user.displayName || user.email)) || undefined"
         no-email
       >
         <v-btn variant="text" @click="$emit('update:model-value', false)">
@@ -47,7 +47,7 @@ export default defineComponent({
 
     async submit() {
       if ((await (this.$refs.form as VForm).validate()).valid) {
-        if (this.user === null || this.user.email === null) {
+        if (this.user?.email == null) {
           throw new Error("User cannot be null");
         }
 
