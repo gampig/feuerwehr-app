@@ -65,7 +65,7 @@ export default defineComponent({
 
       firstName: "",
       lastName: "",
-      status: null as null | PersonStatus,
+      status: "Aktiv" as PersonStatus,
     };
   },
 
