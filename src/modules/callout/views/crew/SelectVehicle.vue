@@ -129,6 +129,7 @@ export default {
         if (isUsed) {
           sortedList.used.push({
             ...vehicle,
+            id: vehicle.id,
             crewNumber: this.crewCounts[vehicle.id],
           });
         } else {

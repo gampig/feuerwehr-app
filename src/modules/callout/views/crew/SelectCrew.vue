@@ -93,7 +93,7 @@ export default {
       });
     },
 
-    onAdd(person?: Person) {
+    onAdd(person?: Person & { id: string }) {
       if (!person) {
         return;
       }

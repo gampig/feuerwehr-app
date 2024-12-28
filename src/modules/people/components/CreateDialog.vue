@@ -85,8 +85,7 @@ export default defineComponent({
         capitalizeFirstLetter(this.firstName.trim());
 
       usePeopleStore()
-        .update({
-          id: personId,
+        .update(personId, {
           status: this.status || "Aktiv",
         })
         .then(() => {

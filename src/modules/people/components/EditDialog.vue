@@ -51,7 +51,7 @@ export default defineComponent({
     person(): null | Person | undefined {
       if (!this.personId) return null;
       return usePeopleStore().people.find(
-        (person: Person) => person.id == this.personId
+        (person) => person.id == this.personId
       );
     },
   },
@@ -86,8 +86,7 @@ export default defineComponent({
 
       this.loading = true;
       usePeopleStore()
-        .update({
-          id: this.personId,
+        .update(this.personId, {
           status: this.status,
         })
         .then(() => {

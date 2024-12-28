@@ -29,7 +29,7 @@ export class CalloutFormatter {
       : "";
   }
 
-  getEndeOfFahrzeug(fahrzeug: Vehicle): string {
+  getEndeOfFahrzeug(fahrzeug: Vehicle & { id: string }): string {
     return this.einsatz.vehicles && this.einsatz.vehicles[fahrzeug.id]
       ? formatDateTime(Number(this.einsatz.vehicles[fahrzeug.id].endTime))
       : "";

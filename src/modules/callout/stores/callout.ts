@@ -13,10 +13,7 @@ import {
 import { firebaseApp } from "@/firebase";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 import handleError from "@/utils/store/handleError";
-import {
-  deleteUndefinedProperties,
-  extractId,
-} from "@/utils/firebase/serialization";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 
 export const useCalloutStore = defineStore("callout", () => {
   const selectedCalloutId = ref<string>();
@@ -62,9 +59,7 @@ export const useCalloutStore = defineStore("callout", () => {
       return Promise.reject("Kein Einsatz ausgewählt");
     }
     try {
-      const { value: callout } = extractId(
-        deleteUndefinedProperties(newCallout)
-      );
+      const callout = deleteUndefinedProperties(newCallout);
       return await update(calloutSource.value, callout);
     } catch (error) {
       return handleError(error);

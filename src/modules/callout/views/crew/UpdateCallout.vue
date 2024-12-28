@@ -100,15 +100,16 @@ export default defineComponent({
         ).valid
       ) {
         const submittedData = this.item;
+        const calloutId = this.callout?.id;
 
-        if (!submittedData.id) {
+        if (!calloutId) {
           handleError("Einsatz-Id ist nicht bekannt.");
           return;
         }
 
         this.saving = true;
         this.updateCallout(submittedData)
-          .then(() => this.next(this.callout?.id ?? submittedData.id))
+          .then(() => this.next(calloutId))
           .finally(() => {
             this.saving = false;
           });

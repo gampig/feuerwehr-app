@@ -6,7 +6,7 @@ import {
   ref as dbRef,
   DatabaseReference,
 } from "firebase/database";
-import { useDatabaseList } from "vuefire";
+import { useDatabaseList, VueDatabaseDocumentData } from "vuefire";
 import { shallowRef } from "vue";
 
 export const useVehiclesStore = defineStore("vehicles", () => {
@@ -16,7 +16,7 @@ export const useVehiclesStore = defineStore("vehicles", () => {
   const vehicles = useDatabaseList<Vehicle>(vehiclesSource);
   const loading = vehicles.pending;
 
-  function find(id: string): Vehicle {
+  function find(id: string): NonNullable<VueDatabaseDocumentData<Vehicle>> {
     return (
       vehicles.value.find((vehicle) => vehicle.id == id) || { id: id, name: id }
     );

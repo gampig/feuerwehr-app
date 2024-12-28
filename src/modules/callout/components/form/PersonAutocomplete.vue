@@ -43,7 +43,11 @@ import { useCalloutStore } from "../../stores/callout";
 import { getGroupOfPerson } from "../../utils/mannschaft";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
-type ExtendedPerson = Person & { crewName?: string; disabled: boolean };
+type ExtendedPerson = Person & {
+  id: string;
+  crewName?: string;
+  disabled: boolean;
+};
 
 const emit = defineEmits(["update:model-value"]);
 
@@ -56,7 +60,7 @@ const autocomplete = ref<VAutocomplete>();
 const search = ref<ExtendedPerson | null>(null);
 
 const itemsForAutocomplete = computed((): ExtendedPerson[] => {
-  const people: Person[] = usePeopleStore().peopleByActivity;
+  const people = usePeopleStore().peopleByActivity;
   const crew = useCalloutStore().crew;
   const vehicles = useVehiclesStore().vehicles;
 
@@ -64,7 +68,8 @@ const itemsForAutocomplete = computed((): ExtendedPerson[] => {
     const crewOfPerson =
       crew == undefined ? undefined : getGroupOfPerson(item.id, crew, vehicles);
     return {
-      ...item,
+      ...(item as Person),
+      id: item.id,
       crewName: crewOfPerson,
       disabled: crewOfPerson != undefined,
     };

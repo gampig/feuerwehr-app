@@ -165,7 +165,7 @@ export default {
       this.currentStep = 1;
     },
 
-    onAdd(person: Person) {
+    onAdd(person: Person & { id: string }) {
       this.loading = true;
       this.addStandbyMember(person.id).finally(() => {
         this.loading = false;

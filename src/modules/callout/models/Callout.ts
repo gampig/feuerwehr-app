@@ -5,7 +5,6 @@ export interface CalloutVehicle {
 }
 
 export interface Callout {
-  id: string;
   alarmTime: number;
   alarmTimeFormatted?: string;
   endTime?: number; // deprecated
@@ -36,7 +35,6 @@ interface PeopleArray {
 }
 
 export interface Crew {
-  id: string;
   standby?: PeopleArray;
   vehicles?: {
     [id: string]: PeopleArray;

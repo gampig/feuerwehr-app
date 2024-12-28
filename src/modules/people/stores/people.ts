@@ -1,10 +1,7 @@
 import { defineStore } from "pinia";
 import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";
-import {
-  deleteUndefinedProperties,
-  extractId,
-} from "@/utils/firebase/serialization";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useDatabaseList } from "vuefire";
 import { computed, shallowRef } from "vue";
 import {
@@ -38,12 +35,10 @@ export const usePeopleStore = defineStore("people", () => {
     peopleSource.value = undefined;
   }
 
-  async function update(person: Person) {
-    const { id: key, value: firebasePerson } = extractId(
-      deleteUndefinedProperties(person)
-    );
+  async function update(id: string, person: Person) {
+    const firebasePerson = deleteUndefinedProperties(person);
     try {
-      return await dbUpdate(child(peopleRef, key), firebasePerson);
+      return await dbUpdate(child(peopleRef, id), firebasePerson);
     } catch (error) {
       handleError(error);
     }

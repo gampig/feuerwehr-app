@@ -35,6 +35,7 @@ import { Callout } from "../models/Callout";
 import { sortDateTime } from "@/utils/dates";
 import { mapState } from "pinia";
 import { useCalloutsStore } from "../stores/callouts";
+import { VueDatabaseDocumentData } from "vuefire";
 
 export default defineComponent({
   data() {
@@ -68,7 +69,7 @@ export default defineComponent({
   },
 
   methods: {
-    showHandler(item: Callout) {
+    showHandler(item: NonNullable<VueDatabaseDocumentData<Callout>>) {
       this.$router.push({
         name: "CalloutShow",
         params: { id: item.id },

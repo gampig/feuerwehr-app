@@ -6,5 +6,3 @@ import "firebase/compat/auth";
 import "firebase/compat/database";
 
 export const firebaseApp = firebase.initializeApp(config);
-
-import "./vuefire";

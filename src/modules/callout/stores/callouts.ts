@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, shallowRef } from "vue";
-import { useDatabaseList } from "vuefire";
+import { useDatabaseList, VueDatabaseDocumentData } from "vuefire";
 import {
   getDatabase,
   ref as dbRef,
@@ -14,10 +14,7 @@ import { Callout } from "../models/Callout";
 import handleError from "@/utils/store/handleError";
 import moment from "moment";
 import { formatDateTime } from "@/utils/dates";
-import {
-  deleteUndefinedProperties,
-  extractId,
-} from "@/utils/firebase/serialization";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 
 export const useCalloutsStore = defineStore("callouts", () => {
   const db = getDatabase(firebaseApp);
@@ -42,7 +39,10 @@ export const useCalloutsStore = defineStore("callouts", () => {
   });
   const calloutsWithFormattedDateTime = computed(() =>
     callouts.value.map((item) => {
-      const callout = { ...item };
+      const callout: NonNullable<VueDatabaseDocumentData<Callout>> = {
+        ...(item as Callout),
+        id: item.id,
+      };
       callout.alarmTimeFormatted = formatDateTime(callout.alarmTime);
       if (callout.endTime) {
         callout.endTimeFormatted = formatDateTime(callout.endTime);
@@ -61,7 +61,7 @@ export const useCalloutsStore = defineStore("callouts", () => {
 
   async function create(newCallout: Callout) {
     try {
-      const { value } = extractId(deleteUndefinedProperties(newCallout));
+      const value = deleteUndefinedProperties(newCallout);
       return await push(calloutsRef, value);
     } catch (error) {
       return handleError(error);
