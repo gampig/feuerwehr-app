@@ -41,7 +41,7 @@
 
           <template #[`item.action`]="{ item }">
             <BaseActionCell :handle-edit="() => editHandler(item.id)">
-              <v-btn icon variant="text" @click="storageHandler(item)">
+              <v-btn icon variant="text" @click="storageHandler(item.id)">
                 <v-icon>mdi-wardrobe</v-icon>
               </v-btn>
             </BaseActionCell>
@@ -55,11 +55,14 @@
   </v-container>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
+<script lang="ts">
 import CreateDialog from "../components/types/CreateDialog.vue";
 import EditDialog from "../components/types/EditDialog.vue";
 import { defineComponent } from "vue";
+import { useClothingTypesStore } from "../stores/clothingTypes";
+import { mapActions, mapState } from "pinia";
+import { ClothingType } from "../models/ClothingType";
+import { VueDatabaseQueryData } from "vuefire";
 
 export default defineComponent({
   components: { CreateDialog, EditDialog },
@@ -82,7 +85,7 @@ export default defineComponent({
         { key: "name", order: "asc" },
       ],
 
-      selected: [],
+      selected: [] as VueDatabaseQueryData<ClothingType>,
       search: "",
       showUnavailableTypes: false,
 
@@ -92,7 +95,10 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("clothingTypes", { allTypes: "types", loading: "loading" }),
+    ...mapState(useClothingTypesStore, {
+      allTypes: "types",
+      loading: "loading",
+    }),
 
     types() {
       if (this.showUnavailableTypes) {
@@ -104,21 +110,21 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions("clothingTypes", ["bindType"]),
+    ...mapActions(useClothingTypesStore, ["selectType"]),
 
     addHandler() {
       this.showCreateDialog = true;
     },
 
-    editHandler(clothingTypeId) {
-      this.bindType(clothingTypeId);
+    editHandler(clothingTypeId: string) {
+      this.selectType(clothingTypeId);
       this.showEditDialog = true;
     },
 
-    storageHandler(item) {
+    storageHandler(clothingTypeId: string) {
       this.$router.push({
         name: "ClothesStorage",
-        params: { id: item.id },
+        params: { id: clothingTypeId },
       });
     },
   },

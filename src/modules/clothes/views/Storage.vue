@@ -89,17 +89,15 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from "vuex";
 import { VForm } from "vuetify/components";
 import { required } from "@/utils/rules";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { ClothingItem } from "../models/ClothingItem";
-import { ClothingType } from "../models/ClothingType";
 import { useRoute } from "vue-router";
 import { useClothingStorageStore } from "../stores/clothingStorage";
+import { useClothingTypesStore } from "../stores/clothingTypes";
 
 const addForm = ref<VForm>();
-const loadingType = ref(false);
 const adding = ref(false);
 const search = ref<string>();
 const addDialog = ref(false);
@@ -119,23 +117,23 @@ const headers = [
   },
 ];
 
-const store = useStore();
 const route = useRoute();
+const clothingTypesStore = useClothingTypesStore();
 const clothingStorageStore = useClothingStorageStore();
 
-const type = store.state.clothingTypes.type as ClothingType;
+const type = clothingTypesStore.selectedType;
 const items = clothingStorageStore.clothingItems;
 const id = route.params.id as string;
 
 const loading = computed(
-  () => loadingType.value || clothingStorageStore.loading
+  () => clothingTypesStore.selectedTypeLoading || clothingStorageStore.loading
 );
 
 function bindType(id: string) {
-  return store.dispatch("clothingTypes/bindType", id);
+  clothingTypesStore.selectType(id);
 }
 function unbindType() {
-  store.dispatch("clothingTypes/unbindType");
+  clothingTypesStore.selectType();
 }
 function bindStorage(id: string) {
   clothingStorageStore.selectClothingType(id);
@@ -228,11 +226,8 @@ function onEdit() {
 }
 
 function retrieveItem() {
-  loadingType.value = true;
   bindStorage(id);
-  bindType(id).finally(() => {
-    loadingType.value = false;
-  });
+  bindType(id);
 }
 
 onMounted(retrieveItem);

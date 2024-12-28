@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapState } from "vuex";
+import { mapActions as vuexMapActions, mapState as vuexMapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import OrderCard from "../components/orders/OrderCard.vue";
 import CreateDialog from "../components/orders/CreateDialog.vue";
@@ -61,10 +61,10 @@ import EditDialog from "../components/orders/EditDialog.vue";
 import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
 import { defineComponent } from "vue";
-/* eslint-disable no-unused-vars */
 import { Order } from "../models/Order";
 import { ClothingType } from "../models/ClothingType";
-/* eslint-enable */
+import { mapState } from "pinia";
+import { useClothingTypesStore } from "../stores/clothingTypes";
 
 function latestTimestampOfOrder(order: Order) {
   function dateToTimestamp(date: any) {
@@ -119,8 +119,8 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("orders", { allOrders: "orders", loading: "loading" }),
-    ...mapState("clothingTypes", ["types"]),
+    ...vuexMapState("orders", { allOrders: "orders", loading: "loading" }),
+    ...mapState(useClothingTypesStore, ["types"]),
 
     orders(): Order[] {
       return (this.allOrders as Order[])
@@ -159,7 +159,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions("orders", ["bindOrder", "unbindOrder"]),
+    ...vuexMapActions("orders", ["bindOrder", "unbindOrder"]),
 
     create() {
       this.showCreateDialog = true;

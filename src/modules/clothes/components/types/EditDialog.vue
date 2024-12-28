@@ -24,8 +24,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
-import { mapState } from "vuex";
+import { VForm } from "vuetify/components";
 import { ClothingType } from "../../models/ClothingType";
+import { mapState } from "pinia";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
 export default defineComponent({
   components: {
@@ -54,9 +56,9 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState("clothingTypes", {
-      clothingType: "type",
-      loading: "loadingType",
+    ...mapState(useClothingTypesStore, {
+      clothingType: "selectedType",
+      loading: "selectedTypeLoading",
     }),
   },
 
@@ -92,11 +94,13 @@ export default defineComponent({
     },
 
     async save() {
+      const item: ClothingType = { name: "", ...this.item };
+
       if (await this.validate()) {
         this.saving = true;
 
-        this.$store
-          .dispatch("clothingTypes/set", this.item)
+        useClothingTypesStore()
+          .set(item)
           .then(() => {
             this.$showMessage("Gespeichert");
             this.closeDialog();

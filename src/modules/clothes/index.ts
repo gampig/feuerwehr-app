@@ -12,16 +12,10 @@ export default class ClothesModule extends AbstractModule {
   }
 
   load() {
-    return Promise.all([
-      this.store.dispatch("clothingTypes/bindTypes"),
-      this.store.dispatch("orders/bindOrders"),
-    ]);
+    return Promise.all([this.store.dispatch("orders/bindOrders")]);
   }
 
   unload() {
-    return Promise.all([
-      this.store.dispatch("clothingTypes/unbind"),
-      this.store.dispatch("orders/unbind"),
-    ]);
+    return Promise.all([this.store.dispatch("orders/unbind")]);
   }
 }

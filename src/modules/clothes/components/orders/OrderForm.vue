@@ -99,12 +99,12 @@
 </template>
 
 <script>
-import { mapState as vuexMapState } from "vuex";
-import { mapState as piniaMapState } from "pinia";
+import { mapState } from "pinia";
 import moment from "moment";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { defineComponent } from "vue";
 import { required } from "@/utils/rules";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
 export default defineComponent({
   props: {
@@ -152,12 +152,12 @@ export default defineComponent({
   },
 
   computed: {
-    ...piniaMapState(usePeopleStore, {
+    ...mapState(usePeopleStore, {
       loadingPeople: "loading",
       people: "people",
     }),
 
-    ...vuexMapState("clothingTypes", {
+    ...mapState(useClothingTypesStore, {
       loadingTypes: "loading",
       types: "types",
     }),

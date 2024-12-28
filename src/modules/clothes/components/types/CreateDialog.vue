@@ -23,6 +23,7 @@ import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
 import { ClothingType } from "../../models/ClothingType";
 import { VForm } from "vuetify/components";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
 export default defineComponent({
   components: {
@@ -70,13 +71,13 @@ export default defineComponent({
     },
 
     async save() {
-      const item = { ...this.item };
+      const item: ClothingType = { name: "", ...this.item };
 
       if (await this.validate()) {
         this.loading = true;
 
-        this.$store
-          .dispatch("clothingTypes/create", item)
+        useClothingTypesStore()
+          .create(item)
           .then(() => {
             this.$showMessage("Kleidungsstück wurde erstellt.");
           })
