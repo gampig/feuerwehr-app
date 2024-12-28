@@ -9,9 +9,7 @@ import notifier from "./plugins/notifier";
 import unhandledErrorHandler from "./utils/unhandledErrorHandler";
 import { useAuthStore } from "./stores/auth";
 
-import store from "./store";
 import router from "./router";
-import modules from "./modules";
 
 // Globally register all `Base`-prefixed components
 import "./components/globals";
@@ -24,7 +22,6 @@ const app = createApp(App);
 
 app.use(router);
 app.use(pinia);
-app.use(store);
 app.use(notifier);
 app.use(vuetify);
 
@@ -40,5 +37,3 @@ router
   .catch((e) => console.error(e));
 
 useAuthStore().init();
-
-modules.install(store);

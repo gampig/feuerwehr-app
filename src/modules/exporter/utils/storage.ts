@@ -1,4 +1,3 @@
-import store from "@/store";
 import { MannschaftenMap } from "@/modules/callout/models/Callout";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { get, getDatabase, ref } from "firebase/database";

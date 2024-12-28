@@ -1,14 +1,10 @@
 import { AllRoles } from "@/models/User";
 import { useAuthStore } from "@/stores/auth";
-import { Module, Store } from "vuex";
 
 export default abstract class AbstractModule {
   protected authStore = useAuthStore();
-  protected store: Store<any>;
 
-  constructor(store: Store<any>) {
-    this.store = store;
-
+  constructor() {
     this.install();
   }
 
@@ -33,12 +29,6 @@ export default abstract class AbstractModule {
   protected abstract load(): any;
 
   protected abstract unload(): any;
-
-  protected installStore(modules: { [index: string]: Module<any, any> }): void {
-    for (const module in modules) {
-      this.store.registerModule(module, modules[module]);
-    }
-  }
 
   protected isLoggedIn(): boolean {
     return this.authStore.loggedIn ?? false;
