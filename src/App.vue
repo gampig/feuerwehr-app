@@ -23,29 +23,25 @@ const databaseSchemaStore = useDatabaseSchemaStore();
 
 const loadingAuth = computed(() => authStore.loading);
 const loggedIn = computed(() => authStore.loggedIn);
-const loadingDatabaseSchemaVersion = computed(
-  () => databaseSchemaStore.loading
-);
 
 const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null);
 const updateFound = ref(false);
 const updateDownloaded = ref(false);
-const updateIsRequired = computed(() => databaseSchemaStore.updateIsRequired);
 
 const initializing = ref(true);
 const loading = computed(
   () =>
     initializing.value ||
     loadingAuth.value ||
-    loadingDatabaseSchemaVersion.value ||
-    updateIsRequired.value
+    databaseSchemaStore.loading ||
+    databaseSchemaStore.updateIsRequired
 );
 const loadingScreenText = computed(() => {
   if (loadingAuth.value) {
     return "Anmelden...";
-  } else if (loadingDatabaseSchemaVersion.value) {
+  } else if (databaseSchemaStore.loading) {
     return "Lade Daten...";
-  } else if (updateIsRequired.value) {
+  } else if (databaseSchemaStore.updateIsRequired) {
     if (updateFound.value) {
       return "Lade Update herunter...";
     } else if (updateDownloaded.value) {
@@ -61,8 +57,8 @@ const loadingScreenText = computed(() => {
 function checkAuthState() {
   if (
     loggedIn.value === true &&
-    !loadingDatabaseSchemaVersion.value &&
-    !updateIsRequired.value
+    !databaseSchemaStore.loading &&
+    !databaseSchemaStore.updateIsRequired
   ) {
     initializing.value = false;
     onLogin();
@@ -96,12 +92,8 @@ function toLoginPage() {
   }
 }
 
-function fetchDatabaseSchemaVersion() {
-  databaseSchemaStore.bind();
-}
-
 function checkDatabaseSchemaVersion() {
-  if (updateIsRequired.value) {
+  if (databaseSchemaStore.updateIsRequired) {
     if (updateDownloaded.value) {
       if (serviceWorkerRegistration.value?.waiting) {
         alert(
@@ -141,11 +133,10 @@ document.addEventListener(
 );
 
 watch(
-  [loggedIn, loadingDatabaseSchemaVersion, updateIsRequired],
+  [loggedIn, databaseSchemaStore.loading, databaseSchemaStore.updateIsRequired],
   checkAuthState
 );
 watchEffect(checkDatabaseSchemaVersion);
 
-fetchDatabaseSchemaVersion();
 checkAuthState();
 </script>

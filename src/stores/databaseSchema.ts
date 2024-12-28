@@ -1,41 +1,28 @@
 import { defineStore } from "pinia";
-import firebase from "firebase/compat/app";
+import { firebaseApp } from "@/firebase";
+import { getDatabase, ref as dbRef } from "firebase/database";
+import { useDatabaseObject } from "vuefire";
+import { computed } from "vue";
 
-interface State {
-  loading: Boolean;
-  localSchemaVersion?: Number | null;
-  remoteSchemaVersion?: Number | null;
-}
+export const useDatabaseSchemaStore = defineStore("databaseSchema", () => {
+  const db = getDatabase(firebaseApp);
 
-export const useDatabaseSchemaStore = defineStore("databaseSchema", {
-  state: (): State => ({
-    loading: true,
-    localSchemaVersion: import.meta.env.VITE_SUPPORTED_DATABASE_SCHEMA_VERSION,
-    remoteSchemaVersion: undefined,
-  }),
+  const localSchemaVersion = import.meta.env
+    .VITE_SUPPORTED_DATABASE_SCHEMA_VERSION;
+  const remoteSchemaVersionSource = dbRef(db, "schemaVersion");
+  const remoteSchemaVersion = useDatabaseObject<number>(
+    remoteSchemaVersionSource
+  );
+  const loading = remoteSchemaVersion.pending;
 
-  getters: {
-    updateIsRequired: (state) =>
-      state.localSchemaVersion !== undefined &&
-      state.localSchemaVersion !== null &&
-      state.remoteSchemaVersion !== undefined &&
-      state.remoteSchemaVersion !== null &&
-      state.localSchemaVersion < state.remoteSchemaVersion,
-  },
+  const updateIsRequired = computed(
+    () =>
+      localSchemaVersion !== undefined &&
+      localSchemaVersion !== null &&
+      remoteSchemaVersion.value !== undefined &&
+      remoteSchemaVersion.value !== null &&
+      localSchemaVersion < remoteSchemaVersion.value
+  );
 
-  actions: {
-    bind() {
-      firebase
-        .database()
-        .ref("schemaVersion")
-        .once("value")
-        .then((snapshot) => {
-          const version = snapshot.val();
-          if (typeof version === "number") {
-            this.remoteSchemaVersion = version;
-          }
-        })
-        .finally(() => (this.loading = false));
-    },
-  },
+  return { loading, updateIsRequired };
 });
