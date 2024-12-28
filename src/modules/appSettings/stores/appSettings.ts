@@ -1,45 +1,33 @@
-import firebase from "firebase/compat/app";
-import handleError from "@/utils/store/handleError";
 import { FeuerwehrGeraeteSettings } from "../models/AppSettings";
 import { defineStore } from "pinia";
+import { useDatabaseObject } from "vuefire";
+import { shallowRef } from "vue";
+import { firebaseApp } from "@/firebase";
+import {
+  child,
+  DatabaseReference,
+  ref as dbRef,
+  getDatabase,
+} from "firebase/database";
 
-interface State {
-  loading: boolean;
-  feuerwehrGeraete?: FeuerwehrGeraeteSettings;
-}
+export const useAppSettingsStore = defineStore("appSettings", () => {
+  const db = getDatabase(firebaseApp);
+  const appSettingsRef = dbRef(db, "appSettings");
 
-export const useAppSettingsStore = defineStore("appSettings", {
-  state: (): State => ({
-    loading: false,
-  }),
+  const feuerwehrGeraeteRef = child(appSettingsRef, "feuerwehrGeraete");
+  const feuerwehrGeraeteSource = shallowRef<DatabaseReference>();
+  const feuerwehrGeraete = useDatabaseObject<FeuerwehrGeraeteSettings>(
+    feuerwehrGeraeteSource
+  );
+  const loading = feuerwehrGeraete.pending;
 
-  actions: {
-    bindFeuerwehrGeraeteSettings() {
-      this.setLoading(true);
-      return firebase
-        .database()
-        .ref("appSettings")
-        .child("feuerwehrGeraete")
-        .get()
-        .then((snapshot) => {
-          this.setFeuerwehrGeraeteSettings(snapshot.val());
-        })
-        .catch((error) => handleError(error))
-        .finally(() => {
-          this.setLoading(false);
-        });
-    },
-    unbind() {
-      this.setFeuerwehrGeraeteSettings(undefined);
-    },
+  function bind() {
+    feuerwehrGeraeteSource.value = feuerwehrGeraeteRef;
+  }
 
-    setLoading(loading: boolean) {
-      this.loading = loading;
-    },
-    setFeuerwehrGeraeteSettings(
-      feuerwehrGeraeteSettings?: FeuerwehrGeraeteSettings
-    ) {
-      this.feuerwehrGeraete = feuerwehrGeraeteSettings;
-    },
-  },
+  function unbind() {
+    feuerwehrGeraeteSource.value = undefined;
+  }
+
+  return { feuerwehrGeraete, loading, bind, unbind };
 });

@@ -9,7 +9,7 @@ export default class AppSettingsModule extends AbstractModule {
 
   load() {
     if (this.hasAnyRole(Acl.feuerwehrGeraete)) {
-      return this.appSettingsStore.bindFeuerwehrGeraeteSettings();
+      return this.appSettingsStore.bind();
     }
   }
 
