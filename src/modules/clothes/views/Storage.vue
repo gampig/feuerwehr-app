@@ -92,13 +92,14 @@
 import { useStore } from "vuex";
 import { VForm } from "vuetify/components";
 import { required } from "@/utils/rules";
-import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { ClothingItem } from "../models/ClothingItem";
 import { ClothingType } from "../models/ClothingType";
 import { useRoute } from "vue-router";
+import { useClothingStorageStore } from "../stores/clothingStorage";
 
 const addForm = ref<VForm>();
-const loading = ref(false);
+const loadingType = ref(false);
 const adding = ref(false);
 const search = ref<string>();
 const addDialog = ref(false);
@@ -120,25 +121,30 @@ const headers = [
 
 const store = useStore();
 const route = useRoute();
+const clothingStorageStore = useClothingStorageStore();
 
 const type = store.state.clothingTypes.type as ClothingType;
-const items = store.state.clothingStorage.clothingItems as ClothingItem[];
+const items = clothingStorageStore.clothingItems;
 const id = route.params.id as string;
 
+const loading = computed(
+  () => loadingType.value || clothingStorageStore.loading
+);
+
 function bindType(id: string) {
-  store.dispatch("clothingTypes/bindType", id);
+  return store.dispatch("clothingTypes/bindType", id);
 }
 function unbindType() {
   store.dispatch("clothingTypes/unbindType");
 }
 function bindStorage(id: string) {
-  store.dispatch("clothingStorage/bind", id);
+  clothingStorageStore.bind(id);
 }
 function unbindStorage() {
-  store.dispatch("clothingStorage/unbind");
+  clothingStorageStore.unbind();
 }
 function setCount(item: ClothingItem) {
-  return store.dispatch("clothingStorage/set", item);
+  return clothingStorageStore.set(item);
 }
 
 function decrementCount() {
@@ -222,9 +228,10 @@ function onEdit() {
 }
 
 function retrieveItem() {
-  loading.value = true;
-  Promise.all([bindType(id), bindStorage(id)]).finally(() => {
-    loading.value = false;
+  loadingType.value = true;
+  bindStorage(id);
+  bindType(id).finally(() => {
+    loadingType.value = false;
   });
 }
 
