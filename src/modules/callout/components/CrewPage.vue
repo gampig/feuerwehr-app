@@ -22,9 +22,6 @@
           <v-list-item v-if="callout" @click="showCalloutDetails = true">
             <v-list-item-title>Einsatz anzeigen</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="reload">
-            <v-list-item-title>Daten neu laden</v-list-item-title>
-          </v-list-item>
         </v-list>
       </v-menu>
       <v-btn
@@ -48,7 +45,6 @@
 </template>
 
 <script>
-import modules from "@/modules";
 import CalloutDetailsDialog from "./CalloutDetailsDialog.vue";
 import { mapState } from "pinia";
 import { useCalloutStore } from "../stores/callout";
@@ -88,7 +84,6 @@ export default {
   },
 
   methods: {
-    reload: () => modules.onLogin(),
     goBack() {
       this.$router.back();
     },
