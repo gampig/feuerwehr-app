@@ -12,7 +12,9 @@
           Passwort vergessen
         </v-btn>
         <v-spacer />
-        <v-btn color="primary" @click="handleLogin"> Anmelden </v-btn>
+        <v-btn color="primary" :loading="loading" @click="handleLogin">
+          Anmelden
+        </v-btn>
       </LoginCard>
     </v-form>
   </BasePageCentered>
@@ -43,6 +45,7 @@ export default defineComponent({
 
   data() {
     return {
+      loading: false,
       email: "",
       password: "",
       persist: false,
@@ -81,11 +84,15 @@ export default defineComponent({
             ? browserLocalPersistence
             : browserSessionPersistence;
 
+        this.loading = true;
         setPersistence(auth, persist)
           .then(() => {
             return this.login({ email: this.email, password: this.password });
           })
-          .catch(handleError);
+          .catch(handleError)
+          .finally(() => {
+            this.loading = false;
+          });
       }
     },
   },
