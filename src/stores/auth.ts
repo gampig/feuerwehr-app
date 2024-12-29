@@ -75,11 +75,10 @@ export const useAuthStore = defineStore("auth", () => {
       const userCopy = cloneDeep(newUser);
       user.value = userCopy;
     } else {
+      user.value = null;
       const deviceCred = deviceService.get();
       if (deviceCred) {
         login(deviceCred);
-      } else {
-        user.value = null;
       }
     }
   });
