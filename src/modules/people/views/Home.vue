@@ -1,8 +1,6 @@
 <template>
   <BasePage page-title="Personen" navdrawer>
     <template #actions>
-      <v-btn icon @click="reloadPeople"><v-icon>mdi-reload</v-icon></v-btn>
-
       <v-btn icon @click="create"><v-icon>mdi-plus</v-icon></v-btn>
     </template>
 
@@ -103,20 +101,6 @@ export default defineComponent({
     ...mapState(usePeopleStore, ["people", "loading"]),
   },
 
-  watch: {
-    showCreateDialog(show) {
-      if (!show) {
-        this.reloadPeople();
-      }
-    },
-
-    showEditDialog(show) {
-      if (!show) {
-        this.reloadPeople();
-      }
-    },
-  },
-
   methods: {
     create() {
       this.showCreateDialog = true;
@@ -125,10 +109,6 @@ export default defineComponent({
     edit(id: string) {
       this.personToBeEdited = id;
       this.showEditDialog = true;
-    },
-
-    reloadPeople() {
-      usePeopleStore().bind();
     },
   },
 });
