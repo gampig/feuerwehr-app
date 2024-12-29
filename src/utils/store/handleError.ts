@@ -1,6 +1,7 @@
 import { showError } from "@/utils/notifications";
 import de from "@/firebase/locales/de";
 import ErrorReportBuilder from "@/services/errorReport";
+import { FirebaseError } from "firebase/app";
 
 function translateFirebaseError(code: string): string | null {
   const translation = code
@@ -20,7 +21,7 @@ export default function (error: any) {
   if (error instanceof Error) {
     let translatedErrorMessage = null;
 
-    const firebaseError = error as Error | firebase.default.FirebaseError;
+    const firebaseError = error as Error | FirebaseError;
     if ("code" in firebaseError) {
       translatedErrorMessage = translateFirebaseError(firebaseError.code);
     }
