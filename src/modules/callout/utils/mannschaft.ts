@@ -29,10 +29,10 @@ export function getGroupOfPerson(
   } else if (mannschaft.vehicles) {
     for (const fahrzeugId in mannschaft.vehicles) {
       if (mannschaft.vehicles[fahrzeugId][personId]) {
-        return (
-          fahrzeuge.find((fahrzeug) => fahrzeug.id == fahrzeugId)?.name ||
-          fahrzeugId
+        const fahrzeugMatch = fahrzeuge.find(
+          (fahrzeug) => fahrzeug.id == fahrzeugId
         );
+        return fahrzeugMatch?.name || fahrzeugId;
       }
     }
   }
