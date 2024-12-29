@@ -32,7 +32,7 @@ export const useCalloutsStore = defineStore("callouts", () => {
   const calloutsReversed = computed(() => [...callouts.value].reverse());
   const calloutsOfToday = computed(() => {
     const aDayAgo = moment().subtract(1, "day").unix();
-    return callouts.value.filter((callout) => callout.alarmTime <= aDayAgo);
+    return callouts.value.filter((callout) => callout.alarmTime > aDayAgo);
   });
   const calloutsBeforeToday = computed(() => {
     const aDayAgo = moment().subtract(1, "day").unix();
