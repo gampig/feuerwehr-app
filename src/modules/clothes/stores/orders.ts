@@ -16,6 +16,7 @@ import {
 } from "firebase/database";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 
 export const useOrdersStore = defineStore("orders", () => {
   const db = getDatabase(firebaseApp);
@@ -45,21 +46,24 @@ export const useOrdersStore = defineStore("orders", () => {
   }
 
   function create(order: Order) {
-    return dbPush(ordersRef, order);
+    return dbPush(ordersRef, deleteUndefinedProperties(order));
   }
 
   function update(order: Order) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
-    return dbUpdate(selectedOrderSource.value, order);
+    return dbUpdate(
+      selectedOrderSource.value,
+      deleteUndefinedProperties(order)
+    );
   }
 
   function set(order: Order) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
-    return dbSet(selectedOrderSource.value, order);
+    return dbSet(selectedOrderSource.value, deleteUndefinedProperties(order));
   }
 
   function remove(orderId: string) {

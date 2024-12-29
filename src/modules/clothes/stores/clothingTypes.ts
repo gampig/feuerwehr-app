@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import handleError from "@/utils/store/handleError";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 
 export const useClothingTypesStore = defineStore("clothingTypes", () => {
   const db = getDatabase(firebaseApp);
@@ -46,21 +47,27 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
   }
 
   function create(clothingType: ClothingType) {
-    return dbPush(typesRef, clothingType);
+    return dbPush(typesRef, deleteUndefinedProperties(clothingType));
   }
 
   function update(clothingType: ClothingType) {
     if (!selectedTypeSource.value) {
       return Promise.reject("Kein Kleidungstyp ausgewählt");
     }
-    return dbUpdate(selectedTypeSource.value, clothingType);
+    return dbUpdate(
+      selectedTypeSource.value,
+      deleteUndefinedProperties(clothingType)
+    );
   }
 
   function set(clothingType: ClothingType) {
     if (!selectedTypeSource.value) {
       return Promise.reject("Kein Kleidungstyp ausgewählt");
     }
-    return dbSet(selectedTypeSource.value, clothingType);
+    return dbSet(
+      selectedTypeSource.value,
+      deleteUndefinedProperties(clothingType)
+    );
   }
 
   function remove(clothingTypeId: string) {

@@ -27,6 +27,7 @@ import handleError from "@/utils/store/handleError";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useDatabaseObject } from "vuefire";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 
 export const useAuthStore = defineStore("auth", () => {
   const auth = getAuth(firebaseApp);
@@ -129,7 +130,7 @@ export const useAuthStore = defineStore("auth", () => {
       .then((currentUser) =>
         update(
           child(child(dbRef(db, "userClients"), currentUser.uid), deviceId),
-          payload
+          deleteUndefinedProperties(payload)
         )
       )
       .catch((error) => handleError(error));
