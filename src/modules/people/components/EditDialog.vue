@@ -25,6 +25,7 @@ import SelectStatus from "./SelectStatus.vue";
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
 import { VForm } from "vuetify/components";
+import { mapState } from "pinia";
 
 export default defineComponent({
   components: { SelectStatus },
@@ -48,11 +49,11 @@ export default defineComponent({
   },
 
   computed: {
+    ...mapState(usePeopleStore, ["people"]),
+
     person(): null | Person | undefined {
       if (!this.personId) return null;
-      return usePeopleStore().people.find(
-        (person) => person.id == this.personId
-      );
+      return this.people.find((person) => person.id == this.personId);
     },
   },
 

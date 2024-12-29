@@ -63,12 +63,10 @@ export default defineComponent({
 
   computed: {
     ...mapState(useCalloutStore, ["callout"]),
+    ...mapState(useAuthStore, ["loggedIn"]),
 
     canEditAllCallouts() {
-      const authStore = useAuthStore();
-      return (
-        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeBearbeiten)
-      );
+      return this.loggedIn && this.hasAnyRole(Acl.alleEinsaetzeBearbeiten);
     },
   },
 
@@ -86,6 +84,7 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useCalloutStore, ["updateCallout"]),
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     setItem() {
       this.item = Object.assign({}, this.emptyItem, this.callout);

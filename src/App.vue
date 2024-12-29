@@ -15,15 +15,16 @@ import { useDatabaseSchemaStore } from "./stores/databaseSchema";
 import { computed, ref, watch, watchEffect } from "vue";
 import handleError from "./utils/store/handleError";
 import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const databaseSchemaStore = useDatabaseSchemaStore();
 
-const loggedIn = computed(() => authStore.loggedIn);
-const loadingDatabaseSchema = computed(() => databaseSchemaStore.loading);
-const updateIsRequired = computed(() => databaseSchemaStore.updateIsRequired);
+const { loggedIn } = storeToRefs(authStore);
+const { loading: loadingDatabaseSchema, updateIsRequired } =
+  storeToRefs(databaseSchemaStore);
 
 const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null);
 const updateFound = ref(false);

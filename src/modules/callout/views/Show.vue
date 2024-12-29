@@ -43,14 +43,14 @@ export default defineComponent({
 
   computed: {
     ...mapState(useCalloutStore, ["callout", "loading"]),
+    ...mapState(useAuthStore, ["loggedIn"]),
 
     id() {
       return this.$route.params.id as string;
     },
 
     userCanDeleteCallout() {
-      const authStore = useAuthStore();
-      return authStore.loggedIn && authStore.hasAnyRole(Acl.einsatzLoeschen);
+      return this.loggedIn && this.hasAnyRole(Acl.einsatzLoeschen);
     },
   },
 
@@ -66,6 +66,7 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useCalloutStore, ["selectCallout", "deleteSelectedCallout"]),
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     goBack() {
       this.$router.back();

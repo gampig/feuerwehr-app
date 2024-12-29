@@ -61,11 +61,16 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState(useUsersStore, ["loading", "initialized"]),
+    ...mapState(useUsersStore, {
+      loading: "loading",
+      initialized: "initialized",
+      storeUsers: "users",
+    }),
+
     ...mapState(useAuthStore, ["loggedIn"]),
 
     users(): User[] {
-      return useUsersStore().users.map((user) => ({
+      return this.storeUsers.map((user) => ({
         ...user,
         roles: filterAndMapRoles(user.roles),
       }));

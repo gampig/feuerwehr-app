@@ -96,6 +96,7 @@ import { ClothingItem } from "../models/ClothingItem";
 import { useRoute } from "vue-router";
 import { useClothingStorageStore } from "../stores/clothingStorage";
 import { useClothingTypesStore } from "../stores/clothingTypes";
+import { storeToRefs } from "pinia";
 
 const addForm = ref<VForm>();
 const adding = ref(false);
@@ -121,8 +122,8 @@ const route = useRoute();
 const clothingTypesStore = useClothingTypesStore();
 const clothingStorageStore = useClothingStorageStore();
 
-const type = clothingTypesStore.selectedType;
-const items = clothingStorageStore.clothingItems;
+const { selectedType: type } = storeToRefs(clothingTypesStore);
+const { clothingItems: items } = storeToRefs(clothingStorageStore);
 const id = route.params.id as string;
 
 const loading = computed(
@@ -181,7 +182,7 @@ async function onAdd() {
   if ((await addForm.value.validate()).valid && newSize.value) {
     adding.value = true;
 
-    const existingItem = items.find(
+    const existingItem = items.value.find(
       (clothingItem) => clothingItem.size === newSize.value
     );
     const count = existingItem

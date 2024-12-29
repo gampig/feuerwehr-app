@@ -60,14 +60,13 @@ export default {
   },
 
   computed: {
-    ...mapState(useCalloutStore, ["vehicle"]),
+    ...mapState(useCalloutStore, { vehicle: "vehicle", storeCrew: "crew" }),
 
     crew() {
-      const calloutStore = useCalloutStore();
       const crew =
         (this.vehicle &&
-          calloutStore.crew?.vehicles &&
-          calloutStore.crew.vehicles[this.vehicle.id]) ||
+          this.storeCrew?.vehicles &&
+          this.storeCrew.vehicles[this.vehicle.id]) ||
         {};
       const crewEntries = Object.entries(crew);
 

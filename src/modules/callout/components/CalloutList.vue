@@ -62,7 +62,7 @@ import { Acl } from "@/acl";
 import CalloutListItem from "./CalloutListItem.vue";
 import CreateDialog from "./CreateDialog.vue";
 import { useAuthStore } from "@/stores/auth";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useCalloutsStore } from "../stores/callouts";
 
 export default {
@@ -83,15 +83,16 @@ export default {
       "calloutsOfToday",
     ]),
 
+    ...mapState(useAuthStore, ["loggedIn"]),
+
     canViewAllCallouts() {
-      const authStore = useAuthStore();
-      return (
-        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeAnzeigen)
-      );
+      return this.loggedIn && this.hasAnyRole(Acl.alleEinsaetzeAnzeigen);
     },
   },
 
   methods: {
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
+
     onUserConfirm() {
       this.showUserConfirm = false;
       this.showCreateDialog = true;
