@@ -91,12 +91,24 @@
 <script setup lang="ts">
 import { VForm } from "vuetify/components";
 import { required } from "@/utils/rules";
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import { ClothingItem } from "../models/ClothingItem";
+import {
+  computed,
+  ComputedRef,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from "vue";
 import { useRoute } from "vue-router";
 import { useClothingStorageStore } from "../stores/clothingStorage";
 import { useClothingTypesStore } from "../stores/clothingTypes";
 import { storeToRefs } from "pinia";
+
+interface ListItem {
+  size: string;
+  count: number;
+}
 
 const addForm = ref<VForm>();
 const adding = ref(false);
@@ -105,7 +117,7 @@ const addDialog = ref(false);
 const editDialog = ref(false);
 const newSize = ref<string>();
 const newCount = ref<string>("1");
-const editItem = ref<ClothingItem>();
+const editSize = ref<string>();
 const editCount = ref<string>();
 
 const headers = [
@@ -123,11 +135,20 @@ const clothingTypesStore = useClothingTypesStore();
 const clothingStorageStore = useClothingStorageStore();
 
 const { selectedType: type } = storeToRefs(clothingTypesStore);
-const { clothingItems: items } = storeToRefs(clothingStorageStore);
+const { clothingItems: storeItems } = storeToRefs(clothingStorageStore);
 const id = route.params.id as string;
 
 const loading = computed(
   () => clothingTypesStore.selectedTypeLoading || clothingStorageStore.loading
+);
+
+const items: ComputedRef<ListItem[]> = computed(() =>
+  storeItems.value
+    ? Object.entries(storeItems.value).map(([size, count]) => ({
+        size: size,
+        count: count,
+      }))
+    : []
 );
 
 function bindType(id: string) {
@@ -142,8 +163,9 @@ function bindStorage(id: string) {
 function unbindStorage() {
   clothingStorageStore.selectClothingType();
 }
-function setCount(item: ClothingItem) {
-  return clothingStorageStore.set(item);
+function setCount(size: string, count: number) {
+  const countOrNull = count > 0 ? count : null;
+  return clothingStorageStore.set(size, countOrNull);
 }
 
 function decrementCount() {
@@ -182,14 +204,12 @@ async function onAdd() {
   if ((await addForm.value.validate()).valid && newSize.value) {
     adding.value = true;
 
-    const existingItem = items.value.find(
-      (clothingItem) => clothingItem.size === newSize.value
-    );
-    const count = existingItem
-      ? existingItem.count + Number(newCount.value)
+    const existingCount = storeItems.value && storeItems.value[newSize.value];
+    const count = existingCount
+      ? existingCount + Number(newCount.value)
       : Number(newCount.value);
 
-    setCount({ size: newSize.value, count: count }).finally(() => {
+    setCount(newSize.value, count).finally(() => {
       addDialog.value = false;
       adding.value = false;
       newSize.value = undefined;
@@ -198,8 +218,8 @@ async function onAdd() {
   }
 }
 
-function showEditDialog(item: ClothingItem) {
-  editItem.value = item;
+function showEditDialog(item: ListItem) {
+  editSize.value = item.size;
   editCount.value = item.count.toString();
   editDialog.value = true;
 }
@@ -207,22 +227,18 @@ function showEditDialog(item: ClothingItem) {
 function closeEditDialog() {
   editDialog.value = false;
   nextTick(() => {
-    editItem.value = undefined;
+    editSize.value = undefined;
     editCount.value = undefined;
   });
 }
 
 function onEdit() {
-  if (!editItem.value) {
+  if (!editSize.value) {
     return;
   }
 
-  const count = editCount.value === undefined ? 0 : Number(editCount.value);
-  const item: ClothingItem = {
-    ...editItem.value,
-    count: count,
-  };
-  setCount(item);
+  const count = editCount.value == undefined ? 0 : Number(editCount.value);
+  setCount(editSize.value, count);
   closeEditDialog();
 }
 
