@@ -20,7 +20,6 @@
   "dependencies": {
     "@fontsource/roboto": "^5.1.0",
     "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/compat": "^3.5.13",
     "firebase": "^11.1.0",
     "git-describe": "^4.1.0",
     "lodash": "^4.17.21",
