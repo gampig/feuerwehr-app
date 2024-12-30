@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Snackbar />
-
     <NavigationDrawer v-if="navdrawer" v-model="drawer" />
 
     <v-app-bar>
@@ -29,12 +27,10 @@
 </template>
 
 <script>
-import Snackbar from "./Snackbar.vue";
 import NavigationDrawer from "../navigation/NavigationDrawer.vue";
 
 export default {
   components: {
-    Snackbar,
     NavigationDrawer,
   },
 

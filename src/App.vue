@@ -1,5 +1,6 @@
 <template>
   <v-app id="feuerwehr-app">
+    <Snackbar></Snackbar>
     <Loading :visible="loading" :text="loadingScreenText" />
     <router-view v-if="!initializing" />
   </v-app>
@@ -16,6 +17,7 @@ import { computed, ref, watch, watchEffect } from "vue";
 import handleError from "./utils/store/handleError";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import Snackbar from "./components/bars/Snackbar.vue";
 
 const router = useRouter();
 const route = useRoute();
