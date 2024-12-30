@@ -33,6 +33,10 @@ export const rolesConfig: readonly {
     id: "ROLE_CALLOUT_EDITOR",
     name: "Einsatz-Bearbeiter",
   },
+  {
+    id: "ROLE_PEOPLE_EDITOR",
+    name: "Personen-Bearbeiter",
+  }
 ] as const;
 
 export const roleConfigById = Object.fromEntries(

@@ -31,7 +31,7 @@ export abstract class Acl {
 
   static readonly kleiderverwaltung: AllRoles[] = ["ROLE_MAINTAINER_CLOTHES"];
 
-  static readonly personenBearbeiten: AllRoles[] = ["ROLE_GROUPLEADER"];
+  static readonly personenBearbeiten: AllRoles[] = ["ROLE_PEOPLE_EDITOR"];
 
   static readonly datenexport: AllRoles[] = ["ROLE_GROUPLEADER"];
 
