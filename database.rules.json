@@ -104,7 +104,7 @@
     "people": {
       // Rollen: CALLOUT_EDITOR, MAINTAINER_CLOTHES
       ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val())",
-      ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val()",
+      ".write": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_PEOPLE_EDITOR').val()",
       ".indexOn": ["lastName"],
 
       "$person_id": {
