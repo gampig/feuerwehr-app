@@ -17,6 +17,20 @@
 
       <v-spacer />
 
+      <v-tooltip
+        v-if="!isConnectedDebounced"
+        text="Keine Verbindung zum Server möglich"
+      >
+        <template #activator="{ props }">
+          <v-icon
+            v-bind="props"
+            icon="mdi-signal-off"
+            color="error"
+            style="margin-inline-end: 4px; padding: 24px"
+          ></v-icon>
+        </template>
+      </v-tooltip>
+
       <slot />
 
       <template v-if="extended" #extension>
@@ -28,6 +42,8 @@
 
 <script>
 import NavigationDrawer from "../navigation/NavigationDrawer.vue";
+import { mapState } from "pinia";
+import { useNetworkStore } from "@/stores/network";
 
 export default {
   components: {
@@ -69,6 +85,10 @@ export default {
   data: () => ({
     drawer: null,
   }),
+
+  computed: {
+    ...mapState(useNetworkStore, ["isConnectedDebounced"]),
+  },
 
   methods: {
     goBack() {

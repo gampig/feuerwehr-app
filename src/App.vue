@@ -18,11 +18,13 @@ import handleError from "./utils/store/handleError";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import Snackbar from "./components/bars/Snackbar.vue";
+import { useNetworkStore } from "./stores/network";
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const databaseSchemaStore = useDatabaseSchemaStore();
+useNetworkStore();
 
 const { loggedIn } = storeToRefs(authStore);
 const { loading: loadingDatabaseSchema, updateIsRequired } =
