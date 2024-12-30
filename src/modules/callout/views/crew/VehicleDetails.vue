@@ -30,6 +30,14 @@
           />
 
           <v-text-field
+            label="Einsatzbeginn"
+            append-inner-icon="mdi-alarm-light-outline"
+            :model-value="alarmTimeFormatted"
+            readonly
+            disabled
+          />
+
+          <v-text-field
             label="Einsatzende"
             append-inner-icon="mdi-calendar-check-outline"
             :model-value="endTimeFormatted"
@@ -114,6 +122,10 @@ export default defineComponent({
       return this.callout?.alarmTime
         ? moment.unix(this.callout.alarmTime).format("YYYY-MM-DD")
         : "";
+    },
+
+    alarmTimeFormatted() {
+      return this.callout ? formatDateTime(this.callout.alarmTime) : "";
     },
 
     endTimeFormatted() {
