@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useDatabaseObject } from "vuefire";
 import { computed, ref } from "vue";
 import {
   child,
@@ -12,6 +11,7 @@ import handleError from "@/utils/store/handleError";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { ClothingStorage } from "../models/ClothingStorage";
+import { useDatabaseObject } from "@/utils/store/vuefire";
 
 export const useClothingStorageStore = defineStore("clothingStorage", () => {
   const selectedClothingTypeId = ref<string>();

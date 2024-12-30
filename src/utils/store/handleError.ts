@@ -2,6 +2,7 @@ import { showError } from "@/utils/notifications";
 import de from "@/firebase/locales/de";
 import ErrorReportBuilder from "@/services/errorReport";
 import { FirebaseError } from "firebase/app";
+import { Ref, watch } from "vue";
 
 function translateFirebaseError(code: string): string | null {
   const translation = code
@@ -17,7 +18,7 @@ function translateFirebaseError(code: string): string | null {
   return translation;
 }
 
-export default function (error: any) {
+function handleError(error: any) {
   if (error instanceof Error) {
     let translatedErrorMessage = null;
 
@@ -30,4 +31,11 @@ export default function (error: any) {
 
     new ErrorReportBuilder(false).addException(error).getReport().send();
   }
+}
+
+export default handleError;
+
+export function useErrorHandler(error: Ref<Error | undefined>) {
+  const errorWatchHandle = watch(error, handleError);
+  return { errorWatchHandle };
 }

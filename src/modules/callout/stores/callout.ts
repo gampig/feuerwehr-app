@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useDatabaseObject } from "vuefire";
 import { Callout, CalloutRole, CalloutVehicle, Crew } from "../models/Callout";
 import { computed, ref } from "vue";
 import {
@@ -16,6 +15,7 @@ import handleError from "@/utils/store/handleError";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { useDatabaseObject } from "@/utils/store/vuefire";
 
 export const useCalloutStore = defineStore("callout", () => {
   const selectedCalloutId = ref<string>();

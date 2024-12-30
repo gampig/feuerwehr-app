@@ -2,10 +2,11 @@ import { defineStore } from "pinia";
 import { Vehicle } from "../models/Vehicle";
 import { firebaseApp } from "@/firebase";
 import { getDatabase, ref as dbRef } from "firebase/database";
-import { useDatabaseList, VueDatabaseDocumentData } from "vuefire";
+import { VueDatabaseDocumentData } from "vuefire";
 import { computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { useDatabaseList } from "@/utils/store/vuefire";
 
 export const useVehiclesStore = defineStore("vehicles", () => {
   const db = getDatabase(firebaseApp);

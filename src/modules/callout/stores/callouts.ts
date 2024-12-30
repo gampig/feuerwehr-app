@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
-import { useDatabaseList, VueDatabaseDocumentData } from "vuefire";
+import { VueDatabaseDocumentData } from "vuefire";
 import {
   getDatabase,
   ref as dbRef,
@@ -16,6 +16,7 @@ import { formatDateTime } from "@/utils/dates";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { useDatabaseList } from "@/utils/store/vuefire";
 
 export const useCalloutsStore = defineStore("callouts", () => {
   const db = getDatabase(firebaseApp);

@@ -26,8 +26,8 @@ import deviceService, { deviceId } from "@/services/device";
 import handleError from "@/utils/store/handleError";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { useDatabaseObject } from "vuefire";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import { useDatabaseObject } from "@/utils/store/vuefire";
 
 export const useAuthStore = defineStore("auth", () => {
   const auth = getAuth(firebaseApp);

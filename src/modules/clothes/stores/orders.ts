@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useDatabaseList, useDatabaseObject } from "vuefire";
 import { Order } from "../models/Order";
 import { computed, ref } from "vue";
 import { firebaseApp } from "@/firebase";
@@ -17,6 +16,7 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import { useDatabaseList, useDatabaseObject } from "@/utils/store/vuefire";
 
 export const useOrdersStore = defineStore("orders", () => {
   const db = getDatabase(firebaseApp);

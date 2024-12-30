@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { Person } from "../models/Person";
 import handleError from "@/utils/store/handleError";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
-import { useDatabaseList } from "vuefire";
 import { computed } from "vue";
 import {
   getDatabase,
@@ -13,6 +12,7 @@ import {
 import { firebaseApp } from "@/firebase";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { useDatabaseList } from "@/utils/store/vuefire";
 
 export const usePeopleStore = defineStore("people", () => {
   const db = getDatabase(firebaseApp);
