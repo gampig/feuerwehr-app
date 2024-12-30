@@ -17,7 +17,7 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Schließen </v-btn>
         <v-spacer />
         <v-btn :loading="loading" color="primary" variant="text" @click="save">
           Speichern
