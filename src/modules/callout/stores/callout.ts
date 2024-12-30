@@ -52,11 +52,11 @@ export const useCalloutStore = defineStore("callout", () => {
     () => callout.pending.value || crew.pending.value || vehicle.pending.value
   );
 
-  function selectCallout(calloutId?: string) {
+  function selectCallout(calloutId: string) {
     selectedCalloutId.value = calloutId;
   }
 
-  function selectVehicle(vehicleId?: string) {
+  function selectVehicle(vehicleId: string) {
     selectedVehicleId.value = vehicleId;
   }
 
@@ -166,7 +166,7 @@ export const useCalloutStore = defineStore("callout", () => {
         remove(calloutSource.value),
         remove(crewSource.value),
       ]);
-      selectCallout(undefined);
+      selectedCalloutId.value = undefined;
     } catch (error) {
       return handleError(error);
     }

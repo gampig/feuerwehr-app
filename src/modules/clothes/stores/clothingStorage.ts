@@ -27,7 +27,7 @@ export const useClothingStorageStore = defineStore("clothingStorage", () => {
   const clothingItems = useDatabaseObject<ClothingStorage>(clothingItemsSource);
   const loading = clothingItems.pending;
 
-  function selectClothingType(clothingTypeId?: string) {
+  function selectClothingType(clothingTypeId: string) {
     selectedClothingTypeId.value = clothingTypeId;
   }
 

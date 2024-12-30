@@ -60,8 +60,6 @@ export default defineComponent({
         if (!(this.callout && this.callout.id == paramCalloutId)) {
           this.selectCallout(paramCalloutId as string);
         }
-      } else {
-        this.selectCallout();
       }
 
       const paramVehicleId = this.vehicleId || this.$route.params.vehicle_id;
@@ -69,8 +67,6 @@ export default defineComponent({
         if (!(this.vehicle && this.vehicle.id == paramVehicleId)) {
           this.selectVehicle(paramVehicleId as string);
         }
-      } else {
-        this.selectVehicle();
       }
     },
   },

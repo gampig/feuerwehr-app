@@ -123,13 +123,13 @@ export default defineComponent({
     },
 
     next(calloutId: string) {
-      const vehicle = useCalloutStore().vehicle;
+      const vehicle = useAuthStore().vehicle;
       if (vehicle) {
         this.$router.push({
           name: "CrewVehicleDetails",
           params: {
             callout_id: calloutId,
-            vehicle_id: vehicle.id,
+            vehicle_id: vehicle,
           },
         });
       } else {

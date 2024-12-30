@@ -42,7 +42,7 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
   const selectedType = useDatabaseObject<ClothingType>(selectedTypeSource);
   const selectedTypeLoading = selectedType.pending;
 
-  function selectType(clothingTypeId?: string) {
+  function selectType(clothingTypeId: string) {
     selectedTypeId.value = clothingTypeId;
   }
 

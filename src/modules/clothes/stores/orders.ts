@@ -41,7 +41,7 @@ export const useOrdersStore = defineStore("orders", () => {
   const selectedOrder = useDatabaseObject<Order>(selectedOrderSource);
   const selectedOrderLoading = selectedOrder.pending;
 
-  function selectOrder(orderId?: string) {
+  function selectOrder(orderId: string) {
     selectedOrderId.value = orderId;
   }
 

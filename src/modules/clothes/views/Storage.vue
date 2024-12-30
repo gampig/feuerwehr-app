@@ -91,15 +91,7 @@
 <script setup lang="ts">
 import { VForm } from "vuetify/components";
 import { required } from "@/utils/rules";
-import {
-  computed,
-  ComputedRef,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-} from "vue";
+import { computed, ComputedRef, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useClothingStorageStore } from "../stores/clothingStorage";
 import { useClothingTypesStore } from "../stores/clothingTypes";
@@ -154,14 +146,8 @@ const items: ComputedRef<ListItem[]> = computed(() =>
 function bindType(id: string) {
   clothingTypesStore.selectType(id);
 }
-function unbindType() {
-  clothingTypesStore.selectType();
-}
 function bindStorage(id: string) {
   clothingStorageStore.selectClothingType(id);
-}
-function unbindStorage() {
-  clothingStorageStore.selectClothingType();
 }
 function setCount(size: string, count: number) {
   const countOrNull = count > 0 ? count : null;
@@ -248,10 +234,6 @@ function retrieveItem() {
 }
 
 onMounted(retrieveItem);
-onUnmounted(() => {
-  unbindType();
-  unbindStorage();
-});
 
 watch(() => id, retrieveItem);
 </script>
