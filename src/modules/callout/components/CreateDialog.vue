@@ -84,12 +84,18 @@ export default {
     async save() {
       if ((await this.$refs.form.$refs.form.validate()).valid) {
         this.loading = true;
-        this.create(this.item).then((ref) => {
-          this.selectCallout(ref.key);
-          this.$emit("update:model-value", false);
-          this.$emit("save", ref.key);
-          this.reset();
-        });
+        this.create(this.item)
+          .then((ref) => {
+            if (ref) {
+              this.selectCallout(ref.key);
+              this.$emit("update:model-value", false);
+              this.$emit("save", ref.key);
+              this.reset();
+            }
+          })
+          .finally(() => {
+            this.loading = false;
+          });
       }
     },
   },
