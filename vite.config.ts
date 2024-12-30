@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vuetify from "vite-plugin-vuetify";
+import vueDevTools from "vite-plugin-vue-devtools";
 import path from "path";
 import { gitDescribeSync } from "git-describe";
 
@@ -12,7 +13,7 @@ export default defineConfig({
     BUILD_TIME: JSON.stringify(buildTimestamp),
     GIT_HASH: JSON.stringify(gitCommitHash),
   },
-  plugins: [vue(), vuetify({ autoImport: true })],
+  plugins: [vue(), vuetify({ autoImport: true }), vueDevTools()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
