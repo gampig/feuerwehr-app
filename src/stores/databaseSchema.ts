@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { firebaseApp } from "@/firebase";
 import { getDatabase, ref as dbRef } from "firebase/database";
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { useDatabaseObject } from "@/utils/store/vuefire";
 
 interface PrimitiveType<T> {
