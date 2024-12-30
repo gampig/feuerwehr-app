@@ -19,15 +19,15 @@
 
       <v-card-text>
         <v-form ref="form">
-          <v-checkbox
+          <v-radio-group
             v-if="vehicle?.isUgOeel"
             v-model="isUgOeelCallout"
-            label="UG-ÖEL-Einsatz"
-            :indeterminate="
-              isUgOeelCallout === null || isUgOeelCallout === undefined
-            "
+            label="UG-ÖEL-Einsatz?"
             :rules="[calloutRules.ugOeelCalloutRequired]"
-          />
+          >
+            <v-radio label="Ja" :value="true"></v-radio>
+            <v-radio label="Nein" :value="false"></v-radio>
+          </v-radio-group>
 
           <v-text-field
             label="Einsatzbeginn"
