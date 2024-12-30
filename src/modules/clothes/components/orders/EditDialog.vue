@@ -72,6 +72,12 @@ export default defineComponent({
         this.reset();
       }
     },
+
+    modelValue(modelValue) {
+      if (modelValue) {
+        this.reset();
+      }
+    },
   },
 
   methods: {
