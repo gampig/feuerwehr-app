@@ -79,6 +79,13 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
     selectedType,
     loading,
     selectedTypeLoading,
+
+    // Private variables
+    isAuthorized,
+    typesSource,
+    selectedTypeId,
+    selectedTypeSource,
+
     selectType,
     create,
     update,

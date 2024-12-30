@@ -75,6 +75,13 @@ export const useOrdersStore = defineStore("orders", () => {
     loading,
     selectedOrder,
     selectedOrderLoading,
+
+    // Private variables
+    isAuthorized,
+    ordersSource,
+    selectedOrderId,
+    selectedOrderSource,
+
     selectOrder,
     create,
     update,

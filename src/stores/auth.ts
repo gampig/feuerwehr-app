@@ -168,6 +168,11 @@ export const useAuthStore = defineStore("auth", () => {
     user,
     vehicle,
     reauthenticationRequired,
+
+    // Private variables
+    userSettings,
+    userSettingsSource,
+
     hasAnyRole,
     login,
     logout,

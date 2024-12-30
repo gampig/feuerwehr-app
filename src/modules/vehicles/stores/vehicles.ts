@@ -22,5 +22,13 @@ export const useVehiclesStore = defineStore("vehicles", () => {
     );
   }
 
-  return { vehicles, loading, find };
+  return {
+    vehicles,
+    loading,
+
+    // Private variables
+    vehiclesSource,
+
+    find,
+  };
 });

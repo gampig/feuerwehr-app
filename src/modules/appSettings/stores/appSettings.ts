@@ -22,5 +22,11 @@ export const useAppSettingsStore = defineStore("appSettings", () => {
   );
   const loading = feuerwehrGeraete.pending;
 
-  return { feuerwehrGeraete, loading };
+  return {
+    feuerwehrGeraete,
+    loading,
+
+    // Private variables
+    feuerwehrGeraeteSource,
+  };
 });

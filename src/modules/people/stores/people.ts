@@ -44,6 +44,10 @@ export const usePeopleStore = defineStore("people", () => {
     loading,
     peopleReversed,
     peopleByActivity,
+
+    // Private variables
+    peopleSource,
+
     update,
   };
 });

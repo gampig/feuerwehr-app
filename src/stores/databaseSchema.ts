@@ -33,5 +33,11 @@ export const useDatabaseSchemaStore = defineStore("databaseSchema", () => {
       localSchemaVersion < remoteSchemaVersion.value
   );
 
-  return { loading, updateIsRequired };
+  return {
+    loading,
+    updateIsRequired,
+
+    // Private variables
+    remoteSchemaVersionSource,
+  };
 });

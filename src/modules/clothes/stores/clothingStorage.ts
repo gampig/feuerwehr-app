@@ -43,5 +43,15 @@ export const useClothingStorageStore = defineStore("clothingStorage", () => {
     }
   }
 
-  return { clothingItems, loading, selectClothingType, set };
+  return {
+    clothingItems,
+    loading,
+
+    // Private variables
+    selectedClothingTypeId,
+    clothingItemsSource,
+
+    selectClothingType,
+    set,
+  };
 });

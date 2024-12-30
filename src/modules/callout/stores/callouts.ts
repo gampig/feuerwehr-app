@@ -70,6 +70,10 @@ export const useCalloutsStore = defineStore("callouts", () => {
     calloutsOfToday,
     calloutsBeforeToday,
     calloutsWithFormattedDateTime,
+
+    // Private variables
+    calloutsSource,
+
     create,
   };
 });

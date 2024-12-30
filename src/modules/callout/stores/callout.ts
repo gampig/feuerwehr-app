@@ -177,6 +177,15 @@ export const useCalloutStore = defineStore("callout", () => {
     crew,
     vehicle,
     loading,
+
+    // Private variables
+    selectedCalloutId,
+    selectedVehicleId,
+    isAuthorized,
+    calloutSource,
+    crewSource,
+    vehicleSource,
+
     selectCallout,
     selectVehicle,
     addCrewMember,
