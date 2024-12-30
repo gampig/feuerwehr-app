@@ -1,14 +1,6 @@
 <template>
   <div>
-    <v-app-bar>
-      <v-btn icon @click="goBack">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-
-      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
-
-      <v-spacer />
-
+    <AppBar back-button :page-title="pageTitle">
       <slot name="actions" />
 
       <v-menu location="bottom left">
@@ -34,7 +26,7 @@
       >
         {{ saveButtonLabel }}
       </v-btn>
-    </v-app-bar>
+    </AppBar>
 
     <v-container>
       <slot />
@@ -45,12 +37,13 @@
 </template>
 
 <script>
+import AppBar from "@/components/bars/AppBar.vue";
 import CalloutDetailsDialog from "./CalloutDetailsDialog.vue";
 import { mapState } from "pinia";
 import { useCalloutStore } from "../stores/callout";
 
 export default {
-  components: { CalloutDetailsDialog },
+  components: { AppBar, CalloutDetailsDialog },
   props: {
     pageTitle: {
       type: String,
@@ -81,12 +74,6 @@ export default {
 
   computed: {
     ...mapState(useCalloutStore, ["callout"]),
-  },
-
-  methods: {
-    goBack() {
-      this.$router.back();
-    },
   },
 };
 </script>
