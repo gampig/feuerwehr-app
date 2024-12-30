@@ -25,12 +25,12 @@
 
       <v-timeline class="mt-5" density="compact">
         <v-timeline-item
-          :dot-color="!orderedOn && !doneOn ? 'red' : null"
-          :icon-color="!orderedOn && !doneOn ? 'white' : 'grey'"
-          theme="dark"
           icon="mdi-plus"
+          :dot-color="currentState === 'submitted' ? 'red' : 'grey'"
+          :icon-color="currentState === 'submitted' ? 'white' : 'grey'"
+          :size="currentState === 'submitted' ? 'default' : 'x-small'"
+          :class="currentState === 'submitted' ? '' : 'text-disabled'"
           fill-dot
-          :class="!orderedOn && !doneOn ? null : 'text--disabled'"
         >
           <div>{{ submittedOn }}</div>
           <div>Eingereicht</div>
@@ -38,11 +38,12 @@
 
         <v-timeline-item
           v-if="orderedOn"
-          :dot-color="!doneOn ? 'orange' : null"
-          :icon-color="!doneOn ? 'white' : 'grey'"
           icon="mdi-package-variant-closed"
+          :dot-color="currentState === 'ordered' ? 'orange' : 'grey'"
+          :icon-color="currentState === 'ordered' ? 'white' : 'grey'"
+          :size="currentState === 'ordered' ? 'default' : 'x-small'"
+          :class="currentState === 'ordered' ? '' : 'text-disabled'"
           fill-dot
-          :class="!doneOn ? null : 'text--disabled'"
         >
           <div>{{ orderedOn }}</div>
           <div>Bestellt</div>
@@ -72,28 +73,48 @@
   </v-card>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
+
 const formatter = new Intl.NumberFormat("de-DE", {
   minimumFractionDigits: 0,
 });
 
-export default {
-  props: {
-    person: { type: String, default: null },
-    clothingType: { type: String, default: null },
-    size: { type: String, default: null },
-    count: { type: Number, default: 1 },
-    paid: { type: Number, default: 0 },
-    totalPrice: { type: Number, default: 0 },
-    submittedOn: { type: String, default: null },
-    orderedOn: { type: String, default: null },
-    doneOn: { type: String, default: null },
-  },
+type OrderState = "submitted" | "ordered" | "done";
 
-  methods: {
-    formatCurrency(value) {
-      return formatter.format(value);
-    },
-  },
-};
+const {
+  person,
+  clothingType,
+  size,
+  count,
+  paid,
+  totalPrice,
+  submittedOn,
+  orderedOn,
+  doneOn,
+} = defineProps<{
+  person: string;
+  clothingType: string;
+  size?: string;
+  count?: number;
+  paid?: number;
+  totalPrice?: number;
+  submittedOn?: string;
+  orderedOn?: string;
+  doneOn?: string;
+}>();
+
+const currentState = computed((): OrderState => {
+  if (doneOn) {
+    return "done";
+  } else if (orderedOn) {
+    return "ordered";
+  } else {
+    return "submitted";
+  }
+});
+
+function formatCurrency(value: number) {
+  return formatter.format(value);
+}
 </script>
