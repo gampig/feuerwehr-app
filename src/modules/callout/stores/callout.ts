@@ -162,10 +162,8 @@ export const useCalloutStore = defineStore("callout", () => {
       return Promise.reject("Kein Einsatz ausgewählt");
     }
     try {
-      await Promise.all([
-        remove(calloutSource.value),
-        remove(crewSource.value),
-      ]);
+      await remove(crewSource.value);
+      await remove(calloutSource.value);
     } catch (error) {
       return handleError(error);
     }
