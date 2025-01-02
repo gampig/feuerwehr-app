@@ -1,6 +1,7 @@
 <template>
   <v-app id="feuerwehr-app">
     <Snackbar></Snackbar>
+    <PWABadge></PWABadge>
     <Loading :visible="loading" :text="loadingScreenText" />
     <router-view v-if="!initializing" />
   </v-app>
@@ -14,11 +15,15 @@ import { requiresAuth } from "./utils/routerAuth";
 import { useAuthStore } from "./stores/auth";
 import { useDatabaseSchemaStore } from "./stores/databaseSchema";
 import { computed, ref, watch, watchEffect } from "vue";
-import handleError from "./utils/store/handleError";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import Snackbar from "./components/bars/Snackbar.vue";
 import { useNetworkStore } from "./stores/network";
+import PWABadge from "./components/PWABadge.vue";
+import {
+  needRefresh as updateDownloaded,
+  updateServiceWorker,
+} from "./utils/registerServiceWorker";
 
 const router = useRouter();
 const route = useRoute();
@@ -29,10 +34,6 @@ useNetworkStore();
 const { loggedIn } = storeToRefs(authStore);
 const { loading: loadingDatabaseSchema, updateIsRequired } =
   storeToRefs(databaseSchemaStore);
-
-const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null);
-const updateFound = ref(false);
-const updateDownloaded = ref(false);
 
 const initializing = ref(true);
 const loading = computed(
@@ -48,9 +49,7 @@ const loadingScreenText = computed(() => {
   } else if (loadingDatabaseSchema.value) {
     return "Lade Daten...";
   } else if (updateIsRequired.value) {
-    if (updateFound.value) {
-      return "Lade Update herunter...";
-    } else if (updateDownloaded.value) {
+    if (updateDownloaded.value) {
       return "Update wurde heruntergeladen. Bitte App neu laden.";
     } else {
       return "Warte auf erforderliches Update...";
@@ -101,42 +100,13 @@ function toLoginPage() {
 function checkDatabaseSchemaVersion() {
   if (updateIsRequired.value) {
     if (updateDownloaded.value) {
-      if (serviceWorkerRegistration.value?.waiting) {
-        alert(
-          "App wird neugestartet, damit ein erforderliches Update durchgeführt wird."
-        );
-        serviceWorkerRegistration.value.waiting.postMessage({
-          type: "SKIP_WAITING",
-        });
-      } else {
-        alert(
-          "Bitte lade die App neu.\n\nEin erforderliches Update wurde heruntergeladen und muss installiert werden."
-        );
-      }
+      alert(
+        "Ein erforderliches Update wurde heruntergeladen und muss installiert werden.\n\nDie Seite wird neu geladen."
+      );
+      updateServiceWorker();
     }
   }
 }
-
-document.addEventListener(
-  "swUpdateFound",
-  () => {
-    updateFound.value = true;
-  },
-  { once: true }
-);
-
-document.addEventListener(
-  "swUpdated",
-  (event) => {
-    if (event instanceof CustomEvent) {
-      updateDownloaded.value = true;
-      serviceWorkerRegistration.value = event.detail;
-    } else {
-      handleError(new Error("Event ist nicht vom Typ CustomEvent"));
-    }
-  },
-  { once: true }
-);
 
 watch([loggedIn, loadingDatabaseSchema, updateIsRequired], checkAuthState);
 watchEffect(checkDatabaseSchemaVersion);
