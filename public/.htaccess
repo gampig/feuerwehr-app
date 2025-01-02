@@ -1,0 +1,4 @@
+<IfModule mod_mime.c>
+   # Manifest file
+   AddType application/manifest+json webmanifest
+</IfModule>
