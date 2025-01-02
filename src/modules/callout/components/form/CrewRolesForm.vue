@@ -67,6 +67,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value", "delete"],
+
   data() {
     return {
       personToRemove: null as string | null,

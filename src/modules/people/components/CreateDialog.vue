@@ -55,6 +55,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       rules: {

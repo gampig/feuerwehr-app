@@ -26,6 +26,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value", "retry"],
+
   methods: {
     goBack() {
       this.$emit("update:model-value", false);

@@ -34,5 +34,7 @@ export default {
       required: true,
     },
   },
+
+  emits: ["update:model-value"],
 };
 </script>

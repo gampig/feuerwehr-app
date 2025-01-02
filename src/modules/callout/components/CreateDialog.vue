@@ -49,6 +49,8 @@ export default {
     },
   },
 
+  emits: ["update:model-value", "save"],
+
   data() {
     return {
       item: {},

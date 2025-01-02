@@ -64,17 +64,17 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn icon @click="$emit('remove')">
+      <v-btn icon @click="emit('remove')">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn variant="text" @click="$emit('edit')">Bearbeiten</v-btn>
+      <v-btn variant="text" @click="emit('edit')">Bearbeiten</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, defineEmits } from "vue";
 
 const formatter = new Intl.NumberFormat("de-DE", {
   minimumFractionDigits: 0,
@@ -103,6 +103,8 @@ const {
   orderedOn?: string;
   doneOn?: string;
 }>();
+
+const emit = defineEmits(["edit", "remove"]);
 
 const currentState = computed((): OrderState => {
   if (doneOn) {

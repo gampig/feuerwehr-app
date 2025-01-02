@@ -50,6 +50,8 @@ export default {
     },
   },
 
+  emits: ["update:model-value", "update:date"],
+
   data() {
     return {
       dateVal: null,

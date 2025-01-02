@@ -84,6 +84,8 @@ export default {
     },
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       editDate: false,

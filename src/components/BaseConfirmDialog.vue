@@ -44,6 +44,8 @@ export default {
     },
   },
 
+  emits: ["update:model-value", "cancel", "confirm"],
+
   methods: {
     cancel() {
       this.$emit("update:model-value", false);

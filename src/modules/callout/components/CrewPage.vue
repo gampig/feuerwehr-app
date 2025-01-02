@@ -66,6 +66,8 @@ export default {
     },
   },
 
+  emits: ["submit"],
+
   data() {
     return {
       showCalloutDetails: false,

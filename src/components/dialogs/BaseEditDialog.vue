@@ -58,6 +58,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value", "save"],
+
   methods: {
     cancel() {
       this.$emit("update:model-value", false);

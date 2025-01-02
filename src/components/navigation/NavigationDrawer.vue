@@ -81,6 +81,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value"],
+
   data: function () {
     return {
       version,

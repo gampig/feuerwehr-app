@@ -30,6 +30,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["click"],
+
   methods: {
     formatDateTime: formatDateTime,
     formatDateTimeFromNow: formatDateTimeFromNow,

@@ -25,5 +25,7 @@ export default {
       default: "",
     },
   },
+
+  emits: ["update:search"],
 };
 </script>

@@ -28,6 +28,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       availableStatusValues: ALL_PERSON_STATUS_VALUES,

@@ -67,6 +67,7 @@ import { useCalloutsStore } from "../stores/callouts";
 
 export default {
   components: { CalloutListItem, CreateDialog },
+  emits: ["update:model-value"],
 
   data() {
     return {

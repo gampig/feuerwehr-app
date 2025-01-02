@@ -44,6 +44,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["delete", "update:model-value"],
+
   data() {
     return {
       roles: ALL_CALLOUT_ROLES,

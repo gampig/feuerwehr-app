@@ -31,6 +31,8 @@ export default defineComponent({
     LoginCard,
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       loading: false,
