@@ -3,14 +3,15 @@ name: CD Staging
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths-ignore:
-      - '.devcontainer/**'
-      - 'docs/**'
-      - 'tools/**'
-      - '.editorconfig'
-      - '.git*'
-      - '**.md'
+      - ".devcontainer/**"
+      - "docs/**"
+      - "tools/**"
+      - ".editorconfig"
+      - ".git*"
+      - "**.md"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
@@ -29,7 +30,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
+          cache: "npm"
 
       - name: Configure project
         env:
