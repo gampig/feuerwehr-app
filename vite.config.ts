@@ -19,6 +19,7 @@ export default defineConfig({
     vuetify({ autoImport: true }),
     vueDevTools(),
     VitePWA({
+      filename: "service-worker.js",
       registerType: "prompt",
       injectRegister: "auto",
       devOptions: {
