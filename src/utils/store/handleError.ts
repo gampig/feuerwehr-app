@@ -19,6 +19,8 @@ function translateFirebaseError(code: string): string | null {
 }
 
 function handleError(error: any) {
+  const builder = new ErrorReportBuilder(false);
+
   if (error instanceof Error) {
     let translatedErrorMessage = null;
 
@@ -29,9 +31,16 @@ function handleError(error: any) {
 
     showError(translatedErrorMessage || error.message);
 
-    new ErrorReportBuilder(false).addException(error).getReport().send();
+    builder.addException(error);
+  } else if (typeof error === "string") {
+    showError(error);
+    builder.addErrorMessage(error);
   }
+
+  builder.getReport().send();
 }
+
+addEventListener("unhandledrejection", (event) => handleError(event.reason));
 
 export default handleError;
 

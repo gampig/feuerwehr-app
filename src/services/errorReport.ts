@@ -98,6 +98,14 @@ export default class ErrorReportBuilder {
     return this;
   }
 
+  addErrorMessage(message: string): ErrorReportBuilder {
+    this.report.exceptions.push({
+      errorClass: "string",
+      message: message,
+    });
+    return this;
+  }
+
   addVueInfo(info: string): ErrorReportBuilder {
     this.report.exceptions.push({
       errorClass: "VueErrorInfo",
