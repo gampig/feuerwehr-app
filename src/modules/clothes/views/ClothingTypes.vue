@@ -10,24 +10,24 @@
 
       <v-col cols="4" class="d-flex justify-end align-center">
         <v-btn @click="addHandler">
-          <v-icon left>mdi-plus</v-icon>
+          <v-icon start>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>
     </v-row>
 
-    <BaseSearchRow :search.sync="search" />
+    <BaseSearchRow v-model:search="search" />
 
     <v-row>
       <v-col cols="12">
         <v-data-table
           v-model="selected"
+          v-model:sort-by="sortBy"
           :headers="headers"
           :items="types"
           :search="search"
           :loading="loading"
           loading-text="Laden..."
-          :options.sync="options"
           class="elevation-1"
           locale="de-DE"
           item-key="id"
@@ -41,7 +41,7 @@
 
           <template #[`item.action`]="{ item }">
             <BaseActionCell :handle-edit="() => editHandler(item.id)">
-              <v-btn icon @click="storageHandler(item)">
+              <v-btn icon variant="text" @click="storageHandler(item.id)">
                 <v-icon>mdi-wardrobe</v-icon>
               </v-btn>
             </BaseActionCell>
@@ -55,35 +55,38 @@
   </v-container>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
-import CreateDialog from "../components/types/CreateDialog";
-import EditDialog from "../components/types/EditDialog";
+<script lang="ts">
+import CreateDialog from "../components/types/CreateDialog.vue";
+import EditDialog from "../components/types/EditDialog.vue";
+import { defineComponent } from "vue";
+import { useClothingTypesStore } from "../stores/clothingTypes";
+import { mapActions, mapState } from "pinia";
+import { ClothingType } from "../models/ClothingType";
+import { VueDatabaseQueryData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
-export default makeListMixin("ClothesType", "clothingTypes").extend({
+export default defineComponent({
   components: { CreateDialog, EditDialog },
 
   data() {
     return {
       headers: [
-        { text: "Kategorie", value: "category" },
-        { text: "Bezeichnung", value: "name" },
-        { text: "Preis", value: "price" },
+        { title: "Kategorie", key: "category" },
+        { title: "Bezeichnung", key: "name" },
+        { title: "Preis", key: "price" },
         {
-          text: "Aktionen",
-          value: "action",
+          title: "Aktionen",
+          key: "action",
           sortable: false,
         },
       ],
-      options: {
-        sortBy: ["category", "name"],
-        sortDesc: [false, false],
-        page: 1,
-        itemsPerPage: 15,
-      },
 
-      selected: [],
+      sortBy: [
+        { key: "category", order: "asc" },
+        { key: "name", order: "asc" },
+      ] as SortItem[],
+
+      selected: [] as VueDatabaseQueryData<ClothingType>,
       search: "",
       showUnavailableTypes: false,
 
@@ -93,7 +96,10 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
   },
 
   computed: {
-    ...mapState("clothingTypes", { allTypes: "types" }),
+    ...mapState(useClothingTypesStore, {
+      allTypes: "types",
+      loading: "loading",
+    }),
 
     types() {
       if (this.showUnavailableTypes) {
@@ -105,21 +111,21 @@ export default makeListMixin("ClothesType", "clothingTypes").extend({
   },
 
   methods: {
-    ...mapActions("clothingTypes", ["bindType"]),
+    ...mapActions(useClothingTypesStore, ["selectType"]),
 
     addHandler() {
       this.showCreateDialog = true;
     },
 
-    editHandler(clothingTypeId) {
-      this.bindType(clothingTypeId);
+    editHandler(clothingTypeId: string) {
+      this.selectType(clothingTypeId);
       this.showEditDialog = true;
     },
 
-    storageHandler(item) {
+    storageHandler(clothingTypeId: string) {
       this.$router.push({
         name: "ClothesStorage",
-        params: { id: item.id },
+        params: { id: clothingTypeId },
       });
     },
   },

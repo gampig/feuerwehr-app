@@ -1,9 +1,10 @@
 import { Crew } from "@/modules/callout/models/Callout";
 import { Person } from "@/modules/people/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { VueDatabaseDocumentData, VueDatabaseQueryData } from "vuefire";
 
 export function isPersonInMannschaft(
-  person: Person,
+  person: NonNullable<VueDatabaseDocumentData<Person>>,
   mannschaft: Crew
 ): boolean {
   const isInBereitschaft: boolean =
@@ -21,17 +22,17 @@ export function isPersonInMannschaft(
 export function getGroupOfPerson(
   personId: string,
   mannschaft: Crew,
-  fahrzeuge: Vehicle[]
+  fahrzeuge: VueDatabaseQueryData<Vehicle>
 ): string | undefined {
   if (mannschaft.standby && mannschaft.standby[personId]) {
     return "Bereitschaft";
   } else if (mannschaft.vehicles) {
     for (const fahrzeugId in mannschaft.vehicles) {
       if (mannschaft.vehicles[fahrzeugId][personId]) {
-        return (
-          fahrzeuge.find((fahrzeug) => fahrzeug.id == fahrzeugId)?.name ||
-          fahrzeugId
+        const fahrzeugMatch = fahrzeuge.find(
+          (fahrzeug) => fahrzeug.id == fahrzeugId
         );
+        return fahrzeugMatch?.name || fahrzeugId;
       }
     }
   }

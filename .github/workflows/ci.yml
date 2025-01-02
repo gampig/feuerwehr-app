@@ -3,14 +3,14 @@ name: CI
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths-ignore:
-      - '.devcontainer/**'
-      - 'docs/**'
-      - 'tools/**'
-      - '.editorconfig'
-      - '.git*'
-      - '**.md'
+      - ".devcontainer/**"
+      - "docs/**"
+      - "tools/**"
+      - ".editorconfig"
+      - ".git*"
+      - "**.md"
   pull_request:
     types: [opened, reopened, synchronize]
 
@@ -22,17 +22,17 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: 'npm'
+          node-version: 20
+          cache: "npm"
 
       - name: Generate empty configuration
         run: echo "export default {};" > ./src/firebase/config.ts
-      
+
       - name: Install
         run: npm ci
 
       - name: Build
-        run: npm run build -- --modern
+        run: npm run build
 
   lint:
     runs-on: ubuntu-latest
@@ -41,12 +41,12 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: 'npm'
+          node-version: 20
+          cache: "npm"
 
       - name: Generate empty configuration
         run: echo "export default {};" > ./src/firebase/config.ts
-      
+
       - name: Install
         run: npm ci
 

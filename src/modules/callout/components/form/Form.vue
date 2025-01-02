@@ -2,14 +2,17 @@
   <v-form ref="form">
     <v-row>
       <v-col cols="12">
-        <v-checkbox
-          v-for="t in availableTypes"
-          :key="t"
-          :label="t"
-          :input-value="type && type[t]"
-          dense
-          @change="updateType(t, $event)"
-        />
+        <v-layout wrap>
+          <v-checkbox
+            v-for="t in availableTypes"
+            :key="t"
+            :label="t"
+            :model-value="type && type[t]"
+            density="comfortable"
+            class="mr-5"
+            @update:model-value="updateType(t, $event)"
+          />
+        </v-layout>
       </v-col>
     </v-row>
 
@@ -18,17 +21,17 @@
         <v-combobox
           label="Stichwort"
           :items="keywords"
-          :value="keyword"
-          :rules="(requireKeyword && [rules.required]) || []"
-          @input="$emit('update:keyword', $event)"
+          :model-value="keyword"
+          :rules="(requireKeyword && [required]) || []"
+          @update:model-value="emit('update:keyword', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
         <v-combobox
           label="Schlagwort"
           :items="catchphrases"
-          :value="catchphrase"
-          @input="$emit('update:catchphrase', $event)"
+          :model-value="catchphrase"
+          @update:model-value="emit('update:catchphrase', $event)"
         />
       </v-col>
     </v-row>
@@ -37,8 +40,8 @@
       <v-col cols="12">
         <v-text-field
           label="Alarm"
-          prepend-icon="mdi-alarm-light-outline"
-          :value="alarmTimeFormatted"
+          append-inner-icon="mdi-alarm-light-outline"
+          :model-value="alarmTimeFormatted"
           :rules="alarmTimeRules"
           readonly
           @click="showAlarmTimeDialog = true"
@@ -50,9 +53,9 @@
       <v-col cols="12">
         <v-text-field
           label="Adresse"
-          prepend-icon="mdi-map-marker-outline"
-          :value="address"
-          @input="$emit('update:address', $event)"
+          append-inner-icon="mdi-map-marker-outline"
+          :model-value="address"
+          @update:model-value="emit('update:address', $event)"
         />
       </v-col>
     </v-row>
@@ -62,80 +65,79 @@
       :max-date="today"
       :min-date="limitAlarmTimeToRecently ? aWeekAgo : null"
       :date="alarmTime"
-      @update:date="$emit('update:alarmTime', $event)"
+      @update:date="emit('update:alarmTime', $event)"
     />
   </v-form>
 </template>
 
-<script>
-import FormMixin from "@/mixins/FormMixin";
-import keywordsMap from "@/assets/keywords.json";
+<script setup lang="ts">
+import keywordsMap from "../../../../assets/keywords.json";
 import { formatDateTime } from "@/utils/dates";
+import { onlyPastAllowed, recently, required } from "@/utils/rules";
+import { today, aWeekAgo } from "@/utils/dates";
+import { computed, ref } from "vue";
 
-export default FormMixin.extend({
-  props: {
-    type: null,
-    keyword: null,
-    catchphrase: null,
-    alarmTime: null,
-    address: null,
+interface GenericKeywordsMap {
+  [key: string]: string[];
+}
 
-    requireKeyword: {
-      type: Boolean,
-      default: false,
-    },
-    limitAlarmTimeToRecently: {
-      type: Boolean,
-      default: true,
-    },
-  },
+const props = withDefaults(
+  defineProps<{
+    type?: { [key: string]: boolean };
+    keyword?: string;
+    catchphrase?: string;
+    alarmTime?: number;
+    address?: string;
+    requireKeyword?: boolean;
+    limitAlarmTimeToRecently?: boolean;
+  }>(),
+  {
+    type: undefined,
+    keyword: undefined,
+    catchphrase: undefined,
+    alarmTime: undefined,
+    address: undefined,
+    requireKeyword: true,
+    limitAlarmTimeToRecently: true,
+  }
+);
 
-  data() {
-    return {
-      availableTypes: ["Brand", "THL", "UG-ÖEL"],
+const emit = defineEmits([
+  "update:type",
+  "update:keyword",
+  "update:catchphrase",
+  "update:alarmTime",
+  "update:address",
+]);
 
-      showAlarmTimeDialog: false,
+const availableTypes = ["Brand", "THL", "UG-ÖEL"];
+const showAlarmTimeDialog = ref(false);
 
-      ruleSelectionIsNotEmpty: (value) =>
-        (value && value.length > 0) || "Bitte wähle mindestens einen Typ aus",
-    };
-  },
+const keywords = Object.keys(keywordsMap).sort();
+const catchphrases = computed(
+  () =>
+    (props.keyword &&
+      (keywordsMap as GenericKeywordsMap)[props.keyword]?.sort()) ||
+    []
+);
 
-  computed: {
-    keywords() {
-      return Object.keys(keywordsMap).sort();
-    },
-    catchphrases() {
-      return (
-        (keywordsMap[this.keyword] && keywordsMap[this.keyword].sort()) || []
-      );
-    },
+const alarmTimeFormatted = computed(() =>
+  props.alarmTime ? formatDateTime(props.alarmTime) : ""
+);
 
-    alarmTimeFormatted() {
-      return this.alarmTime ? formatDateTime(this.alarmTime) : "";
-    },
-
-    alarmTimeRules() {
-      if (this.limitAlarmTimeToRecently) {
-        return [
-          this.rules.required,
-          this.rules.onlyPastAllowed,
-          this.rules.recently,
-        ];
-      } else {
-        return [this.rules.required, this.rules.onlyPastAllowed];
-      }
-    },
-  },
-
-  methods: {
-    updateType(updatedType, value) {
-      const newTypes = {
-        ...this.type,
-        [updatedType]: value === true,
-      };
-      this.update("type", newTypes);
-    },
-  },
+const alarmTimeRules = computed(() => {
+  if (props.limitAlarmTimeToRecently) {
+    return [required, onlyPastAllowed, recently];
+  } else {
+    return [required, onlyPastAllowed];
+  }
 });
+
+function updateType(updatedType: string, value: boolean | null) {
+  const newTypes = {
+    ...props.type,
+    [updatedType]: value === true,
+  };
+  emit("update:type", newTypes);
+}
 </script>

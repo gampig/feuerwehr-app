@@ -5,7 +5,7 @@
     </template>
 
     <v-container fluid>
-      <v-alert type="warning" dismissible dense>
+      <v-alert type="warning" closable density="compact">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
@@ -17,10 +17,10 @@
           <v-card>
             <v-data-table :headers="headers" :items="items">
               <template #[`item.startTime`]="{ item }">
-                {{ item.startTime | formatDateTime }}
+                {{ formatDateTime(item.startTime) }}
               </template>
               <template #[`item.actions`]="{ item }">
-                <v-btn depressed @click="showTraining(item)">Öffnen</v-btn>
+                <v-btn variant="flat" @click="showTraining(item)">Öffnen</v-btn>
               </template>
             </v-data-table>
           </v-card>
@@ -31,9 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router";
+import { formatDateTime } from "@/utils/dates";
 import { Training } from "../models/Training";
 import { trainings } from "./TestData";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const headers = [
   { text: "Datum", value: "startTime" },

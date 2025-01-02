@@ -7,20 +7,26 @@
       <v-card-title>{{ device.email }}</v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="handleLogout">Abmelden</v-btn>
+        <v-btn variant="text" @click="handleLogout">Abmelden</v-btn>
       </v-card-actions>
     </v-card>
 
-    <LoginCard v-else card-title="Gerät anmelden" @input="handleSubmit">
-      <v-spacer />
-      <v-btn type="submit" color="primary"> Speichern </v-btn>
-    </LoginCard>
+    <v-form v-else ref="form">
+      <LoginCard
+        v-model:email="email"
+        v-model:password="password"
+        card-title="Gerät anmelden"
+      >
+        <v-spacer />
+        <v-btn color="primary" @click="handleSubmit"> Speichern </v-btn>
+      </LoginCard>
+    </v-form>
   </BasePageCentered>
 </template>
 
 <script>
 import deviceService from "@/services/device";
-import LoginCard from "@/components/user/LoginCard";
+import LoginCard from "@/components/user/LoginCard.vue";
 
 export default {
   components: {
@@ -30,13 +36,19 @@ export default {
   data() {
     return {
       device: deviceService.get(),
+      email: "",
+      password: "",
     };
   },
 
   methods: {
-    handleSubmit(device) {
-      deviceService.set(device);
-      this.device = device;
+    async handleSubmit() {
+      const form = this.$refs.form;
+      if (form && (await form.validate()).valid) {
+        const device = { email: this.email, password: this.password };
+        deviceService.set(device);
+        this.device = device;
+      }
     },
 
     handleLogout() {

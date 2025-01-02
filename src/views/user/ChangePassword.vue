@@ -20,19 +20,19 @@
     </v-form>
 
     <ReauthenticationDialog
-      :value="reauthenticationRequired"
-      @input="onDialogInput"
+      :model-value="reauthenticationRequired"
+      @update:model-value="onDialogInput"
     ></ReauthenticationDialog>
   </BasePageCentered>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import ReauthenticationDialog from "@/components/user/ReauthenticationDialog.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ReauthenticationDialog,
   },
@@ -49,10 +49,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions(useAuthStore, [
-      "updatePassword",
-      "setReauthenticationRequired",
-    ]),
+    ...mapActions(useAuthStore, ["updatePassword", "cancelReauthentication"]),
 
     submit() {
       this.loading = true;
@@ -69,7 +66,7 @@ export default Vue.extend({
     onDialogInput(open: boolean) {
       if (!open) {
         if (this.reauthenticationRequired) {
-          this.setReauthenticationRequired(false);
+          this.cancelReauthentication();
         } else {
           this.submit();
         }

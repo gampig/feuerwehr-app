@@ -1,48 +1,52 @@
 <template>
   <BasePageCentered navdrawer>
-    <PasswordResetRequestCard @input="handleRequest">
-      <v-btn text @click="$router.back()">Zurück</v-btn>
-      <v-spacer />
-      <v-btn type="submit" :loading="loading" color="primary">
-        Passwort zurücksetzen
-      </v-btn>
-    </PasswordResetRequestCard>
+    <v-card>
+      <VForm ref="form">
+        <v-card-title>Passwort zurücksetzen</v-card-title>
+
+        <v-card-text>
+          <v-text-field v-model="email" label="E-Mail" :rules="emailRules" />
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn variant="text" @click="$router.back()">Zurück</v-btn>
+          <v-spacer />
+          <v-btn :loading="loading" color="primary" @click="submit">
+            Passwort zurücksetzen
+          </v-btn>
+        </v-card-actions>
+      </VForm>
+    </v-card>
   </BasePageCentered>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import PasswordResetRequestCard from "@/components/user/PasswordResetRequestCard.vue";
-import { mapActions } from "pinia";
+<script setup lang="ts">
+import { ref } from "vue";
+import { VForm } from "vuetify/components";
 import { useAuthStore } from "@/stores/auth";
+import { showMessage } from "@/utils/notifications";
+import { useRouter } from "vue-router";
 
-export default Vue.extend({
-  components: {
-    PasswordResetRequestCard,
-  },
+const form = ref<VForm>();
+const loading = ref(false);
+const email = ref<string>();
 
-  data() {
-    return {
-      loading: false,
-    };
-  },
+const emailRules = [(v: any) => !!v || "Bitte E-Mail-Adresse eingeben"];
 
-  methods: {
-    ...mapActions(useAuthStore, ["requestReset"]),
+const router = useRouter();
 
-    handleRequest(email: string) {
-      this.loading = true;
-      this.requestReset(email)
-        .then(() => {
-          this.$showMessage(
-            "Es wurde eine E-Mail mit einem Link an dich versendet, um die Anfrage zu bestätigen."
-          );
-          this.$router.push({ name: "UserLogin" });
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-  },
-});
+async function submit() {
+  if (form.value && (await form.value.validate()).valid && email.value) {
+    loading.value = true;
+    try {
+      await useAuthStore().requestReset(email.value);
+      showMessage(
+        "Es wurde eine E-Mail mit einem Link an dich versendet, um die Anfrage zu bestätigen."
+      );
+      router.push({ name: "UserLogin" });
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 </script>

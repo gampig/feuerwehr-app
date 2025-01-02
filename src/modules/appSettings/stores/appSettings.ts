@@ -1,45 +1,32 @@
-import firebase from "firebase/app";
-import handleError from "@/utils/store/handleError";
 import { FeuerwehrGeraeteSettings } from "../models/AppSettings";
 import { defineStore } from "pinia";
+import { computed } from "vue";
+import { firebaseApp } from "@/firebase";
+import { child, ref as dbRef, getDatabase } from "firebase/database";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
+import { useDatabaseObject } from "@/utils/store/vuefire";
 
-interface State {
-  loading: boolean;
-  feuerwehrGeraete?: FeuerwehrGeraeteSettings;
-}
+export const useAppSettingsStore = defineStore("appSettings", () => {
+  const db = getDatabase(firebaseApp);
+  const appSettingsRef = dbRef(db, "appSettings");
 
-export const useAppSettingsStore = defineStore("appSettings", {
-  state: (): State => ({
-    loading: false,
-  }),
+  const feuerwehrGeraeteRef = child(appSettingsRef, "feuerwehrGeraete");
+  const feuerwehrGeraeteSource = computed(() =>
+    useAuthStore().hasAnyRole(Acl.feuerwehrGeraete)
+      ? feuerwehrGeraeteRef
+      : undefined
+  );
+  const feuerwehrGeraete = useDatabaseObject<FeuerwehrGeraeteSettings>(
+    feuerwehrGeraeteSource
+  );
+  const loading = feuerwehrGeraete.pending;
 
-  actions: {
-    bindFeuerwehrGeraeteSettings() {
-      this.setLoading(true);
-      return firebase
-        .database()
-        .ref("appSettings")
-        .child("feuerwehrGeraete")
-        .get()
-        .then((snapshot) => {
-          this.setFeuerwehrGeraeteSettings(snapshot.val());
-        })
-        .catch((error) => handleError(error))
-        .finally(() => {
-          this.setLoading(false);
-        });
-    },
-    unbind() {
-      this.setFeuerwehrGeraeteSettings(undefined);
-    },
+  return {
+    feuerwehrGeraete,
+    loading,
 
-    setLoading(loading: boolean) {
-      this.loading = loading;
-    },
-    setFeuerwehrGeraeteSettings(
-      feuerwehrGeraeteSettings?: FeuerwehrGeraeteSettings
-    ) {
-      this.feuerwehrGeraete = feuerwehrGeraeteSettings;
-    },
-  },
+    // Private variables
+    feuerwehrGeraeteSource,
+  };
 });

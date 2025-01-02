@@ -5,20 +5,19 @@
     :href="item.href"
     v-on="item.click !== undefined ? { click: item.click } : {}"
   >
-    <v-list-item-avatar v-if="item.icon">
-      <v-icon>{{ item.icon }}</v-icon>
-    </v-list-item-avatar>
-    <v-list-item-content>
-      <v-list-item-title>{{ item.title }}</v-list-item-title>
-    </v-list-item-content>
+    <template v-if="item.icon" #prepend>
+      <v-avatar :icon="item.icon"></v-avatar>
+    </template>
+
+    <v-list-item-title>{{ item.title }}</v-list-item-title>
   </v-list-item>
 </template>
 
 <script lang="ts">
 import { NavLink } from "@/models/NavLink";
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     item: {
       type: Object as PropType<NavLink>,

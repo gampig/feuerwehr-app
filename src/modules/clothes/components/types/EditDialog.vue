@@ -1,37 +1,46 @@
 <template>
   <BaseEditDialog
-    :value="value"
+    :model-value="modelValue"
     max-width="900"
     :title="(clothingType && clothingType.name) || 'Kleidungsstück bearbeiten'"
     :loading="loading"
     :saving="saving"
-    @input="cancel"
+    @update:model-value="cancel"
     @save="save"
   >
     <v-container fluid>
-      <TypeForm ref="form" v-bind.sync="item" />
+      <TypeForm
+        ref="form"
+        v-model:category="item.category"
+        v-model:name="item.name"
+        v-model:price="item.price"
+        v-model:is-available="item.isAvailable"
+        v-model:sizes="item.sizes"
+      />
     </v-container>
   </BaseEditDialog>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
-import { mapState } from "vuex";
-/* eslint-disable no-unused-vars */
+import { VForm } from "vuetify/components";
 import { ClothingType } from "../../models/ClothingType";
-/* eslint-enable */
+import { mapState } from "pinia";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TypeForm,
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
+
+  emits: ["update:model-value"],
 
   data() {
     return {
@@ -49,9 +58,9 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapState("clothingTypes", {
-      clothingType: "type",
-      loading: "loadingType",
+    ...mapState(useClothingTypesStore, {
+      clothingType: "selectedType",
+      loading: "selectedTypeLoading",
     }),
   },
 
@@ -61,11 +70,18 @@ export default Vue.extend({
         this.reset();
       }
     },
+
+    modelValue(modelValue) {
+      if (modelValue) {
+        this.reset();
+      }
+    },
   },
 
   methods: {
-    validate() {
-      return (this.$refs?.form as any)?.$refs?.form?.validate();
+    async validate() {
+      const form = (this.$refs?.form as any)?.$refs?.form as VForm | undefined;
+      return form ? (await form.validate()).valid : false;
     },
 
     reset() {
@@ -78,19 +94,21 @@ export default Vue.extend({
 
     closeDialog() {
       this.reset();
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     cancel() {
       this.closeDialog();
     },
 
-    save() {
-      if (this.validate()) {
+    async save() {
+      const item: ClothingType = { name: "", ...this.item };
+
+      if (await this.validate()) {
         this.saving = true;
 
-        this.$store
-          .dispatch("clothingTypes/set", this.item)
+        useClothingTypesStore()
+          .set(item)
           .then(() => {
             this.$showMessage("Gespeichert");
             this.closeDialog();

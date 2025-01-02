@@ -1,33 +1,42 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="modelValue"
     max-width="900"
     :loading="loading"
     title="Neues Kleidungsstück"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="save"
   >
-    <TypeForm ref="form" v-bind.sync="item" />
+    <TypeForm
+      ref="form"
+      v-model:category="item.category"
+      v-model:name="item.name"
+      v-model:price="item.price"
+      v-model:is-available="item.isAvailable"
+      v-model:sizes="item.sizes"
+    />
   </BaseCreateDialog>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
-/* eslint-disable no-unused-vars */
 import { ClothingType } from "../../models/ClothingType";
-/* eslint-enable */
+import { VForm } from "vuetify/components";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TypeForm,
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
+
+  emits: ["update:model-value"],
 
   data() {
     return {
@@ -44,32 +53,33 @@ export default Vue.extend({
   },
 
   methods: {
-    validate() {
-      return (this.$refs?.form as any)?.$refs?.form?.validate();
+    async validate() {
+      const form = (this.$refs?.form as any)?.$refs?.form as VForm | undefined;
+      return form ? (await form.validate()).valid : false;
     },
 
     reset() {
       (this.$refs?.form as any)?.$refs?.form?.reset();
-      this.$set(this.item, "isAvailable", true);
+      this.item.isAvailable = true;
     },
 
     closeDialog() {
       this.reset();
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     cancel() {
       this.closeDialog();
     },
 
-    save() {
-      const item = { ...this.item };
+    async save() {
+      const item: ClothingType = { name: "", ...this.item };
 
-      if (this.validate()) {
+      if (await this.validate()) {
         this.loading = true;
 
-        this.$store
-          .dispatch("clothingTypes/create", item)
+        useClothingTypesStore()
+          .create(item)
           .then(() => {
             this.$showMessage("Kleidungsstück wurde erstellt.");
           })

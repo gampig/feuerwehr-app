@@ -1,20 +1,32 @@
 <template>
-  <v-dialog :value="value" persistent max-width="900" @input="cancel">
+  <v-dialog
+    :model-value="modelValue"
+    persistent
+    max-width="900"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-card-title> Neuer Einsatz </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
-        <CalloutForm ref="form" v-bind.sync="item"></CalloutForm>
+        <CalloutForm
+          ref="form"
+          v-model:type="item.type"
+          v-model:keyword="item.keyword"
+          v-model:catchphrase="item.catchphrase"
+          v-model:alarm-time="item.alarmTime"
+          v-model:address="item.address"
+        ></CalloutForm>
       </v-card-text>
 
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
-        <v-btn :loading="loading" color="primary" text @click="save">
+        <v-btn :loading="loading" color="primary" variant="text" @click="save">
           Speichern
         </v-btn>
       </v-card-actions>
@@ -23,17 +35,21 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import CalloutForm from "./form/Form";
+import { mapActions } from "pinia";
+import CalloutForm from "./form/Form.vue";
+import { useCalloutStore } from "../stores/callout";
+import { useCalloutsStore } from "../stores/callouts";
 
 export default {
   components: { CalloutForm },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
+
+  emits: ["update:model-value", "save"],
 
   data() {
     return {
@@ -47,8 +63,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("callouts", ["create"]),
-    ...mapActions("callout", ["bind"]),
+    ...mapActions(useCalloutsStore, ["create"]),
+    ...mapActions(useCalloutStore, ["selectCallout"]),
 
     reset() {
       this.item = {
@@ -63,19 +79,25 @@ export default {
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.reset();
     },
 
-    save() {
-      if (this.$refs.form.$refs.form.validate()) {
+    async save() {
+      if ((await this.$refs.form.$refs.form.validate()).valid) {
         this.loading = true;
-        this.create(this.item).then((ref) => {
-          this.bind(ref.key);
-          this.$emit("input", false);
-          this.$emit("save", ref.key);
-          this.reset();
-        });
+        this.create(this.item)
+          .then((ref) => {
+            if (ref) {
+              this.selectCallout(ref.key);
+              this.$emit("update:model-value", false);
+              this.$emit("save", ref.key);
+              this.reset();
+            }
+          })
+          .finally(() => {
+            this.loading = false;
+          });
       }
     },
   },

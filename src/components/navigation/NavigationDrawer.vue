@@ -1,30 +1,35 @@
 <template>
-  <v-navigation-drawer :value="value" app @input="$emit('input', $event)">
-    <v-list nav>
-      <v-list-item v-if="!loggedIn" :to="loginRoute" replace>
-        <v-list-item-avatar>
-          <v-icon>mdi-login</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title> Anmelden </v-list-item-title>
-        </v-list-item-content>
+  <v-navigation-drawer
+    :model-value="modelValue"
+    @update:model-value="$emit('update:model-value', $event)"
+  >
+    <v-list nav density="compact">
+      <v-list-item
+        v-if="!loggedIn"
+        :to="loginRoute"
+        replace
+        prepend-icon="mdi-login"
+      >
+        <v-list-item-title> Anmelden </v-list-item-title>
       </v-list-item>
 
-      <v-list-item v-else @click.stop="showUserSettings = !showUserSettings">
-        <v-list-item-avatar>
-          <v-icon>mdi-account-circle</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ user.displayName }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ user.email }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-icon right>
-          {{ showUserSettings ? "mdi-menu-up" : "mdi-menu-down" }}
-        </v-icon>
+      <v-list-item v-else @click.stop="userSettingsButton = !showUserSettings">
+        <template #prepend>
+          <v-avatar icon="mdi-account-circle" />
+        </template>
+
+        <v-list-item-title>
+          {{ user?.displayName }}
+        </v-list-item-title>
+        <v-list-item-subtitle>
+          {{ user?.email }}
+        </v-list-item-subtitle>
+
+        <template #append>
+          <v-icon>
+            {{ showUserSettings ? "mdi-menu-up" : "mdi-menu-down" }}
+          </v-icon>
+        </template>
       </v-list-item>
 
       <v-divider class="mb-3" />
@@ -42,11 +47,11 @@
     </v-list>
 
     <template #append>
-      <v-list v-if="loggedIn != true || showUserSettings" dense>
+      <v-list v-if="loggedIn == true && showUserSettings" density="compact">
         <v-list-item>
-          <v-list-item-subtitle class="text-xs text--disabled">
+          <v-list-item-title class="text-caption text-disabled">
             Version: {{ version }}<br />Entwickelt von Jonas Gampig
-          </v-list-item-subtitle>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
@@ -54,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import version from "@/utils/version";
 import NavigationLink from "./NavigationLink.vue";
 import { Acl } from "@/acl";
@@ -65,83 +70,42 @@ import { AllRoles } from "@/models/User";
 
 const deviceRoles: AllRoles[] = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     NavigationLink,
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
 
+  emits: ["update:model-value"],
+
   data: function () {
     return {
       version,
-
-      showUserSettings: false,
-
-      loginRoute: {
-        name: "UserLogin",
-        params: { nextUrl: this.$route.fullPath },
-      },
-
-      userLinks: [] as NavLink[],
-      links: [] as NavLink[],
+      userSettingsButton: false,
     };
   },
 
   computed: {
-    ...mapState(useAuthStore, ["loggedIn", "user", "hasAnyRole"]),
-  },
+    ...mapState(useAuthStore, ["loggedIn", "user"]),
 
-  watch: {
-    loggedIn() {
-      this.generateLinks();
+    showUserSettings() {
+      return !this.loggedIn || this.userSettingsButton;
     },
-  },
 
-  created() {
-    this.generateLinks();
-  },
+    loginRoute() {
+      return {
+        name: "UserLogin",
+        query: { next: this.$route.fullPath },
+      };
+    },
 
-  methods: {
-    ...mapActions(useAuthStore, ["logout"]),
-
-    generateLinks(): void {
-      if (!this.loggedIn) {
-        this.showUserSettings = false;
-      }
-
-      this.userLinks = [
-        {
-          title: "Gerät einrichten",
-          to: { name: "DeviceSetup" },
-          icon: "mdi-tablet",
-          auth: this.hasAnyRole(Acl.geraetEinrichten),
-        },
-        {
-          title: "Passwort ändern",
-          to: { name: "UserChangePassword" },
-          icon: "mdi-key",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Abmelden",
-          click: () => this.logout(),
-          icon: "mdi-logout",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Anmelden",
-          to: { name: "UserLogin" },
-          icon: "mdi-login",
-          auth: this.hasAnyRole(deviceRoles),
-        },
-      ];
-
-      this.links = [
+    links(): NavLink[] {
+      return [
         {
           title: "Mannschaft",
           to: { name: "CrewCallouts" },
@@ -198,6 +162,39 @@ export default Vue.extend({
         },
       ];
     },
+
+    userLinks(): NavLink[] {
+      return [
+        {
+          title: "Gerät einrichten",
+          to: { name: "DeviceSetup" },
+          icon: "mdi-tablet",
+          auth: this.hasAnyRole(Acl.geraetEinrichten),
+        },
+        {
+          title: "Passwort ändern",
+          to: { name: "UserChangePassword" },
+          icon: "mdi-key",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Abmelden",
+          click: () => this.logout(),
+          icon: "mdi-logout",
+          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
+        },
+        {
+          title: "Anmelden",
+          to: this.loginRoute,
+          icon: "mdi-login",
+          auth: this.hasAnyRole(deviceRoles),
+        },
+      ];
+    },
+  },
+
+  methods: {
+    ...mapActions(useAuthStore, ["logout", "hasAnyRole"]),
   },
 });
 </script>

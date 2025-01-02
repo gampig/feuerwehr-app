@@ -5,22 +5,22 @@
       :key="crewMember.person"
       cols="12"
       sm="6"
-      md="4"
-      lg="3"
+      md="6"
+      lg="4"
     >
       <crew-member-card
         :person="crewMember.person"
         :role="crewMember.role"
         :loading="loading[crewMember.person]"
         :outlined="cardsOutlined"
-        @input="submit(crewMember.person, $event)"
+        @update:model-value="submit(crewMember.person, $event)"
         @delete="remove(crewMember.person)"
       >
       </crew-member-card>
     </v-col>
 
     <BaseConfirmDialog
-      :value="personToRemove !== null"
+      :model-value="personToRemove !== null"
       confirm-text="Entfernen"
       width="300"
       @cancel="cancelRemoval"
@@ -31,21 +31,31 @@
   </v-row>
 </template>
 
-<script>
-import Vue from "vue";
-import crewMemberCard from "../cards/CrewMemberCard";
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
+import crewMemberCard from "../cards/CrewMemberCard.vue";
+import { CalloutRole } from "../../models/Callout";
 
-export default Vue.extend({
+interface CrewMember {
+  person: string;
+  role?: CalloutRole;
+}
+
+interface LoadingMap {
+  [personId: string]: boolean | undefined;
+}
+
+export default defineComponent({
   components: { crewMemberCard },
 
   props: {
     crew: {
-      type: Array,
+      type: Array as PropType<CrewMember[]>,
       required: true,
     },
 
     loading: {
-      type: Object,
+      type: Object as PropType<LoadingMap>,
       default: () => {
         return {};
       },
@@ -57,20 +67,22 @@ export default Vue.extend({
     },
   },
 
+  emits: ["update:model-value", "delete"],
+
   data() {
     return {
-      personToRemove: null,
+      personToRemove: null as string | null,
     };
   },
 
   methods: {
-    submit(person, role) {
-      if (role != this.crew.find((item) => item.person === person).role) {
-        this.$emit("input", { person, role });
+    submit(personId: string, role?: CalloutRole) {
+      if (role != this.crew.find((item) => item.person === personId)?.role) {
+        this.$emit("update:model-value", { person: personId, role });
       }
     },
 
-    remove(personId) {
+    remove(personId: string) {
       this.personToRemove = personId;
     },
 

@@ -1,17 +1,16 @@
 <template>
   <v-container fluid>
-    <BaseSearchRow :search.sync="search" />
+    <BaseSearchRow v-model:search="search" />
 
     <v-row>
       <v-col cols="12">
         <v-data-table
-          v-model="selected"
+          v-model:sort-by="sortBy"
           :headers="headers"
           :items="callouts"
           :search="search"
           :loading="loading"
           loading-text="Laden..."
-          :options.sync="options"
           class="elevation-1"
           locale="de-DE"
           item-key="id"
@@ -30,37 +29,50 @@
   </v-container>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { Callout } from "../models/Callout";
+import { sortDateTime } from "@/utils/dates";
+import { mapState } from "pinia";
+import { useCalloutsStore } from "../stores/callouts";
+import { VueDatabaseDocumentData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
-export default makeListMixin("Callout", "callouts").extend({
+export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Alarm", value: "alarmTimeFormatted", sort: this.sortDateTime },
-        { text: "Stichwort", value: "keyword" },
-        { text: "Schlagwort", value: "catchphrase" },
-        { text: "Adresse", value: "address" },
+        { title: "Alarm", key: "alarmTimeFormatted", sort: sortDateTime },
+        { title: "Stichwort", key: "keyword" },
+        { title: "Schlagwort", key: "catchphrase" },
+        { title: "Adresse", key: "address" },
         {
-          text: "Aktionen",
-          value: "action",
+          title: "Aktionen",
+          key: "action",
           sortable: false,
         },
       ],
-      selected: [],
-      options: {
-        sortBy: ["alarmTimeFormatted"],
-        sortDesc: [true],
-        page: 1,
-        itemsPerPage: 15,
-      },
+
+      sortBy: [{ key: "alarmTimeFormatted", order: "desc" }] as SortItem[],
+
       search: "",
     };
   },
 
   computed: {
-    ...mapGetters("callouts", { callouts: "calloutsWithFormattedDateTime" }),
+    ...mapState(useCalloutsStore, {
+      loading: "loading",
+      callouts: "calloutsWithFormattedDateTime",
+    }),
+  },
+
+  methods: {
+    showHandler(item: NonNullable<VueDatabaseDocumentData<Callout>>) {
+      this.$router.push({
+        name: "CalloutShow",
+        params: { id: item.id },
+      });
+    },
   },
 });
 </script>

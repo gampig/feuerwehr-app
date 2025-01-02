@@ -1,32 +1,18 @@
 <template>
   <div>
-    <v-app-bar>
-      <v-btn icon @click="goBack">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-
-      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
-
-      <v-spacer />
-
+    <AppBar back-button :page-title="pageTitle">
       <slot name="actions" />
 
-      <v-menu bottom left>
-        <template #activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+      <v-menu location="bottom left">
+        <template #activator="{ props }">
+          <v-btn icon v-bind="props">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
 
         <v-list>
-          <v-list-item
-            v-if="$store.state.callout.callout"
-            @click="showCalloutDetails = true"
-          >
+          <v-list-item v-if="callout" @click="showCalloutDetails = true">
             <v-list-item-title>Einsatz anzeigen</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="reload">
-            <v-list-item-title>Daten neu laden</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -35,29 +21,29 @@
         class="ml-3"
         :loading="loading"
         color="primary"
+        variant="flat"
         @click="$emit('submit')"
       >
         {{ saveButtonLabel }}
       </v-btn>
-    </v-app-bar>
+    </AppBar>
 
     <v-container>
       <slot />
     </v-container>
 
-    <CalloutDetailsDialog
-      v-if="$store.state.callout.callout"
-      v-model="showCalloutDetails"
-    />
+    <CalloutDetailsDialog v-if="callout" v-model="showCalloutDetails" />
   </div>
 </template>
 
 <script>
-import modules from "@/modules";
+import AppBar from "@/components/bars/AppBar.vue";
 import CalloutDetailsDialog from "./CalloutDetailsDialog.vue";
+import { mapState } from "pinia";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
-  components: { CalloutDetailsDialog },
+  components: { AppBar, CalloutDetailsDialog },
   props: {
     pageTitle: {
       type: String,
@@ -80,17 +66,16 @@ export default {
     },
   },
 
+  emits: ["submit"],
+
   data() {
     return {
       showCalloutDetails: false,
     };
   },
 
-  methods: {
-    reload: () => modules.onLogin(),
-    goBack() {
-      this.$router.back();
-    },
+  computed: {
+    ...mapState(useCalloutStore, ["callout"]),
   },
 };
 </script>

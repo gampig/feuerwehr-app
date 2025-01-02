@@ -5,7 +5,7 @@
         :label="'Datum ' + label"
         type="date"
         :prepend-icon="prependIcon"
-        :value="date"
+        :model-value="date"
         :rules="rulesDate"
         :clearable="clearable"
         readonly
@@ -18,10 +18,10 @@
         :label="'Uhrzeit ' + label"
         type="time"
         :prepend-icon="prependIcon"
-        :value="time"
+        :model-value="time"
         :rules="rulesTime"
         :clearable="clearable"
-        @input="updateTime"
+        @update:model-value="updateTime"
       />
     </v-col>
 
@@ -37,7 +37,7 @@
 
 <script>
 import moment from "moment";
-import DateTimeFieldsDateDialog from "./DateTimeFieldsDateDialog";
+import DateTimeFieldsDateDialog from "./DateTimeFieldsDateDialog.vue";
 
 export default {
   components: { DateTimeFieldsDateDialog },
@@ -78,11 +78,13 @@ export default {
       default: false,
     },
 
-    value: {
+    modelValue: {
       type: Number,
       default: null,
     },
   },
+
+  emits: ["update:model-value"],
 
   data() {
     return {
@@ -93,9 +95,9 @@ export default {
   },
 
   watch: {
-    value(value) {
-      if (value) {
-        const dateObj = moment.unix(value);
+    modelValue(modelValue) {
+      if (modelValue) {
+        const dateObj = moment.unix(modelValue);
         this.date = dateObj.format("YYYY-MM-DD");
         this.time = dateObj.format("HH:mm");
       } else {
@@ -121,7 +123,7 @@ export default {
         this.date && this.time
           ? moment(this.date + " " + this.time).unix()
           : null;
-      this.$emit("input", value);
+      this.$emit("update:model-value", value);
     },
   },
 };

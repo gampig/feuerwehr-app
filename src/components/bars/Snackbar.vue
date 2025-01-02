@@ -1,69 +1,61 @@
 <template>
-  <v-snackbar
-    :value="show"
-    :color="color"
-    :multi-line="true"
-    :timeout="timeout"
-    right
-    top
+  <VSnackbarQueue
+    v-model="snackbarQueue"
+    location="right top"
+    closable
+    :close-on-back="false"
   >
-    {{ text }}
-    <template v-if="subText">
-      <p>{{ subText }}</p>
-    </template>
-    <template #action="{ attrs }">
-      <v-btn v-bind="attrs" icon @click.native="close">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </template>
-  </v-snackbar>
+  </VSnackbarQueue>
 </template>
 
 <script lang="ts">
 import { useNotificationsStore } from "@/stores/notifications";
 import { mapActions, mapState } from "pinia";
-import Vue from "vue";
+import { defineComponent } from "vue";
+import { VSnackbarQueue } from "vuetify/labs/components";
 
-export default Vue.extend({
+type Writable<T> = { -readonly [P in keyof T]: T[P] };
+
+export default defineComponent({
+  components: {
+    VSnackbarQueue,
+  },
+
   data() {
     return {
-      timer: null as number | null,
+      snackbarQueue: [] as Writable<
+        NonNullable<VSnackbarQueue["$props"]["modelValue"]>
+      >,
     };
   },
 
   computed: {
-    ...mapState(useNotificationsStore, [
-      "id",
-      "show",
-      "timeout",
-      "text",
-      "subText",
-      "color",
-    ]),
+    ...mapState(useNotificationsStore, ["notificationsQueueLength"]),
   },
 
   watch: {
-    id() {
-      if (this.show) {
-        this.setTimer();
+    notificationsQueueLength(length) {
+      if (length > 0) {
+        this.processNotifications();
       }
     },
   },
 
   methods: {
-    ...mapActions(useNotificationsStore, ["setShow"]),
+    ...mapActions(useNotificationsStore, ["popNotification"]),
 
-    setTimer() {
-      if (this.timer) {
-        clearTimeout(this.timer);
+    processNotifications() {
+      while (this.notificationsQueueLength > 0) {
+        const notification = this.popNotification();
+        if (notification) {
+          const snackbar = {
+            text: notification.text,
+            timeout: notification.timeout,
+            color: notification.color,
+          };
+          this.snackbarQueue.push(snackbar);
+        }
       }
-      this.timer = setTimeout(() => {
-        this.setShow(false);
-      }, this.timeout);
-    },
-
-    close() {
-      this.setShow(false);
     },
   },
 });

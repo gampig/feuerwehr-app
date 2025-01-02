@@ -1,3 +1,5 @@
+import { RouteRecordRaw } from "vue-router";
+
 export default [
   {
     path: "/kleidung",
@@ -24,4 +26,4 @@ export default [
     path: "/kleidung/lager/:id",
     component: () => import("./views/Storage.vue"),
   },
-];
+] satisfies RouteRecordRaw[];

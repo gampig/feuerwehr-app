@@ -19,20 +19,28 @@
 
       <v-card-text>
         <v-form ref="form">
-          <v-checkbox
+          <v-radio-group
             v-if="vehicle?.isUgOeel"
             v-model="isUgOeelCallout"
-            label="UG-ÖEL-Einsatz"
-            :indeterminate="
-              isUgOeelCallout === null || isUgOeelCallout === undefined
-            "
+            label="UG-ÖEL-Einsatz?"
             :rules="[calloutRules.ugOeelCalloutRequired]"
+          >
+            <v-radio label="Ja" :value="true"></v-radio>
+            <v-radio label="Nein" :value="false"></v-radio>
+          </v-radio-group>
+
+          <v-text-field
+            label="Einsatzbeginn"
+            append-inner-icon="mdi-alarm-light-outline"
+            :model-value="alarmTimeFormatted"
+            readonly
+            disabled
           />
 
           <v-text-field
             label="Einsatzende"
-            prepend-icon="mdi-calendar-check-outline"
-            :value="endTimeFormatted"
+            append-inner-icon="mdi-calendar-check-outline"
+            :model-value="endTimeFormatted"
             :rules="[rules.restrictFuture, calloutRules.endAfterAlarm]"
             readonly
             clearable
@@ -54,13 +62,15 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import FormMixin from "@/mixins/FormMixin";
-import CrewPage from "../../components/CrewPage";
-import { dateTimeToUnix, formatDateTime } from "@/utils/dates";
+import CrewPage from "../../components/CrewPage.vue";
+import { dateTimeToUnix, formatDateTime, tomorrow } from "@/utils/dates";
 import moment from "moment";
+import { defineComponent } from "vue";
+import { restrictFuture } from "@/utils/rules";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../../stores/callout";
 
-export default FormMixin.extend({
+export default defineComponent({
   components: { CrewPage },
 
   props: {
@@ -72,12 +82,17 @@ export default FormMixin.extend({
 
   data() {
     return {
+      rules: {
+        restrictFuture,
+      },
+
       calloutRules: {
         endAfterAlarm: (value) =>
           !value ||
           !this.callout?.alarmTime ||
           dateTimeToUnix(value) >= this.callout.alarmTime ||
           "Ende kann nicht vor Alarm sein",
+
         ugOeelCalloutRequired: (value) =>
           (value !== null && value !== undefined) ||
           "Bitte fülle dieses Feld aus",
@@ -89,13 +104,15 @@ export default FormMixin.extend({
       emptyItem: {
         endTime: null,
       },
+
       isUgOeelCallout: null,
     };
   },
 
   computed: {
-    ...mapState("callout", { callout: "callout" }),
-    ...mapState("vehicles", { vehicle: "vehicle" }),
+    ...mapState(useCalloutStore, ["callout", "vehicle"]),
+
+    tomorrow: () => tomorrow.value,
 
     title() {
       return (this.vehicle && this.vehicle.name) || "Fahrzeug";
@@ -105,6 +122,10 @@ export default FormMixin.extend({
       return this.callout?.alarmTime
         ? moment.unix(this.callout.alarmTime).format("YYYY-MM-DD")
         : "";
+    },
+
+    alarmTimeFormatted() {
+      return this.callout ? formatDateTime(this.callout.alarmTime) : "";
     },
 
     endTimeFormatted() {
@@ -125,7 +146,7 @@ export default FormMixin.extend({
   },
 
   methods: {
-    ...mapActions("callout", ["updateCallout", "updateVehicleDetails"]),
+    ...mapActions(useCalloutStore, ["updateCallout", "updateVehicleDetails"]),
 
     setItem() {
       this.item = Object.assign(
@@ -145,8 +166,8 @@ export default FormMixin.extend({
       this.item.endTime = endTime;
     },
 
-    submit() {
-      if (this.$refs.form.validate()) {
+    async submit() {
+      if ((await this.$refs.form.validate()).valid) {
         this.saving = true;
 
         Promise.all([
@@ -159,10 +180,7 @@ export default FormMixin.extend({
               })
             : Promise.resolve(null),
 
-          this.updateVehicleDetails({
-            vehicleId: this.vehicle.id,
-            details: this.item,
-          }),
+          this.updateVehicleDetails(this.item),
         ])
           .then(() =>
             this.$router.push({

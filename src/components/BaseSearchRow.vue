@@ -2,15 +2,14 @@
   <v-row>
     <v-col md="6" lg="4" cols="12">
       <v-text-field
-        label="Suche"
+        placeholder="Suche"
         :search="search"
         prepend-inner-icon="mdi-magnify"
-        solo
-        dense
-        single-line
+        variant="solo"
+        density="compact"
         hide-details
         clearable
-        @input="$emit('update:search', $event)"
+        @update:model-value="$emit('update:search', $event)"
       ></v-text-field>
     </v-col>
 
@@ -26,5 +25,7 @@ export default {
       default: "",
     },
   },
+
+  emits: ["update:search"],
 };
 </script>

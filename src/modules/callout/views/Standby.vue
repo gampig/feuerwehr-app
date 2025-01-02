@@ -1,99 +1,200 @@
 <template>
-  <v-stepper v-model="currentStep" vertical>
-    <BaseStepperVerticalStep :index="1" :step="steps[0]" :value="currentStep">
-      <SelectCalloutStep @input="onCalloutSelect" />
-    </BaseStepperVerticalStep>
+  <v-container>
+    <v-stepper
+      v-model="currentStep"
+      :items="steps"
+      color="primary"
+      hide-actions
+    >
+      <template #[`item.1`]>
+        <CalloutList @update:model-value="onSelectCalloutClicked">
+          <v-card-title> Einsatz auswählen </v-card-title>
+        </CalloutList>
+      </template>
 
-    <BaseStepperVerticalStep :index="2" :step="steps[1]" :value="currentStep">
-      <SelectStandbyStep @back="$router.back()" />
-    </BaseStepperVerticalStep>
-
-    <CreateDialog v-model="showCreateDialog" @save="onDialogClose" />
-  </v-stepper>
+      <template #[`item.2`]>
+        <v-card>
+          <v-card-title>
+            Bereitschaft ({{
+              crewCount == 1 ? "1 Person" : `${crewCount} Personen`
+            }})
+          </v-card-title>
+          <v-card-subtitle v-if="callout">
+            {{ callout.keyword }} -
+            {{ formatDateTimeFromNow(callout.alarmTime) }}
+            ({{ formatDateTime(callout.alarmTime) }})
+          </v-card-subtitle>
+          <v-card-text v-if="callout">
+            <PersonAutocomplete
+              :loading="loading"
+              @update:model-value="onAdd"
+            ></PersonAutocomplete>
+            <v-data-table
+              :headers="crewTableHeaders"
+              :items="crewTableItems"
+              items-per-page="-1"
+              no-data-text="Keine Personen eingetragen"
+              variant="outlined"
+              hide-default-header
+              hide-default-footer
+            >
+              <template #[`item.action`]="{ item }">
+                <v-btn variant="plain" @click="onRemove(item.person)">
+                  Entfernen
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
+            <v-btn @click="back">Zurück</v-btn>
+            <v-spacer />
+            <v-btn
+              variant="flat"
+              color="primary"
+              @click="showDoneNotice = true"
+            >
+              Fertig
+            </v-btn>
+          </v-card-actions>
+          <BaseConfirmDialog
+            v-model="showRemoveDialog"
+            confirm-text="Entfernen"
+            @confirm="onRemoveConfirmed"
+          >
+            Soll <strong>{{ personToRemove }}</strong> wirklich vom Einsatz
+            entfernt werden?
+          </BaseConfirmDialog>
+          <v-dialog v-model="showDoneNotice" width="auto">
+            <v-card>
+              <v-card-title>
+                Bitte dieses Programm (FeuerwehrApp) schließen.
+              </v-card-title>
+              <v-card-actions>
+                <v-btn variant="plain" @click="showDoneNotice = false">
+                  Abbrechen
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-card>
+      </template>
+    </v-stepper>
+  </v-container>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
-import StepperMixin from "@/mixins/StepperMixin";
-import SelectCalloutStep from "../components/steppers/SelectCalloutStep";
-import SelectStandbyStep from "../components/steppers/SelectStandbyStep";
-import CreateDialog from "../components/CreateDialog";
-import { formatDateTime } from "@/utils/dates";
+<script lang="ts">
+import CalloutList from "../components/CalloutList.vue";
+import PersonAutocomplete from "../components/form/PersonAutocomplete.vue";
+import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
+import { Person } from "@/modules/people/models/Person";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
   components: {
-    SelectCalloutStep,
-    SelectStandbyStep,
-    CreateDialog,
+    CalloutList,
+    PersonAutocomplete,
   },
-
-  mixins: [StepperMixin],
 
   data() {
     return {
-      showCreateDialog: false,
+      currentStep: 1,
+      loading: false,
+      personToRemove: null as string | null,
+      showRemoveDialog: false,
+      showDoneNotice: false,
+
+      steps: [
+        {
+          value: 1,
+          title: "Einsatz",
+        },
+        {
+          value: 2,
+          title: "Bereitschaft",
+        },
+      ],
+
+      crewTableHeaders: [
+        {
+          title: "Name",
+          value: "person",
+        },
+        {
+          value: "action",
+          width: "1%",
+          sortable: false,
+        },
+      ],
     };
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
+    ...mapState(useCalloutStore, ["callout", "crew"]),
 
-    id() {
-      return this.$route.params.id;
+    standbyCrew() {
+      return this.crew?.standby ?? {};
     },
 
-    steps() {
-      return [
-        {
-          name: "StandbyCallout",
-          label:
-            "Einsatz" +
-            (this.callout
-              ? `: ${formatDateTime(this.callout.alarmTime)} - ${
-                  this.callout.keyword
-                }`
-              : ""),
-        },
-        {
-          name: "StandbyPeople",
-          label: "Bereitschaft",
-        },
-      ];
+    crewCount() {
+      return this.standbyCrew ? Object.keys(this.standbyCrew).length : 0;
     },
-  },
 
-  watch: {
-    id(id) {
-      this.init(id);
+    crewTableItems(): Array<{ person: string }> {
+      return Object.keys(this.standbyCrew).map((person) => ({
+        person: person,
+      }));
     },
-  },
-
-  created() {
-    this.init(this.id);
   },
 
   methods: {
-    ...mapActions("callout", { bindCallout: "bind", unbindCallout: "unbind" }),
+    ...mapActions(useCalloutStore, [
+      "selectCallout",
+      "addStandbyMember",
+      "removeStandbyMember",
+    ]),
 
-    init(id) {
-      if (id) {
-        this.bindCallout(id);
+    onSelectCalloutClicked(calloutId: string) {
+      this.selectCallout(calloutId);
+      this.currentStep = 2;
+    },
+
+    back() {
+      this.currentStep = 1;
+    },
+
+    onAdd(person: Person & { id: string }) {
+      this.loading = true;
+      this.addStandbyMember(person.id).finally(() => {
+        this.loading = false;
+      });
+    },
+
+    onRemove(person: string) {
+      this.personToRemove = person;
+      this.showRemoveDialog = true;
+    },
+
+    onRemoveConfirmed() {
+      if (this.personToRemove) {
+        this.removeStandbyMember(this.personToRemove);
       } else {
-        this.unbindCallout();
+        throw new Error(
+          "Konnte Person nicht entfernen wegen einem internen Fehler (personToRemove darf nicht NULL sein)."
+        );
       }
     },
 
-    onCalloutSelect(calloutId) {
-      if (!calloutId) {
-        this.showCreateDialog = true;
-      } else {
-        this.goTo("StandbyPeople", { id: calloutId });
-      }
-    },
-
-    onDialogClose(calloutId) {
-      this.goTo("StandbyPeople", { id: calloutId });
-    },
+    formatDateTime,
+    formatDateTimeFromNow,
   },
 };
 </script>
+
+<style scoped>
+:deep(.v-stepper-window) {
+  margin: 0px;
+  margin-top: 10px;
+}
+</style>

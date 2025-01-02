@@ -1,5 +1,4 @@
 export interface Order {
-  id: string;
   person: string;
   clothingType: string;
 

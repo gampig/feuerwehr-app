@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :value="value" persistent :max-width="maxWidth" @input="cancel">
+  <v-dialog
+    :model-value="modelValue"
+    persistent
+    :max-width="maxWidth"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
 
@@ -12,9 +17,9 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Schließen </v-btn>
         <v-spacer />
-        <v-btn :loading="loading" color="primary" text @click="save">
+        <v-btn :loading="loading" color="primary" variant="text" @click="save">
           Speichern
         </v-btn>
       </v-card-actions>
@@ -23,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
@@ -48,9 +53,11 @@ export default Vue.extend({
     },
   },
 
+  emits: ["update:model-value", "create"],
+
   methods: {
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     save() {

@@ -1,63 +1,64 @@
 <template>
-  <v-dialog :value="value" persistent max-width="600" @input="cancel">
+  <v-dialog
+    :model-value="modelValue"
+    persistent
+    width="auto"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-tabs v-model="dateTabs" fixed-tabs>
         <v-tab key="time"> Uhrzeit </v-tab>
         <v-tab key="date"> Datum </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="dateTabs">
-        <v-tab-item key="time">
+      <v-tabs-window v-model="dateTabs">
+        <v-tabs-window-item key="time">
           <v-toolbar color="primary" dark>
             <v-toolbar-title> Zeit einstellen </v-toolbar-title>
           </v-toolbar>
 
-          <v-form ref="timeForm">
+          <VForm ref="timeForm">
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs3>
+                <div>
                   <v-text-field
                     v-model="hour"
-                    label="Stunde"
                     type="number"
                     min="0"
                     max="23"
-                    :rules="[rules.isHour]"
+                    variant="filled"
+                    :rules="[isHour]"
                   />
-                </v-flex>
-                <v-flex shrink align-self-center>
-                  <p class="mb-0">:</p>
-                </v-flex>
-                <v-flex xs3>
+                </div>
+                <p class="align-self-center mb-6 ml-3 mr-3">:</p>
+                <div>
                   <v-text-field
                     v-model="minute"
-                    label="Minute"
                     type="number"
                     min="0"
                     max="59"
-                    :rules="[rules.isMinute]"
+                    variant="filled"
+                    :rules="[isMinute]"
                   />
-                </v-flex>
+                </div>
               </v-layout>
             </v-container>
-          </v-form>
-        </v-tab-item>
-        <v-tab-item key="date">
+          </VForm>
+        </v-tabs-window-item>
+        <v-tabs-window-item key="date">
           <v-date-picker
             v-model="dateVal"
             :max="maxDate"
             :min="minDate"
-            first-day-of-week="1"
             color="primary"
             class="elevation-0"
-            style="border-radius: 0"
-            full-width
+            tile
           />
-        </v-tab-item>
-      </v-tabs-items>
+        </v-tabs-window-item>
+      </v-tabs-window>
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
         <v-btn color="primary" @click="save"> Speichern </v-btn>
       </v-card-actions>
@@ -65,90 +66,76 @@
   </v-dialog>
 </template>
 
-<script>
-import moment from "moment";
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import { VForm } from "vuetify/components";
 
 const hourRegex = new RegExp("^([01]?\\d|2[0-3])$");
 const minuteRegex = new RegExp("^([0-5]?\\d)$");
 
-function pad(n) {
-  return n < 10 ? "0" + Number(n) : Number(n);
+function pad(n: number) {
+  return n < 10 ? "0" + n : n.toString();
 }
 
-export default {
-  props: {
-    value: {
-      type: Boolean,
-    },
+const emit = defineEmits(["update:model-value", "update:date"]);
 
-    date: {
-      type: Number,
-      default: null,
-    },
+const { modelValue, date, maxDate, minDate } = defineProps<{
+  modelValue: boolean;
+  date?: number;
+  maxDate?: string;
+  minDate?: string;
+}>();
 
-    maxDate: {
-      type: String,
-      default: undefined,
-    },
+const timeForm = ref<VForm>();
+const dateTabs = ref<string>();
+const dateVal = ref<Date>();
+const hour = ref("00");
+const minute = ref("00");
 
-    minDate: {
-      type: String,
-      default: undefined,
-    },
-  },
+function isHour(value: any) {
+  return hourRegex.test(value) || "Ungültig";
+}
 
-  data() {
-    return {
-      rules: {
-        isHour: (value) => hourRegex.test(value) || "Ungültig",
+function isMinute(value: any) {
+  return minuteRegex.test(value) || "Ungültig";
+}
 
-        isMinute: (value) => minuteRegex.test(value) || "Ungültig",
-      },
+function reset() {
+  dateTabs.value = undefined;
 
-      dateTabs: null,
-      dateVal: null,
-      hour: "00",
-      minute: "00",
-    };
-  },
+  const currentMoment = date ? new Date(date * 1000) : new Date();
+  dateVal.value = currentMoment;
+  hour.value = pad(currentMoment.getHours());
+  minute.value = pad(currentMoment.getMinutes());
+}
 
-  watch: {
-    value(value) {
-      if (value) {
-        this.reset();
-      }
-    },
-  },
+function cancel() {
+  dateTabs.value = undefined;
+  emit("update:model-value", false);
+}
 
-  methods: {
-    reset() {
-      this.dateTabs = null;
+async function save() {
+  if (!timeForm.value || !dateVal.value) {
+    return;
+  }
 
-      const currentMoment = this.date ? moment.unix(this.date) : moment();
-      this.dateVal = currentMoment.format("YYYY-MM-DD");
-      this.hour = currentMoment.format("HH");
-      this.minute = currentMoment.format("mm");
-    },
+  if (!(await timeForm.value.validate()).valid) {
+    dateTabs.value = "time";
+  } else {
+    dateTabs.value = undefined;
+    emit("update:model-value", false);
 
-    cancel() {
-      this.dateTabs = null;
-      this.$emit("input", false);
-    },
+    dateVal.value.setHours(Number(hour.value));
+    dateVal.value.setMinutes(Number(minute.value));
+    emit("update:date", dateVal.value.getTime() / 1000);
+  }
+}
 
-    save() {
-      if (!this.$refs.timeForm.validate()) {
-        this.dateTabs = "time";
-      } else {
-        this.dateTabs = null;
-        this.$emit("input", false);
-
-        // Pad: MomentJS expects a leading zero for the hour and minute
-        const date = moment(
-          `${this.dateVal} ${pad(this.hour)}:${pad(this.minute)}`
-        );
-        this.$emit("update:date", date.unix());
-      }
-    },
-  },
-};
+watch(() => modelValue, reset);
 </script>
+
+<style scoped>
+.v-dialog > .v-overlay__content > .v-card {
+  display: block;
+}
+</style>

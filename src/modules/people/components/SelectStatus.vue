@@ -1,40 +1,44 @@
 <template>
   <v-chip-group
-    :value="selectedStatusIndex"
-    active-class="primary"
+    :model-value="selectedStatus"
+    selected-class="bg-primary"
     mandatory
     column
-    @change="changeStatus"
+    @update:model-value="changeStatus"
   >
-    <v-chip v-for="status in availableStatusValues" :key="status">
+    <v-chip
+      v-for="status in availableStatusValues"
+      :key="status"
+      :value="status"
+    >
       {{ status }}
     </v-chip>
   </v-chip-group>
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { ALL_PERSON_STATUS_VALUES, PersonStatus } from "../models/Person";
-/* eslint-enable */
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: String as PropType<PersonStatus>,
       default: "Aktiv",
     },
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       availableStatusValues: ALL_PERSON_STATUS_VALUES,
-      selectedStatusIndex: 0,
+      selectedStatus: undefined as PersonStatus | undefined,
     };
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.loadData();
     },
   },
@@ -45,13 +49,11 @@ export default Vue.extend({
 
   methods: {
     loadData() {
-      this.selectedStatusIndex = this.availableStatusValues.indexOf(
-        this.value as PersonStatus
-      );
+      this.selectedStatus = this.modelValue;
     },
 
-    changeStatus(newStatusIndex: number) {
-      this.$emit("input", this.availableStatusValues[newStatusIndex]);
+    changeStatus(newStatus: PersonStatus) {
+      this.$emit("update:model-value", newStatus);
     },
   },
 });

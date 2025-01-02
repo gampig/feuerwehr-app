@@ -1,12 +1,18 @@
 <template>
-  <v-dialog :value="value" max-width="700" @input="$emit('input', false)">
+  <v-dialog
+    :model-value="modelValue"
+    max-width="700"
+    @update:model-value="$emit('update:model-value', false)"
+  >
     <v-card>
-      <v-card-title class="headline">
-        Details zum Einsatz
-        <v-spacer></v-spacer>
-        <v-btn large icon @click="$emit('input', false)">
-          <v-icon>mdi-close</v-icon>
+      <v-card-title>
+        <v-btn
+          icon="mdi-close"
+          variant="text"
+          @click="$emit('update:model-value', false)"
+        >
         </v-btn>
+        Details zum Einsatz
       </v-card-title>
 
       <v-divider></v-divider>
@@ -17,16 +23,18 @@
 </template>
 
 <script>
-import CalloutDetails from "./CalloutDetails";
+import CalloutDetails from "./CalloutDetails.vue";
 
 export default {
   components: { CalloutDetails },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
+
+  emits: ["update:model-value"],
 };
 </script>

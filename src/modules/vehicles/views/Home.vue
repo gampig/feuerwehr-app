@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <v-btn v-if="showMapButton" @click="showMap">
-            <v-icon left>mdi-map</v-icon>
+            <v-icon start>mdi-map</v-icon>
             Karte
           </v-btn>
         </v-col>
@@ -16,9 +16,9 @@
 <script lang="ts">
 import { useAppSettingsStore } from "@/modules/appSettings/stores/appSettings";
 import { mapState } from "pinia";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapState(useAppSettingsStore, ["feuerwehrGeraete"]),
 

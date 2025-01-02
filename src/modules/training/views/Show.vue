@@ -8,29 +8,29 @@
     </template>
 
     <v-container>
-      <v-alert type="warning" dismissible dense border="left">
+      <v-alert type="warning" closable density="compact" border="start">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
-      <v-alert type="info" dense border="left" colored-border>
+      <v-alert type="info" density="compact" variant="outlined">
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
-      <v-tabs-items v-model="currentTab" touchless>
-        <v-tab-item>
-          <v-form>
-            <v-card outlined>
+      <v-tabs-window v-model="currentTab" touchless>
+        <v-tabs-window-item>
+          <VForm>
+            <v-card border>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
                 <v-text-field
-                  :value="training.startTime | formatDateTime"
+                  :model-value="formatDateTime(training.startTime)"
                   label="Start"
                   append-icon="mdi-calendar"
                   readonly
                   @click="showStartTimeDialog = true"
                 />
                 <v-text-field
-                  :value="training.endTime | formatDateTime"
+                  :model-value="formatDateTime(training.endTime)"
                   label="Ende"
                   append-icon="mdi-calendar"
                   readonly
@@ -55,75 +55,74 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn depressed disabled>
-                  <v-icon left>mdi-delete</v-icon>Löschen
+                <v-btn variant="flat" disabled>
+                  <v-icon start>mdi-delete</v-icon>Löschen
                 </v-btn>
               </v-card-actions>
             </v-card>
-          </v-form>
-        </v-tab-item>
+          </VForm>
+        </v-tabs-window-item>
 
-        <v-tab-item>
-          <v-card outlined>
-            <v-form ref="addParticipantForm">
+        <v-tabs-window-item>
+          <v-card border>
+            <VForm ref="addParticipantForm">
               <v-card flat>
                 <v-card-title>
-                  <v-icon left>mdi-plus</v-icon>
+                  <v-icon start>mdi-plus</v-icon>
                   Teilnehmer hinzufügen
                 </v-card-title>
                 <v-card-text>
                   <v-combobox
-                    :search-input.sync="newParticipantName"
+                    v-model:search="newParticipantName"
                     :items="availablePeople"
                     clearable
                     label="Teilnehmer"
-                    filled
+                    variant="filled"
                     :rules="[isNotEmpty, isValidName]"
                   >
                   </v-combobox>
                   <v-radio-group
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
-                    row
+                    inline
                     :rules="[isNotEmpty]"
                   >
                     <v-radio
                       v-for="group in training.groups"
                       :key="group"
                       :label="group"
-                      :value="group"
+                      :model-value="group"
                     >
                     </v-radio>
                   </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn depressed color="primary" @click="addParticipant">
+                  <v-btn variant="flat" color="primary" @click="addParticipant">
                     Hinzufügen
                   </v-btn>
                 </v-card-actions>
               </v-card>
-            </v-form>
+            </VForm>
             <v-divider />
             <v-card flat>
               <v-card-title>
-                <v-icon left>mdi-check</v-icon>
+                <v-icon start>mdi-check</v-icon>
                 Eingetragene Teilnehmer
               </v-card-title>
               <v-card-text>
                 <v-text-field
                   v-model="search"
                   prepend-inner-icon="mdi-magnify"
-                  label="Suche"
-                  single-line
+                  placeholder="Suche"
                   hide-details
                 />
               </v-card-text>
               <v-data-table
+                v-model:sort-by="sortBy"
                 :headers="headers"
                 :items="training.participants"
                 :items-per-page="-1"
                 no-data-text="Keine Teilnehmer vorhanden"
-                sort-by="name"
                 :search="search"
               >
                 <template #[`item.actions`]="{ item }">
@@ -134,8 +133,8 @@
               </v-data-table>
             </v-card>
           </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+        </v-tabs-window-item>
+      </v-tabs-window>
     </v-container>
 
     <BaseDateTimeDialog
@@ -154,9 +153,12 @@
 <script setup lang="ts">
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { capitalizeFirstLetter } from "@/utils/strings";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
 import { trainings } from "./TestData";
+import { formatDateTime } from "@/utils/dates";
+import { VForm } from "vuetify/components";
+import { SortItem } from "@/models/SortItem";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -183,9 +185,13 @@ const availableGroups = [
   "Anderes",
 ];
 
-const availablePeople: string[] = usePeopleStore()
-  .people.filter((person) => person.status !== "Ausgetreten")
-  .map((person) => person.id);
+const peopleStore = usePeopleStore();
+
+const availablePeople = computed(() =>
+  peopleStore.people
+    .filter((person) => person.status !== "Ausgetreten")
+    .map((person) => person.id)
+);
 
 const headers = [
   {
@@ -204,12 +210,22 @@ const headers = [
   },
 ];
 
+const sortBy = ref<SortItem[]>([
+  {
+    key: "name",
+  },
+]);
+
 const training = reactive<Training>(trainings[0]);
 
-const addParticipantForm = ref<HTMLFormElement | null>(null);
+const addParticipantForm = ref<VForm>();
 
-function addParticipant() {
-  if (addParticipantForm.value?.validate()) {
+async function addParticipant() {
+  if (!addParticipantForm.value) {
+    return;
+  }
+
+  if ((await addParticipantForm.value.validate()).valid) {
     const nameParts = newParticipantName.value.split(" ");
     const formattedName = nameParts
       .map((namePart) => capitalizeFirstLetter(namePart))

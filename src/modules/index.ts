@@ -1,7 +1,6 @@
 import VehiclesModule from "./vehicles";
 import CalloutModule from "./callout";
 import ClothesModule from "./clothes";
-import { Store } from "vuex";
 import AbstractModule from "./AbstractModule";
 import PeopleModule from "./people";
 import ExporterModule from "./exporter";
@@ -13,27 +12,24 @@ import trainingRoutes from "./training/router";
 import clothesRoutes from "./clothes/router";
 import peopleRoutes from "./people/router";
 import exporterRoutes from "./exporter/router";
-import { AppRouteConfig } from "@/models/Route";
+import { RouteRecordRaw } from "vue-router";
 
 class AppModules {
   modules: AbstractModule[] = [];
-  store?: Store<any>;
 
-  install(store: Store<any>) {
-    this.store = store;
-
+  install() {
     this.modules = [
-      new AppSettingsModule(store),
-      new VehiclesModule(store),
-      new CalloutModule(store),
-      new TrainingModule(store),
-      new ClothesModule(store),
-      new PeopleModule(store),
-      new ExporterModule(store),
+      new AppSettingsModule(),
+      new VehiclesModule(),
+      new CalloutModule(),
+      new TrainingModule(),
+      new ClothesModule(),
+      new PeopleModule(),
+      new ExporterModule(),
     ];
   }
 
-  getRoutes(): Array<AppRouteConfig> {
+  getRoutes(): Array<RouteRecordRaw> {
     return [
       vehicleRoutes,
       [calloutRoute],

@@ -11,28 +11,24 @@
 
 <script lang="ts">
 import { useAuthStore } from "@/stores/auth";
-import { mapState } from "pinia";
-import Vue from "vue";
+import { mapActions, mapState } from "pinia";
+import { defineComponent } from "vue";
 import ErrorDialog from "@/components/dialogs/ErrorDialog.vue";
+import { useCalloutStore } from "../stores/callout";
 
-export default Vue.extend({
+export default defineComponent({
   components: { ErrorDialog },
 
   data() {
     return {
-      loadingCallout: false,
-      loadingVehicle: false,
-
       showErrorDialog: false,
       errorMessage: "",
     };
   },
 
   computed: {
-    ...mapState(useAuthStore, ["vehicle"]),
-    loading(): boolean {
-      return this.loadingCallout || this.loadingVehicle;
-    },
+    ...mapState(useAuthStore, { vehicleId: "vehicle" }),
+    ...mapState(useCalloutStore, ["loading", "callout", "vehicle"]),
   },
 
   watch: {
@@ -44,6 +40,8 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions(useCalloutStore, ["selectCallout", "selectVehicle"]),
+
     handleError(error: Error | string) {
       if (typeof error === "string") {
         this.errorMessage = error;
@@ -59,36 +57,16 @@ export default Vue.extend({
 
       const paramCalloutId = this.$route.params.callout_id;
       if (paramCalloutId) {
-        const callout = this.$store.state.callout.callout;
-        if (!(callout && callout.id == paramCalloutId)) {
-          this.loadingCallout = true;
-          this.$store
-            .dispatch("callout/bind", paramCalloutId)
-            .catch(this.handleError)
-            .finally(() => {
-              this.loadingCallout = false;
-            });
+        if (!(this.callout && this.callout.id == paramCalloutId)) {
+          this.selectCallout(paramCalloutId as string);
         }
-      } else {
-        this.$store.dispatch("callout/unbind");
       }
 
-      const paramVehicleId = this.vehicle || this.$route.params.vehicle_id;
+      const paramVehicleId = this.vehicleId || this.$route.params.vehicle_id;
       if (paramVehicleId) {
-        const vehicle = this.$store.state.vehicles.vehicle;
-        if (!(vehicle && vehicle.id == paramVehicleId)) {
-          //return store.dispatch("callout/bindVehicle", paramVehicleId);
-          this.loadingVehicle = true;
-          this.$store
-            .dispatch("vehicles/bindVehicle", paramVehicleId)
-            .catch(this.handleError)
-            .finally(() => {
-              this.loadingVehicle = false;
-            });
+        if (!(this.vehicle && this.vehicle.id == paramVehicleId)) {
+          this.selectVehicle(paramVehicleId as string);
         }
-      } else {
-        //return store.dispatch("callout/unbindVehicle");
-        this.$store.dispatch("vehicles/unbindVehicle");
       }
     },
   },

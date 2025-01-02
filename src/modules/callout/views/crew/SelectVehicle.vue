@@ -10,7 +10,7 @@
         lg="2"
       >
         <VehicleCard
-          :value="vehicle"
+          :model-value="vehicle"
           color="secondary"
           dark
           @click="selectVehicle(vehicle.id)"
@@ -28,7 +28,7 @@
         md="3"
         lg="2"
       >
-        <VehicleCard :value="vehicle" @click="selectVehicle(vehicle.id)">
+        <VehicleCard :model-value="vehicle" @click="selectVehicle(vehicle.id)">
         </VehicleCard>
       </v-col>
     </v-row>
@@ -40,7 +40,7 @@
           @click="showAllInactiveVehicles = !showAllInactiveVehicles"
         >
           Ehemalige Fahrzeuge
-          <v-icon right>{{
+          <v-icon end>{{
             showAllInactiveVehicles ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon>
         </v-btn>
@@ -56,7 +56,10 @@
           md="3"
           lg="2"
         >
-          <VehicleCard :value="vehicle" @click="selectVehicle(vehicle.id)">
+          <VehicleCard
+            :model-value="vehicle"
+            @click="selectVehicle(vehicle.id)"
+          >
           </VehicleCard>
         </v-col>
       </v-row>
@@ -64,10 +67,18 @@
   </CrewPage>
 </template>
 
-<script>
-import { mapGetters, mapState } from "vuex";
-import CrewPage from "../../components/CrewPage";
-import VehicleCard from "../../components/cards/VehicleCard";
+<script lang="ts">
+import { mapState } from "pinia";
+import CrewPage from "../../components/CrewPage.vue";
+import VehicleCard from "../../components/cards/VehicleCard.vue";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutStore } from "../../stores/callout";
+import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+
+interface VehicleWithIdAndCrewNumber extends Vehicle {
+  id: string;
+  crewNumber?: number;
+}
 
 export default {
   components: { CrewPage, VehicleCard },
@@ -79,34 +90,46 @@ export default {
   },
 
   computed: {
-    ...mapGetters("callout", ["crewCounts"]),
-    ...mapState("vehicles", {
+    ...mapState(useCalloutStore, ["callout", "crew"]),
+    ...mapState(useVehiclesStore, {
       vehicles: "vehicles",
-      loadingVehicles: "loading",
     }),
 
+    crewCounts() {
+      if (!this.crew || !this.crew.vehicles) {
+        return {};
+      }
+      const crewCountsEntries = Object.entries(this.crew.vehicles).map(
+        (entry) => [entry[0], Object.keys(entry[1]).length]
+      );
+      return Object.fromEntries(crewCountsEntries);
+    },
+
     sortedVehicles() {
-      const sortedList = {
+      const sortedList: {
+        used: VehicleWithIdAndCrewNumber[];
+        active: VehicleWithIdAndCrewNumber[];
+        inactive: VehicleWithIdAndCrewNumber[];
+      } = {
         used: [],
         active: [],
         inactive: [],
       };
 
-      if (!this.vehicles || this.vehicles.length == 0) {
+      if (this.vehicles.length == 0) {
         return sortedList;
       }
-
-      const calloutHasVehicles = this.callout && this.callout.vehicles;
 
       for (const vehicleIdx in this.vehicles) {
         const vehicle = this.vehicles[vehicleIdx];
         const isUsed =
           (this.crewCounts && this.crewCounts[vehicle.id]) ||
-          (calloutHasVehicles && this.callout.vehicles[vehicle.id]);
+          (this.callout?.vehicles && this.callout.vehicles[vehicle.id]);
 
         if (isUsed) {
           sortedList.used.push({
             ...vehicle,
+            id: vehicle.id,
             crewNumber: this.crewCounts[vehicle.id],
           });
         } else {
@@ -123,11 +146,11 @@ export default {
   },
 
   methods: {
-    selectVehicle(id) {
+    selectVehicle(id: string) {
       this.$router.push({
         name: "CrewVehicleDetails",
         params: {
-          callout_id: this.$store.state.callout.callout.id,
+          callout_id: useCalloutStore().callout?.id,
           vehicle_id: id,
         },
       });

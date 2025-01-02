@@ -1,17 +1,17 @@
 <template>
   <v-container>
-    <CalloutList @input="next" />
+    <CalloutList @update:model-value="next" />
   </v-container>
 </template>
 
-<script>
-import CalloutList from "../../components/CalloutList";
+<script lang="ts">
+import CalloutList from "../../components/CalloutList.vue";
 
 export default {
   components: { CalloutList },
 
   methods: {
-    next(calloutId) {
+    next(calloutId: string) {
       this.$router.push({
         name: "CrewEditCallout",
         params: {

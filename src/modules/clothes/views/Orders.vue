@@ -10,59 +10,35 @@
 
       <v-col cols="6" class="d-flex justify-end align-center">
         <v-btn color="primary" @click="create">
-          <v-icon left>mdi-plus</v-icon>
+          <v-icon start>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>
     </v-row>
 
-    <BaseSearchRow :search.sync="search" />
+    <BaseSearchRow v-model:search="search" />
 
     <v-row>
       <v-col cols="12">
-        <template v-if="$vuetify.breakpoint.mobile">
-          <Loading :visible="loading" />
+        <Loading :visible="loading" />
 
-          <v-row v-if="filteredOrders && filteredOrders.length > 0">
-            <v-col
-              v-for="item in filteredOrders"
-              :key="item.id"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <OrderCard
-                v-bind="item"
-                @edit="edit(item.id)"
-                @remove="askForConfirmationToRemove(item.id)"
-              />
-            </v-col>
-          </v-row>
-
-          <div v-else class="text--secondary">
-            Keine Bestellungen vorhanden.
-          </div>
-        </template>
-
-        <v-data-table
-          v-else
-          :headers="headers"
-          :items="orders"
-          :search="search"
-          :loading="loading"
-          loading-text="Laden..."
-          :options.sync="options"
-          class="elevation-1"
-          locale="de-DE"
-          item-key="id"
-        >
-          <template #[`item.action`]="{ item }">
-            <BaseActionCell
-              :handle-edit="() => edit(item.id)"
-              :handle-delete="() => remove(item.id)"
+        <v-row v-if="filteredOrders && filteredOrders.length > 0">
+          <v-col
+            v-for="item in filteredOrders"
+            :key="item.id"
+            cols="12"
+            sm="6"
+            md="4"
+          >
+            <OrderCard
+              v-bind="item"
+              @edit="edit(item.id)"
+              @remove="askForConfirmationToRemove(item.id)"
             />
-          </template>
-        </v-data-table>
+          </v-col>
+        </v-row>
+
+        <div v-else class="text--secondary">Keine Bestellungen vorhanden.</div>
       </v-col>
     </v-row>
 
@@ -77,18 +53,20 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapState } from "vuex";
-import makeListMixin from "@/mixins/ListMixin";
 import Loading from "@/components/Loading.vue";
 import OrderCard from "../components/orders/OrderCard.vue";
 import CreateDialog from "../components/orders/CreateDialog.vue";
 import EditDialog from "../components/orders/EditDialog.vue";
-import { formatDate } from "@/utils/dates";
+import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
-/* eslint-disable no-unused-vars */
+import { defineComponent } from "vue";
+import handleError from "@/utils/store/handleError";
 import { Order } from "../models/Order";
-import { ClothingType } from "../models/ClothingType";
-/* eslint-enable */
+import { mapActions, mapState } from "pinia";
+import { useClothingTypesStore } from "../stores/clothingTypes";
+import { useOrdersStore } from "../stores/orders";
+import { VueDatabaseQueryData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
 function latestTimestampOfOrder(order: Order) {
   function dateToTimestamp(date: any) {
@@ -102,7 +80,7 @@ function latestTimestampOfOrder(order: Order) {
   );
 }
 
-export default makeListMixin("ClothesOrder", "orders").extend({
+export default defineComponent({
   components: { Loading, OrderCard, CreateDialog, EditDialog },
 
   data() {
@@ -111,10 +89,10 @@ export default makeListMixin("ClothesOrder", "orders").extend({
         {
           text: "Eingereicht",
           value: "submittedOn",
-          sort: this.sortDate,
+          sort: sortDate,
         },
-        { text: "Bestellt", value: "orderedOn", sort: this.sortDate },
-        { text: "Erledigt", value: "doneOn", sort: this.sortDate },
+        { text: "Bestellt", value: "orderedOn", sort: sortDate },
+        { text: "Erledigt", value: "doneOn", sort: sortDate },
         { text: "Kleidung", value: "clothingType" },
         { text: "Person", value: "person" },
         {
@@ -123,8 +101,9 @@ export default makeListMixin("ClothesOrder", "orders").extend({
           sortable: false,
         },
       ],
+
       options: {
-        sortBy: ["submittedOn"],
+        sortBy: [{ key: "submittedOn" }] as SortItem[],
         sortDesc: [true],
         page: 1,
         itemsPerPage: 15,
@@ -137,19 +116,19 @@ export default makeListMixin("ClothesOrder", "orders").extend({
       showEditDialog: false,
       showRemoveConfirmationDialog: false,
 
-      orderToRemove: "",
+      orderToRemove: undefined as string | undefined,
     };
   },
 
   computed: {
-    ...mapState("orders", { allOrders: "orders" }),
-    ...mapState("clothingTypes", ["types"]),
+    ...mapState(useOrdersStore, { allOrders: "orders", loading: "loading" }),
+    ...mapState(useClothingTypesStore, ["types"]),
 
-    orders(): Order[] {
-      return (this.allOrders as Order[])
+    orders(): VueDatabaseQueryData<Order> {
+      return this.allOrders
         .filter((item) => this.showDoneOrders == !!item.doneOn)
         .map((order) => {
-          const orderFormatted = { ...order } as any;
+          const orderFormatted = { ...order, id: order.id } as any;
 
           orderFormatted.submittedOn =
             order.submittedOn && formatDate(order.submittedOn);
@@ -158,9 +137,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
           orderFormatted.doneOn = order.doneOn && formatDate(order.doneOn);
 
           const clothingType = order.clothingType
-            ? (this.types as ClothingType[]).find(
-                (type) => type.id === order.clothingType
-              )
+            ? this.types.find((type) => type.id === order.clothingType)
             : undefined;
           orderFormatted.clothingType = clothingType && clothingType.name;
 
@@ -172,7 +149,7 @@ export default makeListMixin("ClothesOrder", "orders").extend({
         });
     },
 
-    filteredOrders(): Order[] {
+    filteredOrders() {
       const sortedOrders = [...this.orders].sort(
         (a, b) => latestTimestampOfOrder(b) - latestTimestampOfOrder(a)
       );
@@ -182,14 +159,14 @@ export default makeListMixin("ClothesOrder", "orders").extend({
   },
 
   methods: {
-    ...mapActions("orders", ["bindOrder", "unbindOrder"]),
+    ...mapActions(useOrdersStore, ["selectOrder"]),
 
     create() {
       this.showCreateDialog = true;
     },
 
     edit(orderId: string) {
-      this.bindOrder(orderId);
+      this.selectOrder(orderId);
       this.showEditDialog = true;
     },
 
@@ -197,12 +174,29 @@ export default makeListMixin("ClothesOrder", "orders").extend({
       const orderToRemove =
         orderId === undefined ? this.orderToRemove : orderId;
       this.showRemoveConfirmationDialog = false;
-      this.$store.dispatch("orders/remove", orderToRemove);
+      if (orderToRemove) {
+        useOrdersStore().remove(orderToRemove);
+      } else {
+        handleError("Interner Fehler: Keine Bestellung ausgewählt");
+      }
     },
 
     askForConfirmationToRemove(orderId: string) {
       this.orderToRemove = orderId;
       this.showRemoveConfirmationDialog = true;
+    },
+
+    filterList(list: Array<any>, search: string) {
+      if (search) {
+        const searchLowerCase = search.toLowerCase();
+        return list.filter((item) =>
+          Object.values(item).some((value) =>
+            String(value).toLowerCase().includes(searchLowerCase)
+          )
+        );
+      } else {
+        return list;
+      }
     },
   },
 });

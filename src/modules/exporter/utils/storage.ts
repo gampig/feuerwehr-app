@@ -1,25 +1,26 @@
-import store from "@/store";
-import firebase from "firebase/app";
-import { Callout, MannschaftenMap } from "@/modules/callout/models/Callout";
-import { Person } from "@/modules/people/models/Person";
-import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { MannschaftenMap } from "@/modules/callout/models/Callout";
 import { usePeopleStore } from "@/modules/people/stores/people";
+import { get, getDatabase, ref } from "firebase/database";
+import { firebaseApp } from "@/firebase";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutsStore } from "@/modules/callout/stores/callouts";
 
 export default {
-  getPersonen(): Person[] {
-    return usePeopleStore().people as Person[];
+  getPersonen() {
+    return usePeopleStore().people;
   },
 
-  getFahrzeuge(): Vehicle[] {
-    return store.state.vehicles.vehicles as Vehicle[];
+  getFahrzeuge() {
+    return useVehiclesStore().vehicles;
   },
 
-  async fetchEinsaetze(): Promise<Callout[]> {
-    return store.state.callouts.callouts as Callout[];
+  getEinsaetze() {
+    return useCalloutsStore().callouts;
   },
 
   async fetchMannschaften() {
-    const snapshot = await firebase.database().ref("crew").once("value");
+    const db = getDatabase(firebaseApp);
+    const snapshot = await get(ref(db, "crew"));
     return snapshot.val() as MannschaftenMap;
   },
 };

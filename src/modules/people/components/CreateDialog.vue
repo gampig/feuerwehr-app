@@ -1,10 +1,10 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="modelValue"
     max-width="500"
     :loading="loading"
     title="Person hinzufügen"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="create"
   >
     <v-form ref="form">
@@ -36,23 +36,26 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
 import SelectStatus from "./SelectStatus.vue";
+import { VForm } from "vuetify/components";
 
 function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { SelectStatus },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
+
+  emits: ["update:model-value"],
 
   data() {
     return {
@@ -64,18 +67,18 @@ export default Vue.extend({
 
       firstName: "",
       lastName: "",
-      status: null as null | PersonStatus,
+      status: "Aktiv" as PersonStatus,
     };
   },
 
   methods: {
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       (this.$refs.form as any).reset();
     },
 
-    create() {
-      if (!(this.$refs.form as any).validate()) return;
+    async create() {
+      if (!(await (this.$refs.form as VForm).validate()).valid) return;
 
       this.loading = true;
       const personId =
@@ -84,8 +87,7 @@ export default Vue.extend({
         capitalizeFirstLetter(this.firstName.trim());
 
       usePeopleStore()
-        .update({
-          id: personId,
+        .update(personId, {
           status: this.status || "Aktiv",
         })
         .then(() => {

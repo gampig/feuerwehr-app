@@ -15,16 +15,12 @@
           />
         </template>
         <v-list-item v-else>
-          <v-list-item-content>
-            Kein Einsatz aus den letzten 24 Stunden vorhanden.
-          </v-list-item-content>
+          Kein Einsatz aus den letzten 24 Stunden vorhanden.
         </v-list-item>
 
         <v-list-group v-if="canViewAllCallouts" v-model="showAllCallouts">
-          <template #activator>
-            <v-list-item-content>
-              <v-list-item-title> Weitere Einsätze anzeigen </v-list-item-title>
-            </v-list-item-content>
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" title="Weitere Einsätze anzeigen" />
           </template>
           <template v-if="calloutsBeforeToday.length > 0">
             <CalloutListItem
@@ -34,24 +30,20 @@
               @click="selectCallout(callout.id)"
             />
           </template>
-          <v-list-item v-else>
-            <v-list-item-content>
-              Keine weiteren Einsätze vorhanden.
-            </v-list-item-content>
-          </v-list-item>
+          <v-list-item v-else> Keine weiteren Einsätze vorhanden. </v-list-item>
         </v-list-group>
       </v-list>
     </template>
 
     <v-card-actions>
-      <v-btn :disabled="loading" text @click="showUserConfirm = true">
+      <v-btn :disabled="loading" variant="text" @click="showUserConfirm = true">
         Neuer Einsatz
       </v-btn>
     </v-card-actions>
 
     <BaseConfirmDialog
       v-model="showUserConfirm"
-      width="400"
+      width="450"
       title="Einsatz wirklich nicht vorhanden?"
       confirm-text="Neuer Einsatz"
       @confirm="onUserConfirm"
@@ -60,47 +52,59 @@
       <br />
       bitte den vorhandenen Eintrag verwenden!
     </BaseConfirmDialog>
+
+    <CreateDialog v-model="showCreateDialog" @save="onCalloutCreated" />
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 import { Acl } from "@/acl";
-import { mapActions, mapGetters, mapState } from "vuex";
-import CalloutListItem from "./CalloutListItem";
+import CalloutListItem from "./CalloutListItem.vue";
+import CreateDialog from "./CreateDialog.vue";
 import { useAuthStore } from "@/stores/auth";
+import { mapActions, mapState } from "pinia";
+import { useCalloutsStore } from "../stores/callouts";
 
 export default {
-  components: { CalloutListItem },
+  components: { CalloutListItem, CreateDialog },
+  emits: ["update:model-value"],
 
   data() {
     return {
       showAllCallouts: false,
       showUserConfirm: false,
+      showCreateDialog: false,
     };
   },
 
   computed: {
-    ...mapState("callouts", ["loading"]),
-    ...mapGetters("callouts", ["calloutsBeforeToday", "calloutsOfToday"]),
+    ...mapState(useCalloutsStore, [
+      "loading",
+      "calloutsBeforeToday",
+      "calloutsOfToday",
+    ]),
+
+    ...mapState(useAuthStore, ["loggedIn"]),
 
     canViewAllCallouts() {
-      const authStore = useAuthStore();
-      return (
-        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeAnzeigen)
-      );
+      return this.loggedIn && this.hasAnyRole(Acl.alleEinsaetzeAnzeigen);
     },
   },
 
   methods: {
-    ...mapActions("callouts", ["bind"]),
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     onUserConfirm() {
       this.showUserConfirm = false;
-      this.selectCallout();
+      this.showCreateDialog = true;
     },
 
-    selectCallout(calloutId) {
-      this.$emit("input", calloutId);
+    onCalloutCreated(calloutId: string) {
+      this.selectCallout(calloutId);
+    },
+
+    selectCallout(calloutId: string) {
+      this.$emit("update:model-value", calloutId);
     },
   },
 };

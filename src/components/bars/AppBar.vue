@@ -1,10 +1,8 @@
 <template>
   <div>
-    <Snackbar />
-
     <NavigationDrawer v-if="navdrawer" v-model="drawer" />
 
-    <v-app-bar app>
+    <v-app-bar>
       <v-app-bar-nav-icon v-if="navdrawer" @click.stop="drawer = !drawer" />
 
       <v-btn v-if="backButton" icon @click="goBack">
@@ -19,6 +17,20 @@
 
       <v-spacer />
 
+      <v-tooltip
+        v-if="!isConnectedDebounced"
+        text="Keine Verbindung zum Server möglich"
+      >
+        <template #activator="{ props }">
+          <v-icon
+            v-bind="props"
+            icon="mdi-signal-off"
+            color="error"
+            style="margin-inline-end: 4px; padding: 24px"
+          ></v-icon>
+        </template>
+      </v-tooltip>
+
       <slot />
 
       <template v-if="extended" #extension>
@@ -29,19 +41,19 @@
 </template>
 
 <script>
-import Snackbar from "./Snackbar";
-import NavigationDrawer from "../navigation/NavigationDrawer";
+import NavigationDrawer from "../navigation/NavigationDrawer.vue";
+import { mapState } from "pinia";
+import { useNetworkStore } from "@/stores/network";
 
 export default {
   components: {
-    Snackbar,
     NavigationDrawer,
   },
 
   props: {
     pageTitle: {
       type: String,
-      default: process.env.VUE_APP_TITLE,
+      default: import.meta.env.VITE_TITLE,
     },
 
     navdrawer: {
@@ -73,6 +85,10 @@ export default {
   data: () => ({
     drawer: null,
   }),
+
+  computed: {
+    ...mapState(useNetworkStore, ["isConnectedDebounced"]),
+  },
 
   methods: {
     goBack() {

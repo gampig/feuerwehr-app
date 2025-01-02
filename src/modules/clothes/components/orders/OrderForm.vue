@@ -6,12 +6,11 @@
           label="Person"
           prepend-icon="mdi-account"
           :items="people"
-          item-text="id"
-          :value="person"
+          item-title="id"
+          :model-value="person"
           :loading="loadingPeople"
-          single-line
           :rules="[rules.required]"
-          @input="update('person', $event)"
+          @update:model-value="$emit('update:person', $event)"
         />
       </v-col>
       <v-col cols="12">
@@ -19,13 +18,12 @@
           label="Kleidungsstück"
           prepend-icon="mdi-tshirt-crew"
           :items="types"
-          :item-text="getTypeText"
+          :item-title="getTypeText"
           item-value="id"
-          :value="clothingType"
+          :model-value="clothingType"
           :loading="loadingTypes"
-          single-line
           :rules="[rules.required]"
-          @input="update('clothingType', $event)"
+          @update:model-value="$emit('update:clothingType', $event)"
         />
       </v-col>
     </v-row>
@@ -36,8 +34,8 @@
           label="Größe"
           prepend-icon="mdi-ruler"
           :items="sizes"
-          :value="size"
-          @input="update('size', $event)"
+          :model-value="size"
+          @update:model-value="$emit('update:size', $event)"
         />
       </v-col>
       <v-col sm="6" cols="12">
@@ -45,14 +43,12 @@
           label="Anzahl"
           type="number"
           prepend-icon="mdi-cart-variant"
-          :value="count"
+          :model-value="count"
           :rules="[rules.required]"
-          @input="update('count', $event)"
+          @update:model-value="$emit('update:count', Number($event))"
         />
       </v-col>
     </v-row>
-
-    <v-divider></v-divider>
 
     <v-row>
       <template v-if="totalPrice > 0">
@@ -64,15 +60,16 @@
             suffix="€"
             prepend-icon="mdi-cash"
             :error="totalPrice > 0 && paid != totalPrice"
-            :value="paid"
-            @input="update('paid', $event)"
+            :model-value="paid"
+            @update:model-value="$emit('update:paid', $event)"
           />
         </v-col>
 
         <v-col cols="6">
           <v-text-field
             label="Gesamtkosten"
-            :value="totalPrice + ' €'"
+            :model-value="totalPrice + ' €'"
+            prepend-icon="mdi-cash"
             disabled
           />
         </v-col>
@@ -81,24 +78,20 @@
       <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Eingereicht', submittedOn)"
-          input-value="true"
+          :model-value="true"
           disabled
         />
-      </v-col>
 
-      <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Bestellt', orderedOn)"
-          :input-value="orderedOn"
-          @change="updateCheckbox('orderedOn', $event)"
+          :model-value="!!orderedOn"
+          @update:model-value="updateOrderedOn"
         />
-      </v-col>
 
-      <v-col cols="12">
         <v-checkbox
           :label="makeLabelWithDate('Erledigt', doneOn)"
-          :input-value="doneOn"
-          @change="updateCheckbox('doneOn', $event)"
+          :model-value="!!doneOn"
+          @update:model-value="updateDoneOn"
         />
       </v-col>
     </v-row>
@@ -106,30 +99,65 @@
 </template>
 
 <script>
-import FormMixin from "@/mixins/FormMixin";
-import { mapState as vuexMapState } from "vuex";
-import { mapState as piniaMapState } from "pinia";
+import { mapState } from "pinia";
 import moment from "moment";
 import { usePeopleStore } from "@/modules/people/stores/people";
+import { defineComponent } from "vue";
+import { required } from "@/utils/rules";
+import { useClothingTypesStore } from "../../stores/clothingTypes";
 
-export default FormMixin.extend({
+export default defineComponent({
   props: {
-    person: null,
-    clothingType: null,
-    size: null,
-    count: null,
-    paid: null,
-    submittedOn: null,
-    orderedOn: null,
-    doneOn: null,
+    person: {
+      type: String,
+      default: undefined,
+    },
+
+    clothingType: {
+      type: String,
+      default: undefined,
+    },
+
+    size: {
+      type: String,
+      default: undefined,
+    },
+
+    count: { type: Number, default: undefined },
+
+    paid: { type: Number, default: undefined },
+
+    submittedOn: { type: Number, default: undefined },
+    orderedOn: { type: Number, default: undefined },
+    doneOn: { type: Number, default: undefined },
+  },
+
+  emits: [
+    "update:name",
+    "update:person",
+    "update:clothingType",
+    "update:size",
+    "update:count",
+    "update:paid",
+    "update:orderedOn",
+    "update:doneOn",
+  ],
+
+  data() {
+    return {
+      rules: {
+        required,
+      },
+    };
   },
 
   computed: {
-    ...piniaMapState(usePeopleStore, {
+    ...mapState(usePeopleStore, {
       loadingPeople: "loading",
       people: "people",
     }),
-    ...vuexMapState("clothingTypes", {
+
+    ...mapState(useClothingTypesStore, {
       loadingTypes: "loading",
       types: "types",
     }),
@@ -140,9 +168,11 @@ export default FormMixin.extend({
         this.types.find((item) => item.id == this.clothingType)
       );
     },
+
     sizes() {
       return (this.clothingTypeObject && this.clothingTypeObject.sizes) || [];
     },
+
     totalPrice() {
       if (
         !this.clothingTypeObject ||
@@ -181,14 +211,16 @@ export default FormMixin.extend({
       return moment.unix(timestamp).format("L");
     },
 
-    updateCheckbox(name, checked) {
-      let value = null;
+    updateOrderedOn(checked) {
+      this.$emit("update:orderedOn", this.getTimestampForCheckbox(checked));
+    },
 
-      if (checked) {
-        value = moment().unix();
-      }
+    updateDoneOn(checked) {
+      this.$emit("update:doneOn", this.getTimestampForCheckbox(checked));
+    },
 
-      this.update(name, value);
+    getTimestampForCheckbox(checked) {
+      return checked ? moment().unix() : null;
     },
   },
 });

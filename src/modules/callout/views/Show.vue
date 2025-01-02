@@ -6,13 +6,13 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn depressed @click="goBack">
-          <v-icon left>mdi-arrow-left</v-icon>
+        <v-btn variant="flat" @click="goBack">
+          <v-icon start>mdi-arrow-left</v-icon>
           Zurück
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn depressed @click="showDeleteDialog = true">
-          <v-icon left>mdi-delete</v-icon>
+        <v-btn variant="flat" @click="showDeleteDialog = true">
+          <v-icon start>mdi-delete</v-icon>
           Löschen
         </v-btn>
       </v-card-actions>
@@ -22,50 +22,62 @@
   </v-container>
 </template>
 
-<script>
-import makeShowMixin from "@/mixins/ShowMixin";
-import CalloutDetails from "../components/CalloutDetails";
-import { mapActions, mapState } from "vuex";
+<script lang="ts">
+import CalloutDetails from "../components/CalloutDetails.vue";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
+import { mapActions, mapState } from "pinia";
+import { defineComponent } from "vue";
+import { useCalloutStore } from "../stores/callout";
 
-export default makeShowMixin("Callout", "callouts").extend({
+export default defineComponent({
   components: {
     CalloutDetails,
   },
 
   data() {
     return {
-      loading: false,
       showDeleteDialog: false,
     };
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
+    ...mapState(useCalloutStore, ["callout", "loading"]),
+    ...mapState(useAuthStore, ["loggedIn"]),
+
+    id() {
+      return this.$route.params.id as string;
+    },
 
     userCanDeleteCallout() {
-      const authStore = useAuthStore();
-      return authStore.loggedIn && authStore.hasAnyRole(Acl.einsatzLoeschen);
+      return this.loggedIn && this.hasAnyRole(Acl.einsatzLoeschen);
     },
   },
 
+  watch: {
+    id() {
+      this.retrieveItem();
+    },
+  },
+
+  mounted() {
+    this.retrieveItem();
+  },
+
   methods: {
-    ...mapActions("callout", ["bind", "remove"]),
+    ...mapActions(useCalloutStore, ["selectCallout", "deleteSelectedCallout"]),
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     goBack() {
       this.$router.back();
     },
 
     retrieveItem() {
-      this.loading = true;
-
-      return this.bind(this.id).finally(() => {
-        this.loading = false;
-      });
+      this.selectCallout(this.id);
     },
+
     handleDelete() {
-      this.remove().then(() => {
+      this.deleteSelectedCallout().then(() => {
         this.$showMessage("Einsatz wurde gelöscht.");
         this.$router.back();
       });

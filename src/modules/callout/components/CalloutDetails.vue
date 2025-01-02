@@ -1,19 +1,24 @@
 <template>
   <v-list v-if="callout">
     <ListItem icon="mdi-alarm-light" subtitle="Alarm">
-      {{ callout.alarmTime | formatDateTime }}
-      ({{ callout.alarmTime | formatDateTimeFromNow }})
+      {{ formatDateTime(callout.alarmTime) }}
+      ({{ formatDateTimeFromNow(callout.alarmTime) }})
     </ListItem>
 
     <ListItem v-if="callout.endTime" icon="mdi-calendar-check" subtitle="Ende">
-      {{ callout.endTime | formatDateTime }}
+      {{ formatDateTime(callout.endTime) }}
       (Dauer {{ duration(callout.endTime) }})
     </ListItem>
 
     <ListItem v-if="types.length > 0" icon="mdi-clipboard-list" subtitle="Typ">
-      <v-chip v-for="type in types" :key="type" class="mr-1" small outlined>{{
-        type
-      }}</v-chip>
+      <v-chip
+        v-for="type in types"
+        :key="type"
+        class="mr-1"
+        size="small"
+        variant="outlined"
+        >{{ type }}</v-chip
+      >
     </ListItem>
 
     <ListItem
@@ -39,102 +44,92 @@
     <v-divider v-if="standbyCrew || vehicles"></v-divider>
 
     <v-list-group v-if="standbyCrew">
-      <template #activator>
-        <v-list-item-avatar>
-          <v-icon>mdi-account-group</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title> Bereitschaft </v-list-item-title>
+      <template #activator="{ props }">
+        <v-list-item v-bind="props" title="Bereitschaft">
+          <template #prepend>
+            <v-avatar icon="mdi-account-group"></v-avatar>
+          </template>
+        </v-list-item>
       </template>
 
       <v-list-item
         v-for="(value, person) in standbyCrew"
         :key="'standby' + person"
       >
-        <v-list-item-avatar></v-list-item-avatar>
         <v-list-item-title>
           {{ person }}
         </v-list-item-title>
       </v-list-item>
     </v-list-group>
 
-    <v-list-group v-if="vehicles" :value="true">
-      <template #activator>
-        <v-list-item-avatar>
-          <v-icon>mdi-truck</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title> Fahrzeuge </v-list-item-title>
+    <v-list-group
+      v-for="calloutVehicle in vehicles"
+      :key="calloutVehicle.vehicle.id"
+    >
+      <template #activator="{ props }">
+        <v-list-item v-bind="props">
+          <template #prepend>
+            <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
+              <v-img
+                :src="calloutVehicle.vehicle.pictureUrl"
+                :alt="calloutVehicle.vehicle.name"
+              >
+                <template #placeholder>
+                  <v-icon>mdi-fire-truck</v-icon>
+                </template>
+              </v-img>
+            </v-avatar>
+            <v-avatar v-else icon="mdi-fire-truck"></v-avatar>
+          </template>
+          <v-list-item-title>{{
+            calloutVehicle.vehicle.name
+          }}</v-list-item-title>
+          <v-list-item-subtitle>
+            Besatzung:
+            {{
+              (calloutVehicle.crewMembers &&
+                Object.keys(calloutVehicle.crewMembers).length) ||
+              "0"
+            }}
+            <template v-if="calloutVehicle.vehicle.maxCrewNumber">
+              / {{ calloutVehicle.vehicle.maxCrewNumber }}
+            </template>
+          </v-list-item-subtitle>
+          <v-list-item-subtitle
+            v-if="
+              calloutVehicle.calloutDetails &&
+              calloutVehicle.calloutDetails.endTime
+            "
+          >
+            Einsatzende:
+            {{ formatDateTime(calloutVehicle.calloutDetails.endTime) }}
+            (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
+          </v-list-item-subtitle>
+        </v-list-item>
       </template>
 
-      <v-list-group
-        v-for="calloutVehicle in vehicles"
-        :key="calloutVehicle.vehicle.id"
-        sub-group
+      <v-list-item
+        v-for="(role, person) in calloutVehicle.crewMembers"
+        :key="calloutVehicle.vehicle.id + person"
       >
-        <template #prependIcon>
-          <v-avatar v-if="calloutVehicle.vehicle.pictureUrl">
-            <v-img
-              :src="calloutVehicle.vehicle.pictureUrl"
-              :alt="calloutVehicle.vehicle.name"
-            >
-              <template #placeholder>
-                <v-icon>mdi-truck-outline</v-icon>
-              </template>
-            </v-img>
-          </v-avatar>
-          <v-icon v-else>mdi-truck-outline</v-icon>
-        </template>
-        <template #activator>
-          <v-list-item-content>
-            <v-list-item-title>{{
-              calloutVehicle.vehicle.name
-            }}</v-list-item-title>
-            <v-list-item-subtitle>
-              Besatzung:
-              {{
-                (calloutVehicle.crewMembers &&
-                  Object.keys(calloutVehicle.crewMembers).length) ||
-                "0"
-              }}
-              <template v-if="calloutVehicle.vehicle.maxCrewNumber">
-                / {{ calloutVehicle.vehicle.maxCrewNumber }}
-              </template>
-            </v-list-item-subtitle>
-            <v-list-item-subtitle
-              v-if="
-                calloutVehicle.calloutDetails &&
-                calloutVehicle.calloutDetails.endTime
-              "
-            >
-              Einsatzende:
-              {{ calloutVehicle.calloutDetails.endTime | formatDateTime }}
-              (Dauer: {{ duration(calloutVehicle.calloutDetails.endTime) }})
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </template>
-
-        <v-list-item
-          v-for="(role, person) in calloutVehicle.crewMembers"
-          :key="calloutVehicle.vehicle.id + person"
-        >
-          <v-list-item-avatar></v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ person }}
-            </v-list-item-title>
-            <v-list-item-subtitle v-if="role != true">
-              {{ role }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-group>
+        <v-list-item-title>
+          {{ person }}
+        </v-list-item-title>
+        <v-list-item-subtitle v-if="role != true">
+          {{ role }}
+        </v-list-item-subtitle>
+      </v-list-item>
     </v-list-group>
   </v-list>
 </template>
 
 <script>
 import moment from "moment";
-import ListItem from "@/components/ListItem";
-import { mapGetters, mapState } from "vuex";
+import ListItem from "@/components/ListItem.vue";
+import { mapState } from "pinia";
+import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { useCalloutStore } from "../stores/callout";
 
 export default {
   components: {
@@ -142,8 +137,7 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout", "crew"]),
-    ...mapGetters("vehicles", { findVehicle: "find" }),
+    ...mapState(useCalloutStore, ["callout", "crew"]),
 
     types() {
       return this.callout?.type
@@ -161,11 +155,12 @@ export default {
       if (!this.callout) return null;
 
       let vehicles = {};
+      const vehiclesStore = useVehiclesStore();
 
       if (this.crew && this.crew.vehicles) {
         for (const vehicleIdx in this.crew.vehicles) {
           vehicles[vehicleIdx] = {
-            vehicle: this.findVehicle(vehicleIdx),
+            vehicle: vehiclesStore.find(vehicleIdx),
             crewMembers: this.crew.vehicles[vehicleIdx],
           };
         }
@@ -175,7 +170,7 @@ export default {
         for (const vehicleIdx in this.callout.vehicles) {
           if (!vehicles[vehicleIdx]) {
             vehicles[vehicleIdx] = {
-              vehicle: this.findVehicle(vehicleIdx),
+              vehicle: vehiclesStore.find(vehicleIdx),
             };
           }
 
@@ -198,6 +193,9 @@ export default {
       const end = moment.unix(endTime);
       return moment.duration(alarm.diff(end)).humanize();
     },
+
+    formatDateTime: formatDateTime,
+    formatDateTimeFromNow: formatDateTimeFromNow,
   },
 };
 </script>

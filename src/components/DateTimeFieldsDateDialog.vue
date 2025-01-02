@@ -1,11 +1,15 @@
 <template>
-  <v-dialog :value="value" persistent max-width="600" @input="cancel">
+  <v-dialog
+    :model-value="modelValue"
+    persistent
+    max-width="600"
+    @update:model-value="cancel"
+  >
     <v-card>
       <v-date-picker
         v-model="dateVal"
         :max="maxDate"
         :min="minDate"
-        first-day-of-week="1"
         color="primary"
         class="elevation-0"
         style="border-radius: 0"
@@ -13,7 +17,7 @@
       />
 
       <v-card-actions>
-        <v-btn text @click="cancel"> Abbrechen </v-btn>
+        <v-btn variant="text" @click="cancel"> Abbrechen </v-btn>
         <v-spacer />
         <v-btn color="primary" @click="save"> Speichern </v-btn>
       </v-card-actions>
@@ -26,7 +30,7 @@ import moment from "moment";
 
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
 
@@ -45,6 +49,8 @@ export default {
       default: undefined,
     },
   },
+
+  emits: ["update:model-value", "update:date"],
 
   data() {
     return {
@@ -72,12 +78,12 @@ export default {
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.reset();
     },
 
     save() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("update:date", this.dateVal);
     },
   },

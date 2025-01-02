@@ -1,34 +1,46 @@
 <template>
   <BaseCreateDialog
-    :value="value"
+    :model-value="modelValue"
     max-width="900"
     :loading="loading"
     title="Neue Bestellung"
-    @input="cancel"
+    @update:model-value="cancel"
     @create="save"
   >
-    <OrderForm ref="form" v-bind.sync="item" />
+    <OrderForm
+      ref="form"
+      v-model:person="item.person"
+      v-model:clothing-type="item.clothingType"
+      v-model:size="item.size"
+      v-model:count="item.count"
+      v-model:paid="item.paid"
+      v-model:submitted-on="item.submittedOn"
+      v-model:ordered-on="item.orderedOn"
+      v-model:done-on="item.doneOn"
+    />
   </BaseCreateDialog>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import OrderForm from "./OrderForm.vue";
 import moment from "moment";
-/* eslint-disable no-unused-vars */
+import { defineComponent } from "vue";
+import { VForm } from "vuetify/components";
 import { Order } from "../../models/Order";
-/* eslint-enable */
+import { useOrdersStore } from "../../stores/orders";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     OrderForm,
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
+
+  emits: ["update:model-value"],
 
   data() {
     return {
@@ -48,8 +60,9 @@ export default Vue.extend({
   },
 
   methods: {
-    validate() {
-      return (this.$refs?.form as any)?.$refs?.form?.validate();
+    async validate() {
+      const form = (this.$refs?.form as any)?.$refs?.form as VForm | undefined;
+      return form ? (await form.validate()).valid : false;
     },
 
     reset() {
@@ -58,22 +71,22 @@ export default Vue.extend({
 
     closeDialog() {
       this.reset();
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
     },
 
     cancel() {
       this.closeDialog();
     },
 
-    save() {
-      const item = { ...this.item };
+    async save() {
+      const item = { ...(this.item as Order) };
       item.submittedOn = moment().unix();
 
-      if (this.validate()) {
+      if (await this.validate()) {
         this.loading = true;
 
-        this.$store
-          .dispatch("orders/create", item)
+        useOrdersStore()
+          .create(item)
           .then(() => {
             this.$showMessage("Bestellung wurde erstellt.");
             this.closeDialog();

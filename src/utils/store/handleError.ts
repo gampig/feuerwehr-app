@@ -1,6 +1,8 @@
 import { showError } from "@/utils/notifications";
 import de from "@/firebase/locales/de";
 import ErrorReportBuilder from "@/services/errorReport";
+import { FirebaseError } from "firebase/app";
+import { Ref, watch } from "vue";
 
 function translateFirebaseError(code: string): string | null {
   const translation = code
@@ -16,17 +18,33 @@ function translateFirebaseError(code: string): string | null {
   return translation;
 }
 
-export default function (error: any) {
+function handleError(error: any) {
+  const builder = new ErrorReportBuilder(false);
+
   if (error instanceof Error) {
     let translatedErrorMessage = null;
 
-    const firebaseError = error as Error | firebase.default.FirebaseError;
+    const firebaseError = error as Error | FirebaseError;
     if ("code" in firebaseError) {
       translatedErrorMessage = translateFirebaseError(firebaseError.code);
     }
 
     showError(translatedErrorMessage || error.message);
 
-    new ErrorReportBuilder(false).addException(error).getReport().send();
+    builder.addException(error);
+  } else if (typeof error === "string") {
+    showError(error);
+    builder.addErrorMessage(error);
   }
+
+  builder.getReport().send();
+}
+
+addEventListener("unhandledrejection", (event) => handleError(event.reason));
+
+export default handleError;
+
+export function useErrorHandler(error: Ref<Error | undefined>) {
+  const errorWatchHandle = watch(error, handleError);
+  return { errorWatchHandle };
 }

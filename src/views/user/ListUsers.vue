@@ -7,35 +7,37 @@
     <v-container>
       <v-data-table :headers="headers" :items="users" :loading="loading">
         <template #[`item.displayName`]="{ item }">
-          <v-edit-dialog
-            large
-            persistent
-            cancel-text="Abbrechen"
-            save-text="Speichern"
-            @open="editDisplayName = item.displayName"
-            @save="updateDisplayName(item)"
-          >
-            {{ item.displayName }}
-            <v-btn icon><v-icon>mdi-pencil</v-icon></v-btn>
-            <template #input>
-              <v-text-field
-                v-model="editDisplayName"
-                label="Name"
-              ></v-text-field>
-            </template>
-          </v-edit-dialog>
+          {{ item.displayName }}
+          <v-btn icon variant="text" @click="showEditDialog(item)">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
         </template>
         <template #[`item.disabled`]="{ item }">
-          <v-simple-checkbox v-model="item.disabled" disabled>
-          </v-simple-checkbox>
+          <v-checkbox-btn v-model="item.disabled" disabled> </v-checkbox-btn>
+        </template>
+        <template #[`item.roles`]="{ item }">
+          <v-chip-group disabled>
+            <v-chip v-for="role in item.roles" :key="role" size="small">
+              {{ role }}
+            </v-chip>
+          </v-chip-group>
         </template>
       </v-data-table>
     </v-container>
+
+    <BaseEditDialog
+      v-model="editDialog"
+      :saving="saving"
+      :title="editItem?.displayName ?? editItem?.email ?? 'Benutzer ändern'"
+      @save="updateDisplayName"
+    >
+      <v-text-field v-model="editDisplayName" label="Name"></v-text-field>
+    </BaseEditDialog>
   </BasePage>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent, nextTick } from "vue";
 import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
@@ -47,26 +49,34 @@ function filterAndMapRoles(roles: string[]): string[] {
     .map((role) => roleConfigById[role]?.name ?? role);
 }
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Name", value: "displayName" },
-        { text: "E-Mail", value: "email" },
-        { text: "Deaktiviert", value: "disabled" },
-        { text: "Rollen", value: "roles" },
+        { title: "Name", key: "displayName" },
+        { title: "E-Mail", key: "email" },
+        { title: "Deaktiviert", key: "disabled" },
+        { title: "Rollen", key: "roles" },
       ],
 
-      editDisplayName: "",
+      editDialog: false,
+      editItem: undefined as User | undefined,
+      editDisplayName: undefined as string | undefined,
+      saving: false,
     };
   },
 
   computed: {
-    ...mapState(useUsersStore, ["loading", "initialized"]),
+    ...mapState(useUsersStore, {
+      loading: "loading",
+      initialized: "initialized",
+      storeUsers: "users",
+    }),
+
     ...mapState(useAuthStore, ["loggedIn"]),
 
     users(): User[] {
-      return useUsersStore().users.map((user) => ({
+      return this.storeUsers.map((user) => ({
         ...user,
         roles: filterAndMapRoles(user.roles),
       }));
@@ -96,8 +106,28 @@ export default Vue.extend({
       }
     },
 
-    updateDisplayName(user: User) {
-      useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
+    updateDisplayName() {
+      if (this.editDisplayName && this.editItem) {
+        this.saving = true;
+        useUsersStore()
+          .updateDisplayName(this.editItem.uid, this.editDisplayName)
+          .then(() => {
+            this.editDialog = false;
+            nextTick(() => {
+              this.editItem = undefined;
+              this.editDisplayName = undefined;
+            });
+          })
+          .finally(() => {
+            this.saving = false;
+          });
+      }
+    },
+
+    showEditDialog(user: User) {
+      this.editItem = user;
+      this.editDisplayName = user.displayName;
+      this.editDialog = true;
     },
   },
 });

@@ -1,43 +1,39 @@
 <template>
   <v-card v-bind="$attrs">
-    <v-form ref="form" @submit.prevent="submit">
-      <v-card-title>{{ cardTitle }}</v-card-title>
+    <v-card-title>{{ cardTitle }}</v-card-title>
 
-      <v-card-text>
-        <v-text-field
-          v-if="!noEmail"
-          v-model="item.email"
-          label="E-Mail"
-          :rules="emailRules"
-        />
-        <v-text-field
-          v-model="item.password"
-          type="password"
-          label="Passwort"
-          :rules="passwordRules"
-        />
-        <v-checkbox
-          v-if="askForPersistence"
-          v-model="item.persist"
-          label="Angemeldet bleiben"
-        ></v-checkbox>
-      </v-card-text>
+    <v-card-text>
+      <v-text-field
+        v-if="!noEmail"
+        label="E-Mail"
+        :rules="emailRules"
+        :model-value="email"
+        @update:model-value="$emit('update:email', $event)"
+      />
+      <v-text-field
+        type="password"
+        label="Passwort"
+        :rules="passwordRules"
+        :model-value="password"
+        @update:model-value="$emit('update:password', $event)"
+      />
+      <v-checkbox
+        v-if="askForPersistence"
+        label="Angemeldet bleiben"
+        :model-value="persist"
+        @update:model-value="$emit('update:persist', $event)"
+      ></v-checkbox>
+    </v-card-text>
 
-      <v-card-actions>
-        <slot />
-      </v-card-actions>
-    </v-form>
+    <v-card-actions>
+      <slot />
+    </v-card-actions>
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
-    values: {
-      type: Object,
-      default: null,
-    },
-
     cardTitle: {
       type: String,
       default: "Anmelden",
@@ -52,33 +48,30 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    email: {
+      type: String,
+      default: "",
+    },
+
+    password: {
+      type: String,
+      default: "",
+    },
+
+    persist: {
+      type: Boolean,
+      default: false,
+    },
   },
+
+  emits: ["update:email", "update:password", "update:persist"],
 
   data() {
     return {
-      emailRules: [(v) => !!v || "Bitte E-Mail-Adresse eingeben"],
-      passwordRules: [(v) => !!v || "Bitte Passwort eingeben"],
+      emailRules: [(v?: string) => !!v || "Bitte E-Mail-Adresse eingeben"],
+      passwordRules: [(v?: string) => !!v || "Bitte Passwort eingeben"],
     };
-  },
-
-  computed: {
-    item() {
-      return (
-        this.values || {
-          email: "",
-          password: "",
-          persist: false,
-        }
-      );
-    },
-  },
-
-  methods: {
-    submit() {
-      if (this.$refs.form.validate()) {
-        this.$emit("input", this.item);
-      }
-    },
   },
 };
 </script>

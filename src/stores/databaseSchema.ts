@@ -1,41 +1,43 @@
 import { defineStore } from "pinia";
-import firebase from "firebase/app";
+import { firebaseApp } from "@/firebase";
+import { getDatabase, ref as dbRef } from "firebase/database";
+import { computed } from "vue";
+import { useDatabaseObject } from "@/utils/store/vuefire";
 
-interface State {
-  loading: Boolean;
-  localSchemaVersion?: Number | null;
-  remoteSchemaVersion?: Number | null;
+interface PrimitiveType<T> {
+  $value: T;
 }
 
-export const useDatabaseSchemaStore = defineStore("databaseSchema", {
-  state: (): State => ({
-    loading: true,
-    localSchemaVersion: process.env.VUE_APP_SUPPORTED_DATABASE_SCHEMA_VERSION,
-    remoteSchemaVersion: undefined,
-  }),
+export const useDatabaseSchemaStore = defineStore("databaseSchema", () => {
+  const db = getDatabase(firebaseApp);
 
-  getters: {
-    updateIsRequired: (state) =>
-      state.localSchemaVersion !== undefined &&
-      state.localSchemaVersion !== null &&
-      state.remoteSchemaVersion !== undefined &&
-      state.remoteSchemaVersion !== null &&
-      state.localSchemaVersion < state.remoteSchemaVersion,
-  },
+  const localSchemaVersion = import.meta.env
+    .VITE_SUPPORTED_DATABASE_SCHEMA_VERSION;
+  const remoteSchemaVersionSource = dbRef(db, "schemaVersion");
+  const remoteSchemaVersionObject = useDatabaseObject<PrimitiveType<number>>(
+    remoteSchemaVersionSource
+  );
 
-  actions: {
-    bind() {
-      firebase
-        .database()
-        .ref("schemaVersion")
-        .once("value")
-        .then((snapshot) => {
-          const version = snapshot.val();
-          if (typeof version === "number") {
-            this.remoteSchemaVersion = version;
-          }
-        })
-        .finally(() => (this.loading = false));
-    },
-  },
+  const loading = remoteSchemaVersionObject.pending;
+
+  const remoteSchemaVersion = computed(
+    () => remoteSchemaVersionObject.value?.$value
+  );
+
+  const updateIsRequired = computed(
+    () =>
+      localSchemaVersion !== undefined &&
+      localSchemaVersion !== null &&
+      remoteSchemaVersion.value !== undefined &&
+      remoteSchemaVersion.value !== null &&
+      localSchemaVersion < remoteSchemaVersion.value
+  );
+
+  return {
+    loading,
+    updateIsRequired,
+
+    // Private variables
+    remoteSchemaVersionSource,
+  };
 });

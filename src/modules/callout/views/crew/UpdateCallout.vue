@@ -9,7 +9,11 @@
       <v-card-text>
         <CalloutForm
           ref="form"
-          v-bind.sync="item"
+          v-model:type="item.type"
+          v-model:keyword="item.keyword"
+          v-model:catchphrase="item.catchphrase"
+          v-model:alarm-time="item.alarmTime"
+          v-model:address="item.address"
           require-keyword
           :limit-alarm-time-to-recently="!canEditAllCallouts"
         />
@@ -18,14 +22,19 @@
   </CrewPage>
 </template>
 
-<script>
-import CrewPage from "../../components/CrewPage";
-import CalloutForm from "../../components/form/Form";
-import { mapActions, mapState } from "vuex";
+<script lang="ts">
+import CrewPage from "../../components/CrewPage.vue";
+import CalloutForm from "../../components/form/Form.vue";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
+import { defineComponent } from "vue";
+import { Callout } from "../../models/Callout";
+import handleError from "@/utils/store/handleError";
+import { VForm } from "vuetify/components";
+import { mapActions, mapState } from "pinia";
+import { useCalloutStore } from "../../stores/callout";
 
-export default {
+export default defineComponent({
   components: {
     CrewPage,
     CalloutForm,
@@ -41,7 +50,7 @@ export default {
   data() {
     return {
       saving: false,
-      item: {},
+      item: {} as Callout,
       emptyItem: {
         type: null,
         keyword: null,
@@ -53,13 +62,11 @@ export default {
   },
 
   computed: {
-    ...mapState("callout", ["callout"]),
+    ...mapState(useCalloutStore, ["callout"]),
+    ...mapState(useAuthStore, ["loggedIn"]),
 
     canEditAllCallouts() {
-      const authStore = useAuthStore();
-      return (
-        authStore.loggedIn && authStore.hasAnyRole(Acl.alleEinsaetzeBearbeiten)
-      );
+      return this.loggedIn && this.hasAnyRole(Acl.alleEinsaetzeBearbeiten);
     },
   },
 
@@ -76,52 +83,53 @@ export default {
   },
 
   methods: {
-    ...mapActions("callouts", ["create"]),
-    ...mapActions("callout", ["updateCallout"]),
+    ...mapActions(useCalloutStore, ["updateCallout"]),
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     setItem() {
       this.item = Object.assign({}, this.emptyItem, this.callout);
     },
 
-    submit() {
-      if (this.$refs.form.$refs.form.validate()) {
+    async submit() {
+      if (
+        (
+          await (
+            (this.$refs.form as typeof CalloutForm).$refs.form as VForm
+          ).validate()
+        ).valid
+      ) {
         const submittedData = this.item;
+        const calloutId = this.callout?.id;
+
+        if (!calloutId) {
+          handleError("Einsatz-Id ist nicht bekannt.");
+          return;
+        }
 
         this.saving = true;
-        if (this.callout) {
-          this.updateCallout(submittedData)
-            .then(() => this.next(this.callout.id))
-            .finally(() => {
-              this.saving = false;
-            });
-        } else {
-          this.create(submittedData)
-            .then((ref) => {
-              this.updateRoute(ref.key);
-              this.next(ref.key);
-            })
-            .finally(() => {
-              this.saving = false;
-            });
-        }
+        this.updateCallout(submittedData)
+          .then(() => this.next(calloutId))
+          .finally(() => {
+            this.saving = false;
+          });
       }
     },
 
-    updateRoute(calloutId) {
+    updateRoute(calloutId: string) {
       this.$router.replace({
         name: this.$route.name,
         params: { callout_id: calloutId },
       });
     },
 
-    next(calloutId) {
-      const vehicle = this.$store.state.vehicles.vehicle;
-      if (vehicle && vehicle.id) {
+    next(calloutId: string) {
+      const vehicle = useAuthStore().vehicle;
+      if (vehicle) {
         this.$router.push({
           name: "CrewVehicleDetails",
           params: {
             callout_id: calloutId,
-            vehicle_id: vehicle.id,
+            vehicle_id: vehicle,
           },
         });
       } else {
@@ -134,5 +142,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

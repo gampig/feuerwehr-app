@@ -1,8 +1,6 @@
 <template>
   <BasePage v-bind="$attrs" close-button>
     <template #actions>
-      <v-btn icon @click="reload"><v-icon>mdi-reload</v-icon></v-btn>
-
       <v-btn v-if="handleAdd" icon @click="handleAdd">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -28,8 +26,6 @@
 </template>
 
 <script>
-import modules from "@/modules";
-
 export default {
   props: {
     handleAdd: {
@@ -43,8 +39,6 @@ export default {
     },
   },
 
-  methods: {
-    reload: () => modules.onLogin(),
-  },
+  emits: ["update:search"],
 };
 </script>

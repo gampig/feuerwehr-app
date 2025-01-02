@@ -4,53 +4,53 @@
       <v-col sm="8" cols="12">
         <v-text-field
           label="Bezeichnung"
-          append-icon="mdi-form-textbox"
-          :value="name"
+          prepend-icon="mdi-form-textbox"
+          :model-value="name"
           :rules="[rules.required]"
-          @input="update('name', $event)"
+          @update:model-value="$emit('update:name', $event)"
         />
       </v-col>
 
       <v-col sm="4" cols="12">
         <v-select
           label="Kategorie"
-          append-icon="mdi-clipboard-list"
+          prepend-icon="mdi-clipboard-list"
           :items="categories"
-          :value="category"
+          :model-value="category"
           :rules="[rules.required]"
-          @input="update('category', $event)"
+          @update:model-value="$emit('update:category', $event)"
         />
       </v-col>
 
       <v-col sm="8" cols="12">
         <v-combobox
           label="Größen"
-          append-icon="mdi-ruler"
-          :value="sizes"
+          prepend-icon="mdi-ruler"
+          :model-value="sizes"
           chips
-          small-chips
-          deletable-chips
+          closable-chips
           multiple
-          @input="update('sizes', $event)"
+          @update:model-value="$emit('update:sizes', $event)"
         />
       </v-col>
 
       <v-col sm="4" cols="12">
         <v-text-field
           label="Preis"
+          prepend-icon="mdi-cash"
           type="number"
           min="0"
           suffix="€"
-          :value="price"
-          @input="updatePrice($event)"
+          :model-value="price"
+          @update:model-value="updatePrice($event)"
         />
       </v-col>
 
       <v-col cols="12">
         <v-checkbox
           label="Ist noch erhältlich"
-          :input-value="isAvailable"
-          @change="update('isAvailable', $event)"
+          :model-value="isAvailable"
+          @update:model-value="$emit('update:isAvailable', $event)"
         />
       </v-col>
     </v-row>
@@ -58,46 +58,62 @@
 </template>
 
 <script lang="ts">
-import FormMixin from "@/mixins/FormMixin";
-/* eslint-disable no-unused-vars */
-import { PropType } from "vue";
+import { PropType, defineComponent } from "vue";
+import { required } from "@/utils/rules";
 import {
   ALL_CLOTHING_TYPE_CATEGORIES,
   ClothingTypeCategory,
 } from "../../models/ClothingType";
-/* eslint-enable */
 
-export default FormMixin.extend({
+export default defineComponent({
   props: {
     category: {
       type: String as PropType<ClothingTypeCategory>,
+      default: undefined,
     },
+
     name: {
       type: String,
+      default: undefined,
     },
+
     price: {
       type: Number,
       default: 0,
     },
+
     isAvailable: {
       type: Boolean,
       default: true,
     },
+
     sizes: {
       type: Array as PropType<Array<string | number>>,
       default: () => [],
     },
   },
 
+  emits: [
+    "update:price",
+    "update:name",
+    "update:category",
+    "update:sizes",
+    "update:isAvailable",
+  ],
+
   data() {
     return {
+      rules: {
+        required,
+      },
+
       categories: ALL_CLOTHING_TYPE_CATEGORIES,
     };
   },
 
   methods: {
     updatePrice(price: any) {
-      this.update("price", Number(price));
+      this.$emit("update:price", Number(price));
     },
   },
 });

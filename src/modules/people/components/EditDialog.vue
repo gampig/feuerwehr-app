@@ -1,10 +1,10 @@
 <template>
   <BaseEditDialog
-    :value="value"
+    :model-value="modelValue"
     max-width="700"
     :title="personId"
     :saving="loading"
-    @input="cancel"
+    @update:model-value="cancel"
     @save="save"
   >
     <v-form ref="form">
@@ -20,18 +20,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import SelectStatus from "./SelectStatus.vue";
-/* eslint-disable no-unused-vars */
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
-/* eslint-enable */
+import { VForm } from "vuetify/components";
+import { mapState } from "pinia";
 
-export default Vue.extend({
+export default defineComponent({
   components: { SelectStatus },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
     },
 
@@ -41,6 +41,8 @@ export default Vue.extend({
     },
   },
 
+  emits: ["update:model-value"],
+
   data() {
     return {
       loading: false,
@@ -49,11 +51,11 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapState(usePeopleStore, ["people"]),
+
     person(): null | Person | undefined {
       if (!this.personId) return null;
-      return usePeopleStore().people.find(
-        (person: Person) => person.id == this.personId
-      );
+      return this.people.find((person) => person.id == this.personId);
     },
   },
 
@@ -62,7 +64,7 @@ export default Vue.extend({
       this.loadData();
     },
 
-    value(showDialog) {
+    modelValue(showDialog) {
       if (showDialog) this.loadData();
     },
   },
@@ -77,22 +79,21 @@ export default Vue.extend({
     },
 
     cancel() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       (this.$refs.form as any).reset();
     },
 
-    save() {
-      if (!(this.$refs.form as any).validate()) return;
+    async save() {
+      if (!(await (this.$refs.form as VForm).validate()).valid) return;
       if (this.status === null) return;
 
       this.loading = true;
       usePeopleStore()
-        .update({
-          id: this.personId,
+        .update(this.personId, {
           status: this.status,
         })
         .then(() => {
-          this.$emit("input", false);
+          this.$emit("update:model-value", false);
           (this.$refs.form as any).reset();
         })
         .finally(() => {

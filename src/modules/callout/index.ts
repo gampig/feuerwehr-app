@@ -1,24 +1,14 @@
 import { Acl } from "@/acl";
 import AbstractModule from "../AbstractModule";
-import store from "./store";
 
 export default class CalloutModule extends AbstractModule {
-  install() {
-    this.installStore(store);
-  }
+  install() {}
 
   isAuthorized() {
-    return this.hasAnyRole([...Acl.mannschaftsbuch, ...Acl.bereitschaftsliste]);
+    return this.hasAnyRole(Acl.einsaetzeAnzeigen);
   }
 
-  load() {
-    return this.store.dispatch("callouts/bind");
-  }
+  load() {}
 
-  unload() {
-    return Promise.all([
-      this.store.dispatch("callouts/unbind"),
-      this.store.dispatch("callout/unbind"),
-    ]);
-  }
+  unload() {}
 }

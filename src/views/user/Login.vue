@@ -1,68 +1,99 @@
 <template>
   <BasePageCentered navdrawer>
-    <LoginCard ask-for-persistence @input="handleLogin">
-      <v-btn :to="{ name: 'UserPasswordResetRequest' }" text
-        >Passwort vergessen</v-btn
+    <v-form ref="form">
+      <LoginCard
+        v-model:email="email"
+        v-model:password="password"
+        v-model:persist="persist"
+        ask-for-persistence
+        @on-submit="handleLogin"
       >
-      <v-spacer />
-      <v-btn type="submit" color="primary"> Anmelden </v-btn>
-    </LoginCard>
+        <v-btn :to="{ name: 'UserPasswordResetRequest' }" variant="text">
+          Passwort vergessen
+        </v-btn>
+        <v-spacer />
+        <v-btn color="primary" :loading="loading" @click="handleLogin">
+          Anmelden
+        </v-btn>
+      </LoginCard>
+    </v-form>
   </BasePageCentered>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import firebase from "firebase/app";
+import { defineComponent } from "vue";
 import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { LoginCredentials } from "@/models/User";
+import handleError from "@/utils/store/handleError";
+import { VForm } from "vuetify/components";
+import {
+  getAuth,
+  setPersistence,
+  Persistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { firebaseApp } from "@/firebase";
 
-export default Vue.extend({
+const auth = getAuth(firebaseApp);
+
+export default defineComponent({
   components: {
     LoginCard,
+  },
+
+  data() {
+    return {
+      loading: false,
+      email: "",
+      password: "",
+      persist: false,
+    };
   },
 
   computed: {
     ...mapState(useAuthStore, ["loggedIn"]),
     nextUrl(): string | null {
-      return this.$route.params.nextUrl || null;
-    },
-
-    nextRouteName(): string | null {
-      return this.$route.params.nextRouteName || null;
+      return (this.$route.query.next || null) as string | null;
     },
   },
 
   watch: {
-    loggedIn(loggedIn) {
-      if (loggedIn) {
-        if (this.nextUrl) {
-          this.$router.replace(this.nextUrl);
-        } else if (this.nextRouteName) {
-          this.$router.replace({ name: this.nextRouteName });
-        } else {
-          this.$router.replace({ name: "Home" });
-        }
-      }
+    loggedIn() {
+      this.onLoginStateChanged();
     },
   },
 
   methods: {
     ...mapActions(useAuthStore, ["login"]),
 
-    handleLogin(user: LoginCredentials & { persist?: boolean }) {
-      const persist =
-        user.persist === true
-          ? firebase.auth.Auth.Persistence.LOCAL
-          : firebase.auth.Auth.Persistence.SESSION;
+    onLoginStateChanged() {
+      if (this.loggedIn)
+        if (this.nextUrl) {
+          this.$router.replace(this.nextUrl);
+        } else {
+          this.$router.replace({ name: "Home" });
+        }
+    },
 
-      firebase
-        .auth()
-        .setPersistence(persist)
-        .then(() => {
-          this.login(user);
-        });
+    async handleLogin() {
+      if ((await (this.$refs.form as VForm).validate()).valid) {
+        const persist: Persistence =
+          this.persist === true
+            ? browserLocalPersistence
+            : browserSessionPersistence;
+
+        this.loading = true;
+        setPersistence(auth, persist)
+          .then(() => {
+            return this.login({ email: this.email, password: this.password });
+          })
+          .catch(handleError)
+          .finally(() => {
+            this.loading = false;
+          });
+      }
     },
   },
 });

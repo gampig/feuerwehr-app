@@ -1,3 +1,5 @@
+import { RouteRecordRaw } from "vue-router";
+
 export default [
   {
     path: encodeURI("/übungen"),
@@ -11,4 +13,4 @@ export default [
     meta: { auth: { requiresAuth: true } },
     component: () => import("./views/Show.vue"),
   },
-];
+] satisfies RouteRecordRaw[];

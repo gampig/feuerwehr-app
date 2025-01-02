@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" width="500" persistent>
+  <v-dialog :model-value="modelValue" width="500" persistent>
     <v-card>
       <v-card-title>Fehler</v-card-title>
 
@@ -8,32 +8,34 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn text @click="goBack">Zurück</v-btn>
+        <v-btn variant="text" @click="goBack">Zurück</v-btn>
         <v-spacer />
-        <v-btn text @click="tryAgain">Erneut versuchen</v-btn>
+        <v-btn variant="text" @click="tryAgain">Erneut versuchen</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from "vue";
+export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
   },
 
+  emits: ["update:model-value", "retry"],
+
   methods: {
     goBack() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$router.back();
     },
 
     tryAgain() {
-      this.$emit("input", false);
+      this.$emit("update:model-value", false);
       this.$emit("retry");
     },
   },

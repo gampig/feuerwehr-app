@@ -3,6 +3,7 @@ module.exports = {
 
   env: {
     node: true,
+    es2022: true,
   },
 
   parserOptions: {
@@ -10,8 +11,6 @@ module.exports = {
   },
 
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "vue/component-name-in-template-casing": [
       "error",
       "PascalCase",
@@ -52,7 +51,7 @@ module.exports = {
   },
 
   extends: [
-    "plugin:vue/recommended",
+    "plugin:vue/vue3-recommended",
     "eslint:recommended",
     "@vue/prettier",
     "@vue/typescript",

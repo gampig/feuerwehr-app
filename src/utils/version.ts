@@ -1,15 +1,15 @@
-const buildTimestampUtc = document.documentElement.dataset.buildTimestampUtc;
+const buildTimestamp = BUILD_TIME;
 
 let version = "Unbekannt";
 
-if (buildTimestampUtc !== undefined) {
-  const date = new Date(buildTimestampUtc);
+if (buildTimestamp !== undefined) {
+  const date = new Date(buildTimestamp);
   const year = date.getFullYear().toString();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
   version = year + month + day;
 }
 
-version += " (" + process.env.VUE_APP_GIT_HASH + ")";
+version += " (" + GIT_HASH + ")";
 
 export default version;
