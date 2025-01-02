@@ -60,6 +60,7 @@ import EditDialog from "../components/orders/EditDialog.vue";
 import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
 import { defineComponent } from "vue";
+import handleError from "@/utils/store/handleError";
 import { Order } from "../models/Order";
 import { mapActions, mapState } from "pinia";
 import { useClothingTypesStore } from "../stores/clothingTypes";
@@ -115,7 +116,7 @@ export default defineComponent({
       showEditDialog: false,
       showRemoveConfirmationDialog: false,
 
-      orderToRemove: "",
+      orderToRemove: undefined as string | undefined,
     };
   },
 
@@ -173,7 +174,11 @@ export default defineComponent({
       const orderToRemove =
         orderId === undefined ? this.orderToRemove : orderId;
       this.showRemoveConfirmationDialog = false;
-      useOrdersStore().remove(orderToRemove);
+      if (orderToRemove) {
+        useOrdersStore().remove(orderToRemove);
+      } else {
+        handleError("Interner Fehler: Keine Bestellung ausgewählt");
+      }
     },
 
     askForConfirmationToRemove(orderId: string) {
