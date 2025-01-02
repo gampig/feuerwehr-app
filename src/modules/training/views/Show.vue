@@ -12,7 +12,7 @@
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
-      <v-alert type="info" density="compact" border="start" border-color>
+      <v-alert type="info" density="compact" variant="outlined">
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
@@ -118,11 +118,11 @@
                 />
               </v-card-text>
               <v-data-table
+                v-model:sort-by="sortBy"
                 :headers="headers"
                 :items="training.participants"
                 :items-per-page="-1"
                 no-data-text="Keine Teilnehmer vorhanden"
-                sort-by="name"
                 :search="search"
               >
                 <template #[`item.actions`]="{ item }">
@@ -158,6 +158,7 @@ import { Participant, Training } from "../models/Training";
 import { trainings } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components";
+import { SortItem } from "@/models/SortItem";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -208,6 +209,12 @@ const headers = [
     sortable: false,
   },
 ];
+
+const sortBy = ref<SortItem[]>([
+  {
+    key: "name",
+  },
+]);
 
 const training = reactive<Training>(trainings[0]);
 

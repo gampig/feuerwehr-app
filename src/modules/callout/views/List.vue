@@ -36,6 +36,7 @@ import { sortDateTime } from "@/utils/dates";
 import { mapState } from "pinia";
 import { useCalloutsStore } from "../stores/callouts";
 import { VueDatabaseDocumentData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
 export default defineComponent({
   data() {
@@ -52,10 +53,7 @@ export default defineComponent({
         },
       ],
 
-      sortBy: [{ key: "alarmTimeFormatted", order: "desc" }] as Array<{
-        key: string;
-        order?: "asc" | "desc";
-      }>,
+      sortBy: [{ key: "alarmTimeFormatted", order: "desc" }] as SortItem[],
 
       search: "",
     };

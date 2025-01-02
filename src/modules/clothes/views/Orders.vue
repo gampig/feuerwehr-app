@@ -65,6 +65,7 @@ import { mapActions, mapState } from "pinia";
 import { useClothingTypesStore } from "../stores/clothingTypes";
 import { useOrdersStore } from "../stores/orders";
 import { VueDatabaseQueryData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
 function latestTimestampOfOrder(order: Order) {
   function dateToTimestamp(date: any) {
@@ -101,7 +102,7 @@ export default defineComponent({
       ],
 
       options: {
-        sortBy: ["submittedOn"],
+        sortBy: [{ key: "submittedOn" }] as SortItem[],
         sortDesc: [true],
         page: 1,
         itemsPerPage: 15,

@@ -56,7 +56,7 @@ export default defineComponent({
         { text: "Rollen", value: "roles" },
       ],
 
-      editDisplayName: "",
+      editDisplayName: undefined as string | undefined,
     };
   },
 
@@ -101,7 +101,9 @@ export default defineComponent({
     },
 
     updateDisplayName(user: User) {
-      useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
+      if (this.editDisplayName) {
+        useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
+      }
     },
   },
 });

@@ -63,6 +63,7 @@ import { useClothingTypesStore } from "../stores/clothingTypes";
 import { mapActions, mapState } from "pinia";
 import { ClothingType } from "../models/ClothingType";
 import { VueDatabaseQueryData } from "vuefire";
+import { SortItem } from "@/models/SortItem";
 
 export default defineComponent({
   components: { CreateDialog, EditDialog },
@@ -83,7 +84,7 @@ export default defineComponent({
       sortBy: [
         { key: "category", order: "asc" },
         { key: "name", order: "asc" },
-      ],
+      ] as SortItem[],
 
       selected: [] as VueDatabaseQueryData<ClothingType>,
       search: "",

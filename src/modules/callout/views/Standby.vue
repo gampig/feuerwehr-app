@@ -161,7 +161,6 @@ export default {
     },
 
     back() {
-      this.selectCallout();
       this.currentStep = 1;
     },
 
