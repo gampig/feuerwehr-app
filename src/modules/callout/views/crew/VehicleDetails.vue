@@ -180,10 +180,7 @@ export default defineComponent({
               })
             : Promise.resolve(null),
 
-          this.updateVehicleDetails({
-            vehicleId: this.vehicle.id,
-            details: this.item,
-          }),
+          this.updateVehicleDetails(this.item),
         ])
           .then(() =>
             this.$router.push({
