@@ -166,7 +166,6 @@ export const useCalloutStore = defineStore("callout", () => {
         remove(calloutSource.value),
         remove(crewSource.value),
       ]);
-      selectedCalloutId.value = undefined;
     } catch (error) {
       return handleError(error);
     }
