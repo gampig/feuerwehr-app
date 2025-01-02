@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar v-model="needRefresh" timeout="-1">
+  <v-snackbar v-model="needRefresh" timeout="-1" :close-on-back="false">
     {{ title }}
 
     <template #actions>

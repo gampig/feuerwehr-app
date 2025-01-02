@@ -1,5 +1,10 @@
 <template>
-  <VSnackbarQueue v-model="snackbarQueue" location="right top" closable>
+  <VSnackbarQueue
+    v-model="snackbarQueue"
+    location="right top"
+    closable
+    :close-on-back="false"
+  >
   </VSnackbarQueue>
 </template>
 
