@@ -7,34 +7,37 @@
     <v-container>
       <v-data-table :headers="headers" :items="users" :loading="loading">
         <template #[`item.displayName`]="{ item }">
-          <v-edit-dialog
-            size="large"
-            persistent
-            cancel-text="Abbrechen"
-            save-text="Speichern"
-            @open="editDisplayName = item.displayName"
-            @save="updateDisplayName(item)"
-          >
-            {{ item.displayName }}
-            <v-btn icon><v-icon>mdi-pencil</v-icon></v-btn>
-            <template #input>
-              <v-text-field
-                v-model="editDisplayName"
-                label="Name"
-              ></v-text-field>
-            </template>
-          </v-edit-dialog>
+          {{ item.displayName }}
+          <v-btn icon variant="text" @click="showEditDialog(item)">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
         </template>
         <template #[`item.disabled`]="{ item }">
           <v-checkbox-btn v-model="item.disabled" disabled> </v-checkbox-btn>
         </template>
+        <template #[`item.roles`]="{ item }">
+          <v-chip-group disabled>
+            <v-chip v-for="role in item.roles" :key="role" size="small">
+              {{ role }}
+            </v-chip>
+          </v-chip-group>
+        </template>
       </v-data-table>
     </v-container>
+
+    <BaseEditDialog
+      v-model="editDialog"
+      :saving="saving"
+      :title="editItem?.displayName ?? editItem?.email ?? 'Benutzer ändern'"
+      @save="updateDisplayName"
+    >
+      <v-text-field v-model="editDisplayName" label="Name"></v-text-field>
+    </BaseEditDialog>
   </BasePage>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, nextTick } from "vue";
 import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
@@ -50,13 +53,16 @@ export default defineComponent({
   data() {
     return {
       headers: [
-        { text: "Name", value: "displayName" },
-        { text: "E-Mail", value: "email" },
-        { text: "Deaktiviert", value: "disabled" },
-        { text: "Rollen", value: "roles" },
+        { title: "Name", key: "displayName" },
+        { title: "E-Mail", key: "email" },
+        { title: "Deaktiviert", key: "disabled" },
+        { title: "Rollen", key: "roles" },
       ],
 
+      editDialog: false,
+      editItem: undefined as User | undefined,
       editDisplayName: undefined as string | undefined,
+      saving: false,
     };
   },
 
@@ -100,10 +106,28 @@ export default defineComponent({
       }
     },
 
-    updateDisplayName(user: User) {
-      if (this.editDisplayName) {
-        useUsersStore().updateDisplayName(user.uid, this.editDisplayName);
+    updateDisplayName() {
+      if (this.editDisplayName && this.editItem) {
+        this.saving = true;
+        useUsersStore()
+          .updateDisplayName(this.editItem.uid, this.editDisplayName)
+          .then(() => {
+            this.editDialog = false;
+            nextTick(() => {
+              this.editItem = undefined;
+              this.editDisplayName = undefined;
+            });
+          })
+          .finally(() => {
+            this.saving = false;
+          });
       }
+    },
+
+    showEditDialog(user: User) {
+      this.editItem = user;
+      this.editDisplayName = user.displayName;
+      this.editDialog = true;
     },
   },
 });
