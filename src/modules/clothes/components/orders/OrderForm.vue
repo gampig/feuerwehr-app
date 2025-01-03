@@ -102,7 +102,7 @@
 import { mapState } from "pinia";
 import moment from "moment";
 import { usePeopleStore } from "@/modules/people/stores/people";
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { required, isValidName } from "@/utils/rules";
 import { useClothingTypesStore } from "../../stores/clothingTypes";
 import { ClothingType } from "../../models/ClothingType";
@@ -120,7 +120,7 @@ export default defineComponent({
     },
 
     size: {
-      type: String,
+      type: Object as PropType<string | number>,
       default: undefined,
     },
 
@@ -213,15 +213,15 @@ export default defineComponent({
       return moment.unix(timestamp).format("L");
     },
 
-    updateOrderedOn(checked: boolean) {
+    updateOrderedOn(checked: boolean | null) {
       this.$emit("update:orderedOn", this.getTimestampForCheckbox(checked));
     },
 
-    updateDoneOn(checked: boolean) {
+    updateDoneOn(checked: boolean | null) {
       this.$emit("update:doneOn", this.getTimestampForCheckbox(checked));
     },
 
-    getTimestampForCheckbox(checked: boolean) {
+    getTimestampForCheckbox(checked: boolean | null) {
       return checked ? moment().unix() : null;
     },
   },

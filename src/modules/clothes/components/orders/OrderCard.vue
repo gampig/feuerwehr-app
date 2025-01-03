@@ -93,7 +93,7 @@ const {
 } = defineProps<{
   person: string;
   clothingType?: string;
-  size?: string;
+  size?: string | number;
   count?: number;
   paid?: number;
   totalPrice?: number;

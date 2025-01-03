@@ -61,14 +61,13 @@ import { formatDate, sortDate } from "@/utils/dates";
 import moment from "moment";
 import { defineComponent } from "vue";
 import handleError from "@/utils/store/handleError";
-import { Order } from "../models/Order";
+import { OrderView } from "../models/Order";
 import { mapActions, mapState } from "pinia";
 import { useClothingTypesStore } from "../stores/clothingTypes";
 import { useOrdersStore } from "../stores/orders";
-import { VueDatabaseQueryData } from "vuefire";
 import { SortItem } from "@/models/SortItem";
 
-function latestTimestampOfOrder(order: Order) {
+function latestTimestampOfOrder(order: OrderView) {
   function dateToTimestamp(date: any) {
     if (date === undefined) return 0;
     return moment(date, "L").unix();
@@ -124,22 +123,27 @@ export default defineComponent({
     ...mapState(useOrdersStore, { allOrders: "orders", loading: "loading" }),
     ...mapState(useClothingTypesStore, ["types"]),
 
-    orders(): VueDatabaseQueryData<Order> {
+    orders(): OrderView[] {
       return this.allOrders
         .filter((item) => this.showDoneOrders == !!item.doneOn)
         .map((order) => {
-          const orderFormatted = { ...order, id: order.id } as any;
-
-          orderFormatted.submittedOn =
-            order.submittedOn && formatDate(order.submittedOn);
-          orderFormatted.orderedOn =
-            order.orderedOn && formatDate(order.orderedOn);
-          orderFormatted.doneOn = order.doneOn && formatDate(order.doneOn);
+          const orderFormatted: OrderView = {
+            ...order,
+            submittedOn: formatDate(order.submittedOn),
+            orderedOn:
+              order.orderedOn === undefined
+                ? undefined
+                : formatDate(order.orderedOn),
+            doneOn:
+              order.doneOn === undefined ? undefined : formatDate(order.doneOn),
+            id: order.id,
+          };
 
           const clothingType = order.clothingType
             ? this.types.find((type) => type.id === order.clothingType)
             : undefined;
-          orderFormatted.clothingType = clothingType && clothingType.name;
+          orderFormatted.clothingType =
+            clothingType?.name ?? order.clothingType;
 
           const price = clothingType?.price || 0;
           const count = order?.count || 1;
@@ -186,7 +190,7 @@ export default defineComponent({
       this.showRemoveConfirmationDialog = true;
     },
 
-    filterList(list: Array<any>, search: string) {
+    filterList(list: Array<OrderView>, search: string) {
       if (search) {
         const searchLowerCase = search.toLowerCase();
         return list.filter((item) =>

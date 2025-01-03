@@ -26,7 +26,7 @@ import OrderForm from "./OrderForm.vue";
 import moment from "moment";
 import { defineComponent } from "vue";
 import { VForm } from "vuetify/components";
-import { Order } from "../../models/Order";
+import { OrderEntity } from "../../models/Order";
 import { useOrdersStore } from "../../stores/orders";
 
 export default defineComponent({
@@ -55,7 +55,7 @@ export default defineComponent({
         submittedOn: undefined,
         orderedOn: undefined,
         doneOn: undefined,
-      } as Partial<Order>,
+      } as Partial<OrderEntity>,
     };
   },
 
@@ -79,7 +79,7 @@ export default defineComponent({
     },
 
     async save() {
-      const item = { ...(this.item as Order) };
+      const item = { ...(this.item as OrderEntity) };
       item.submittedOn = moment().unix();
 
       if (await this.validate()) {

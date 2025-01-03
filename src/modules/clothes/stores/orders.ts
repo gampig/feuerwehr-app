@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Order } from "../models/Order";
+import { OrderEntity } from "../models/Order";
 import { computed, ref } from "vue";
 import { firebaseApp } from "@/firebase";
 import {
@@ -29,7 +29,7 @@ export const useOrdersStore = defineStore("orders", () => {
   const ordersSource = computed(() =>
     isAuthorized.value ? ordersQuery : undefined
   );
-  const orders = useDatabaseList<Order>(ordersSource);
+  const orders = useDatabaseList<OrderEntity>(ordersSource);
   const loading = orders.pending;
 
   const selectedOrderId = ref<string>();
@@ -38,18 +38,18 @@ export const useOrdersStore = defineStore("orders", () => {
       ? child(ordersRef, selectedOrderId.value)
       : undefined
   );
-  const selectedOrder = useDatabaseObject<Order>(selectedOrderSource);
+  const selectedOrder = useDatabaseObject<OrderEntity>(selectedOrderSource);
   const selectedOrderLoading = selectedOrder.pending;
 
   function selectOrder(orderId: string) {
     selectedOrderId.value = orderId;
   }
 
-  function create(order: Order) {
+  function create(order: OrderEntity) {
     return dbPush(ordersRef, deleteUndefinedProperties(order));
   }
 
-  function update(order: Order) {
+  function update(order: OrderEntity) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
@@ -59,7 +59,7 @@ export const useOrdersStore = defineStore("orders", () => {
     );
   }
 
-  function set(order: Order) {
+  function set(order: OrderEntity) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
