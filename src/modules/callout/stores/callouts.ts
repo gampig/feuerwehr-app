@@ -7,6 +7,8 @@ import {
   query,
   orderByChild,
   push,
+  remove as dbRemove,
+  child,
 } from "firebase/database";
 import { firebaseApp } from "@/firebase";
 import { Callout } from "../models/Callout";
@@ -22,6 +24,8 @@ export const useCalloutsStore = defineStore("callouts", () => {
   const db = getDatabase(firebaseApp);
 
   const calloutsRef = dbRef(db, "callouts");
+  const crewRef = dbRef(db, "crew");
+
   const calloutsQuery = query(calloutsRef, orderByChild("alarmTime"));
   const calloutsSource = computed(() =>
     useAuthStore().hasAnyRole(Acl.einsaetzeAnzeigen) ? calloutsQuery : undefined
@@ -64,6 +68,11 @@ export const useCalloutsStore = defineStore("callouts", () => {
     }
   }
 
+  async function remove(calloutId: string) {
+    await dbRemove(child(crewRef, calloutId));
+    return await dbRemove(child(calloutsRef, calloutId));
+  }
+
   return {
     callouts,
     loading,
@@ -76,5 +85,6 @@ export const useCalloutsStore = defineStore("callouts", () => {
     calloutsSource,
 
     create,
+    remove,
   };
 });
