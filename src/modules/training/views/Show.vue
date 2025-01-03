@@ -8,11 +8,23 @@
     </template>
 
     <v-container>
-      <v-alert type="warning" closable density="compact" border="start">
+      <v-alert
+        type="warning"
+        closable
+        density="compact"
+        border="start"
+        class="mb-3"
+      >
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
-      <v-alert type="info" density="compact" variant="outlined">
+      <v-alert
+        v-if="false"
+        type="info"
+        density="compact"
+        variant="outlined"
+        class="mb-3"
+      >
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
@@ -25,14 +37,14 @@
                 <v-text-field
                   :model-value="formatDateTime(training.startTime)"
                   label="Start"
-                  append-icon="mdi-calendar"
+                  append-inner-icon="mdi-calendar"
                   readonly
                   @click="showStartTimeDialog = true"
                 />
                 <v-text-field
                   :model-value="formatDateTime(training.endTime)"
                   label="Ende"
-                  append-icon="mdi-calendar"
+                  append-inner-icon="mdi-calendar"
                   readonly
                   clearable
                   @click="showEndTimeDialog = true"
@@ -42,7 +54,7 @@
                 <v-text-field
                   v-model="training.location"
                   label="Ort"
-                  append-icon="mdi-map-marker"
+                  append-inner-icon="mdi-map-marker"
                 />
 
                 <v-select
@@ -78,20 +90,20 @@
                     clearable
                     label="Teilnehmer"
                     variant="filled"
-                    :rules="[isNotEmpty, isValidName]"
+                    :rules="[required, isValidName, isNotSelected]"
                   >
                   </v-combobox>
                   <v-radio-group
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
                     inline
-                    :rules="[isNotEmpty]"
+                    :rules="[required]"
                   >
                     <v-radio
                       v-for="group in training.groups"
                       :key="group"
                       :label="group"
-                      :model-value="group"
+                      :value="group"
                     >
                     </v-radio>
                   </v-radio-group>
@@ -126,9 +138,9 @@
                 :search="search"
               >
                 <template #[`item.actions`]="{ item }">
-                  <v-btn icon @click="removeParticipant(item)"
-                    ><v-icon>mdi-delete</v-icon></v-btn
-                  >
+                  <v-btn variant="plain" @click="removeParticipant(item)">
+                    Entfernen
+                  </v-btn>
                 </template>
               </v-data-table>
             </v-card>
@@ -159,6 +171,7 @@ import { trainings } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components";
 import { SortItem } from "@/models/SortItem";
+import { isValidName, required } from "@/utils/rules";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -195,17 +208,18 @@ const availablePeople = computed(() =>
 
 const headers = [
   {
-    text: "Name",
-    value: "name",
+    title: "Name",
+    key: "name",
     groupable: false,
   },
   {
-    text: "Gruppe",
-    value: "group",
+    title: "Gruppe",
+    key: "group",
   },
   {
-    text: "",
-    value: "actions",
+    title: "",
+    key: "actions",
+    width: "1%",
     sortable: false,
   },
 ];
@@ -254,12 +268,11 @@ function updateEndTime(newTime: number) {
   training.endTime = newTime;
 }
 
-function isNotEmpty(value: any): boolean | string {
-  return !!value || "Bitte fülle dieses Feld aus";
-}
-
-function isValidName(value?: string): boolean | string {
-  const parts = value?.split(", ") ?? [];
-  return parts.length === 2 || "Format: Nachname, Vorname";
+function isNotSelected(person: string) {
+  return (
+    !training.participants
+      .map((p) => p.name.toLowerCase())
+      .includes(person.toLowerCase()) || "Ist bereits eingetragen"
+  );
 }
 </script>

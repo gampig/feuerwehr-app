@@ -1,27 +1,18 @@
-import { defineStore } from "pinia";
-import { Callout, CalloutRole, CalloutVehicle, Crew } from "../models/Callout";
-import { computed, ref } from "vue";
-import {
-  child,
-  ref as dbRef,
-  getDatabase,
-  remove,
-  set,
-  update,
-} from "firebase/database";
-import { firebaseApp } from "@/firebase";
-import { Vehicle } from "@/modules/vehicles/models/Vehicle";
-import handleError from "@/utils/store/handleError";
-import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
-import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { calloutsRef, crewRef, vehiclesRef } from "@/firebase";
+import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { useAuthStore } from "@/stores/auth";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import handleError from "@/utils/store/handleError";
 import { useDatabaseObject } from "@/utils/store/vuefire";
+import { child, remove, set, update } from "firebase/database";
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { Callout, CalloutRole, CalloutVehicle, Crew } from "../models/Callout";
 
 export const useCalloutStore = defineStore("callout", () => {
   const selectedCalloutId = ref<string>();
   const selectedVehicleId = ref<string>();
-
-  const db = getDatabase(firebaseApp);
 
   const isAuthorized = computed(() =>
     useAuthStore().hasAnyRole(Acl.einsaetzeAnzeigen)
@@ -30,21 +21,21 @@ export const useCalloutStore = defineStore("callout", () => {
   const calloutSource = computed(() =>
     selectedCalloutId.value === undefined || !isAuthorized.value
       ? undefined
-      : dbRef(db, "callouts/" + selectedCalloutId.value)
+      : child(calloutsRef, selectedCalloutId.value)
   );
   const callout = useDatabaseObject<Callout>(calloutSource);
 
   const crewSource = computed(() =>
     selectedCalloutId.value === undefined || !isAuthorized.value
       ? undefined
-      : dbRef(db, "crew/" + selectedCalloutId.value)
+      : child(crewRef, selectedCalloutId.value)
   );
   const crew = useDatabaseObject<Crew>(crewSource);
 
   const vehicleSource = computed(() =>
     selectedVehicleId.value === undefined
       ? undefined
-      : dbRef(db, "vehicles/" + selectedVehicleId.value)
+      : child(vehiclesRef, selectedVehicleId.value)
   );
   const vehicle = useDatabaseObject<Vehicle>(vehicleSource);
 

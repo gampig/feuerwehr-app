@@ -26,7 +26,7 @@
 import { defineComponent } from "vue";
 import OrderForm from "./OrderForm.vue";
 import { VForm } from "vuetify/components";
-import { Order } from "../../models/Order";
+import { OrderEntity } from "../../models/Order";
 import { mapState } from "pinia";
 import { useOrdersStore } from "../../stores/orders";
 
@@ -47,7 +47,7 @@ export default defineComponent({
     return {
       saving: false,
 
-      item: {} as Partial<Order>,
+      item: {} as Partial<OrderEntity>,
       emptyItem: {
         person: undefined,
         clothingType: undefined,
@@ -57,7 +57,7 @@ export default defineComponent({
         submittedOn: undefined,
         orderedOn: undefined,
         doneOn: undefined,
-      } as Partial<Order>,
+      } as Partial<OrderEntity>,
     };
   },
 
@@ -110,7 +110,7 @@ export default defineComponent({
         this.saving = true;
 
         useOrdersStore()
-          .set(this.item as Order)
+          .set(this.item as OrderEntity)
           .then(() => {
             this.$showMessage("Gespeichert");
             this.closeDialog();

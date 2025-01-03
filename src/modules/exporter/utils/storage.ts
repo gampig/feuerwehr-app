@@ -1,9 +1,9 @@
+import { crewRef } from "@/firebase";
 import { MannschaftenMap } from "@/modules/callout/models/Callout";
-import { usePeopleStore } from "@/modules/people/stores/people";
-import { get, getDatabase, ref } from "firebase/database";
-import { firebaseApp } from "@/firebase";
-import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { useCalloutsStore } from "@/modules/callout/stores/callouts";
+import { usePeopleStore } from "@/modules/people/stores/people";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
+import { get } from "firebase/database";
 
 export default {
   getPersonen() {
@@ -19,8 +19,7 @@ export default {
   },
 
   async fetchMannschaften() {
-    const db = getDatabase(firebaseApp);
-    const snapshot = await get(ref(db, "crew"));
+    const snapshot = await get(crewRef);
     return snapshot.val() as MannschaftenMap;
   },
 };

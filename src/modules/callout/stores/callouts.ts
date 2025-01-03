@@ -1,27 +1,24 @@
+import { Acl } from "@/acl";
+import { calloutsRef, crewRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
+import { formatDateTime } from "@/utils/dates";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import handleError from "@/utils/store/handleError";
+import { useDatabaseList } from "@/utils/store/vuefire";
+import {
+  child,
+  remove as dbRemove,
+  orderByChild,
+  push,
+  query,
+} from "firebase/database";
+import moment from "moment";
 import { defineStore } from "pinia";
 import { computed } from "vue";
 import { VueDatabaseDocumentData } from "vuefire";
-import {
-  getDatabase,
-  ref as dbRef,
-  query,
-  orderByChild,
-  push,
-} from "firebase/database";
-import { firebaseApp } from "@/firebase";
 import { Callout } from "../models/Callout";
-import handleError from "@/utils/store/handleError";
-import moment from "moment";
-import { formatDateTime } from "@/utils/dates";
-import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
-import { useAuthStore } from "@/stores/auth";
-import { Acl } from "@/acl";
-import { useDatabaseList } from "@/utils/store/vuefire";
 
 export const useCalloutsStore = defineStore("callouts", () => {
-  const db = getDatabase(firebaseApp);
-
-  const calloutsRef = dbRef(db, "callouts");
   const calloutsQuery = query(calloutsRef, orderByChild("alarmTime"));
   const calloutsSource = computed(() =>
     useAuthStore().hasAnyRole(Acl.einsaetzeAnzeigen) ? calloutsQuery : undefined
@@ -33,7 +30,9 @@ export const useCalloutsStore = defineStore("callouts", () => {
   const calloutsReversed = computed(() => [...callouts.value].reverse());
   const calloutsOfToday = computed(() => {
     const aDayAgo = moment().subtract(1, "day").unix();
-    return callouts.value.filter((callout) => callout.alarmTime > aDayAgo);
+    return callouts.value
+      .filter((callout) => callout.alarmTime > aDayAgo)
+      .reverse();
   });
   const calloutsBeforeToday = computed(() => {
     const aDayAgo = moment().subtract(1, "day").unix();
@@ -64,6 +63,11 @@ export const useCalloutsStore = defineStore("callouts", () => {
     }
   }
 
+  async function remove(calloutId: string) {
+    await dbRemove(child(crewRef, calloutId));
+    return await dbRemove(child(calloutsRef, calloutId));
+  }
+
   return {
     callouts,
     loading,
@@ -76,5 +80,6 @@ export const useCalloutsStore = defineStore("callouts", () => {
     calloutsSource,
 
     create,
+    remove,
   };
 });

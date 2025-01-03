@@ -5,27 +5,34 @@
     </template>
 
     <v-container fluid>
-      <v-alert type="warning" closable density="compact">
+      <v-alert type="warning" closable density="compact" class="mb-3">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
         Demonstration!
       </v-alert>
 
-      <BaseSearchRow />
+      <v-data-table :search="search" :headers="headers" :items="items">
+        <template #top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            density="compact"
+            placeholder="Suche"
+          ></v-text-field>
+        </template>
 
-      <v-row>
-        <v-col cols="12">
-          <v-card>
-            <v-data-table :headers="headers" :items="items">
-              <template #[`item.startTime`]="{ item }">
-                {{ formatDateTime(item.startTime) }}
-              </template>
-              <template #[`item.actions`]="{ item }">
-                <v-btn variant="flat" @click="showTraining(item)">Öffnen</v-btn>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-col>
-      </v-row>
+        <template #[`item.startTime`]="{ item }">
+          {{ formatDateTime(item.startTime) }}
+        </template>
+
+        <template #[`item.groups`]="{ item }">
+          {{ item.groups.join(", ") }}
+        </template>
+
+        <template #[`item.actions`]="{ item }">
+          <v-btn variant="tonal" @click="showTraining(item)"> Öffnen </v-btn>
+        </template>
+      </v-data-table>
     </v-container>
   </BasePage>
 </template>
@@ -35,17 +42,20 @@ import { formatDateTime } from "@/utils/dates";
 import { Training } from "../models/Training";
 import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 const router = useRouter();
 
 const headers = [
-  { text: "Datum", value: "startTime" },
-  { text: "Gruppen", value: "groups" },
-  { text: "Titel", value: "title" },
-  { text: "", value: "actions", sortable: false },
+  { title: "Datum", key: "startTime", nowrap: true },
+  { title: "Gruppen", key: "groups", nowrap: true },
+  { title: "Titel", key: "title" },
+  { title: "", key: "actions", sortable: false },
 ];
 
 const items = trainings;
+
+const search = ref("");
 
 function showTraining(item: Training) {
   router.push({ name: "TrainingShow", params: { id: item.id } });

@@ -1,22 +1,15 @@
-import { defineStore } from "pinia";
-import { Person } from "../models/Person";
-import handleError from "@/utils/store/handleError";
-import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
-import { computed } from "vue";
-import {
-  getDatabase,
-  ref as dbRef,
-  update as dbUpdate,
-  child,
-} from "firebase/database";
-import { firebaseApp } from "@/firebase";
-import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { peopleRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import handleError from "@/utils/store/handleError";
 import { useDatabaseList } from "@/utils/store/vuefire";
+import { child, update as dbUpdate } from "firebase/database";
+import { defineStore } from "pinia";
+import { computed } from "vue";
+import { Person } from "../models/Person";
 
 export const usePeopleStore = defineStore("people", () => {
-  const db = getDatabase(firebaseApp);
-  const peopleRef = dbRef(db, "people");
   const peopleSource = computed(() =>
     useAuthStore().hasAnyRole(Acl.personenAnzeigen) ? peopleRef : undefined
   );

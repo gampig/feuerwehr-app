@@ -29,3 +29,8 @@ export function recently(value?: string) {
     "Zeitpunkt darf nicht länger als 7 Tage her sein"
   );
 }
+
+export function isValidName(value?: string): boolean | string {
+  const parts = value?.split(", ") ?? [];
+  return parts.length === 2 || "Format: Nachname, Vorname";
+}

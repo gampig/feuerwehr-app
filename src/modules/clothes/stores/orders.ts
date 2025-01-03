@@ -1,55 +1,48 @@
-import { defineStore } from "pinia";
-import { Order } from "../models/Order";
-import { computed, ref } from "vue";
-import { firebaseApp } from "@/firebase";
-import {
-  getDatabase,
-  ref as dbRef,
-  push as dbPush,
-  update as dbUpdate,
-  set as dbSet,
-  remove as dbRemove,
-  child,
-  query,
-  orderByChild,
-} from "firebase/database";
-import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { clothesOrdersRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useDatabaseList, useDatabaseObject } from "@/utils/store/vuefire";
+import {
+  child,
+  push as dbPush,
+  remove as dbRemove,
+  set as dbSet,
+  update as dbUpdate,
+} from "firebase/database";
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { OrderEntity } from "../models/Order";
 
 export const useOrdersStore = defineStore("orders", () => {
-  const db = getDatabase(firebaseApp);
-  const ordersRef = dbRef(db, "clothes/orders");
   const isAuthorized = computed(() =>
     useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
   );
 
-  const ordersQuery = query(ordersRef, orderByChild("submittedOn"));
   const ordersSource = computed(() =>
-    isAuthorized.value ? ordersQuery : undefined
+    isAuthorized.value ? clothesOrdersRef : undefined
   );
-  const orders = useDatabaseList<Order>(ordersSource);
+  const orders = useDatabaseList<OrderEntity>(ordersSource);
   const loading = orders.pending;
 
   const selectedOrderId = ref<string>();
   const selectedOrderSource = computed(() =>
     isAuthorized.value && selectedOrderId.value
-      ? child(ordersRef, selectedOrderId.value)
+      ? child(clothesOrdersRef, selectedOrderId.value)
       : undefined
   );
-  const selectedOrder = useDatabaseObject<Order>(selectedOrderSource);
+  const selectedOrder = useDatabaseObject<OrderEntity>(selectedOrderSource);
   const selectedOrderLoading = selectedOrder.pending;
 
   function selectOrder(orderId: string) {
     selectedOrderId.value = orderId;
   }
 
-  function create(order: Order) {
-    return dbPush(ordersRef, deleteUndefinedProperties(order));
+  function create(order: OrderEntity) {
+    return dbPush(clothesOrdersRef, deleteUndefinedProperties(order));
   }
 
-  function update(order: Order) {
+  function update(order: OrderEntity) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
@@ -59,7 +52,7 @@ export const useOrdersStore = defineStore("orders", () => {
     );
   }
 
-  function set(order: Order) {
+  function set(order: OrderEntity) {
     if (!selectedOrderSource.value) {
       return Promise.reject("Keine Bestellung ausgewählt");
     }
@@ -67,7 +60,7 @@ export const useOrdersStore = defineStore("orders", () => {
   }
 
   function remove(orderId: string) {
-    return dbRemove(child(ordersRef, orderId));
+    return dbRemove(child(clothesOrdersRef, orderId));
   }
 
   return {

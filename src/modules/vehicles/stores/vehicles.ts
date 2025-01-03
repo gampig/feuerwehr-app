@@ -1,16 +1,13 @@
-import { defineStore } from "pinia";
-import { Vehicle } from "../models/Vehicle";
-import { firebaseApp } from "@/firebase";
-import { getDatabase, ref as dbRef } from "firebase/database";
-import { VueDatabaseDocumentData } from "vuefire";
-import { computed } from "vue";
-import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { vehiclesRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
 import { useDatabaseList } from "@/utils/store/vuefire";
+import { defineStore } from "pinia";
+import { computed } from "vue";
+import { VueDatabaseDocumentData } from "vuefire";
+import { Vehicle } from "../models/Vehicle";
 
 export const useVehiclesStore = defineStore("vehicles", () => {
-  const db = getDatabase(firebaseApp);
-  const vehiclesRef = dbRef(db, "vehicles");
   const vehiclesSource = computed(() =>
     useAuthStore().hasAnyRole(Acl.mannschaftsbuch) ? vehiclesRef : undefined
   );

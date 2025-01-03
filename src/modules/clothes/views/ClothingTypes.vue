@@ -9,46 +9,52 @@
       </v-col>
 
       <v-col cols="4" class="d-flex justify-end align-center">
-        <v-btn @click="addHandler">
+        <v-btn color="primary" @click="addHandler">
           <v-icon start>mdi-plus</v-icon>
           Neu
         </v-btn>
       </v-col>
     </v-row>
 
-    <BaseSearchRow v-model:search="search" />
+    <v-card>
+      <v-data-table
+        v-model="selected"
+        v-model:sort-by="sortBy"
+        :headers="headers"
+        :items="types"
+        :search="search"
+        :loading="loading"
+        loading-text="Laden..."
+        locale="de-DE"
+        item-key="id"
+      >
+        <template #top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            density="compact"
+            placeholder="Suche"
+            class="pa-2"
+          ></v-text-field>
+        </template>
 
-    <v-row>
-      <v-col cols="12">
-        <v-data-table
-          v-model="selected"
-          v-model:sort-by="sortBy"
-          :headers="headers"
-          :items="types"
-          :search="search"
-          :loading="loading"
-          loading-text="Laden..."
-          class="elevation-1"
-          locale="de-DE"
-          item-key="id"
-        >
-          <template #[`item.price`]="{ item }">
-            <template v-if="item.price && item.price > 0">
-              {{ item.price }} €
-            </template>
-            <template v-else>-</template>
+        <template #[`item.price`]="{ item }">
+          <template v-if="item.price && item.price > 0">
+            {{ item.price }} €
           </template>
+          <template v-else>-</template>
+        </template>
 
-          <template #[`item.action`]="{ item }">
-            <BaseActionCell :handle-edit="() => editHandler(item.id)">
-              <v-btn icon variant="text" @click="storageHandler(item.id)">
-                <v-icon>mdi-wardrobe</v-icon>
-              </v-btn>
-            </BaseActionCell>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
+        <template #[`item.action`]="{ item }">
+          <BaseActionCell :handle-edit="() => editHandler(item.id)">
+            <v-btn icon variant="text" @click="storageHandler(item.id)">
+              <v-icon>mdi-wardrobe</v-icon>
+            </v-btn>
+          </BaseActionCell>
+        </template>
+      </v-data-table>
+    </v-card>
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
