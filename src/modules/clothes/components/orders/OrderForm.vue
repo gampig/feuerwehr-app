@@ -2,14 +2,14 @@
   <v-form ref="form">
     <v-row class="mb-0">
       <v-col cols="12">
-        <v-autocomplete
+        <v-combobox
           label="Person"
           prepend-icon="mdi-account"
           :items="people"
           item-title="id"
           :model-value="person"
           :loading="loadingPeople"
-          :rules="[rules.required]"
+          :rules="[rules.required, rules.isValidName]"
           @update:model-value="$emit('update:person', $event)"
         />
       </v-col>
@@ -98,13 +98,14 @@
   </v-form>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from "pinia";
 import moment from "moment";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { defineComponent } from "vue";
-import { required } from "@/utils/rules";
+import { required, isValidName } from "@/utils/rules";
 import { useClothingTypesStore } from "../../stores/clothingTypes";
+import { ClothingType } from "../../models/ClothingType";
 
 export default defineComponent({
   props: {
@@ -147,6 +148,7 @@ export default defineComponent({
     return {
       rules: {
         required,
+        isValidName,
       },
     };
   },
@@ -188,7 +190,7 @@ export default defineComponent({
   },
 
   methods: {
-    getTypeText(type) {
+    getTypeText(type: ClothingType) {
       let text = "";
 
       if (type.category) {
@@ -199,7 +201,7 @@ export default defineComponent({
       return text;
     },
 
-    makeLabelWithDate(text, timestamp) {
+    makeLabelWithDate(text: string, timestamp: number) {
       if (timestamp) {
         return text + " (am " + this.getDate(timestamp) + ")";
       } else {
@@ -207,19 +209,19 @@ export default defineComponent({
       }
     },
 
-    getDate(timestamp) {
+    getDate(timestamp: number) {
       return moment.unix(timestamp).format("L");
     },
 
-    updateOrderedOn(checked) {
+    updateOrderedOn(checked: boolean) {
       this.$emit("update:orderedOn", this.getTimestampForCheckbox(checked));
     },
 
-    updateDoneOn(checked) {
+    updateDoneOn(checked: boolean) {
       this.$emit("update:doneOn", this.getTimestampForCheckbox(checked));
     },
 
-    getTimestampForCheckbox(checked) {
+    getTimestampForCheckbox(checked: boolean) {
       return checked ? moment().unix() : null;
     },
   },
