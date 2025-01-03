@@ -73,11 +73,10 @@ import CrewPage from "../../components/CrewPage.vue";
 import VehicleCard from "../../components/cards/VehicleCard.vue";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { useCalloutStore } from "../../stores/callout";
-import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+import { VehicleInCallout } from "@/modules/vehicles/models/Vehicle";
 
-interface VehicleWithIdAndCrewNumber extends Vehicle {
+interface VehicleWithIdAndCrewNumber extends VehicleInCallout {
   id: string;
-  crewNumber?: number;
 }
 
 export default {

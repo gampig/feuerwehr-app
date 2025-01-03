@@ -6,3 +6,7 @@ export interface Vehicle {
   pictureUrl?: string;
   isUgOeel?: boolean;
 }
+
+export interface VehicleInCallout extends Vehicle {
+  crewNumber?: number;
+}
