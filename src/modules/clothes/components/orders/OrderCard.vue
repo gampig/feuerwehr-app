@@ -92,7 +92,7 @@ const {
   doneOn,
 } = defineProps<{
   person: string;
-  clothingType: string;
+  clothingType?: string;
   size?: string;
   count?: number;
   paid?: number;
