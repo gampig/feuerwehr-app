@@ -16,7 +16,12 @@
       </v-col>
     </v-row>
 
-    <v-data-iterator :search="search" :items="orders" :loading="loading">
+    <v-data-iterator
+      :search="search"
+      :items="orders"
+      :loading="loading"
+      items-per-page="-1"
+    >
       <template #header>
         <v-row>
           <v-col cols="12" sm="6" md="4">
