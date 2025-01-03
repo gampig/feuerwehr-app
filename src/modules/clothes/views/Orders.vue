@@ -16,31 +16,48 @@
       </v-col>
     </v-row>
 
-    <BaseSearchRow v-model:search="search" />
+    <v-data-iterator :search="search" :items="orders" :loading="loading">
+      <template #header>
+        <v-row>
+          <v-col cols="12" sm="6" md="4">
+            <v-text-field
+              v-model="search"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              variant="solo"
+              density="compact"
+              placeholder="Suche"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </template>
 
-    <v-row>
-      <v-col cols="12">
-        <Loading :visible="loading" />
-
-        <v-row v-if="filteredOrders && filteredOrders.length > 0">
-          <v-col
-            v-for="item in filteredOrders"
-            :key="item.id"
-            cols="12"
-            sm="6"
-            md="4"
-          >
+      <template #default="{ items }">
+        <v-row>
+          <v-col v-for="(item, i) in items" :key="i" cols="12" sm="6" md="4">
             <OrderCard
-              v-bind="item"
-              @edit="edit(item.id)"
-              @remove="askForConfirmationToRemove(item.id)"
+              v-bind="item.raw"
+              @edit="edit(item.raw.id)"
+              @remove="askForConfirmationToRemove(item.raw.id)"
             />
           </v-col>
         </v-row>
+      </template>
 
-        <div v-else class="text--secondary">Keine Bestellungen vorhanden.</div>
-      </v-col>
-    </v-row>
+      <template #loader>
+        <v-row>
+          <v-col cols="12" sm="6" md="4">
+            <v-skeleton-loader type="card" elevation="1"></v-skeleton-loader>
+          </v-col>
+        </v-row>
+      </template>
+
+      <template #no-data>
+        <v-row>
+          <v-col class="text-disabled"> Keine Bestellungen vorhanden. </v-col>
+        </v-row>
+      </template>
+    </v-data-iterator>
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
@@ -53,61 +70,22 @@
 </template>
 
 <script lang="ts">
-import Loading from "@/components/Loading.vue";
 import OrderCard from "../components/orders/OrderCard.vue";
 import CreateDialog from "../components/orders/CreateDialog.vue";
 import EditDialog from "../components/orders/EditDialog.vue";
-import { formatDate, sortDate } from "@/utils/dates";
-import moment from "moment";
+import { formatDate } from "@/utils/dates";
 import { defineComponent } from "vue";
 import handleError from "@/utils/store/handleError";
 import { OrderView } from "../models/Order";
 import { mapActions, mapState } from "pinia";
 import { useClothingTypesStore } from "../stores/clothingTypes";
 import { useOrdersStore } from "../stores/orders";
-import { SortItem } from "@/models/SortItem";
-
-function latestTimestampOfOrder(order: OrderView) {
-  function dateToTimestamp(date: any) {
-    if (date === undefined) return 0;
-    return moment(date, "L").unix();
-  }
-  return Math.max(
-    dateToTimestamp(order.doneOn),
-    dateToTimestamp(order.orderedOn),
-    dateToTimestamp(order.submittedOn)
-  );
-}
 
 export default defineComponent({
-  components: { Loading, OrderCard, CreateDialog, EditDialog },
+  components: { OrderCard, CreateDialog, EditDialog },
 
   data() {
     return {
-      headers: [
-        {
-          text: "Eingereicht",
-          value: "submittedOn",
-          sort: sortDate,
-        },
-        { text: "Bestellt", value: "orderedOn", sort: sortDate },
-        { text: "Erledigt", value: "doneOn", sort: sortDate },
-        { text: "Kleidung", value: "clothingType" },
-        { text: "Person", value: "person" },
-        {
-          text: "Aktionen",
-          value: "action",
-          sortable: false,
-        },
-      ],
-
-      options: {
-        sortBy: [{ key: "submittedOn" }] as SortItem[],
-        sortDesc: [true],
-        page: 1,
-        itemsPerPage: 15,
-      },
-
       search: "",
       showDoneOrders: false,
 
@@ -152,14 +130,6 @@ export default defineComponent({
           return orderFormatted;
         });
     },
-
-    filteredOrders() {
-      const sortedOrders = [...this.orders].sort(
-        (a, b) => latestTimestampOfOrder(b) - latestTimestampOfOrder(a)
-      );
-
-      return this.filterList(sortedOrders, this.search);
-    },
   },
 
   methods: {
@@ -188,19 +158,6 @@ export default defineComponent({
     askForConfirmationToRemove(orderId: string) {
       this.orderToRemove = orderId;
       this.showRemoveConfirmationDialog = true;
-    },
-
-    filterList(list: Array<OrderView>, search: string) {
-      if (search) {
-        const searchLowerCase = search.toLowerCase();
-        return list.filter((item) =>
-          Object.values(item).some((value) =>
-            String(value).toLowerCase().includes(searchLowerCase)
-          )
-        );
-      } else {
-        return list;
-      }
     },
   },
 });
