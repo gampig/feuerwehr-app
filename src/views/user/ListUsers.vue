@@ -5,7 +5,22 @@
     </template>
 
     <v-container>
-      <v-data-table :headers="headers" :items="users" :loading="loading">
+      <v-data-table
+        :search="search"
+        :headers="headers"
+        :items="users"
+        :loading="loading"
+      >
+        <template #top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            density="compact"
+            placeholder="Suche"
+          ></v-text-field>
+        </template>
+
         <template #[`item.displayName`]="{ item }">
           {{ item.displayName }}
           <v-btn icon variant="text" @click="showEditDialog(item)">
@@ -63,6 +78,7 @@ export default defineComponent({
       editItem: undefined as User | undefined,
       editDisplayName: undefined as string | undefined,
       saving: false,
+      search: "",
     };
   },
 
