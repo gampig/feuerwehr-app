@@ -5,8 +5,7 @@
         <v-combobox
           label="Person"
           prepend-icon="mdi-account"
-          :items="people"
-          item-title="id"
+          :items="peopleNames"
           :model-value="person"
           :loading="loadingPeople"
           :rules="[rules.required, rules.isValidName]"
@@ -163,6 +162,10 @@ export default defineComponent({
       loadingTypes: "loading",
       types: "types",
     }),
+
+    peopleNames() {
+      return this.people.map((person) => person.id);
+    },
 
     clothingTypeObject() {
       return (
