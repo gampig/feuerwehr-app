@@ -10,8 +10,6 @@ import {
   set as dbSet,
   remove as dbRemove,
   child,
-  query,
-  orderByChild,
 } from "firebase/database";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
@@ -25,9 +23,8 @@ export const useOrdersStore = defineStore("orders", () => {
     useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
   );
 
-  const ordersQuery = query(ordersRef, orderByChild("submittedOn"));
   const ordersSource = computed(() =>
-    isAuthorized.value ? ordersQuery : undefined
+    isAuthorized.value ? ordersRef : undefined
   );
   const orders = useDatabaseList<OrderEntity>(ordersSource);
   const loading = orders.pending;

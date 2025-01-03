@@ -104,6 +104,7 @@ export default defineComponent({
     orders(): OrderView[] {
       return this.allOrders
         .filter((item) => this.showDoneOrders == !!item.doneOn)
+        .reverse()
         .map((order) => {
           const orderFormatted: OrderView = {
             ...order,
