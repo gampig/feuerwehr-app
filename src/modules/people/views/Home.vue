@@ -98,7 +98,12 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState(usePeopleStore, ["people", "loading"]),
+    ...mapState(usePeopleStore, { storePeople: "people", loading: "loading" }),
+
+    // Same as storePeople, but id is an enumerable property
+    people() {
+      return this.storePeople.map((person) => ({ ...person, id: person.id }));
+    },
   },
 
   methods: {
