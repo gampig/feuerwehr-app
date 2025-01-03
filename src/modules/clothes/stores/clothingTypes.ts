@@ -1,32 +1,28 @@
-import { defineStore } from "pinia";
-import { ClothingType } from "../models/ClothingType";
-import { computed, ref } from "vue";
-import { firebaseApp } from "@/firebase";
+import { Acl } from "@/acl";
+import { clothesTypesRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
+import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
+import handleError from "@/utils/store/handleError";
+import { useDatabaseList, useDatabaseObject } from "@/utils/store/vuefire";
 import {
-  getDatabase,
-  ref as dbRef,
+  child,
   push as dbPush,
-  update as dbUpdate,
-  set as dbSet,
   remove as dbRemove,
+  set as dbSet,
+  update as dbUpdate,
   orderByChild,
   query,
-  child,
 } from "firebase/database";
-import { useAuthStore } from "@/stores/auth";
-import { Acl } from "@/acl";
-import handleError from "@/utils/store/handleError";
-import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
-import { useDatabaseList, useDatabaseObject } from "@/utils/store/vuefire";
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { ClothingType } from "../models/ClothingType";
 
 export const useClothingTypesStore = defineStore("clothingTypes", () => {
-  const db = getDatabase(firebaseApp);
   const isAuthorized = computed(() =>
     useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
   );
-  const typesRef = dbRef(db, "clothes/clothingTypes");
 
-  const typesQuery = query(typesRef, orderByChild("category"));
+  const typesQuery = query(clothesTypesRef, orderByChild("category"));
   const typesSource = computed(() =>
     isAuthorized.value ? typesQuery : undefined
   );
@@ -36,7 +32,7 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
   const selectedTypeId = ref<string>();
   const selectedTypeSource = computed(() =>
     isAuthorized.value && selectedTypeId.value !== undefined
-      ? child(typesRef, selectedTypeId.value)
+      ? child(clothesTypesRef, selectedTypeId.value)
       : undefined
   );
   const selectedType = useDatabaseObject<ClothingType>(selectedTypeSource);
@@ -47,7 +43,7 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
   }
 
   function create(clothingType: ClothingType) {
-    return dbPush(typesRef, deleteUndefinedProperties(clothingType));
+    return dbPush(clothesTypesRef, deleteUndefinedProperties(clothingType));
   }
 
   function update(clothingType: ClothingType) {
@@ -71,7 +67,7 @@ export const useClothingTypesStore = defineStore("clothingTypes", () => {
   }
 
   function remove(clothingTypeId: string) {
-    return dbRemove(child(typesRef, clothingTypeId)).catch(handleError);
+    return dbRemove(child(clothesTypesRef, clothingTypeId)).catch(handleError);
   }
 
   return {

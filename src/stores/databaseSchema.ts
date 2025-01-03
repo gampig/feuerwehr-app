@@ -1,21 +1,17 @@
-import { defineStore } from "pinia";
-import { firebaseApp } from "@/firebase";
-import { getDatabase, ref as dbRef } from "firebase/database";
-import { computed } from "vue";
+import { remoteSchemaVersionRef } from "@/firebase";
 import { useDatabaseObject } from "@/utils/store/vuefire";
+import { defineStore } from "pinia";
+import { computed } from "vue";
 
 interface PrimitiveType<T> {
   $value: T;
 }
 
 export const useDatabaseSchemaStore = defineStore("databaseSchema", () => {
-  const db = getDatabase(firebaseApp);
-
   const localSchemaVersion = import.meta.env
     .VITE_SUPPORTED_DATABASE_SCHEMA_VERSION;
-  const remoteSchemaVersionSource = dbRef(db, "schemaVersion");
   const remoteSchemaVersionObject = useDatabaseObject<PrimitiveType<number>>(
-    remoteSchemaVersionSource
+    remoteSchemaVersionRef
   );
 
   const loading = remoteSchemaVersionObject.pending;
@@ -36,8 +32,5 @@ export const useDatabaseSchemaStore = defineStore("databaseSchema", () => {
   return {
     loading,
     updateIsRequired,
-
-    // Private variables
-    remoteSchemaVersionSource,
   };
 });

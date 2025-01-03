@@ -1,30 +1,26 @@
-import { defineStore } from "pinia";
-import { OrderEntity } from "../models/Order";
-import { computed, ref } from "vue";
-import { firebaseApp } from "@/firebase";
-import {
-  getDatabase,
-  ref as dbRef,
-  push as dbPush,
-  update as dbUpdate,
-  set as dbSet,
-  remove as dbRemove,
-  child,
-} from "firebase/database";
-import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { clothesOrdersRef } from "@/firebase";
+import { useAuthStore } from "@/stores/auth";
 import { deleteUndefinedProperties } from "@/utils/firebase/serialization";
 import { useDatabaseList, useDatabaseObject } from "@/utils/store/vuefire";
+import {
+  child,
+  push as dbPush,
+  remove as dbRemove,
+  set as dbSet,
+  update as dbUpdate,
+} from "firebase/database";
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { OrderEntity } from "../models/Order";
 
 export const useOrdersStore = defineStore("orders", () => {
-  const db = getDatabase(firebaseApp);
-  const ordersRef = dbRef(db, "clothes/orders");
   const isAuthorized = computed(() =>
     useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
   );
 
   const ordersSource = computed(() =>
-    isAuthorized.value ? ordersRef : undefined
+    isAuthorized.value ? clothesOrdersRef : undefined
   );
   const orders = useDatabaseList<OrderEntity>(ordersSource);
   const loading = orders.pending;
@@ -32,7 +28,7 @@ export const useOrdersStore = defineStore("orders", () => {
   const selectedOrderId = ref<string>();
   const selectedOrderSource = computed(() =>
     isAuthorized.value && selectedOrderId.value
-      ? child(ordersRef, selectedOrderId.value)
+      ? child(clothesOrdersRef, selectedOrderId.value)
       : undefined
   );
   const selectedOrder = useDatabaseObject<OrderEntity>(selectedOrderSource);
@@ -43,7 +39,7 @@ export const useOrdersStore = defineStore("orders", () => {
   }
 
   function create(order: OrderEntity) {
-    return dbPush(ordersRef, deleteUndefinedProperties(order));
+    return dbPush(clothesOrdersRef, deleteUndefinedProperties(order));
   }
 
   function update(order: OrderEntity) {
@@ -64,7 +60,7 @@ export const useOrdersStore = defineStore("orders", () => {
   }
 
   function remove(orderId: string) {
-    return dbRemove(child(ordersRef, orderId));
+    return dbRemove(child(clothesOrdersRef, orderId));
   }
 
   return {

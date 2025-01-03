@@ -17,8 +17,8 @@ import {
   updatePassword as authUpdatePassword,
   User,
 } from "firebase/auth";
-import { child, ref as dbRef, getDatabase, update } from "firebase/database";
-import { firebaseApp } from "@/firebase";
+import { child, update } from "firebase/database";
+import { firebaseApp, userClientsRef, usersRef } from "@/firebase";
 import cloneDeep from "lodash/cloneDeep";
 
 import deviceService, { deviceId } from "@/services/device";
@@ -31,13 +31,12 @@ import { useDatabaseObject } from "@/utils/store/vuefire";
 
 export const useAuthStore = defineStore("auth", () => {
   const auth = getAuth(firebaseApp);
-  const db = getDatabase(firebaseApp);
 
   const user = ref<User | null>();
   const reauthenticationRequired = ref(false);
 
   const userSettingsSource = computed(() =>
-    user.value?.uid ? child(dbRef(db, "users"), user.value.uid) : undefined
+    user.value?.uid ? child(usersRef, user.value.uid) : undefined
   );
   const userSettings = useDatabaseObject<UserSettings>(userSettingsSource);
 
@@ -128,7 +127,7 @@ export const useAuthStore = defineStore("auth", () => {
     return getCurrentUser()
       .then((currentUser) =>
         update(
-          child(child(dbRef(db, "userClients"), currentUser.uid), deviceId),
+          child(child(userClientsRef, currentUser.uid), deviceId),
           deleteUndefinedProperties(payload)
         )
       )
