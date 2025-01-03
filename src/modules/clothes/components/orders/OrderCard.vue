@@ -32,12 +32,10 @@
           :class="currentState === 'submitted' ? '' : 'text-disabled'"
           fill-dot
         >
-          <div>{{ submittedOn }}</div>
-          <div>Eingereicht</div>
+          Eingereicht: {{ submittedOn }}
         </v-timeline-item>
 
         <v-timeline-item
-          v-if="orderedOn"
           icon="mdi-package-variant-closed"
           :dot-color="currentState === 'ordered' ? 'orange' : 'grey'"
           :icon-color="currentState === 'ordered' ? 'white' : 'grey'"
@@ -45,18 +43,18 @@
           :class="currentState === 'ordered' ? '' : 'text-disabled'"
           fill-dot
         >
-          <div>{{ orderedOn }}</div>
-          <div>Bestellt</div>
+          Bestellt<template v-if="orderedOn">: {{ orderedOn }}</template>
         </v-timeline-item>
 
         <v-timeline-item
-          v-if="doneOn"
-          dot-color="green"
           icon="mdi-check"
+          :dot-color="currentState === 'done' ? 'green' : 'grey'"
+          :icon-color="currentState === 'done' ? 'white' : 'grey'"
+          :size="currentState === 'done' ? 'default' : 'x-small'"
+          :class="currentState === 'done' ? '' : 'text-disabled'"
           fill-dot
         >
-          <div>{{ doneOn }}</div>
-          <div>Erledigt</div>
+          Erledigt<template v-if="doneOn">: {{ doneOn }}</template>
         </v-timeline-item>
       </v-timeline>
     </v-card-text>
