@@ -17,11 +17,27 @@
       </span>
       Personen
     </v-card-subtitle>
+
+    <v-card-text v-if="showDetails">
+      <div v-if="modelValue.isUgOeel">UG-ÖEL</div>
+      <div v-if="modelValue.maxCrewNumber">
+        Besatzung: {{ modelValue.maxCrewNumber }}
+      </div>
+      <div v-if="modelValue.inServiceSince">
+        Indienststellung: {{ modelValue.inServiceSince }}
+      </div>
+      <div v-if="modelValue.outOfServiceSince">
+        Außerdienststellung: {{ modelValue.outOfServiceSince }}
+      </div>
+    </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { VehicleInCallout } from "@/modules/vehicles/models/Vehicle";
 
-const { modelValue } = defineProps<{ modelValue: VehicleInCallout }>();
+const { modelValue, showDetails } = defineProps<{
+  modelValue: VehicleInCallout;
+  showDetails?: boolean;
+}>();
 </script>

@@ -70,7 +70,7 @@
 <script lang="ts">
 import { mapState } from "pinia";
 import CrewPage from "../../components/CrewPage.vue";
-import VehicleCard from "../../components/cards/VehicleCard.vue";
+import VehicleCard from "@/modules/vehicles/components/VehicleCard.vue";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { useCalloutStore } from "../../stores/callout";
 import { VehicleInCallout } from "@/modules/vehicles/models/Vehicle";
