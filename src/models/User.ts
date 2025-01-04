@@ -1,5 +1,15 @@
+export type AllRoles =
+  | "ROLE_USER"
+  | "ROLE_ADMIN"
+  | "ROLE_MAINTAINER_CLOTHES"
+  | "ROLE_VEHICLE"
+  | "ROLE_ALARM_PC"
+  | "ROLE_GROUPLEADER"
+  | "ROLE_CALLOUT_EDITOR"
+  | "ROLE_PEOPLE_EDITOR";
+
 export const rolesConfig: readonly {
-  id: string;
+  id: AllRoles;
   name: string;
   description?: string;
   hidden?: boolean;
@@ -49,8 +59,6 @@ export const roleConfigById = Object.fromEntries(
     },
   ])
 );
-
-export type AllRoles = (typeof rolesConfig)[number]["id"];
 
 export type Roles = Partial<Record<AllRoles, boolean>>;
 
