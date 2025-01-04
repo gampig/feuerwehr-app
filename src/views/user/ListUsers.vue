@@ -56,12 +56,12 @@ import { defineComponent, nextTick } from "vue";
 import { useUsersStore } from "@/stores/users";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { roleConfigById, User } from "@/models/User";
+import { AllRoles, roleConfigById, User } from "@/models/User";
 
-function filterAndMapRoles(roles: string[]): string[] {
-  return roles
+function filterAndMapRoles(roles: AllRoles[]): AllRoles[] {
+  return (roles as string[])
     .filter((role) => roleConfigById[role]?.hidden != true)
-    .map((role) => roleConfigById[role]?.name ?? role);
+    .map((role) => roleConfigById[role]?.name ?? role) as AllRoles[];
 }
 
 export default defineComponent({

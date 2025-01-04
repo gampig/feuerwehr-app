@@ -1,8 +1,8 @@
 import handleError from "@/utils/store/handleError";
 import { defineStore } from "pinia";
 import createClient, { Middleware } from "openapi-fetch";
-import { paths } from "@/models/FeuerwehrAppApi";
-import { User } from "@/models/User";
+import { components, paths } from "@/models/FeuerwehrAppApi";
+import { AllRoles, User } from "@/models/User";
 import { firebaseApp } from "@/firebase";
 import { getAuth } from "firebase/auth";
 
@@ -34,6 +34,11 @@ const client = createClient<paths>({
 });
 client.use(apiFirebaseAuthMiddleware);
 
+type ApiUser = components["schemas"]["User"];
+type ApiUserWithStronglyTypedRoles = Omit<ApiUser, "roles"> & {
+  roles: AllRoles[];
+};
+
 export const useUsersStore = defineStore("users", {
   state: (): State => ({
     loading: false,
@@ -50,7 +55,7 @@ export const useUsersStore = defineStore("users", {
           if (error) {
             handleError(new Error("Konnte Benutzer nicht laden"));
           } else if (data) {
-            this.setUsers(data);
+            this.setUsers(data as ApiUserWithStronglyTypedRoles[]);
           }
         })
         .catch(handleError)
