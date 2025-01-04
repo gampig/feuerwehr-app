@@ -28,6 +28,8 @@ export abstract class Acl {
 
   static readonly uebungenAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
+  static readonly vereinseventsBearbeiten: AllRoles[] = ["ROLE_ADMIN"];
+
   static readonly feuerwehrGeraete: AllRoles[] = [
     "ROLE_GROUPLEADER",
     "ROLE_VEHICLE",

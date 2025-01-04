@@ -1,6 +1,7 @@
 import vehicleRoutes from "./vehicles/router";
 import calloutRoute from "./callout/router";
 import trainingRoutes from "./training/router";
+import eventsRoutes from "./events/router";
 import clothesRoutes from "./clothes/router";
 import peopleRoutes from "./people/router";
 import exporterRoutes from "./exporter/router";
@@ -12,6 +13,7 @@ class AppModules {
       vehicleRoutes,
       [calloutRoute],
       trainingRoutes,
+      eventsRoutes,
       clothesRoutes,
       peopleRoutes,
       exporterRoutes,

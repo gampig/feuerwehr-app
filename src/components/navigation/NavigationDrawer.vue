@@ -137,6 +137,12 @@ export default defineComponent({
           auth: this.hasAnyRole(Acl.feuerwehrGeraete),
         },
         {
+          title: "Verein",
+          to: { name: "EventsHome" },
+          icon: "mdi-calendar",
+          auth: this.hasAnyRole(Acl.vereinseventsBearbeiten),
+        },
+        {
           title: "Kleidung",
           to: { name: "ClothesHome" },
           icon: "mdi-tshirt-crew",
