@@ -18,7 +18,7 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@fontsource/roboto": "^5.1.0",
+    "@fontsource/roboto": "^5.1.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "firebase": "^11.1.0",
     "git-describe": "^4.1.0",
