@@ -102,6 +102,7 @@ interface ListItem {
   count: number;
 }
 
+const selectedClothingTypeId = ref<string>();
 const addForm = ref<VForm>();
 const adding = ref(false);
 const search = ref<string>();
@@ -127,31 +128,37 @@ const clothingTypesStore = useClothingTypesStore();
 const clothingStorageStore = useClothingStorageStore();
 
 const { selectedType: type } = storeToRefs(clothingTypesStore);
-const { clothingItems: storeItems } = storeToRefs(clothingStorageStore);
+const { clothingStorage } = storeToRefs(clothingStorageStore);
 const id = route.params.id as string;
 
 const loading = computed(
   () => clothingTypesStore.selectedTypeLoading || clothingStorageStore.loading
 );
 
+const storeItems = computed(
+  () =>
+    (clothingStorage.value &&
+      selectedClothingTypeId.value &&
+      clothingStorage.value[selectedClothingTypeId.value]) ||
+    {}
+);
+
 const items: ComputedRef<ListItem[]> = computed(() =>
-  storeItems.value
-    ? Object.entries(storeItems.value).map(([size, count]) => ({
-        size: size,
-        count: count,
-      }))
-    : []
+  Object.entries(storeItems.value).map(([size, count]) => ({
+    size: size,
+    count: count,
+  }))
 );
 
 function bindType(id: string) {
   clothingTypesStore.selectType(id);
 }
 function bindStorage(id: string) {
-  clothingStorageStore.selectClothingType(id);
+  selectedClothingTypeId.value = id;
 }
-function setCount(size: string, count: number) {
+function setCount(clothingTypeId: string, size: string, count: number) {
   const countOrNull = count > 0 ? count : null;
-  return clothingStorageStore.set(size, countOrNull);
+  return clothingStorageStore.set(clothingTypeId, size, countOrNull);
 }
 
 function decrementCount() {
@@ -187,7 +194,11 @@ async function onAdd() {
     return;
   }
 
-  if ((await addForm.value.validate()).valid && newSize.value) {
+  if (
+    (await addForm.value.validate()).valid &&
+    selectedClothingTypeId.value &&
+    newSize.value
+  ) {
     adding.value = true;
 
     const existingCount = storeItems.value && storeItems.value[newSize.value];
@@ -195,7 +206,7 @@ async function onAdd() {
       ? existingCount + Number(newCount.value)
       : Number(newCount.value);
 
-    setCount(newSize.value, count).finally(() => {
+    setCount(selectedClothingTypeId.value, newSize.value, count).finally(() => {
       addDialog.value = false;
       adding.value = false;
       newSize.value = undefined;
@@ -219,12 +230,12 @@ function closeEditDialog() {
 }
 
 function onEdit() {
-  if (!editSize.value) {
+  if (!selectedClothingTypeId.value || !editSize.value) {
     return;
   }
 
   const count = editCount.value == undefined ? 0 : Number(editCount.value);
-  setCount(editSize.value, count);
+  setCount(selectedClothingTypeId.value, editSize.value, count);
   closeEditDialog();
 }
 
