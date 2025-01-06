@@ -18,7 +18,7 @@
 
         <v-dialog v-model="addDialog" width="auto">
           <template #activator="{ props }">
-            <v-btn color="primary" v-bind="props">Hinzufügen</v-btn>
+            <v-btn icon="mdi-plus" v-bind="props"></v-btn>
           </template>
           <v-card>
             <v-card-title> Kleidungsstücke hinzufügen </v-card-title>
