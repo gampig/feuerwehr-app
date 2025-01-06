@@ -10,7 +10,7 @@ export const useNetworkStore = defineStore("network", () => {
     if (connected) {
       showMessage("Verbindung zum Server wiederhergestellt.", "success");
     } else {
-      showMessage("Keine Verbindung zum Server möglich.", "error");
+      showMessage("Verbindung zum Server verloren.", "error");
     }
   });
 
