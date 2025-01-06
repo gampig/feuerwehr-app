@@ -20,6 +20,7 @@
       <v-tooltip
         v-if="!isConnectedDebounced"
         text="Keine Verbindung zum Server möglich"
+        open-on-click
       >
         <template #activator="{ props }">
           <v-icon
