@@ -1,4 +1,7 @@
-// Represents stored items of one clothing type
-export interface ClothingStorage {
+export interface ClothingItems {
   [size: string]: number;
+}
+
+export interface ClothingStorage {
+  [id: string]: ClothingItems;
 }

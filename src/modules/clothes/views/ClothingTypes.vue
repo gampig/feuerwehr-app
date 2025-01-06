@@ -46,11 +46,19 @@
           <template v-else>-</template>
         </template>
 
+        <template #[`item.storageItemsCount`]="{ item }">
+          <v-chip
+            :color="item.storageItemsCount > 0 ? 'green' : 'red'"
+            append-icon="mdi-pencil"
+            label
+            @click="storageHandler(item.id)"
+          >
+            {{ item.storageItemsCount }} Stück
+          </v-chip>
+        </template>
+
         <template #[`item.action`]="{ item }">
           <BaseActionCell :handle-edit="() => editHandler(item.id)">
-            <v-btn icon variant="text" @click="storageHandler(item.id)">
-              <v-icon>mdi-wardrobe</v-icon>
-            </v-btn>
           </BaseActionCell>
         </template>
       </v-data-table>
@@ -58,6 +66,10 @@
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
+    <StorageDialog
+      v-model="showStorageDialog"
+      :clothing-type-id="storageDialogClothingTypeId"
+    ></StorageDialog>
   </v-container>
 </template>
 
@@ -70,9 +82,11 @@ import { mapActions, mapState } from "pinia";
 import { ClothingType } from "../models/ClothingType";
 import { VueDatabaseQueryData } from "vuefire";
 import { SortItem } from "@/models/SortItem";
+import { useClothingStorageStore } from "../stores/clothingStorage";
+import StorageDialog from "../components/storage/StorageDialog.vue";
 
 export default defineComponent({
-  components: { CreateDialog, EditDialog },
+  components: { CreateDialog, EditDialog, StorageDialog },
 
   data() {
     return {
@@ -81,11 +95,18 @@ export default defineComponent({
         { title: "Bezeichnung", key: "name" },
         { title: "Preis", key: "price" },
         {
+          title: "Lager",
+          key: "storageItemsCount",
+          nowrap: true,
+          width: "1%",
+          align: "end",
+        },
+        {
           title: "Aktionen",
           key: "action",
           sortable: false,
         },
-      ],
+      ] as const,
 
       sortBy: [
         { key: "category", order: "asc" },
@@ -95,9 +116,11 @@ export default defineComponent({
       selected: [] as VueDatabaseQueryData<ClothingType>,
       search: "",
       showUnavailableTypes: false,
+      storageDialogClothingTypeId: null as string | null,
 
       showCreateDialog: false,
       showEditDialog: false,
+      showStorageDialog: false,
     };
   },
 
@@ -107,12 +130,24 @@ export default defineComponent({
       loading: "loading",
     }),
 
+    ...mapState(useClothingStorageStore, ["clothingStorage"]),
+
     types() {
-      if (this.showUnavailableTypes) {
-        return this.allTypes.filter((item) => !item.isAvailable);
-      } else {
-        return this.allTypes.filter((item) => item.isAvailable);
-      }
+      const countStorageItems = (clothingTypeId: string): number =>
+        (this.clothingStorage &&
+          this.clothingStorage[clothingTypeId] &&
+          Object.values(this.clothingStorage[clothingTypeId]).reduce(
+            (partialSum, a) => partialSum + a,
+            0
+          )) ||
+        0;
+      return this.allTypes
+        .filter((item) => item.isAvailable == !this.showUnavailableTypes)
+        .map((item) => ({
+          ...item,
+          id: item.id,
+          storageItemsCount: countStorageItems(item.id),
+        }));
     },
   },
 
@@ -129,10 +164,8 @@ export default defineComponent({
     },
 
     storageHandler(clothingTypeId: string) {
-      this.$router.push({
-        name: "ClothesStorage",
-        params: { id: clothingTypeId },
-      });
+      this.storageDialogClothingTypeId = clothingTypeId;
+      this.showStorageDialog = true;
     },
   },
 });

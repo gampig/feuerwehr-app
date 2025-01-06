@@ -20,7 +20,7 @@
 
         <v-list-group v-if="canViewAllCallouts" v-model="showAllCallouts">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" title="Weitere Einsätze anzeigen" />
+            <v-list-item v-bind="props" title="Ältere Einsätze" />
           </template>
           <template v-if="calloutsBeforeToday.length > 0">
             <CalloutListItem

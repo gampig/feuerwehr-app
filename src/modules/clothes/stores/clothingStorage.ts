@@ -5,46 +5,39 @@ import handleError from "@/utils/store/handleError";
 import { useDatabaseObject } from "@/utils/store/vuefire";
 import { child, set as dbSet } from "firebase/database";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { ClothingStorage } from "../models/ClothingStorage";
 
 export const useClothingStorageStore = defineStore("clothingStorage", () => {
-  const selectedClothingTypeId = ref<string>();
-
   const clothingItemsSource = computed(() =>
-    selectedClothingTypeId.value === undefined ||
     !useAuthStore().hasAnyRole(Acl.kleiderverwaltung)
       ? undefined
-      : child(clothesStorageRef, selectedClothingTypeId.value)
+      : clothesStorageRef
   );
-  const clothingItems = useDatabaseObject<ClothingStorage>(clothingItemsSource);
-  const loading = clothingItems.pending;
+  const clothingStorage =
+    useDatabaseObject<ClothingStorage>(clothingItemsSource);
+  const loading = clothingStorage.pending;
 
-  function selectClothingType(clothingTypeId: string) {
-    selectedClothingTypeId.value = clothingTypeId;
-  }
-
-  async function set(size: string, count: number | null) {
-    if (!clothingItemsSource.value) {
-      return Promise.reject("Interner Fehler: Kein Kleidungsstück ausgewählt");
-    }
-
+  async function set(
+    clothingTypeId: string,
+    size: string,
+    count: number | null
+  ) {
     try {
-      return await dbSet(child(clothingItemsSource.value, size), count);
+      const clothingItemsRef = child(clothesStorageRef, clothingTypeId);
+      return await dbSet(child(clothingItemsRef, size), count);
     } catch (error) {
       return handleError(error);
     }
   }
 
   return {
-    clothingItems,
+    clothingStorage,
     loading,
 
     // Private variables
-    selectedClothingTypeId,
     clothingItemsSource,
 
-    selectClothingType,
     set,
   };
 });
