@@ -1,5 +1,9 @@
 <template>
   <v-container>
+    <v-alert v-if="showCloseNotice" type="info" density="compact" class="mb-4">
+      Bitte dieses Programm schließen, wenn alle Personen eingetragen sind.
+    </v-alert>
+
     <v-stepper
       v-model="currentStep"
       :items="steps"
@@ -49,13 +53,7 @@
           <v-card-actions>
             <v-btn @click="back">Zurück</v-btn>
             <v-spacer />
-            <v-btn
-              variant="flat"
-              color="primary"
-              @click="showDoneNotice = true"
-            >
-              Fertig
-            </v-btn>
+            <v-btn variant="flat" color="primary" @click="back">Fertig</v-btn>
           </v-card-actions>
           <BaseConfirmDialog
             v-model="showRemoveDialog"
@@ -65,18 +63,6 @@
             Soll <strong>{{ personToRemove }}</strong> wirklich vom Einsatz
             entfernt werden?
           </BaseConfirmDialog>
-          <v-dialog v-model="showDoneNotice" width="auto">
-            <v-card>
-              <v-card-title>
-                Bitte dieses Programm (FeuerwehrApp) schließen.
-              </v-card-title>
-              <v-card-actions>
-                <v-btn variant="plain" @click="showDoneNotice = false">
-                  Abbrechen
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-card>
       </template>
     </v-stepper>
@@ -90,6 +76,8 @@ import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
 import { Person } from "@/modules/people/models/Person";
 import { mapActions, mapState } from "pinia";
 import { useCalloutStore } from "../stores/callout";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 export default {
   components: {
@@ -103,7 +91,6 @@ export default {
       loading: false,
       personToRemove: null as string | null,
       showRemoveDialog: false,
-      showDoneNotice: false,
 
       steps: [
         {
@@ -146,6 +133,10 @@ export default {
         person: person,
       }));
     },
+
+    showCloseNotice() {
+      return this.hasAnyRole(Acl.alarmPc);
+    },
   },
 
   methods: {
@@ -154,6 +145,8 @@ export default {
       "addStandbyMember",
       "removeStandbyMember",
     ]),
+
+    ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     onSelectCalloutClicked(calloutId: string) {
       this.selectCallout(calloutId);
