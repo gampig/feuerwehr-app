@@ -20,10 +20,4 @@ export default [
       },
     ],
   },
-
-  {
-    name: "ClothesStorage",
-    path: "/kleidung/lager/:id",
-    component: () => import("./views/Storage.vue"),
-  },
 ] satisfies RouteRecordRaw[];

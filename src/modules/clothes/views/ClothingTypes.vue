@@ -66,6 +66,10 @@
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
+    <StorageDialog
+      v-model="showStorageDialog"
+      :clothing-type-id="storageDialogClothingTypeId"
+    ></StorageDialog>
   </v-container>
 </template>
 
@@ -79,9 +83,10 @@ import { ClothingType } from "../models/ClothingType";
 import { VueDatabaseQueryData } from "vuefire";
 import { SortItem } from "@/models/SortItem";
 import { useClothingStorageStore } from "../stores/clothingStorage";
+import StorageDialog from "../components/storage/StorageDialog.vue";
 
 export default defineComponent({
-  components: { CreateDialog, EditDialog },
+  components: { CreateDialog, EditDialog, StorageDialog },
 
   data() {
     return {
@@ -111,9 +116,11 @@ export default defineComponent({
       selected: [] as VueDatabaseQueryData<ClothingType>,
       search: "",
       showUnavailableTypes: false,
+      storageDialogClothingTypeId: null as string | null,
 
       showCreateDialog: false,
       showEditDialog: false,
+      showStorageDialog: false,
     };
   },
 
@@ -157,10 +164,8 @@ export default defineComponent({
     },
 
     storageHandler(clothingTypeId: string) {
-      this.$router.push({
-        name: "ClothesStorage",
-        params: { id: clothingTypeId },
-      });
+      this.storageDialogClothingTypeId = clothingTypeId;
+      this.showStorageDialog = true;
     },
   },
 });
