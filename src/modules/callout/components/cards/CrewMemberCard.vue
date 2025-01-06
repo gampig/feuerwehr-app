@@ -17,7 +17,8 @@
       ></v-select>
     </v-card-text>
     <v-card-actions>
-      <v-btn variant="plain" @click="$emit('delete')">Entfernen</v-btn>
+      <v-spacer />
+      <v-btn icon="mdi-delete" @click="$emit('delete')"></v-btn>
     </v-card-actions>
   </v-card>
 </template>
