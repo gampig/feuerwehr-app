@@ -101,7 +101,6 @@
 import { VForm } from "vuetify/components";
 import { required } from "@/utils/rules";
 import { computed, ComputedRef, nextTick, onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
 import { useClothingStorageStore } from "../../stores/clothingStorage";
 import { useClothingTypesStore } from "../../stores/clothingTypes";
 import { storeToRefs } from "pinia";
