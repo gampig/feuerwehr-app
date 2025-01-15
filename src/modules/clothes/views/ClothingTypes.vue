@@ -67,7 +67,8 @@
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
     <EditDialog v-model="showEditDialog"></EditDialog>
     <StorageDialog
-      v-model="showStorageDialog"
+      :model-value="showStorageDialog"
+      @update:model-value="onStorageDialogChanged"
       :clothing-type-id="storageDialogClothingTypeId"
     ></StorageDialog>
   </v-container>
@@ -84,6 +85,8 @@ import { VueDatabaseQueryData } from "vuefire";
 import { SortItem } from "@/models/SortItem";
 import { useClothingStorageStore } from "../stores/clothingStorage";
 import StorageDialog from "../components/storage/StorageDialog.vue";
+
+const storageDialogHash = "#lager";
 
 export default defineComponent({
   components: { CreateDialog, EditDialog, StorageDialog },
@@ -151,6 +154,20 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    "$route.hash": {
+      handler: function (hash) {
+        if (hash === storageDialogHash) {
+          this.showStorageDialog = true;
+        } else {
+          this.showStorageDialog = false;
+        }
+      },
+
+      immediate: true,
+    },
+  },
+
   methods: {
     ...mapActions(useClothingTypesStore, ["selectType"]),
 
@@ -165,7 +182,13 @@ export default defineComponent({
 
     storageHandler(clothingTypeId: string) {
       this.storageDialogClothingTypeId = clothingTypeId;
-      this.showStorageDialog = true;
+      this.$router.push(storageDialogHash);
+    },
+
+    onStorageDialogChanged(show: boolean) {
+      if (!show) {
+        this.$router.back();
+      }
     },
   },
 });
