@@ -25,7 +25,7 @@
 import OrderForm from "./OrderForm.vue";
 import moment from "moment";
 import { defineComponent } from "vue";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { OrderEntity } from "../../models/Order";
 import { useOrdersStore } from "../../stores/orders";
 

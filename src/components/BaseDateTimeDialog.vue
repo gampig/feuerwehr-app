@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 
 const hourRegex = new RegExp("^([01]?\\d|2[0-3])$");
 const minuteRegex = new RegExp("^([0-5]?\\d)$");

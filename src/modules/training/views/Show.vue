@@ -169,7 +169,7 @@ import { computed, reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
 import { trainings } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
 import { isValidName, required } from "@/utils/rules";
 

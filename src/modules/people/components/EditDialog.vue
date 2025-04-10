@@ -24,7 +24,7 @@ import { defineComponent } from "vue";
 import SelectStatus from "./SelectStatus.vue";
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { mapState } from "pinia";
 
 export default defineComponent({

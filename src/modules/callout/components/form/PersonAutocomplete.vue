@@ -38,7 +38,7 @@
 import { Person } from "@/modules/people/models/Person";
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { computed, ref } from "vue";
-import { VAutocomplete } from "vuetify/components";
+import { VAutocomplete } from "vuetify/components/VAutocomplete";
 import { useCalloutStore } from "../../stores/callout";
 import { getGroupOfPerson } from "../../utils/mannschaft";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";

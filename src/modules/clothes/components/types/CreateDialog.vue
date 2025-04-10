@@ -23,7 +23,7 @@
 import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
 import { ClothingType } from "../../models/ClothingType";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { useClothingTypesStore } from "../../stores/clothingTypes";
 
 export default defineComponent({

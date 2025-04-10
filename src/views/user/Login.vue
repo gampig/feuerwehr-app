@@ -26,7 +26,7 @@ import LoginCard from "@/components/user/LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import handleError from "@/utils/store/handleError";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import {
   getAuth,
   setPersistence,

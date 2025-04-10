@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { useAuthStore } from "@/stores/auth";
 import { showMessage } from "@/utils/notifications";
 import { useRouter } from "vue-router";

@@ -30,7 +30,7 @@ import { useAuthStore } from "@/stores/auth";
 import { defineComponent } from "vue";
 import { Callout } from "../../models/Callout";
 import handleError from "@/utils/store/handleError";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { mapActions, mapState } from "pinia";
 import { useCalloutStore } from "../../stores/callout";
 
