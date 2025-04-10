@@ -23,6 +23,11 @@
         {{ formatCurrency(paid || 0) }} / {{ formatCurrency(totalPrice) }} €
       </div>
 
+      <div v-if="partNumber" class="mb-3">
+        <v-icon start>mdi-barcode</v-icon>
+        Art.-Nr.: {{ partNumber }}
+      </div>
+
       <v-timeline class="mt-5" density="compact">
         <v-timeline-item
           icon="mdi-plus"
@@ -73,6 +78,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { OrderView } from "../../models/Order";
 
 const formatter = new Intl.NumberFormat("de-DE", {
   minimumFractionDigits: 0,
@@ -90,17 +96,8 @@ const {
   submittedOn,
   orderedOn,
   doneOn,
-} = defineProps<{
-  person: string;
-  clothingType?: string;
-  size?: string | number;
-  count?: number;
-  paid?: number;
-  totalPrice?: number;
-  submittedOn?: string;
-  orderedOn?: string;
-  doneOn?: string;
-}>();
+  partNumber,
+} = defineProps<OrderView>();
 
 const emit = defineEmits(["edit", "remove"]);
 

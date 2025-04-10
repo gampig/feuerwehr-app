@@ -27,4 +27,6 @@ export interface OrderView extends OrderBase {
   submittedOn: string;
   orderedOn?: string;
   doneOn?: string;
+
+  partNumber?: string;
 }

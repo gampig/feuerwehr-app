@@ -15,4 +15,6 @@ export interface ClothingType {
   category?: ClothingTypeCategory;
   price?: number;
   sizes?: Array<string | number>;
+  // Artikelnummer
+  partNumber?: string;
 }

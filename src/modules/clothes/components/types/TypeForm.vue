@@ -46,6 +46,15 @@
         />
       </v-col>
 
+      <v-col sm="8" cols="12">
+        <v-text-field
+          label="Artikelnummer"
+          prepend-icon="mdi-barcode"
+          :model-value="partNumber"
+          @update:model-value="$emit('update:partNumber', $event)"
+        />
+      </v-col>
+
       <v-col cols="12">
         <v-checkbox
           label="Ist noch erhältlich"
@@ -91,6 +100,11 @@ export default defineComponent({
       type: Array as PropType<Array<string | number>>,
       default: () => [],
     },
+
+    partNumber: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: [
@@ -99,6 +113,7 @@ export default defineComponent({
     "update:category",
     "update:sizes",
     "update:isAvailable",
+    "update:partNumber",
   ],
 
   data() {
