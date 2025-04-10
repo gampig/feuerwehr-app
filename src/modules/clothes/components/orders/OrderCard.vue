@@ -23,6 +23,11 @@
         {{ formatCurrency(paid || 0) }} / {{ formatCurrency(totalPrice) }} €
       </div>
 
+      <div v-if="partNumber" class="mb-3">
+        <v-icon start>mdi-barcode</v-icon>
+        Art.-Nr.: {{ partNumber }}
+      </div>
+
       <v-timeline class="mt-5" density="compact">
         <v-timeline-item
           icon="mdi-plus"
@@ -90,6 +95,7 @@ const {
   submittedOn,
   orderedOn,
   doneOn,
+  partNumber,
 } = defineProps<{
   person: string;
   clothingType?: string;
@@ -100,6 +106,7 @@ const {
   submittedOn?: string;
   orderedOn?: string;
   doneOn?: string;
+  partNumber?: string;
 }>();
 
 const emit = defineEmits(["edit", "remove"]);

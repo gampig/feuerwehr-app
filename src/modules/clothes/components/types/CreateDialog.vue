@@ -14,6 +14,7 @@
       v-model:price="item.price"
       v-model:is-available="item.isAvailable"
       v-model:sizes="item.sizes"
+      v-model:part-number="item.partNumber"
     />
   </BaseCreateDialog>
 </template>

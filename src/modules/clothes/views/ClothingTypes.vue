@@ -97,6 +97,7 @@ export default defineComponent({
         { title: "Kategorie", key: "category" },
         { title: "Bezeichnung", key: "name" },
         { title: "Preis", key: "price" },
+        { title: "Art.-Nr.", key: "partNumber" },
         {
           title: "Lager",
           key: "storageItemsCount",

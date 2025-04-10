@@ -133,6 +133,8 @@ export default defineComponent({
           const count = order?.count || 1;
           orderFormatted.totalPrice = price * count;
 
+          orderFormatted.partNumber = clothingType?.partNumber;
+
           return orderFormatted;
         });
     },
