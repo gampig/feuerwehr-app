@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { OrderView } from "../../models/Order";
 
 const formatter = new Intl.NumberFormat("de-DE", {
   minimumFractionDigits: 0,
@@ -96,18 +97,7 @@ const {
   orderedOn,
   doneOn,
   partNumber,
-} = defineProps<{
-  person: string;
-  clothingType?: string;
-  size?: string | number;
-  count?: number;
-  paid?: number;
-  totalPrice?: number;
-  submittedOn?: string;
-  orderedOn?: string;
-  doneOn?: string;
-  partNumber?: string;
-}>();
+} = defineProps<OrderView>();
 
 const emit = defineEmits(["edit", "remove"]);
 
