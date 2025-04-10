@@ -23,7 +23,7 @@ import { defineComponent } from "vue";
 import LoginCard from "./LoginCard.vue";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { EmailAuthProvider } from "firebase/auth";
 
 export default defineComponent({

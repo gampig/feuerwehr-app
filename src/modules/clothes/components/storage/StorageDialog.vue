@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { required } from "@/utils/rules";
 import { computed, ComputedRef, nextTick, onMounted, ref, watch } from "vue";
 import { useClothingStorageStore } from "../../stores/clothingStorage";

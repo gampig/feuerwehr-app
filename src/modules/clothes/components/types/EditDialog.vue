@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import TypeForm from "./TypeForm.vue";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { ClothingType } from "../../models/ClothingType";
 import { mapState } from "pinia";
 import { useClothingTypesStore } from "../../stores/clothingTypes";

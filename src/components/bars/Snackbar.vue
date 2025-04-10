@@ -12,15 +12,11 @@
 import { useNotificationsStore } from "@/stores/notifications";
 import { mapActions, mapState } from "pinia";
 import { defineComponent } from "vue";
-import { VSnackbarQueue } from "vuetify/labs/components";
+import { VSnackbarQueue } from "vuetify/components/VSnackbarQueue";
 
 type Writable<T> = { -readonly [P in keyof T]: T[P] };
 
 export default defineComponent({
-  components: {
-    VSnackbarQueue,
-  },
-
   data() {
     return {
       snackbarQueue: [] as Writable<

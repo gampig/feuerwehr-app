@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { VForm } from "vuetify/components";
+import { VForm } from "vuetify/components/VForm";
 import { mapActions } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 
