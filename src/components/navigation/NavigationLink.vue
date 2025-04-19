@@ -1,28 +1,20 @@
 <template>
   <v-list-item
-    v-if="item.auth"
-    :to="item.to"
-    :href="item.href"
-    v-on="item.click !== undefined ? { click: item.click } : {}"
+    v-if="props.auth"
+    :to="props.to"
+    :href="props.href"
+    v-on="props.click !== undefined ? { click: props.click } : {}"
   >
-    <template v-if="item.icon" #prepend>
-      <v-avatar :icon="item.icon"></v-avatar>
+    <template v-if="props.icon" #prepend>
+      <v-avatar :icon="props.icon"></v-avatar>
     </template>
 
-    <v-list-item-title>{{ item.title }}</v-list-item-title>
+    <v-list-item-title>{{ props.title }}</v-list-item-title>
   </v-list-item>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { NavLink } from "@/models/NavLink";
-import { defineComponent, PropType } from "vue";
 
-export default defineComponent({
-  props: {
-    item: {
-      type: Object as PropType<NavLink>,
-      required: true,
-    },
-  },
-});
+const props = defineProps<NavLink>();
 </script>

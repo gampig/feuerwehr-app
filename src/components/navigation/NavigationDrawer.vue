@@ -36,13 +36,85 @@
 
       <template v-if="showUserSettings">
         <NavigationLink
-          v-for="item in userLinks"
-          :key="item.title"
-          :item="item"
+          title="Gerät einrichten"
+          :to="{ name: 'DeviceSetup' }"
+          icon="mdi-tablet"
+          :auth="hasAnyRole(Acl.geraetEinrichten)"
+        />
+        <NavigationLink
+          title="Passwort ändern"
+          :to="{ name: 'UserChangePassword' }"
+          icon="mdi-key"
+          :auth="(loggedIn && !hasAnyRole(deviceRoles)) ?? false"
+        />
+        <NavigationLink
+          title="Abmelden"
+          :click="() => logout()"
+          icon="mdi-logout"
+          :auth="(loggedIn && !hasAnyRole(deviceRoles)) ?? false"
+        />
+        <NavigationLink
+          title="Anmelden"
+          :to="loginRoute"
+          icon="mdi-login"
+          :auth="hasAnyRole(deviceRoles)"
         />
       </template>
       <template v-else>
-        <NavigationLink v-for="item in links" :key="item.title" :item="item" />
+        <NavigationLink
+          title="Mannschaft"
+          :to="{ name: 'CrewCallouts' }"
+          icon="mdi-alarm-light"
+          :auth="hasAnyRole(Acl.mannschaftsbuch)"
+        />
+        <NavigationLink
+          title="Bereitschaft"
+          :to="{ name: 'SelectStandby' }"
+          icon="mdi-alarm-light"
+          :auth="hasAnyRole(Acl.bereitschaftsliste)"
+        />
+        <NavigationLink
+          title="Einsätze"
+          :to="{ name: 'CalloutList' }"
+          icon="mdi-alarm-light"
+          :auth="hasAnyRole(Acl.mannschaftsbuch)"
+        />
+        <NavigationLink
+          title="Übungen"
+          :to="{ name: 'TrainingHome' }"
+          icon="mdi-human-male-board-poll"
+          :auth="hasAnyRole(Acl.uebungenAnzeigen)"
+        />
+        <NavigationLink
+          title="Fahrzeuge"
+          :to="{ name: 'VehiclesHome' }"
+          icon="mdi-fire-truck"
+          :auth="hasAnyRole(Acl.feuerwehrGeraete)"
+        />
+        <NavigationLink
+          title="Kleidung"
+          :to="{ name: 'ClothesHome' }"
+          icon="mdi-tshirt-crew"
+          :auth="hasAnyRole(Acl.kleiderverwaltung)"
+        />
+        <NavigationLink
+          title="Personen"
+          :to="{ name: 'PeopleHome' }"
+          icon="mdi-account-multiple"
+          :auth="hasAnyRole(Acl.personenBearbeiten)"
+        />
+        <NavigationLink
+          title="Benutzer"
+          :to="{ name: 'UserList' }"
+          icon="mdi-account-multiple"
+          :auth="hasAnyRole(Acl.benutzerVerwalten)"
+        />
+        <NavigationLink
+          title="Datenexport"
+          :to="{ name: 'ExporterHome' }"
+          icon="mdi-download"
+          :auth="hasAnyRole(Acl.datenexport)"
+        />
       </template>
     </v-list>
 
@@ -65,10 +137,7 @@ import NavigationLink from "./NavigationLink.vue";
 import { Acl } from "@/acl";
 import { mapActions, mapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { NavLink } from "@/models/NavLink";
 import { AllRoles } from "@/models/User";
-
-const deviceRoles: AllRoles[] = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
 export default defineComponent({
   components: {
@@ -87,6 +156,8 @@ export default defineComponent({
     return {
       version,
       userSettingsButton: false,
+      Acl: Acl,
+      deviceRoles: ["ROLE_VEHICLE", "ROLE_ALARM_PC"] as AllRoles[],
     };
   },
 
@@ -102,94 +173,6 @@ export default defineComponent({
         name: "UserLogin",
         query: { next: this.$route.fullPath },
       };
-    },
-
-    links(): NavLink[] {
-      return [
-        {
-          title: "Mannschaft",
-          to: { name: "CrewCallouts" },
-          icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.mannschaftsbuch),
-        },
-        {
-          title: "Bereitschaft",
-          to: { name: "SelectStandby" },
-          icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.bereitschaftsliste),
-        },
-        {
-          title: "Einsätze",
-          to: { name: "CalloutList" },
-          icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.mannschaftsbuch),
-        },
-        {
-          title: "Übungen",
-          to: { name: "TrainingHome" },
-          icon: "mdi-human-male-board-poll",
-          auth: this.hasAnyRole(Acl.uebungenAnzeigen),
-        },
-        {
-          title: "Fahrzeuge",
-          to: { name: "VehiclesHome" },
-          icon: "mdi-fire-truck",
-          auth: this.hasAnyRole(Acl.feuerwehrGeraete),
-        },
-        {
-          title: "Kleidung",
-          to: { name: "ClothesHome" },
-          icon: "mdi-tshirt-crew",
-          auth: this.hasAnyRole(Acl.kleiderverwaltung),
-        },
-        {
-          title: "Personen",
-          to: { name: "PeopleHome" },
-          icon: "mdi-account-multiple",
-          auth: this.hasAnyRole(Acl.personenBearbeiten),
-        },
-        {
-          title: "Benutzer",
-          to: { name: "UserList" },
-          icon: "mdi-account-multiple",
-          auth: this.hasAnyRole(Acl.benutzerVerwalten),
-        },
-        {
-          title: "Datenexport",
-          to: { name: "ExporterHome" },
-          icon: "mdi-download",
-          auth: this.hasAnyRole(Acl.datenexport),
-        },
-      ];
-    },
-
-    userLinks(): NavLink[] {
-      return [
-        {
-          title: "Gerät einrichten",
-          to: { name: "DeviceSetup" },
-          icon: "mdi-tablet",
-          auth: this.hasAnyRole(Acl.geraetEinrichten),
-        },
-        {
-          title: "Passwort ändern",
-          to: { name: "UserChangePassword" },
-          icon: "mdi-key",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Abmelden",
-          click: () => this.logout(),
-          icon: "mdi-logout",
-          auth: (this.loggedIn && !this.hasAnyRole(deviceRoles)) ?? false,
-        },
-        {
-          title: "Anmelden",
-          to: this.loginRoute,
-          icon: "mdi-login",
-          auth: this.hasAnyRole(deviceRoles),
-        },
-      ];
     },
   },
 
