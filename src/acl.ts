@@ -26,6 +26,11 @@ export abstract class Acl {
 
   static readonly einsatzLoeschen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
+  static readonly einsatzberichtErstellen: AllRoles[] = ["ROLE_ADMIN"];
+  static readonly einsatzberichtVerteilerBearbeiten: AllRoles[] = [
+    "ROLE_ADMIN",
+  ];
+
   static readonly uebungenAnzeigen: AllRoles[] = ["ROLE_GROUPLEADER"];
 
   static readonly feuerwehrGeraete: AllRoles[] = [

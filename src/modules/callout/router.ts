@@ -25,6 +25,12 @@ export default [
         path: "bereitschaft",
         component: () => import("./views/Standby.vue"),
       },
+
+      {
+        name: "CalloutReport",
+        path: "bericht",
+        component: () => import("./views/Report.vue"),
+      },
     ],
   },
 

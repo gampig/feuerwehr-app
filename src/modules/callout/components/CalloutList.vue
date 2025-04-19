@@ -35,7 +35,7 @@
       </v-list>
     </template>
 
-    <v-card-actions>
+    <v-card-actions v-if="createAllowed">
       <v-btn :disabled="loading" variant="text" @click="showUserConfirm = true">
         Neuer Einsatz
       </v-btn>
@@ -67,6 +67,14 @@ import { useCalloutsStore } from "../stores/callouts";
 
 export default {
   components: { CalloutListItem, CreateDialog },
+
+  props: {
+    createAllowed: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
   emits: ["update:model-value"],
 
   data() {
