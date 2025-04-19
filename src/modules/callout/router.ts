@@ -11,11 +11,6 @@ export default {
       path: "liste",
       component: () => import("./views/List.vue"),
     },
-    {
-      name: "CalloutShow",
-      path: "anzeigen/:id",
-      component: () => import("./views/Show.vue"),
-    },
 
     {
       path: "mannschaft",
