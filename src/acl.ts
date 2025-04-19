@@ -38,6 +38,8 @@ export abstract class Acl {
   static readonly personenAnzeigen: AllRoles[] = ["ROLE_USER"];
   static readonly personenBearbeiten: AllRoles[] = ["ROLE_PEOPLE_EDITOR"];
 
+  static readonly stammdatenBearbeiten: AllRoles[] = this.personenBearbeiten;
+
   static readonly datenexport: AllRoles[] = ["ROLE_GROUPLEADER"];
 
   static readonly benutzerVerwalten: AllRoles[] = ["ROLE_ADMIN"];

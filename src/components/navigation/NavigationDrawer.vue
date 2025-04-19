@@ -98,10 +98,10 @@
           :auth="hasAnyRole(Acl.kleiderverwaltung)"
         />
         <NavigationLink
-          title="Personen"
-          :to="{ name: 'PeopleHome' }"
-          icon="mdi-account-multiple"
-          :auth="hasAnyRole(Acl.personenBearbeiten)"
+          title="Stammdaten"
+          :to="{ name: 'MasterDataHome' }"
+          icon="mdi-cog"
+          :auth="hasAnyRole(Acl.stammdatenBearbeiten)"
         />
         <NavigationLink
           title="Benutzer"
