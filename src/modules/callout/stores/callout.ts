@@ -8,7 +8,14 @@ import { useDatabaseObject } from "@/utils/store/vuefire";
 import { child, remove, set, update } from "firebase/database";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { Callout, CalloutRole, CalloutVehicle, Crew } from "../models/Callout";
+import {
+  Callout,
+  CalloutRole,
+  CalloutVehicle,
+  CalloutVehicleWithCrew,
+  Crew,
+} from "../models/Callout";
+import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 
 export const useCalloutStore = defineStore("callout", () => {
   const selectedCalloutId = ref<string>();
@@ -42,6 +49,37 @@ export const useCalloutStore = defineStore("callout", () => {
   const loading = computed(
     () => callout.pending.value || crew.pending.value || vehicle.pending.value
   );
+
+  const vehiclesStore = useVehiclesStore();
+  const vehiclesWithCrew = computed(() => {
+    if (!callout.value) return {};
+
+    const vehicles: { [vehicleId: string]: CalloutVehicleWithCrew } = {};
+
+    if (crew.value && crew.value.vehicles) {
+      for (const vehicleIdx in crew.value.vehicles) {
+        vehicles[vehicleIdx] = {
+          vehicle: vehiclesStore.find(vehicleIdx),
+          crewMembers: crew.value.vehicles[vehicleIdx],
+        };
+      }
+    }
+
+    if (callout.value.vehicles) {
+      for (const vehicleIdx in callout.value.vehicles) {
+        if (!vehicles[vehicleIdx]) {
+          vehicles[vehicleIdx] = {
+            vehicle: vehiclesStore.find(vehicleIdx),
+            crewMembers: {},
+          };
+        }
+
+        vehicles[vehicleIdx].calloutDetails =
+          callout.value.vehicles[vehicleIdx];
+      }
+    }
+    return vehicles;
+  });
 
   function selectCallout(calloutId: string) {
     selectedCalloutId.value = calloutId;
@@ -165,6 +203,7 @@ export const useCalloutStore = defineStore("callout", () => {
     crew,
     vehicle,
     loading,
+    vehiclesWithCrew,
 
     // Private variables
     selectedCalloutId,

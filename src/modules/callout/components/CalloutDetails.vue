@@ -41,7 +41,9 @@
       {{ callout.address }}
     </ListItem>
 
-    <v-divider v-if="standbyCrew || vehicles"></v-divider>
+    <v-divider
+      v-if="standbyCrew || Object.values(vehiclesWithCrew).length > 0"
+    ></v-divider>
 
     <v-list-group v-if="standbyCrew">
       <template #activator="{ props }">
@@ -63,7 +65,7 @@
     </v-list-group>
 
     <v-list-group
-      v-for="calloutVehicle in vehicles"
+      v-for="calloutVehicle in Object.values(vehiclesWithCrew)"
       :key="calloutVehicle.vehicle.id"
     >
       <template #activator="{ props }">
@@ -128,7 +130,6 @@ import moment from "moment";
 import ListItem from "@/components/ListItem.vue";
 import { mapState } from "pinia";
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
-import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { useCalloutStore } from "../stores/callout";
 
 export default {
@@ -137,7 +138,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useCalloutStore, ["callout", "crew"]),
+    ...mapState(useCalloutStore, ["callout", "crew", "vehiclesWithCrew"]),
 
     types() {
       return this.callout?.type
@@ -149,37 +150,6 @@ export default {
 
     standbyCrew() {
       return (this.crew && this.crew.standby) || null;
-    },
-
-    vehicles() {
-      if (!this.callout) return null;
-
-      let vehicles = {};
-      const vehiclesStore = useVehiclesStore();
-
-      if (this.crew && this.crew.vehicles) {
-        for (const vehicleIdx in this.crew.vehicles) {
-          vehicles[vehicleIdx] = {
-            vehicle: vehiclesStore.find(vehicleIdx),
-            crewMembers: this.crew.vehicles[vehicleIdx],
-          };
-        }
-      }
-
-      if (this.callout.vehicles) {
-        for (const vehicleIdx in this.callout.vehicles) {
-          if (!vehicles[vehicleIdx]) {
-            vehicles[vehicleIdx] = {
-              vehicle: vehiclesStore.find(vehicleIdx),
-            };
-          }
-
-          vehicles[vehicleIdx].calloutDetails =
-            this.callout.vehicles[vehicleIdx];
-        }
-      }
-
-      return Object.keys(vehicles).length > 0 ? vehicles : null;
     },
   },
 
