@@ -1,7 +1,7 @@
 import { crewRef } from "@/firebase";
 import { MannschaftenMap } from "@/modules/callout/models/Callout";
 import { useCalloutsStore } from "@/modules/callout/stores/callouts";
-import { usePeopleStore } from "@/modules/people/stores/people";
+import { usePeopleStore } from "@/modules/masterData/stores/people";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { get } from "firebase/database";
 

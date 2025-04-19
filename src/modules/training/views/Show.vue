@@ -163,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePeopleStore } from "@/modules/people/stores/people";
+import { usePeopleStore } from "@/modules/masterData/stores/people";
 import { capitalizeFirstLetter } from "@/utils/strings";
 import { computed, reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";

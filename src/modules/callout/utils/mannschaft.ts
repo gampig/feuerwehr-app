@@ -1,5 +1,5 @@
 import { Crew } from "@/modules/callout/models/Callout";
-import { Person } from "@/modules/people/models/Person";
+import { Person } from "@/modules/masterData/models/Person";
 import { Vehicle } from "@/modules/vehicles/models/Vehicle";
 import { VueDatabaseDocumentData, VueDatabaseQueryData } from "vuefire";
 

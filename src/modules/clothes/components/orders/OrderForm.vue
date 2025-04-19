@@ -100,7 +100,7 @@
 <script lang="ts">
 import { mapState } from "pinia";
 import moment from "moment";
-import { usePeopleStore } from "@/modules/people/stores/people";
+import { usePeopleStore } from "@/modules/masterData/stores/people";
 import { defineComponent, PropType } from "vue";
 import { required, isValidName } from "@/utils/rules";
 import { useClothingTypesStore } from "../../stores/clothingTypes";

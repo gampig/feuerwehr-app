@@ -73,7 +73,7 @@
 import CalloutList from "../components/CalloutList.vue";
 import PersonAutocomplete from "../components/form/PersonAutocomplete.vue";
 import { formatDateTime, formatDateTimeFromNow } from "@/utils/dates";
-import { Person } from "@/modules/people/models/Person";
+import { Person } from "@/modules/masterData/models/Person";
 import { mapActions, mapState } from "pinia";
 import { useCalloutStore } from "../stores/callout";
 import { useAuthStore } from "@/stores/auth";

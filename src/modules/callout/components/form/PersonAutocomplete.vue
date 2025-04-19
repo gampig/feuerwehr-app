@@ -35,8 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { Person } from "@/modules/people/models/Person";
-import { usePeopleStore } from "@/modules/people/stores/people";
+import { Person } from "@/modules/masterData/models/Person";
+import { usePeopleStore } from "@/modules/masterData/stores/people";
 import { computed, ref } from "vue";
 import { VAutocomplete } from "vuetify/components/VAutocomplete";
 import { useCalloutStore } from "../../stores/callout";

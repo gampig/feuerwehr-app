@@ -2,7 +2,7 @@ import vehicleRoutes from "./vehicles/router";
 import calloutRoute from "./callout/router";
 import trainingRoutes from "./training/router";
 import clothesRoutes from "./clothes/router";
-import peopleRoutes from "./people/router";
+import masterDataRoutes from "./masterData/router";
 import exporterRoutes from "./exporter/router";
 import { RouteRecordRaw } from "vue-router";
 
@@ -13,7 +13,7 @@ class AppModules {
       [calloutRoute],
       trainingRoutes,
       clothesRoutes,
-      peopleRoutes,
+      masterDataRoutes,
       exporterRoutes,
     ].flat();
   }

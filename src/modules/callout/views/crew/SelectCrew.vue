@@ -37,7 +37,7 @@
 import CrewPage from "../../components/CrewPage.vue";
 import CrewRolesForm from "../../components/form/CrewRolesForm.vue";
 import PersonAutocomplete from "../../components/form/PersonAutocomplete.vue";
-import { Person } from "@/modules/people/models/Person";
+import { Person } from "@/modules/masterData/models/Person";
 import { CalloutRole } from "../../models/Callout";
 import { mapActions, mapState } from "pinia";
 import { useCalloutStore } from "../../stores/callout";
