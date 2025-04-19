@@ -81,8 +81,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapState } from "pinia";
-import CreateDialog from "../components/CreateDialog.vue";
-import EditDialog from "../components/EditDialog.vue";
+import CreateDialog from "../components/CreatePersonDialog.vue";
+import EditDialog from "../components/EditPersonDialog.vue";
 import { usePeopleStore } from "../stores/people";
 
 export default defineComponent({

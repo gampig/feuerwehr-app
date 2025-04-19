@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import SelectStatus from "./SelectStatus.vue";
+import SelectStatus from "./SelectPersonStatus.vue";
 import { Person, PersonStatus } from "../models/Person";
 import { usePeopleStore } from "../stores/people";
 import { VForm } from "vuetify/components/VForm";
