@@ -107,22 +107,12 @@ export default defineComponent({
     links(): NavLink[] {
       return [
         {
-          title: "Mannschaft",
-          to: { name: "CrewCallouts" },
-          icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.mannschaftsbuch),
-        },
-        {
-          title: "Bereitschaft",
-          to: { name: "SelectStandby" },
-          icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.bereitschaftsliste),
-        },
-        {
           title: "Einsätze",
-          to: { name: "CalloutList" },
+          to: { name: "CalloutHome" },
           icon: "mdi-alarm-light",
-          auth: this.hasAnyRole(Acl.mannschaftsbuch),
+          auth: this.hasAnyRole(
+            Acl.mannschaftsbuch.concat(Acl.bereitschaftsliste)
+          ),
         },
         {
           title: "Übungen",

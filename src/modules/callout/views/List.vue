@@ -2,12 +2,11 @@
   <v-container fluid>
     <BaseSearchRow v-model:search="search">
       <v-col
-        v-if="canDeleteMultipleCallouts"
+        v-if="canDeleteMultipleCallouts && selected.length > 0"
         class="d-flex justify-end align-center"
       >
         <v-btn
           color="secondary"
-          :disabled="selected.length == 0"
           :loading="deleting"
           @click="confirmDeleteDialog = true"
         >
@@ -53,6 +52,8 @@
       Möchtest du die {{ selected.length }} ausgewählten Einsätze wirklich
       löschen?
     </BaseConfirmDialog>
+
+    <CalloutDetailsDialog v-model="detailsDialog" />
   </v-container>
 </template>
 
@@ -68,8 +69,15 @@ import handleError from "@/utils/store/handleError";
 import { showMessage } from "@/utils/notifications";
 import moment from "moment";
 import { useAuthStore } from "@/stores/auth";
+import CalloutDetailsDialog from "../components/CalloutDetailsDialog.vue";
+import { useCalloutStore } from "../stores/callout";
+import { Acl } from "@/acl";
 
 export default defineComponent({
+  components: {
+    CalloutDetailsDialog,
+  },
+
   data() {
     return {
       headers: [
@@ -90,6 +98,7 @@ export default defineComponent({
       selected: [] as string[],
       confirmDeleteDialog: false,
       deleting: false,
+      detailsDialog: false,
     };
   },
 
@@ -108,19 +117,18 @@ export default defineComponent({
     },
 
     canDeleteMultipleCallouts() {
-      return this.hasAnyRole(["ROLE_ADMIN"]);
+      return this.hasAnyRole(Acl.einsatzLoeschen);
     },
   },
 
   methods: {
     ...mapActions(useCalloutsStore, ["remove"]),
+    ...mapActions(useCalloutStore, ["selectCallout"]),
     ...mapActions(useAuthStore, ["hasAnyRole"]),
 
     showHandler(item: NonNullable<VueDatabaseDocumentData<Callout>>) {
-      this.$router.push({
-        name: "CalloutShow",
-        params: { id: item.id },
-      });
+      this.selectCallout(item.id);
+      this.detailsDialog = true;
     },
 
     async deleteSelected() {

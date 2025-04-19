@@ -1,5 +1,5 @@
 import vehicleRoutes from "./vehicles/router";
-import calloutRoute from "./callout/router";
+import calloutRoutes from "./callout/router";
 import trainingRoutes from "./training/router";
 import clothesRoutes from "./clothes/router";
 import peopleRoutes from "./people/router";
@@ -10,7 +10,7 @@ class AppModules {
   getRoutes(): Array<RouteRecordRaw> {
     return [
       vehicleRoutes,
-      [calloutRoute],
+      calloutRoutes,
       trainingRoutes,
       clothesRoutes,
       peopleRoutes,
