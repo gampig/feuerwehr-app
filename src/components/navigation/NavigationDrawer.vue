@@ -130,54 +130,38 @@
   </v-navigation-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 import version from "@/utils/version";
 import NavigationLink from "./NavigationLink.vue";
 import { Acl } from "@/acl";
-import { mapActions, mapState } from "pinia";
+import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { AllRoles } from "@/models/User";
+import type { AllRoles } from "@/models/User";
 
-export default defineComponent({
-  components: {
-    NavigationLink,
-  },
+defineProps<{
+  modelValue?: boolean;
+}>();
 
-  props: {
-    modelValue: {
-      type: Boolean,
-    },
-  },
+defineEmits<{
+  "update:model-value": [value: boolean];
+}>();
 
-  emits: ["update:model-value"],
+const route = useRoute();
+const userSettingsButton = ref(false);
+const deviceRoles: AllRoles[] = ["ROLE_VEHICLE", "ROLE_ALARM_PC"];
 
-  data: function () {
-    return {
-      version,
-      userSettingsButton: false,
-      Acl: Acl,
-      deviceRoles: ["ROLE_VEHICLE", "ROLE_ALARM_PC"] as AllRoles[],
-    };
-  },
+const authStore = useAuthStore();
+const { loggedIn, user } = storeToRefs(authStore);
+const { logout, hasAnyRole } = authStore;
 
-  computed: {
-    ...mapState(useAuthStore, ["loggedIn", "user"]),
+const showUserSettings = computed(
+  () => !loggedIn.value || userSettingsButton.value
+);
 
-    showUserSettings() {
-      return !this.loggedIn || this.userSettingsButton;
-    },
-
-    loginRoute() {
-      return {
-        name: "UserLogin",
-        query: { next: this.$route.fullPath },
-      };
-    },
-  },
-
-  methods: {
-    ...mapActions(useAuthStore, ["logout", "hasAnyRole"]),
-  },
-});
+const loginRoute = computed(() => ({
+  name: "UserLogin",
+  query: { next: route.fullPath },
+}));
 </script>
