@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <v-main>
     <router-view :loading="loading" />
 
     <ErrorDialog v-model="showErrorDialog" @retry="fetchData">
       <p>Die Einsatzdaten konnten nicht geladen werden.</p>
       <p>Fehlermeldung: {{ errorMessage }}</p>
     </ErrorDialog>
-  </div>
+  </v-main>
 </template>
 
 <script lang="ts">
