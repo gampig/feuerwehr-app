@@ -59,6 +59,37 @@
               />
             </v-col>
           </v-row>
+
+          <v-row>
+            <template
+              v-for="(
+                vehicleWithCrew, vehicleId
+              ) in calloutStore.vehiclesWithCrew"
+              :key="vehicleId"
+            >
+              <v-col>
+                <v-card>
+                  <v-card-title>
+                    {{ vehicleWithCrew.vehicle.name }}
+                  </v-card-title>
+                  <v-list>
+                    <v-list-item v-if="vehicleWithCrew.calloutDetails">
+                      Einsatzende:
+                      {{
+                        formatDateTime(
+                          Number(vehicleWithCrew.calloutDetails?.endTime)
+                        )
+                      }}
+                    </v-list-item>
+                    <v-list-item>
+                      Anzahl Personal:
+                      {{ Object.keys(vehicleWithCrew.crewMembers).length }}
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+              </v-col>
+            </template>
+          </v-row>
         </v-form>
       </v-container>
     </v-card>
