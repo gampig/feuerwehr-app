@@ -20,7 +20,7 @@
 
         <v-tab
           v-if="hasAnyRole(Acl.einsatzberichtErstellen)"
-          :to="{ name: 'CalloutReport' }"
+          :to="{ name: 'CalloutReportList' }"
           replace
         >
           Einsatzbericht
