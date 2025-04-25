@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <h2>Bereitschaftsliste</h2>
+
     <v-alert v-if="showCloseNotice" type="info" density="compact" class="mb-4">
       Bitte dieses Programm schließen, wenn alle Personen eingetragen sind.
     </v-alert>

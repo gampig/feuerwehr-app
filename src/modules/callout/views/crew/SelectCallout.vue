@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h2>Mannschaftsbuch</h2>
     <CalloutList @update:model-value="next" />
   </v-container>
 </template>

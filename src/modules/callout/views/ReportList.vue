@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-row v-if="hasAnyRole(Acl.einsatzberichtVerteilerBearbeiten)">
+      <v-col><h2>Einsatzbericht</h2></v-col>
       <v-col class="d-flex justify-end align-center">
         <v-btn prepend-icon="mdi-cog"> Verteiler </v-btn>
       </v-col>
