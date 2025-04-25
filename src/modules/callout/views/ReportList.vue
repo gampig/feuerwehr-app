@@ -9,6 +9,15 @@
 
     <v-row>
       <v-col>
+        <v-alert color="warning">
+          Hinweis: Dieser Bereich dient nur der Demonstration. Viele Funktionen
+          sind noch nicht fertig.
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
         <CalloutList :create-allowed="false" @update:model-value="select" />
       </v-col>
     </v-row>
