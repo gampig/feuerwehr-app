@@ -4,6 +4,7 @@ export type AllRoles =
   | "ROLE_MAINTAINER_CLOTHES"
   | "ROLE_VEHICLE"
   | "ROLE_ALARM_PC"
+  | "ROLE_CHIEF"
   | "ROLE_GROUPLEADER"
   | "ROLE_CALLOUT_EDITOR"
   | "ROLE_PEOPLE_EDITOR";
@@ -34,6 +35,10 @@ export const rolesConfig: readonly {
   {
     id: "ROLE_ALARM_PC",
     name: "Alarm-PC",
+  },
+  {
+    id: "ROLE_CHIEF",
+    name: "Kommandant",
   },
   {
     id: "ROLE_GROUPLEADER",

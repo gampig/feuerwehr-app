@@ -9,6 +9,7 @@
         >
           Mannschaft
         </v-tab>
+
         <v-tab
           v-if="hasAnyRole(Acl.bereitschaftsliste)"
           :to="{ name: 'SelectStandby' }"
@@ -16,6 +17,15 @@
         >
           Bereitschaft
         </v-tab>
+
+        <v-tab
+          v-if="hasAnyRole(Acl.einsatzberichtErstellen)"
+          :to="{ name: 'CalloutReportList' }"
+          replace
+        >
+          Einsatzbericht
+        </v-tab>
+
         <v-tab
           v-if="hasAnyRole(Acl.mannschaftsbuch)"
           :to="{ name: 'CalloutList' }"

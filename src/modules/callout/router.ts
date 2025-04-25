@@ -25,6 +25,12 @@ export default [
         path: "bereitschaft",
         component: () => import("./views/Standby.vue"),
       },
+
+      {
+        name: "CalloutReportList",
+        path: "bericht",
+        component: () => import("./views/ReportList.vue"),
+      },
     ],
   },
 
@@ -54,5 +60,11 @@ export default [
         component: () => import("./views/crew/SelectCrew.vue"),
       },
     ],
+  },
+
+  {
+    path: encodeURI("/einsätze/bericht/:callout_id"),
+    name: "CalloutReport",
+    component: () => import("./views/Report.vue"),
   },
 ] satisfies RouteRecordRaw[];

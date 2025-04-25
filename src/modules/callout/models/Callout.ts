@@ -1,3 +1,5 @@
+import { Vehicle } from "@/modules/vehicles/models/Vehicle";
+
 type CalloutType = "THL" | "Brand" | "UG-ÖEL";
 
 export interface CalloutVehicle {
@@ -39,6 +41,12 @@ export interface Crew {
   vehicles?: {
     [id: string]: PeopleArray;
   };
+}
+
+export interface CalloutVehicleWithCrew {
+  vehicle: Vehicle;
+  calloutDetails?: CalloutVehicle;
+  crewMembers: PeopleArray;
 }
 
 export type MannschaftenMap = { [calloutId: string]: Crew | undefined };
