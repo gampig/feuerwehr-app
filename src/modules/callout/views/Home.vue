@@ -31,7 +31,7 @@
           :to="{ name: 'CalloutList' }"
           replace
         >
-          Einsatzliste
+          Archiv
         </v-tab>
       </v-tabs>
     </template>
