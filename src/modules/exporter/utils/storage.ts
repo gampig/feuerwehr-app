@@ -18,7 +18,7 @@ export default {
     return useCalloutsStore().promise;
   },
 
-  async fetchMannschaften() {
+  async getMannschaften() {
     const snapshot = await get(crewRef);
     return snapshot.val() as MannschaftenMap;
   },

@@ -28,7 +28,7 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
     storage.getFahrzeuge(),
     storage.getEinsaetze(),
     storage.getPersonen(),
-    storage.fetchMannschaften(),
+    storage.getMannschaften(),
   ]).then(([fahrzeuge, einsaetze, allePersonen, mannschaftenMap]) => {
     const personen = allePersonen.filter(
       (person) =>
