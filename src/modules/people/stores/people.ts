@@ -35,6 +35,7 @@ export const usePeopleStore = defineStore("people", () => {
   return {
     people,
     loading,
+    promise: people.promise,
     peopleReversed,
     peopleByActivity,
 

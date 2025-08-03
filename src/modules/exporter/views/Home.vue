@@ -5,7 +5,9 @@
         <v-col>
           <v-row justify="center" class="mb-6">
             <v-col sm="6" md="4">
-              <v-btn @click="exportPeople">Personenliste speichern</v-btn>
+              <v-btn :loading="exportingPersonen" @click="exportPeople"
+                >Personenliste speichern</v-btn
+              >
             </v-col>
           </v-row>
 
@@ -35,14 +37,19 @@ import { saveAsCsv } from "../services/csvService";
 export default defineComponent({
   data() {
     return {
+      exportingPersonen: false,
       exportingMannschaftsbuch: false,
     };
   },
 
   methods: {
     exportPeople() {
-      const data = exportPeopleWithStatus();
-      saveAsCsv(data, "Personen.csv");
+      this.exportingPersonen = true;
+      exportPeopleWithStatus()
+        .then((data) => saveAsCsv(data, "Personen.csv"))
+        .finally(() => {
+          this.exportingPersonen = false;
+        });
     },
 
     exportMannschaftsbuch() {

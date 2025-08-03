@@ -23,6 +23,7 @@ export const useVehiclesStore = defineStore("vehicles", () => {
   return {
     vehicles,
     loading,
+    promise: vehicles.promise,
 
     // Private variables
     vehiclesSource,
