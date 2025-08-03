@@ -71,6 +71,7 @@ export const useCalloutsStore = defineStore("callouts", () => {
   return {
     callouts,
     loading,
+    promise: callouts.promise,
     calloutsReversed,
     calloutsOfToday,
     calloutsBeforeToday,

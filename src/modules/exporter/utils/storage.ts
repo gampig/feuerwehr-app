@@ -7,18 +7,18 @@ import { get } from "firebase/database";
 
 export default {
   getPersonen() {
-    return usePeopleStore().people;
+    return usePeopleStore().promise;
   },
 
   getFahrzeuge() {
-    return useVehiclesStore().vehicles;
+    return useVehiclesStore().promise;
   },
 
   getEinsaetze() {
-    return useCalloutsStore().callouts;
+    return useCalloutsStore().promise;
   },
 
-  async fetchMannschaften() {
+  async getMannschaften() {
     const snapshot = await get(crewRef);
     return snapshot.val() as MannschaftenMap;
   },
