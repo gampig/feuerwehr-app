@@ -16,7 +16,12 @@
         </v-col>
       </v-row>
 
-      <v-data-table :search="search" :headers="headers" :items="items">
+      <v-data-table
+        :search="search"
+        :headers="headers"
+        :sort-by="sortBy"
+        :items="items"
+      >
         <template #top>
           <v-text-field
             v-model="search"
@@ -50,6 +55,7 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
+import { SortItem } from "@/models/SortItem";
 
 const router = useRouter();
 
@@ -60,6 +66,13 @@ const headers = [
   { title: "Gruppen", key: "groups", nowrap: true },
   { title: "Titel", key: "title" },
   { title: "", key: "actions", sortable: false },
+];
+
+const sortBy: SortItem[] = [
+  {
+    key: "startTime",
+    order: "desc",
+  },
 ];
 
 const items = trainings;
