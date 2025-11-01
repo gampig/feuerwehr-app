@@ -59,7 +59,7 @@
 
                 <v-select
                   v-model="training.groups"
-                  :items="availableGroups"
+                  :items="selectableGroups"
                   multiple
                   label="Gruppen"
                 >
@@ -186,7 +186,7 @@ import { usePeopleStore } from "@/modules/people/stores/people";
 import { capitalizeFirstLetter } from "@/utils/strings";
 import { computed, reactive, ref } from "vue";
 import { Participant, Training } from "../models/Training";
-import { trainings } from "./TestData";
+import { trainings, groups } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
@@ -202,24 +202,6 @@ const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
 const confirmRemoveTrainingDialog = ref(false);
 const confirmRemoveParticipantDialog = ref(false);
-
-const availableGroups = [
-  "Zug A",
-  "Zug B",
-  "Jugend",
-  "Kinderfeuerwehr",
-  "Gruppe 1",
-  "Neue Aktive",
-  "Atemschutz",
-  "Maschinisten",
-  "UG-ÖEL",
-  "Notfallteam",
-  "Bootsführer",
-  "Gruppenführer",
-  "Gerätewart",
-  "Leistungsprüfung",
-  "Anderes",
-];
 
 const route = useRoute();
 const router = useRouter();
@@ -264,6 +246,10 @@ const training = reactive<Training>(
     participants: [],
   }
 );
+
+const selectableGroups = training.groups
+  .concat(groups)
+  .filter((value, index, self) => self.indexOf(value) === index);
 
 const addParticipantForm = ref<VForm>();
 
