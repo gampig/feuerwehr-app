@@ -183,6 +183,7 @@ import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
 import { isValidName, required } from "@/utils/rules";
+import { useRoute } from "vue-router";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -210,6 +211,8 @@ const availableGroups = [
   "Leistungsprüfung",
   "Anderes",
 ];
+
+const route = useRoute();
 
 const peopleStore = usePeopleStore();
 
@@ -243,7 +246,14 @@ const sortBy = ref<SortItem[]>([
   },
 ]);
 
-const training = reactive<Training>(trainings[0]);
+const training = reactive<Training>(
+  trainings.find((training) => training.id == route.params.id) || {
+    id: "",
+    title: "",
+    groups: [],
+    participants: [],
+  }
+);
 
 const addParticipantForm = ref<VForm>();
 
