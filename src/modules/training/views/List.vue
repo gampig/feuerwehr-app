@@ -10,6 +10,12 @@
         Demonstration!
       </v-alert>
 
+      <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+        <v-col class="d-flex justify-end align-center">
+          <v-btn prepend-icon="mdi-cog" disabled> Gruppen </v-btn>
+        </v-col>
+      </v-row>
+
       <v-data-table :search="search" :headers="headers" :items="items">
         <template #top>
           <v-text-field
@@ -42,8 +48,12 @@ import { formatDateTime } from "@/utils/dates";
 import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
 
 const router = useRouter();
+
+const { hasAnyRole } = useAuthStore();
 
 const headers = [
   { title: "Datum", key: "startTime", nowrap: true },
