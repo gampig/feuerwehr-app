@@ -67,7 +67,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn variant="flat" disabled>
+                <v-btn variant="flat" @click="showConfirmRemoveTrainingDialog">
                   <v-icon start>mdi-delete</v-icon>Löschen
                 </v-btn>
               </v-card-actions>
@@ -170,6 +170,14 @@
     >
       Möchtest du {{ participantToDelete?.name }} wirklich entfernen?
     </BaseConfirmDialog>
+    <BaseConfirmDialog
+      v-model="confirmRemoveTrainingDialog"
+      title="Löschen bestätigen"
+      width="500"
+      @confirm="removeTraining"
+    >
+      Möchtest du diese Übung wirklich löschen?
+    </BaseConfirmDialog>
   </BasePage>
 </template>
 
@@ -183,7 +191,7 @@ import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
 import { isValidName, required } from "@/utils/rules";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -192,6 +200,7 @@ const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant>();
 const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
+const confirmRemoveTrainingDialog = ref(false);
 const confirmRemoveParticipantDialog = ref(false);
 
 const availableGroups = [
@@ -213,6 +222,7 @@ const availableGroups = [
 ];
 
 const route = useRoute();
+const router = useRouter();
 
 const peopleStore = usePeopleStore();
 
@@ -306,5 +316,21 @@ function isNotSelected(person: string) {
       .map((p) => p.name.toLowerCase())
       .includes(person.toLowerCase()) || "Ist bereits eingetragen"
   );
+}
+
+function showConfirmRemoveTrainingDialog() {
+  confirmRemoveTrainingDialog.value = true;
+}
+
+function removeTraining() {
+  confirmRemoveTrainingDialog.value = false;
+  const objectToRemove = trainings.find((item) => item.id == training.id);
+  if (objectToRemove) {
+    const index = trainings.indexOf(objectToRemove);
+    if (index > -1) {
+      trainings.splice(index, 1);
+      router.replace({ name: "TrainingHome" });
+    }
+  }
 }
 </script>
