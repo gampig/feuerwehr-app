@@ -39,7 +39,7 @@
                   label="Start"
                   append-inner-icon="mdi-calendar"
                   readonly
-                  @click="showStartTimeDialog = true"
+                  @click="startTimeDialog = true"
                 />
                 <v-text-field
                   :model-value="formatDateTime(training.endTime)"
@@ -47,7 +47,7 @@
                   append-inner-icon="mdi-calendar"
                   readonly
                   clearable
-                  @click="showEndTimeDialog = true"
+                  @click="endTimeDialog = true"
                   @click:clear="training.endTime = undefined"
                 />
 
@@ -138,7 +138,10 @@
                 :search="search"
               >
                 <template #[`item.actions`]="{ item }">
-                  <v-btn variant="plain" @click="removeParticipant(item)">
+                  <v-btn
+                    variant="plain"
+                    @click="showConfirmRemoveParticipantDialog(item)"
+                  >
                     Entfernen
                   </v-btn>
                 </template>
@@ -150,15 +153,23 @@
     </v-container>
 
     <BaseDateTimeDialog
-      v-model="showStartTimeDialog"
+      v-model="startTimeDialog"
       :date="training.startTime"
       @update:date="updateStartTime"
     />
     <BaseDateTimeDialog
-      v-model="showEndTimeDialog"
+      v-model="endTimeDialog"
       :date="training.endTime"
       @update:date="updateEndTime"
     />
+    <BaseConfirmDialog
+      v-model="confirmRemoveParticipantDialog"
+      title="Entfernen bestätigen"
+      width="500"
+      @confirm="removeParticipant"
+    >
+      Möchtest du {{ participantToDelete?.name }} wirklich entfernen?
+    </BaseConfirmDialog>
   </BasePage>
 </template>
 
@@ -177,8 +188,10 @@ const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
-const showStartTimeDialog = ref(false);
-const showEndTimeDialog = ref(false);
+const participantToDelete = ref<Participant>();
+const startTimeDialog = ref(false);
+const endTimeDialog = ref(false);
+const confirmRemoveParticipantDialog = ref(false);
 
 const availableGroups = [
   "Zug A",
@@ -253,11 +266,20 @@ async function addParticipant() {
   }
 }
 
-function removeParticipant(participant: Participant) {
-  const index = training.participants.indexOf(participant);
-  if (index > -1) {
-    training.participants.splice(index, 1);
+function showConfirmRemoveParticipantDialog(participant: Participant) {
+  participantToDelete.value = participant;
+  confirmRemoveParticipantDialog.value = true;
+}
+
+function removeParticipant() {
+  if (participantToDelete.value !== undefined) {
+    const index = training.participants.indexOf(participantToDelete.value);
+    if (index > -1) {
+      training.participants.splice(index, 1);
+    }
+    participantToDelete.value = undefined;
   }
+  confirmRemoveParticipantDialog.value = false;
 }
 
 function updateStartTime(newTime: number) {
