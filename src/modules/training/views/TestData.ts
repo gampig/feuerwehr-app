@@ -1,5 +1,23 @@
 import { Training } from "../models/Training";
 
+export const groups = [
+  "Zug A",
+  "Zug B",
+  "Jugend",
+  "Kinderfeuerwehr",
+  "Gruppe 1",
+  "Neue Aktive",
+  "Atemschutz",
+  "Maschinisten",
+  "UG-ÖEL",
+  "Notfallteam",
+  "Bootsführer",
+  "Gruppenführer",
+  "Gerätewart",
+  "Leistungsprüfung",
+  "Anderes",
+];
+
 export const trainings: Training[] = [
   {
     id: "randomId",

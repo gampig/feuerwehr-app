@@ -1,7 +1,7 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
     <template #actions>
-      <v-btn icon disabled><v-icon>mdi-plus</v-icon></v-btn>
+      <v-btn icon @click="createTraining"><v-icon>mdi-plus</v-icon></v-btn>
     </template>
 
     <v-container fluid>
@@ -10,7 +10,18 @@
         Demonstration!
       </v-alert>
 
-      <v-data-table :search="search" :headers="headers" :items="items">
+      <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+        <v-col class="d-flex justify-end align-center">
+          <v-btn prepend-icon="mdi-cog" disabled> Gruppen </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-data-table
+        :search="search"
+        :headers="headers"
+        :sort-by="sortBy"
+        :items="items"
+      >
         <template #top>
           <v-text-field
             v-model="search"
@@ -30,7 +41,7 @@
         </template>
 
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="tonal" @click="showTraining(item)"> Öffnen </v-btn>
+          <v-btn variant="tonal" @click="showTraining(item.id)"> Öffnen </v-btn>
         </template>
       </v-data-table>
     </v-container>
@@ -39,12 +50,16 @@
 
 <script setup lang="ts">
 import { formatDateTime } from "@/utils/dates";
-import { Training } from "../models/Training";
 import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { Acl } from "@/acl";
+import { SortItem } from "@/models/SortItem";
 
 const router = useRouter();
+
+const { hasAnyRole } = useAuthStore();
 
 const headers = [
   { title: "Datum", key: "startTime", nowrap: true },
@@ -53,11 +68,30 @@ const headers = [
   { title: "", key: "actions", sortable: false },
 ];
 
+const sortBy: SortItem[] = [
+  {
+    key: "startTime",
+    order: "desc",
+  },
+];
+
 const items = trainings;
 
 const search = ref("");
 
-function showTraining(item: Training) {
-  router.push({ name: "TrainingShow", params: { id: item.id } });
+function showTraining(id: string) {
+  router.push({ name: "TrainingShow", params: { id: id } });
+}
+
+function createTraining() {
+  const id = Math.floor(Math.random() * 10000).toString();
+  items.push({
+    id: id,
+    title: "",
+    startTime: new Date().getTime() / 1000,
+    groups: [],
+    participants: [],
+  });
+  showTraining(id);
 }
 </script>
