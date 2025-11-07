@@ -101,7 +101,9 @@
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
                     inline
-                    :rules="[required]"
+                    :rules="[
+                      (value) => !!value || 'Bitte eine Gruppe auswählen',
+                    ]"
                   >
                     <v-radio
                       v-for="group in training.groups"
