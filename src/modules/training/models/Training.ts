@@ -8,7 +8,7 @@ export interface Training {
   creationTime: number;
   startTime?: number;
   endTime?: number;
-  responsiblePerson?: string;
+  responsiblePeople?: string[];
   groups: string[];
   title: string;
   participants: Participant[];

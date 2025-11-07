@@ -52,10 +52,12 @@
                 />
 
                 <v-autocomplete
-                  v-model:search="training.responsiblePerson"
+                  v-model="responsiblePeople"
                   :items="availablePeople"
-                  clearable
-                  label="Verantwortlicher"
+                  multiple
+                  chips
+                  closable-chips
+                  label="Verantwortliche(r)"
                   variant="filled"
                 >
                 </v-autocomplete>
@@ -259,6 +261,8 @@ const training = reactive<Training>(
     participants: [],
   }
 );
+
+const responsiblePeople = ref<string[]>();
 
 const selectableGroups = training.groups
   .concat(groups)
