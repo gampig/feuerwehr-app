@@ -51,6 +51,15 @@
                   @click:clear="training.endTime = undefined"
                 />
 
+                <v-autocomplete
+                  v-model:search="training.responsiblePerson"
+                  :items="availablePeople"
+                  clearable
+                  label="Verantwortlicher"
+                  variant="filled"
+                >
+                </v-autocomplete>
+
                 <v-select
                   v-model="training.groups"
                   :items="selectableGroups"
