@@ -21,6 +21,7 @@ export const groups = [
 export const trainings: Training[] = [
   {
     id: "randomId",
+    creationTime: 1734633000,
     startTime: 1734633000,
     endTime: undefined,
     groups: ["Zug A", "Zug B", "Jugend"],

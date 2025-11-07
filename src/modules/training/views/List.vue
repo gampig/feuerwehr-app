@@ -88,6 +88,7 @@ function createTraining() {
   items.push({
     id: id,
     title: "",
+    creationTime: new Date().getTime() / 1000,
     startTime: new Date().getTime() / 1000,
     groups: [],
     participants: [],
