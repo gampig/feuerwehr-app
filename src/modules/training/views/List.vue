@@ -1,9 +1,5 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
-    <template #actions>
-      <v-btn icon @click="createTraining"><v-icon>mdi-plus</v-icon></v-btn>
-    </template>
-
     <v-container fluid>
       <v-alert type="warning" closable density="compact" class="mb-3">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
@@ -11,6 +7,12 @@
       </v-alert>
 
       <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+        <v-col>
+          <v-btn color="primary" @click="createTraining">
+            <v-icon start>mdi-plus</v-icon>
+            Neue Übung
+          </v-btn>
+        </v-col>
         <v-col class="d-flex justify-end align-center">
           <v-btn prepend-icon="mdi-cog" disabled> Gruppen </v-btn>
         </v-col>
