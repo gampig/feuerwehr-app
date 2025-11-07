@@ -65,7 +65,7 @@
                 >
                 </v-select>
               </v-card-text>
-              <v-card-actions v-if="editAllowed">
+              <v-card-actions v-if="deleteAllowed">
                 <v-spacer />
                 <v-btn variant="flat" @click="showConfirmRemoveTrainingDialog">
                   <v-icon start>mdi-delete</v-icon>Löschen
@@ -272,6 +272,13 @@ const editAllowed = computed((): boolean => {
     currentTime < startTime.add(6, "h") ||
     currentTime < creationTime.add(6, "h")
   );
+});
+
+const deleteAllowed = computed((): boolean => {
+  if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
+    return true;
+  }
+  return editAllowed.value && training.participants.length == 0;
 });
 
 const addParticipantForm = ref<VForm>();
