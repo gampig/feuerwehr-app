@@ -56,6 +56,7 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { SortItem } from "@/models/SortItem";
+import moment from "moment";
 
 const router = useRouter();
 
@@ -85,11 +86,13 @@ function showTraining(id: string) {
 
 function createTraining() {
   const id = Math.floor(Math.random() * 10000).toString();
+  const currentTime = moment();
   items.push({
     id: id,
     title: "",
-    creationTime: new Date().getTime() / 1000,
-    startTime: new Date().getTime() / 1000,
+    creationTime: currentTime.unix(),
+    startTime: currentTime.unix(),
+    endTime: currentTime.add(2, "h").unix(),
     groups: [],
     participants: [],
   });

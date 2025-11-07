@@ -248,7 +248,7 @@ const training = reactive<Training>(
   trainings.find((training) => training.id == route.params.id) || {
     id: "",
     title: "",
-    creationTime: new Date().getTime() / 1000,
+    creationTime: moment().unix(),
     groups: [],
     participants: [],
   }
