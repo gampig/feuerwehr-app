@@ -90,15 +90,15 @@
                   Teilnehmer hinzufügen
                 </v-card-title>
                 <v-card-text>
-                  <v-combobox
+                  <v-autocomplete
                     v-model:search="newParticipantName"
                     :items="availablePeople"
                     clearable
                     label="Teilnehmer"
                     variant="filled"
-                    :rules="[required, isValidName, isNotSelected]"
+                    :rules="[required, isNotSelected]"
                   >
-                  </v-combobox>
+                  </v-autocomplete>
                   <v-radio-group
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
