@@ -10,6 +10,5 @@ export interface Training {
   endTime?: number;
   groups: string[];
   title: string;
-  location?: string;
   participants: Participant[];
 }

@@ -51,12 +51,6 @@
                   @click:clear="training.endTime = undefined"
                 />
 
-                <v-text-field
-                  v-model="training.location"
-                  label="Ort"
-                  append-inner-icon="mdi-map-marker"
-                />
-
                 <v-select
                   v-model="training.groups"
                   :items="selectableGroups"

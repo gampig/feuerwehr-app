@@ -26,7 +26,6 @@ export const trainings: Training[] = [
     endTime: undefined,
     groups: ["Zug A", "Zug B", "Jugend"],
     title: "UVV (Test)",
-    location: "Gerätehaus",
     participants: [
       {
         name: "Mustermann, Max",
