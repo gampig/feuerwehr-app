@@ -65,7 +65,7 @@
                   :items="selectableGroups"
                   multiple
                   label="Gruppen"
-                  @update:model-value="newParticipantGroup = undefined"
+                  @update:model-value="onGroupsUpdated"
                 >
                 </v-select>
               </v-card-text>
@@ -303,6 +303,9 @@ async function addParticipant() {
       group: newParticipantGroup.value,
     });
     addParticipantForm.value.reset();
+    if (training.groups.length == 1) {
+      newParticipantGroup.value = training.groups[0];
+    }
   }
 }
 
@@ -351,6 +354,14 @@ function removeTraining() {
       trainings.splice(index, 1);
       router.replace({ name: "TrainingHome" });
     }
+  }
+}
+
+function onGroupsUpdated(newGroups: string[]) {
+  if (newGroups.length == 1) {
+    newParticipantGroup.value = newGroups[0];
+  } else {
+    newParticipantGroup.value = undefined;
   }
 }
 </script>
