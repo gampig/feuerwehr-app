@@ -71,11 +71,18 @@
                 >
                 </v-select>
               </v-card-text>
-              <v-card-actions v-if="deleteAllowed">
-                <v-spacer />
-                <v-btn variant="flat" @click="showConfirmRemoveTrainingDialog">
+              <v-card-actions v-if="editAllowed || deleteAllowed">
+                <v-btn
+                  v-if="deleteAllowed"
+                  variant="flat"
+                  @click="showConfirmRemoveTrainingDialog"
+                >
                   <v-icon start>mdi-delete</v-icon>Löschen
                 </v-btn>
+                <v-spacer />
+                <v-btn v-if="editAllowed" variant="elevated" color="primary"
+                  >Speichern</v-btn
+                >
               </v-card-actions>
             </v-card>
           </VForm>
