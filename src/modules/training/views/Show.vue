@@ -65,6 +65,7 @@
                   :items="selectableGroups"
                   multiple
                   label="Gruppen"
+                  @update:model-value="newParticipantGroup = undefined"
                 >
                 </v-select>
               </v-card-text>
