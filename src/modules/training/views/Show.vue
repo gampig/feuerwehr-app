@@ -30,7 +30,7 @@
 
       <v-tabs-window v-model="currentTab" touchless>
         <v-tabs-window-item>
-          <VForm>
+          <VForm :disabled="!editAllowed">
             <v-card border>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
@@ -65,7 +65,7 @@
                 >
                 </v-select>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions v-if="editAllowed">
                 <v-spacer />
                 <v-btn variant="flat" @click="showConfirmRemoveTrainingDialog">
                   <v-icon start>mdi-delete</v-icon>Löschen
@@ -77,7 +77,7 @@
 
         <v-tabs-window-item>
           <v-card border>
-            <VForm ref="addParticipantForm">
+            <VForm v-if="editAllowed" ref="addParticipantForm">
               <v-card flat>
                 <v-card-title>
                   <v-icon start>mdi-plus</v-icon>
@@ -139,6 +139,7 @@
               >
                 <template #[`item.actions`]="{ item }">
                   <v-btn
+                    v-if="editAllowed"
                     variant="plain"
                     @click="showConfirmRemoveParticipantDialog(item)"
                   >
@@ -192,6 +193,9 @@ import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
 import { isValidName, required } from "@/utils/rules";
 import { useRoute, useRouter } from "vue-router";
+import { Acl } from "@/acl";
+import { useAuthStore } from "@/stores/auth";
+import moment from "moment";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -205,6 +209,8 @@ const confirmRemoveParticipantDialog = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+
+const { hasAnyRole } = useAuthStore();
 
 const peopleStore = usePeopleStore();
 
@@ -251,6 +257,22 @@ const training = reactive<Training>(
 const selectableGroups = training.groups
   .concat(groups)
   .filter((value, index, self) => self.indexOf(value) === index);
+
+const editAllowed = computed((): boolean => {
+  if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
+    return true;
+  }
+  if (!training.startTime) {
+    return true;
+  }
+  const creationTime = moment.unix(training.creationTime);
+  const startTime = moment.unix(training.startTime);
+  const currentTime = moment();
+  return (
+    currentTime < startTime.add(6, "h") ||
+    currentTime < creationTime.add(6, "h")
+  );
+});
 
 const addParticipantForm = ref<VForm>();
 
