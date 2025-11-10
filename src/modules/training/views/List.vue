@@ -8,7 +8,7 @@
 
       <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
         <v-col>
-          <v-btn color="primary" @click="createTraining">
+          <v-btn color="primary" @click="showCreateDialog">
             <v-icon start>mdi-plus</v-icon>
             Neue Übung
           </v-btn>
@@ -47,6 +47,21 @@
         </template>
       </v-data-table>
     </v-container>
+
+    <BaseCreateDialog
+      v-model="createTrainingDialog"
+      title="Übung erstellen"
+      :loading="false"
+      @create="createTraining"
+    >
+      <VForm ref="createTrainingForm">
+        <v-text-field
+          v-model="newTrainingTitle"
+          label="Titel"
+          :rules="[required]"
+        />
+      </VForm>
+    </BaseCreateDialog>
   </BasePage>
 </template>
 
@@ -59,6 +74,8 @@ import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { SortItem } from "@/models/SortItem";
 import moment from "moment";
+import { VForm } from "vuetify/components/VForm";
+import { required } from "@/utils/rules";
 
 const router = useRouter();
 
@@ -81,23 +98,41 @@ const sortBy: SortItem[] = [
 const items = trainings;
 
 const search = ref("");
+const createTrainingForm = ref<VForm>();
+const createTrainingDialog = ref(false);
+const newTrainingTitle = ref<string>();
 
 function showTraining(id: string) {
   router.push({ name: "TrainingShow", params: { id: id } });
 }
 
-function createTraining() {
-  const id = Math.floor(Math.random() * 10000).toString();
-  const currentTime = moment();
-  items.push({
-    id: id,
-    title: "",
-    creationTime: currentTime.unix(),
-    startTime: currentTime.unix(),
-    endTime: currentTime.add(2, "h").unix(),
-    groups: [],
-    participants: [],
-  });
-  showTraining(id);
+function showCreateDialog() {
+  newTrainingTitle.value = undefined;
+  createTrainingDialog.value = true;
+}
+
+async function createTraining() {
+  if (!createTrainingForm.value) {
+    return;
+  }
+
+  if ((await createTrainingForm.value.validate()).valid) {
+    const id = Math.floor(Math.random() * 10000).toString();
+    const currentTime = moment();
+    items.push({
+      id: id,
+      title: newTrainingTitle.value ?? "",
+      creationTime: currentTime.unix(),
+      startTime: currentTime.unix(),
+      endTime: currentTime.add(2, "h").unix(),
+      groups: [],
+      participants: [],
+    });
+
+    createTrainingForm.value.reset();
+    createTrainingDialog.value = false;
+
+    showTraining(id);
+  }
 }
 </script>
