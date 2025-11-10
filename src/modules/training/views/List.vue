@@ -14,7 +14,9 @@
           </v-btn>
         </v-col>
         <v-col class="d-flex justify-end align-center">
-          <v-btn prepend-icon="mdi-cog" disabled> Gruppen </v-btn>
+          <v-btn prepend-icon="mdi-cog" @click="editGroupsDialog = true">
+            Gruppen
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -62,12 +64,33 @@
         />
       </VForm>
     </BaseCreateDialog>
+
+    <BaseEditDialog v-model="editGroupsDialog" title="Gruppen">
+      <v-table>
+        <tbody>
+          <tr v-for="group in groups" :key="group">
+            <td>{{ group }}</td>
+            <td>
+              <v-btn icon size="small" variant="tonal"
+                ><v-icon>mdi-arrow-up</v-icon></v-btn
+              >
+              <v-btn icon size="small" variant="tonal"
+                ><v-icon>mdi-arrow-down</v-icon></v-btn
+              >
+              <v-btn icon size="small" variant="tonal"
+                ><v-icon>mdi-delete</v-icon></v-btn
+              >
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </BaseEditDialog>
   </BasePage>
 </template>
 
 <script setup lang="ts">
 import { formatDateTime } from "@/utils/dates";
-import { trainings } from "./TestData";
+import { trainings, groups } from "./TestData";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
@@ -101,6 +124,7 @@ const search = ref("");
 const createTrainingForm = ref<VForm>();
 const createTrainingDialog = ref(false);
 const newTrainingTitle = ref<string>();
+const editGroupsDialog = ref(false);
 
 function showTraining(id: string) {
   router.push({ name: "TrainingShow", params: { id: id } });
