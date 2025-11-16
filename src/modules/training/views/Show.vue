@@ -55,6 +55,7 @@
                   v-model="responsiblePeople"
                   :items="availablePeople"
                   multiple
+                  clear-on-select
                   chips
                   closable-chips
                   label="Verantwortliche(r)"
