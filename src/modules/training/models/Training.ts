@@ -5,10 +5,11 @@ export interface Participant {
 
 export interface Training {
   id: string;
+  creationTime: number;
   startTime?: number;
   endTime?: number;
+  responsiblePeople?: string[];
   groups: string[];
   title: string;
-  location?: string;
   participants: Participant[];
 }

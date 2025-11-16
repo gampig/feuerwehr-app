@@ -3,6 +3,7 @@
     :model-value="modelValue"
     persistent
     :max-width="maxWidth"
+    :height="height"
     @update:model-value="cancel"
   >
     <v-card :loading="loading">
@@ -40,6 +41,11 @@ export default defineComponent({
     maxWidth: {
       type: String,
       default: "900",
+    },
+
+    height: {
+      type: String,
+      default: undefined,
     },
 
     title: {

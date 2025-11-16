@@ -1,9 +1,5 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
-    <template #actions>
-      <v-btn icon @click="createTraining"><v-icon>mdi-plus</v-icon></v-btn>
-    </template>
-
     <v-container fluid>
       <v-alert type="warning" closable density="compact" class="mb-3">
         Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
@@ -11,8 +7,16 @@
       </v-alert>
 
       <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+        <v-col>
+          <v-btn color="primary" @click="showCreateDialog">
+            <v-icon start>mdi-plus</v-icon>
+            Neue Übung
+          </v-btn>
+        </v-col>
         <v-col class="d-flex justify-end align-center">
-          <v-btn prepend-icon="mdi-cog" disabled> Gruppen </v-btn>
+          <v-btn prepend-icon="mdi-cog" @click="editGroupsDialog = true">
+            Gruppen
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -45,10 +49,28 @@
         </template>
       </v-data-table>
     </v-container>
+
+    <BaseCreateDialog
+      v-model="createTrainingDialog"
+      title="Übung erstellen"
+      :loading="false"
+      @create="createTraining"
+    >
+      <VForm ref="createTrainingForm">
+        <v-text-field
+          v-model="newTrainingTitle"
+          label="Titel"
+          :rules="[required]"
+        />
+      </VForm>
+    </BaseCreateDialog>
+
+    <EditGroupsDialog v-model="editGroupsDialog"></EditGroupsDialog>
   </BasePage>
 </template>
 
 <script setup lang="ts">
+import EditGroupsDialog from "../components/EditGroupsDialog.vue";
 import { formatDateTime } from "@/utils/dates";
 import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
@@ -56,6 +78,9 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { SortItem } from "@/models/SortItem";
+import moment from "moment";
+import { VForm } from "vuetify/components/VForm";
+import { required } from "@/utils/rules";
 
 const router = useRouter();
 
@@ -78,20 +103,42 @@ const sortBy: SortItem[] = [
 const items = trainings;
 
 const search = ref("");
+const createTrainingForm = ref<VForm>();
+const createTrainingDialog = ref(false);
+const newTrainingTitle = ref<string>();
+const editGroupsDialog = ref(false);
 
 function showTraining(id: string) {
   router.push({ name: "TrainingShow", params: { id: id } });
 }
 
-function createTraining() {
-  const id = Math.floor(Math.random() * 10000).toString();
-  items.push({
-    id: id,
-    title: "",
-    startTime: new Date().getTime() / 1000,
-    groups: [],
-    participants: [],
-  });
-  showTraining(id);
+function showCreateDialog() {
+  newTrainingTitle.value = undefined;
+  createTrainingDialog.value = true;
+}
+
+async function createTraining() {
+  if (!createTrainingForm.value) {
+    return;
+  }
+
+  if ((await createTrainingForm.value.validate()).valid) {
+    const id = Math.floor(Math.random() * 10000).toString();
+    const currentTime = moment();
+    items.push({
+      id: id,
+      title: newTrainingTitle.value ?? "",
+      creationTime: currentTime.unix(),
+      startTime: currentTime.unix(),
+      endTime: currentTime.add(2, "h").unix(),
+      groups: [],
+      participants: [],
+    });
+
+    createTrainingForm.value.reset();
+    createTrainingDialog.value = false;
+
+    showTraining(id);
+  }
 }
 </script>

@@ -1,8 +1,7 @@
 import { Training } from "../models/Training";
 
 export const groups = [
-  "Zug A",
-  "Zug B",
+  "Zug",
   "Jugend",
   "Kinderfeuerwehr",
   "Gruppe 1",
@@ -15,17 +14,18 @@ export const groups = [
   "Gruppenführer",
   "Gerätewart",
   "Leistungsprüfung",
+  "Lehrgang",
   "Anderes",
 ];
 
 export const trainings: Training[] = [
   {
     id: "randomId",
+    creationTime: 1734633000,
     startTime: 1734633000,
     endTime: undefined,
     groups: ["Zug A", "Zug B", "Jugend"],
     title: "UVV (Test)",
-    location: "Gerätehaus",
     participants: [
       {
         name: "Mustermann, Max",

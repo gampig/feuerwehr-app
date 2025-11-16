@@ -30,7 +30,7 @@
 
       <v-tabs-window v-model="currentTab" touchless>
         <v-tabs-window-item>
-          <VForm>
+          <VForm :disabled="!editAllowed">
             <v-card border>
               <v-card-text>
                 <v-text-field v-model="training.title" label="Titel" />
@@ -51,25 +51,38 @@
                   @click:clear="training.endTime = undefined"
                 />
 
-                <v-text-field
-                  v-model="training.location"
-                  label="Ort"
-                  append-inner-icon="mdi-map-marker"
-                />
+                <v-autocomplete
+                  v-model="responsiblePeople"
+                  :items="availablePeople"
+                  multiple
+                  chips
+                  closable-chips
+                  label="Verantwortliche(r)"
+                  variant="filled"
+                >
+                </v-autocomplete>
 
                 <v-select
                   v-model="training.groups"
                   :items="selectableGroups"
                   multiple
                   label="Gruppen"
+                  @update:model-value="onGroupsUpdated"
                 >
                 </v-select>
               </v-card-text>
-              <v-card-actions>
-                <v-spacer />
-                <v-btn variant="flat" @click="showConfirmRemoveTrainingDialog">
+              <v-card-actions v-if="editAllowed || deleteAllowed">
+                <v-btn
+                  v-if="deleteAllowed"
+                  variant="flat"
+                  @click="showConfirmRemoveTrainingDialog"
+                >
                   <v-icon start>mdi-delete</v-icon>Löschen
                 </v-btn>
+                <v-spacer />
+                <v-btn v-if="editAllowed" variant="elevated" color="primary"
+                  >Speichern</v-btn
+                >
               </v-card-actions>
             </v-card>
           </VForm>
@@ -77,27 +90,29 @@
 
         <v-tabs-window-item>
           <v-card border>
-            <VForm ref="addParticipantForm">
+            <VForm v-if="editAllowed" ref="addParticipantForm">
               <v-card flat>
                 <v-card-title>
                   <v-icon start>mdi-plus</v-icon>
                   Teilnehmer hinzufügen
                 </v-card-title>
                 <v-card-text>
-                  <v-combobox
+                  <v-autocomplete
                     v-model:search="newParticipantName"
                     :items="availablePeople"
                     clearable
                     label="Teilnehmer"
                     variant="filled"
-                    :rules="[required, isValidName, isNotSelected]"
+                    :rules="[required, isNotSelected]"
                   >
-                  </v-combobox>
+                  </v-autocomplete>
                   <v-radio-group
                     v-if="training.groups?.length > 0"
                     v-model="newParticipantGroup"
                     inline
-                    :rules="[required]"
+                    :rules="[
+                      (value) => !!value || 'Bitte eine Gruppe auswählen',
+                    ]"
                   >
                     <v-radio
                       v-for="group in training.groups"
@@ -139,6 +154,7 @@
               >
                 <template #[`item.actions`]="{ item }">
                   <v-btn
+                    v-if="editAllowed"
                     variant="plain"
                     @click="showConfirmRemoveParticipantDialog(item)"
                   >
@@ -192,6 +208,9 @@ import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
 import { isValidName, required } from "@/utils/rules";
 import { useRoute, useRouter } from "vue-router";
+import { Acl } from "@/acl";
+import { useAuthStore } from "@/stores/auth";
+import moment from "moment";
 
 const currentTab = ref(0);
 const search = ref<string | undefined>(undefined);
@@ -205,6 +224,8 @@ const confirmRemoveParticipantDialog = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+
+const { hasAnyRole } = useAuthStore();
 
 const peopleStore = usePeopleStore();
 
@@ -242,14 +263,40 @@ const training = reactive<Training>(
   trainings.find((training) => training.id == route.params.id) || {
     id: "",
     title: "",
+    creationTime: moment().unix(),
     groups: [],
     participants: [],
   }
 );
 
+const responsiblePeople = ref<string[]>();
+
 const selectableGroups = training.groups
   .concat(groups)
   .filter((value, index, self) => self.indexOf(value) === index);
+
+const editAllowed = computed((): boolean => {
+  if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
+    return true;
+  }
+  if (!training.startTime) {
+    return true;
+  }
+  const creationTime = moment.unix(training.creationTime);
+  const startTime = moment.unix(training.startTime);
+  const currentTime = moment();
+  return (
+    currentTime < startTime.add(6, "h") ||
+    currentTime < creationTime.add(6, "h")
+  );
+});
+
+const deleteAllowed = computed((): boolean => {
+  if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
+    return true;
+  }
+  return editAllowed.value && training.participants.length == 0;
+});
 
 const addParticipantForm = ref<VForm>();
 
@@ -269,6 +316,9 @@ async function addParticipant() {
       group: newParticipantGroup.value,
     });
     addParticipantForm.value.reset();
+    if (training.groups.length == 1) {
+      newParticipantGroup.value = training.groups[0];
+    }
   }
 }
 
@@ -317,6 +367,14 @@ function removeTraining() {
       trainings.splice(index, 1);
       router.replace({ name: "TrainingHome" });
     }
+  }
+}
+
+function onGroupsUpdated(newGroups: string[]) {
+  if (newGroups.length == 1) {
+    newParticipantGroup.value = newGroups[0];
+  } else {
+    newParticipantGroup.value = undefined;
   }
 }
 </script>

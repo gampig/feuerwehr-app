@@ -52,6 +52,10 @@ export abstract class Acl {
   ];
 
   static readonly uebungenAnzeigen: AllRoles[] = ["ROLE_ADMIN", "ROLE_CHIEF"];
+  static readonly uebungImmerBearbeiten: AllRoles[] = [
+    "ROLE_ADMIN",
+    "ROLE_CHIEF",
+  ];
   static readonly uebungGruppenBearbeiten: AllRoles[] = [
     "ROLE_ADMIN",
     "ROLE_CHIEF",
