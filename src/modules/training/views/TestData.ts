@@ -1,8 +1,7 @@
 import { Training } from "../models/Training";
 
 export const groups = [
-  "Zug A",
-  "Zug B",
+  "Zug",
   "Jugend",
   "Kinderfeuerwehr",
   "Gruppe 1",
@@ -15,6 +14,7 @@ export const groups = [
   "Gruppenführer",
   "Gerätewart",
   "Leistungsprüfung",
+  "Lehrgang",
   "Anderes",
 ];
 
