@@ -65,32 +65,14 @@
       </VForm>
     </BaseCreateDialog>
 
-    <BaseEditDialog v-model="editGroupsDialog" title="Gruppen">
-      <v-table>
-        <tbody>
-          <tr v-for="group in groups" :key="group">
-            <td>{{ group }}</td>
-            <td>
-              <v-btn icon size="small" variant="tonal"
-                ><v-icon>mdi-arrow-up</v-icon></v-btn
-              >
-              <v-btn icon size="small" variant="tonal"
-                ><v-icon>mdi-arrow-down</v-icon></v-btn
-              >
-              <v-btn icon size="small" variant="tonal"
-                ><v-icon>mdi-delete</v-icon></v-btn
-              >
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-    </BaseEditDialog>
+    <EditGroupsDialog v-model="editGroupsDialog"></EditGroupsDialog>
   </BasePage>
 </template>
 
 <script setup lang="ts">
+import EditGroupsDialog from "../components/EditGroupsDialog.vue";
 import { formatDateTime } from "@/utils/dates";
-import { trainings, groups } from "./TestData";
+import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
