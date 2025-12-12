@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import EditGroupsDialog from "../components/EditGroupsDialog.vue";
-import { formatDateTime } from "@/utils/dates";
+import { formatDateTime, roundToNearestHalfHour } from "@/utils/dates";
 import { trainings } from "./TestData";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -125,12 +125,13 @@ async function createTraining() {
   if ((await createTrainingForm.value.validate()).valid) {
     const id = Math.floor(Math.random() * 10000).toString();
     const currentTime = moment();
+    const startTime = roundToNearestHalfHour(currentTime.clone());
     items.push({
       id: id,
       title: newTrainingTitle.value ?? "",
       creationTime: currentTime.unix(),
-      startTime: currentTime.unix(),
-      endTime: currentTime.add(2, "h").unix(),
+      startTime: startTime.unix(),
+      endTime: startTime.add(2, "h").unix(),
       groups: [],
       participants: [],
     });
