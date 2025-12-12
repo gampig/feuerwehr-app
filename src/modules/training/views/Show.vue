@@ -197,7 +197,7 @@ const peopleStore = usePeopleStore();
 
 const availablePeople = computed(() =>
   peopleStore.people
-    .filter((person) => person.status !== "Ausgetreten")
+    .filter((person) => person.status !== "Ausgetreten" && person.status !== "Passiv")
     .map((person) => person.id)
 );
 
