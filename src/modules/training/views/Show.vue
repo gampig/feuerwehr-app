@@ -86,7 +86,7 @@
                 >
                 </v-autocomplete>
                 <v-radio-group
-                  v-if="training.groups?.length > 0"
+                  v-if="(training.groups ?? []).length > 0"
                   v-model="newParticipantGroup"
                   inline
                   :rules="[(value) => !!value || 'Bitte eine Gruppe auswählen']"
@@ -117,7 +117,7 @@
             <v-data-table
               v-model:sort-by="sortBy"
               :headers="headers"
-              :items="training.participants"
+              :items="participants"
               :items-per-page="-1"
               no-data-text="Keine Teilnehmer vorhanden"
             >
@@ -167,22 +167,22 @@
 
 <script setup lang="ts">
 import { usePeopleStore } from "@/modules/people/stores/people";
-import { capitalizeFirstLetter } from "@/utils/strings";
-import { computed, reactive, ref } from "vue";
-import { Participant, Training } from "../models/Training";
-import { trainings, groups } from "./TestData";
+import { computed, ref } from "vue";
+import { Participant } from "../models/Training";
+import { groups } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
-import { isValidName, required } from "@/utils/rules";
+import { required } from "@/utils/rules";
 import { useRoute, useRouter } from "vue-router";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
+import { useTrainingsStore } from "../stores/trainings";
 
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
-const participantToDelete = ref<Participant>();
+const participantToDelete = ref<Participant & { readonly id: string }>();
 const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
 const confirmRemoveTrainingDialog = ref(false);
@@ -194,10 +194,13 @@ const router = useRouter();
 const { hasAnyRole } = useAuthStore();
 
 const peopleStore = usePeopleStore();
+const trainingsStore = useTrainingsStore();
 
 const availablePeople = computed(() =>
   peopleStore.people
-    .filter((person) => person.status !== "Ausgetreten" && person.status !== "Passiv")
+    .filter(
+      (person) => person.status !== "Ausgetreten" && person.status !== "Passiv"
+    )
     .map((person) => person.id)
 );
 
@@ -236,31 +239,40 @@ const sortBy = ref<SortItem[]>([
   },
 ]);
 
-const training = reactive<Training>(
-  trainings.find((training) => training.id == route.params.id) || {
-    id: "",
-    title: "",
-    creationTime: moment().unix(),
-    groups: [],
-    participants: [],
-  }
+const training = computed(
+  () =>
+    trainingsStore.trainings.find(
+      (training) => training.id == route.params.id
+    ) || {
+      id: "",
+      title: "",
+      creationTime: moment().unix(),
+    }
+);
+
+const participants = computed(() =>
+  Object.entries(training.value.participants ?? {}).map((value) => ({
+    id: value[0],
+    ...value[1],
+  }))
 );
 
 const responsiblePeople = ref<string[]>();
 
-const selectableGroups = training.groups
-  .concat(groups)
-  .filter((value, index, self) => self.indexOf(value) === index);
+const selectableGroups =
+  training.value.groups
+    ?.concat(groups)
+    .filter((value, index, self) => self.indexOf(value) === index) ?? [];
 
 const editAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
     return true;
   }
-  if (!training.startTime) {
+  if (!training.value.startTime) {
     return true;
   }
-  const creationTime = moment.unix(training.creationTime);
-  const startTime = moment.unix(training.startTime);
+  const creationTime = moment.unix(training.value.creationTime);
+  const startTime = moment.unix(training.value.startTime);
   const currentTime = moment();
   return (
     currentTime < startTime.add(6, "h") ||
@@ -272,7 +284,7 @@ const deleteAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
     return true;
   }
-  return editAllowed.value && training.participants.length == 0;
+  return editAllowed.value && participants.value.length == 0;
 });
 
 const addParticipantForm = ref<VForm>();
@@ -283,51 +295,48 @@ async function addParticipant() {
   }
 
   if ((await addParticipantForm.value.validate()).valid) {
-    const nameParts = newParticipantName.value.split(" ");
-    const formattedName = nameParts
-      .map((namePart) => capitalizeFirstLetter(namePart))
-      .join(" ");
-
-    training.participants.push({
-      name: formattedName,
-      group: newParticipantGroup.value,
-    });
+    trainingsStore.addParticipant(
+      training.value.id,
+      newParticipantName.value,
+      newParticipantGroup.value
+    );
     addParticipantForm.value.reset();
-    if (training.groups.length == 1) {
-      newParticipantGroup.value = training.groups[0];
+    if (training.value.groups?.length == 1) {
+      newParticipantGroup.value = training.value.groups[0];
     }
   }
 }
 
-function showConfirmRemoveParticipantDialog(participant: Participant) {
+function showConfirmRemoveParticipantDialog(
+  participant: Participant & { readonly id: string }
+) {
   participantToDelete.value = participant;
   confirmRemoveParticipantDialog.value = true;
 }
 
-function removeParticipant() {
+async function removeParticipant() {
   if (participantToDelete.value !== undefined) {
-    const index = training.participants.indexOf(participantToDelete.value);
-    if (index > -1) {
-      training.participants.splice(index, 1);
-    }
+    await trainingsStore.removeParticipant(
+      training.value.id,
+      participantToDelete.value.id
+    );
     participantToDelete.value = undefined;
   }
   confirmRemoveParticipantDialog.value = false;
 }
 
 function updateStartTime(newTime: number) {
-  training.startTime = newTime;
+  training.value.startTime = newTime;
 }
 
 function updateEndTime(newTime: number) {
-  training.endTime = newTime;
+  training.value.endTime = newTime;
 }
 
 function isNotSelected(person: string) {
   return (
-    !training.participants
-      .map((p) => p.name.toLowerCase())
-      .includes(person.toLowerCase()) || "Ist bereits eingetragen"
+    !participants.value.map((p) => p.name).includes(person) ||
+    "Ist bereits eingetragen"
   );
 }
 
@@ -335,16 +344,10 @@ function showConfirmRemoveTrainingDialog() {
   confirmRemoveTrainingDialog.value = true;
 }
 
-function removeTraining() {
+async function removeTraining() {
   confirmRemoveTrainingDialog.value = false;
-  const objectToRemove = trainings.find((item) => item.id == training.id);
-  if (objectToRemove) {
-    const index = trainings.indexOf(objectToRemove);
-    if (index > -1) {
-      trainings.splice(index, 1);
-      router.replace({ name: "TrainingHome" });
-    }
-  }
+  await trainingsStore.remove(training.value.id);
+  router.replace({ name: "TrainingHome" });
 }
 
 function onGroupsUpdated(newGroups: string[]) {

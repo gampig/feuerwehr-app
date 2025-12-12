@@ -25,5 +25,7 @@ export const clothesTypesRef = child(clothesRef, "clothingTypes");
 export const clothesStorageRef = child(clothesRef, "storage");
 export const clothesOrdersRef = child(clothesRef, "orders");
 
+export const trainingsRef = ref(db, "trainings");
+
 export const appSettingsRef = ref(db, "appSettings");
 export const feuerwehrGeraeteRef = child(appSettingsRef, "feuerwehrGeraete");
