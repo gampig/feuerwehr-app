@@ -24,7 +24,11 @@
       <v-stepper :items="steps" editable color="primary">
         <template #[`item.1`]>
           <VForm :disabled="!editAllowed">
-            <v-text-field v-model="training.title" label="Titel" />
+            <v-text-field
+              v-model="training.title"
+              label="Titel"
+              @update:model-value="updateField('title', $event)"
+            />
             <v-text-field
               :model-value="formatDateTime(training.startTime)"
               label="Start"
@@ -39,7 +43,7 @@
               readonly
               clearable
               @click="endTimeDialog = true"
-              @click:clear="training.endTime = undefined"
+              @click:clear="updateEndTime(undefined)"
             />
 
             <v-autocomplete
@@ -51,6 +55,7 @@
               closable-chips
               label="Verantwortliche(r)"
               variant="filled"
+              @update:model-value="updateField('responsiblePeople', $event)"
             >
             </v-autocomplete>
 
@@ -59,7 +64,7 @@
               :items="selectableGroups"
               multiple
               label="Gruppen"
-              @update:model-value="onGroupsUpdated"
+              @update:model-value="updateGroups"
             >
             </v-select>
             <v-btn
@@ -260,8 +265,8 @@ const participants = computed(() =>
 const responsiblePeople = ref<string[]>();
 
 const selectableGroups =
-  training.value.groups
-    ?.concat(groups)
+  (training.value.groups ?? [])
+    .concat(groups)
     .filter((value, index, self) => self.indexOf(value) === index) ?? [];
 
 const editAllowed = computed((): boolean => {
@@ -325,12 +330,19 @@ async function removeParticipant() {
   confirmRemoveParticipantDialog.value = false;
 }
 
-function updateStartTime(newTime: number) {
-  training.value.startTime = newTime;
+async function updateField<K extends keyof typeof training.value>(
+  field: K,
+  value: (typeof training.value)[K]
+) {
+  await trainingsStore.updateField(training.value.id, field, value);
 }
 
-function updateEndTime(newTime: number) {
-  training.value.endTime = newTime;
+function updateStartTime(newTime?: number) {
+  updateField("startTime", newTime);
+}
+
+function updateEndTime(newTime?: number) {
+  updateField("endTime", newTime);
 }
 
 function isNotSelected(person: string) {
@@ -350,7 +362,8 @@ async function removeTraining() {
   router.replace({ name: "TrainingHome" });
 }
 
-function onGroupsUpdated(newGroups: string[]) {
+function updateGroups(newGroups: string[]) {
+  updateField("groups", newGroups);
   if (newGroups.length == 1) {
     newParticipantGroup.value = newGroups[0];
   } else {

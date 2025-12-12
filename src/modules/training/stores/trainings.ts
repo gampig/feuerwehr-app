@@ -10,6 +10,7 @@ import {
   orderByChild,
   push,
   query,
+  set,
 } from "firebase/database";
 import moment from "moment";
 import { defineStore } from "pinia";
@@ -44,6 +45,19 @@ export const useTrainingsStore = defineStore("trainings", () => {
 
   async function remove(trainingId: string) {
     return await dbRemove(child(trainingsRef, trainingId));
+  }
+
+  async function updateField(trainingId: string, field: string, value: any) {
+    try {
+      const trainingRef = child(trainingsRef, trainingId);
+      const fieldRef = child(trainingRef, field);
+      if (value === undefined) {
+        return await dbRemove(fieldRef);
+      }
+      return await set(fieldRef, value);
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
   async function addParticipant(
@@ -89,6 +103,7 @@ export const useTrainingsStore = defineStore("trainings", () => {
 
     create,
     remove,
+    updateField,
     addParticipant,
     removeParticipant,
   };
