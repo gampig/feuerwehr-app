@@ -125,7 +125,7 @@
                   </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn variant="flat" color="primary" @click="addParticipant">
+                  <v-btn type="submit" variant="flat" color="primary" @click="addParticipant">
                     Hinzufügen
                   </v-btn>
                 </v-card-actions>
