@@ -93,10 +93,6 @@
           <v-card border>
             <VForm v-if="editAllowed" ref="addParticipantForm">
               <v-card flat>
-                <v-card-title>
-                  <v-icon start>mdi-plus</v-icon>
-                  Teilnehmer hinzufügen
-                </v-card-title>
                 <v-card-text>
                   <v-autocomplete
                     v-model:search="newParticipantName"
@@ -133,10 +129,6 @@
             </VForm>
             <v-divider />
             <v-card flat>
-              <v-card-title>
-                <v-icon start>mdi-check</v-icon>
-                Eingetragene Teilnehmer
-              </v-card-title>
               <v-data-table
                 v-model:sort-by="sortBy"
                 :headers="headers"
