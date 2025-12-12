@@ -1,12 +1,5 @@
 <template>
-  <BasePage :page-title="training.title" extended back-button>
-    <template #extension>
-      <v-tabs v-model="currentTab" fixed-tabs>
-        <v-tab>Details</v-tab>
-        <v-tab>Teilnehmer</v-tab>
-      </v-tabs>
-    </template>
-
+  <BasePage :page-title="training.title" back-button>
     <v-container>
       <v-alert
         type="warning"
@@ -28,128 +21,119 @@
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
-      <v-tabs-window v-model="currentTab" touchless>
-        <v-tabs-window-item>
+      <v-stepper :items="steps" editable color="primary">
+        <template #[`item.1`]>
           <VForm :disabled="!editAllowed">
-            <v-card border>
-              <v-card-text>
-                <v-text-field v-model="training.title" label="Titel" />
-                <v-text-field
-                  :model-value="formatDateTime(training.startTime)"
-                  label="Start"
-                  append-inner-icon="mdi-calendar"
-                  readonly
-                  @click="startTimeDialog = true"
-                />
-                <v-text-field
-                  :model-value="formatDateTime(training.endTime)"
-                  label="Ende"
-                  append-inner-icon="mdi-calendar"
-                  readonly
-                  clearable
-                  @click="endTimeDialog = true"
-                  @click:clear="training.endTime = undefined"
-                />
+            <v-text-field v-model="training.title" label="Titel" />
+            <v-text-field
+              :model-value="formatDateTime(training.startTime)"
+              label="Start"
+              append-inner-icon="mdi-calendar"
+              readonly
+              @click="startTimeDialog = true"
+            />
+            <v-text-field
+              :model-value="formatDateTime(training.endTime)"
+              label="Ende"
+              append-inner-icon="mdi-calendar"
+              readonly
+              clearable
+              @click="endTimeDialog = true"
+              @click:clear="training.endTime = undefined"
+            />
 
+            <v-autocomplete
+              v-model="responsiblePeople"
+              :items="availablePeople"
+              multiple
+              clear-on-select
+              chips
+              closable-chips
+              label="Verantwortliche(r)"
+              variant="filled"
+            >
+            </v-autocomplete>
+
+            <v-select
+              v-model="training.groups"
+              :items="selectableGroups"
+              multiple
+              label="Gruppen"
+              @update:model-value="onGroupsUpdated"
+            >
+            </v-select>
+            <v-btn
+              v-if="deleteAllowed"
+              variant="flat"
+              @click="showConfirmRemoveTrainingDialog"
+            >
+              <v-icon start>mdi-delete</v-icon>Löschen
+            </v-btn>
+          </VForm>
+        </template>
+
+        <template #[`item.2`]>
+          <VForm v-if="editAllowed" ref="addParticipantForm">
+            <v-card flat>
+              <v-card-text>
                 <v-autocomplete
-                  v-model="responsiblePeople"
+                  v-model:search="newParticipantName"
                   :items="availablePeople"
-                  multiple
-                  clear-on-select
-                  chips
-                  closable-chips
-                  label="Verantwortliche(r)"
+                  clearable
+                  label="Teilnehmer"
                   variant="filled"
+                  :rules="[required, isNotSelected]"
                 >
                 </v-autocomplete>
-
-                <v-select
-                  v-model="training.groups"
-                  :items="selectableGroups"
-                  multiple
-                  label="Gruppen"
-                  @update:model-value="onGroupsUpdated"
+                <v-radio-group
+                  v-if="training.groups?.length > 0"
+                  v-model="newParticipantGroup"
+                  inline
+                  :rules="[(value) => !!value || 'Bitte eine Gruppe auswählen']"
                 >
-                </v-select>
+                  <v-radio
+                    v-for="group in training.groups"
+                    :key="group"
+                    :label="group"
+                    :value="group"
+                  >
+                  </v-radio>
+                </v-radio-group>
               </v-card-text>
-              <v-card-actions v-if="editAllowed || deleteAllowed">
+              <v-card-actions>
                 <v-btn
-                  v-if="deleteAllowed"
+                  type="submit"
                   variant="flat"
-                  @click="showConfirmRemoveTrainingDialog"
+                  color="primary"
+                  @click="addParticipant"
                 >
-                  <v-icon start>mdi-delete</v-icon>Löschen
+                  Hinzufügen
                 </v-btn>
-                <v-spacer />
-                <v-btn v-if="editAllowed" variant="elevated" color="primary"
-                  >Speichern</v-btn
-                >
               </v-card-actions>
             </v-card>
           </VForm>
-        </v-tabs-window-item>
-
-        <v-tabs-window-item>
-          <v-card border>
-            <VForm v-if="editAllowed" ref="addParticipantForm">
-              <v-card flat>
-                <v-card-text>
-                  <v-autocomplete
-                    v-model:search="newParticipantName"
-                    :items="availablePeople"
-                    clearable
-                    label="Teilnehmer"
-                    variant="filled"
-                    :rules="[required, isNotSelected]"
-                  >
-                  </v-autocomplete>
-                  <v-radio-group
-                    v-if="training.groups?.length > 0"
-                    v-model="newParticipantGroup"
-                    inline
-                    :rules="[
-                      (value) => !!value || 'Bitte eine Gruppe auswählen',
-                    ]"
-                  >
-                    <v-radio
-                      v-for="group in training.groups"
-                      :key="group"
-                      :label="group"
-                      :value="group"
-                    >
-                    </v-radio>
-                  </v-radio-group>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn type="submit" variant="flat" color="primary" @click="addParticipant">
-                    Hinzufügen
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </VForm>
-            <v-divider />
-            <v-card flat>
-              <v-data-table
-                v-model:sort-by="sortBy"
-                :headers="headers"
-                :items="training.participants"
-                :items-per-page="-1"
-                no-data-text="Keine Teilnehmer vorhanden"
-              >
-                <template #[`item.actions`]="{ item }">
-                  <v-btn
-                    v-if="editAllowed"
-                    variant="plain"
-                    @click="showConfirmRemoveParticipantDialog(item)"
-                  >
-                    Entfernen
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
+          <v-divider class="mt-3" />
+          <v-card flat>
+            <v-data-table
+              v-model:sort-by="sortBy"
+              :headers="headers"
+              :items="training.participants"
+              :items-per-page="-1"
+              no-data-text="Keine Teilnehmer vorhanden"
+            >
+              <template #[`item.actions`]="{ item }">
+                <v-btn
+                  v-if="editAllowed"
+                  variant="plain"
+                  @click="showConfirmRemoveParticipantDialog(item)"
+                >
+                  Entfernen
+                </v-btn>
+              </template>
+            </v-data-table>
           </v-card>
-        </v-tabs-window-item>
-      </v-tabs-window>
+        </template>
+      </v-stepper>
     </v-container>
 
     <BaseDateTimeDialog
@@ -196,7 +180,6 @@ import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
 
-const currentTab = ref(0);
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant>();
@@ -217,6 +200,17 @@ const availablePeople = computed(() =>
     .filter((person) => person.status !== "Ausgetreten")
     .map((person) => person.id)
 );
+
+const steps = [
+  {
+    value: 1,
+    title: "Details",
+  },
+  {
+    value: 2,
+    title: "Teilnehmer",
+  },
+];
 
 const headers = [
   {
