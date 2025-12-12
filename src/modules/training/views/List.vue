@@ -1,14 +1,17 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
     <v-container fluid>
-      <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+      <v-row class="mb-3">
         <v-col>
           <v-btn color="primary" @click="showCreateDialog">
             <v-icon start>mdi-plus</v-icon>
             Neue Übung
           </v-btn>
         </v-col>
-        <v-col class="d-flex justify-end align-center">
+        <v-col
+          v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)"
+          class="d-flex justify-end align-center"
+        >
           <v-btn prepend-icon="mdi-cog" @click="editGroupsDialog = true">
             Gruppen
           </v-btn>
