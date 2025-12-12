@@ -1,11 +1,6 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
     <v-container fluid>
-      <v-alert type="warning" closable density="compact" class="mb-3">
-        Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
-        Demonstration!
-      </v-alert>
-
       <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
         <v-col>
           <v-btn color="primary" @click="showCreateDialog">
