@@ -1,23 +1,7 @@
 <template>
   <BasePage :page-title="training.title" back-button>
     <v-container>
-      <v-alert
-        type="warning"
-        closable
-        density="compact"
-        border="start"
-        class="mb-3"
-      >
-        Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
-        Demonstration!
-      </v-alert>
-      <v-alert
-        v-if="false"
-        type="info"
-        density="compact"
-        variant="outlined"
-        class="mb-3"
-      >
+      <v-alert type="info" density="compact" variant="outlined" class="mb-3">
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
