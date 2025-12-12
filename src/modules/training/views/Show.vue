@@ -137,21 +137,12 @@
                 <v-icon start>mdi-check</v-icon>
                 Eingetragene Teilnehmer
               </v-card-title>
-              <v-card-text>
-                <v-text-field
-                  v-model="search"
-                  prepend-inner-icon="mdi-magnify"
-                  placeholder="Suche"
-                  hide-details
-                />
-              </v-card-text>
               <v-data-table
                 v-model:sort-by="sortBy"
                 :headers="headers"
                 :items="training.participants"
                 :items-per-page="-1"
                 no-data-text="Keine Teilnehmer vorhanden"
-                :search="search"
               >
                 <template #[`item.actions`]="{ item }">
                   <v-btn
@@ -214,7 +205,6 @@ import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
 
 const currentTab = ref(0);
-const search = ref<string | undefined>(undefined);
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant>();
