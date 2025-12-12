@@ -55,6 +55,20 @@ const sortDate = function (a: any, b: any) {
   else return 0;
 };
 
+const roundToNearestHalfHour = function (date: moment.Moment) {
+  const minutes = date.minutes();
+  if (minutes < 15) {
+    date.minutes(0);
+  } else if (minutes < 45) {
+    date.minutes(30);
+  } else {
+    date.add(1, "hour").minutes(0);
+  }
+  date.seconds(0);
+  date.milliseconds(0);
+  return date;
+}
+
 export {
   formatDate,
   formatDateWithoutYear,
@@ -63,4 +77,5 @@ export {
   dateTimeToUnix,
   sortDateTime,
   sortDate,
+  roundToNearestHalfHour,
 };

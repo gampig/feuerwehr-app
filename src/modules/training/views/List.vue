@@ -1,19 +1,17 @@
 <template>
   <BasePage page-title="Übungen" navdrawer>
     <v-container fluid>
-      <v-alert type="warning" closable density="compact" class="mb-3">
-        Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
-        Demonstration!
-      </v-alert>
-
-      <v-row v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)" class="mb-3">
+      <v-row class="mb-3">
         <v-col>
           <v-btn color="primary" @click="showCreateDialog">
             <v-icon start>mdi-plus</v-icon>
             Neue Übung
           </v-btn>
         </v-col>
-        <v-col class="d-flex justify-end align-center">
+        <v-col
+          v-if="hasAnyRole(Acl.uebungGruppenBearbeiten)"
+          class="d-flex justify-end align-center"
+        >
           <v-btn prepend-icon="mdi-cog" @click="editGroupsDialog = true">
             Gruppen
           </v-btn>
@@ -41,7 +39,7 @@
         </template>
 
         <template #[`item.groups`]="{ item }">
-          {{ item.groups.join(", ") }}
+          {{ item.groups?.join(", ") }}
         </template>
 
         <template #[`item.actions`]="{ item }">
@@ -71,16 +69,16 @@
 
 <script setup lang="ts">
 import EditGroupsDialog from "../components/EditGroupsDialog.vue";
-import { formatDateTime } from "@/utils/dates";
-import { trainings } from "./TestData";
+import { formatDateTime, roundToNearestHalfHour } from "@/utils/dates";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Acl } from "@/acl";
 import { SortItem } from "@/models/SortItem";
 import moment from "moment";
 import { VForm } from "vuetify/components/VForm";
 import { required } from "@/utils/rules";
+import { useTrainingsStore } from "../stores/trainings";
 
 const router = useRouter();
 
@@ -100,7 +98,12 @@ const sortBy: SortItem[] = [
   },
 ];
 
-const items = trainings;
+const trainingsStore = useTrainingsStore();
+const items = computed(() =>
+  hasAnyRole(Acl.alleUebungenAnzeigen)
+    ? trainingsStore.trainingsReversed
+    : trainingsStore.trainingsOfToday
+);
 
 const search = ref("");
 const createTrainingForm = ref<VForm>();
@@ -123,22 +126,21 @@ async function createTraining() {
   }
 
   if ((await createTrainingForm.value.validate()).valid) {
-    const id = Math.floor(Math.random() * 10000).toString();
     const currentTime = moment();
-    items.push({
-      id: id,
+    const startTime = roundToNearestHalfHour(currentTime.clone());
+    const id = await trainingsStore.create({
       title: newTrainingTitle.value ?? "",
       creationTime: currentTime.unix(),
-      startTime: currentTime.unix(),
-      endTime: currentTime.add(2, "h").unix(),
-      groups: [],
-      participants: [],
+      startTime: startTime.unix(),
+      endTime: startTime.add(2, "h").unix(),
     });
 
-    createTrainingForm.value.reset();
-    createTrainingDialog.value = false;
+    if (id?.key) {
+      createTrainingForm.value.reset();
+      createTrainingDialog.value = false;
 
-    showTraining(id);
+      showTraining(id.key);
+    }
   }
 }
 </script>

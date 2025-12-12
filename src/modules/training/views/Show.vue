@@ -1,172 +1,128 @@
 <template>
-  <BasePage :page-title="training.title" extended back-button>
-    <template #extension>
-      <v-tabs v-model="currentTab" fixed-tabs>
-        <v-tab>Details</v-tab>
-        <v-tab>Teilnehmer</v-tab>
-      </v-tabs>
-    </template>
-
+  <BasePage :page-title="training.title" back-button>
     <v-container>
-      <v-alert
-        type="warning"
-        closable
-        density="compact"
-        border="start"
-        class="mb-3"
-      >
-        Hinweis: Dieser Bereich ist noch Work-in-Progress. Er dient nur der
-        Demonstration!
-      </v-alert>
-      <v-alert
-        v-if="false"
-        type="info"
-        density="compact"
-        variant="outlined"
-        class="mb-3"
-      >
+      <v-alert type="info" density="compact" variant="outlined" class="mb-3">
         Änderungen werden automatisch gespeichert.
       </v-alert>
 
-      <v-tabs-window v-model="currentTab" touchless>
-        <v-tabs-window-item>
+      <v-stepper :items="steps" editable color="primary">
+        <template #[`item.1`]>
           <VForm :disabled="!editAllowed">
-            <v-card border>
-              <v-card-text>
-                <v-text-field v-model="training.title" label="Titel" />
-                <v-text-field
-                  :model-value="formatDateTime(training.startTime)"
-                  label="Start"
-                  append-inner-icon="mdi-calendar"
-                  readonly
-                  @click="startTimeDialog = true"
-                />
-                <v-text-field
-                  :model-value="formatDateTime(training.endTime)"
-                  label="Ende"
-                  append-inner-icon="mdi-calendar"
-                  readonly
-                  clearable
-                  @click="endTimeDialog = true"
-                  @click:clear="training.endTime = undefined"
-                />
+            <v-text-field
+              v-model="training.title"
+              label="Titel"
+              @update:model-value="updateField('title', $event)"
+            />
+            <v-text-field
+              :model-value="formatDateTime(training.startTime)"
+              label="Start"
+              append-inner-icon="mdi-calendar"
+              readonly
+              @click="startTimeDialog = true"
+            />
+            <v-text-field
+              :model-value="formatDateTime(training.endTime)"
+              label="Ende"
+              append-inner-icon="mdi-calendar"
+              readonly
+              clearable
+              @click="endTimeDialog = true"
+              @click:clear="updateEndTime(undefined)"
+            />
 
+            <v-autocomplete
+              v-model="responsiblePeople"
+              :items="availablePeople"
+              multiple
+              clear-on-select
+              chips
+              closable-chips
+              label="Verantwortliche(r)"
+              variant="filled"
+              @update:model-value="updateField('responsiblePeople', $event)"
+            >
+            </v-autocomplete>
+
+            <v-select
+              v-model="training.groups"
+              :items="selectableGroups"
+              multiple
+              label="Gruppen"
+              @update:model-value="updateGroups"
+            >
+            </v-select>
+            <v-btn
+              v-if="deleteAllowed"
+              variant="flat"
+              @click="showConfirmRemoveTrainingDialog"
+            >
+              <v-icon start>mdi-delete</v-icon>Löschen
+            </v-btn>
+          </VForm>
+        </template>
+
+        <template #[`item.2`]>
+          <VForm v-if="editAllowed" ref="addParticipantForm">
+            <v-card flat>
+              <v-card-text>
                 <v-autocomplete
-                  v-model="responsiblePeople"
+                  v-model:search="newParticipantName"
                   :items="availablePeople"
-                  multiple
-                  clear-on-select
-                  chips
-                  closable-chips
-                  label="Verantwortliche(r)"
+                  clearable
+                  label="Teilnehmer"
                   variant="filled"
+                  :rules="[required, isNotSelected]"
                 >
                 </v-autocomplete>
-
-                <v-select
-                  v-model="training.groups"
-                  :items="selectableGroups"
-                  multiple
-                  label="Gruppen"
-                  @update:model-value="onGroupsUpdated"
+                <v-radio-group
+                  v-if="(training.groups ?? []).length > 0"
+                  v-model="newParticipantGroup"
+                  inline
+                  :rules="[(value) => !!value || 'Bitte eine Gruppe auswählen']"
                 >
-                </v-select>
+                  <v-radio
+                    v-for="group in training.groups"
+                    :key="group"
+                    :label="group"
+                    :value="group"
+                  >
+                  </v-radio>
+                </v-radio-group>
               </v-card-text>
-              <v-card-actions v-if="editAllowed || deleteAllowed">
+              <v-card-actions>
                 <v-btn
-                  v-if="deleteAllowed"
+                  type="submit"
                   variant="flat"
-                  @click="showConfirmRemoveTrainingDialog"
+                  color="primary"
+                  @click="addParticipant"
                 >
-                  <v-icon start>mdi-delete</v-icon>Löschen
+                  Hinzufügen
                 </v-btn>
-                <v-spacer />
-                <v-btn v-if="editAllowed" variant="elevated" color="primary"
-                  >Speichern</v-btn
-                >
               </v-card-actions>
             </v-card>
           </VForm>
-        </v-tabs-window-item>
-
-        <v-tabs-window-item>
-          <v-card border>
-            <VForm v-if="editAllowed" ref="addParticipantForm">
-              <v-card flat>
-                <v-card-title>
-                  <v-icon start>mdi-plus</v-icon>
-                  Teilnehmer hinzufügen
-                </v-card-title>
-                <v-card-text>
-                  <v-autocomplete
-                    v-model:search="newParticipantName"
-                    :items="availablePeople"
-                    clearable
-                    label="Teilnehmer"
-                    variant="filled"
-                    :rules="[required, isNotSelected]"
-                  >
-                  </v-autocomplete>
-                  <v-radio-group
-                    v-if="training.groups?.length > 0"
-                    v-model="newParticipantGroup"
-                    inline
-                    :rules="[
-                      (value) => !!value || 'Bitte eine Gruppe auswählen',
-                    ]"
-                  >
-                    <v-radio
-                      v-for="group in training.groups"
-                      :key="group"
-                      :label="group"
-                      :value="group"
-                    >
-                    </v-radio>
-                  </v-radio-group>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn variant="flat" color="primary" @click="addParticipant">
-                    Hinzufügen
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </VForm>
-            <v-divider />
-            <v-card flat>
-              <v-card-title>
-                <v-icon start>mdi-check</v-icon>
-                Eingetragene Teilnehmer
-              </v-card-title>
-              <v-card-text>
-                <v-text-field
-                  v-model="search"
-                  prepend-inner-icon="mdi-magnify"
-                  placeholder="Suche"
-                  hide-details
-                />
-              </v-card-text>
-              <v-data-table
-                v-model:sort-by="sortBy"
-                :headers="headers"
-                :items="training.participants"
-                :items-per-page="-1"
-                no-data-text="Keine Teilnehmer vorhanden"
-                :search="search"
-              >
-                <template #[`item.actions`]="{ item }">
-                  <v-btn
-                    v-if="editAllowed"
-                    variant="plain"
-                    @click="showConfirmRemoveParticipantDialog(item)"
-                  >
-                    Entfernen
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
+          <v-divider class="mt-3" />
+          <v-card flat>
+            <v-data-table
+              v-model:sort-by="sortBy"
+              :headers="headers"
+              :items="participants"
+              :items-per-page="-1"
+              no-data-text="Keine Teilnehmer vorhanden"
+            >
+              <template #[`item.actions`]="{ item }">
+                <v-btn
+                  v-if="editAllowed"
+                  variant="plain"
+                  @click="showConfirmRemoveParticipantDialog(item)"
+                >
+                  Entfernen
+                </v-btn>
+              </template>
+            </v-data-table>
           </v-card>
-        </v-tabs-window-item>
-      </v-tabs-window>
+        </template>
+      </v-stepper>
     </v-container>
 
     <BaseDateTimeDialog
@@ -200,24 +156,22 @@
 
 <script setup lang="ts">
 import { usePeopleStore } from "@/modules/people/stores/people";
-import { capitalizeFirstLetter } from "@/utils/strings";
-import { computed, reactive, ref } from "vue";
-import { Participant, Training } from "../models/Training";
-import { trainings, groups } from "./TestData";
+import { computed, ref } from "vue";
+import { Participant } from "../models/Training";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
-import { isValidName, required } from "@/utils/rules";
+import { required } from "@/utils/rules";
 import { useRoute, useRouter } from "vue-router";
 import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
+import { useTrainingsStore } from "../stores/trainings";
+import { useTrainingGroupsStore } from "../stores/trainingGroups";
 
-const currentTab = ref(0);
-const search = ref<string | undefined>(undefined);
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
-const participantToDelete = ref<Participant>();
+const participantToDelete = ref<Participant & { readonly id: string }>();
 const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
 const confirmRemoveTrainingDialog = ref(false);
@@ -229,12 +183,27 @@ const router = useRouter();
 const { hasAnyRole } = useAuthStore();
 
 const peopleStore = usePeopleStore();
+const trainingsStore = useTrainingsStore();
+const trainingGroupsStore = useTrainingGroupsStore();
 
 const availablePeople = computed(() =>
   peopleStore.people
-    .filter((person) => person.status !== "Ausgetreten")
+    .filter(
+      (person) => person.status !== "Ausgetreten" && person.status !== "Passiv"
+    )
     .map((person) => person.id)
 );
+
+const steps = [
+  {
+    value: 1,
+    title: "Details",
+  },
+  {
+    value: 2,
+    title: "Teilnehmer",
+  },
+];
 
 const headers = [
   {
@@ -260,31 +229,44 @@ const sortBy = ref<SortItem[]>([
   },
 ]);
 
-const training = reactive<Training>(
-  trainings.find((training) => training.id == route.params.id) || {
-    id: "",
-    title: "",
-    creationTime: moment().unix(),
-    groups: [],
-    participants: [],
-  }
+const groups = computed<string[]>(
+  () => trainingGroupsStore.trainingGroups?.map((g) => g.name) ?? []
+);
+
+const training = computed(
+  () =>
+    trainingsStore.trainings.find(
+      (training) => training.id == route.params.id
+    ) || {
+      id: "",
+      title: "",
+      creationTime: moment().unix(),
+    }
+);
+
+const participants = computed(() =>
+  Object.entries(training.value.participants ?? {}).map((value) => ({
+    id: value[0],
+    ...value[1],
+  }))
 );
 
 const responsiblePeople = ref<string[]>();
 
-const selectableGroups = training.groups
-  .concat(groups)
-  .filter((value, index, self) => self.indexOf(value) === index);
+const selectableGroups =
+  (training.value.groups ?? [])
+    .concat(groups.value)
+    .filter((value, index, self) => self.indexOf(value) === index) ?? [];
 
 const editAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
     return true;
   }
-  if (!training.startTime) {
+  if (!training.value.startTime) {
     return true;
   }
-  const creationTime = moment.unix(training.creationTime);
-  const startTime = moment.unix(training.startTime);
+  const creationTime = moment.unix(training.value.creationTime);
+  const startTime = moment.unix(training.value.startTime);
   const currentTime = moment();
   return (
     currentTime < startTime.add(6, "h") ||
@@ -296,7 +278,7 @@ const deleteAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
     return true;
   }
-  return editAllowed.value && training.participants.length == 0;
+  return editAllowed.value && participants.value.length == 0;
 });
 
 const addParticipantForm = ref<VForm>();
@@ -307,51 +289,55 @@ async function addParticipant() {
   }
 
   if ((await addParticipantForm.value.validate()).valid) {
-    const nameParts = newParticipantName.value.split(" ");
-    const formattedName = nameParts
-      .map((namePart) => capitalizeFirstLetter(namePart))
-      .join(" ");
-
-    training.participants.push({
-      name: formattedName,
-      group: newParticipantGroup.value,
-    });
+    trainingsStore.addParticipant(
+      training.value.id,
+      newParticipantName.value,
+      newParticipantGroup.value
+    );
     addParticipantForm.value.reset();
-    if (training.groups.length == 1) {
-      newParticipantGroup.value = training.groups[0];
+    if (training.value.groups?.length == 1) {
+      newParticipantGroup.value = training.value.groups[0];
     }
   }
 }
 
-function showConfirmRemoveParticipantDialog(participant: Participant) {
+function showConfirmRemoveParticipantDialog(
+  participant: Participant & { readonly id: string }
+) {
   participantToDelete.value = participant;
   confirmRemoveParticipantDialog.value = true;
 }
 
-function removeParticipant() {
+async function removeParticipant() {
   if (participantToDelete.value !== undefined) {
-    const index = training.participants.indexOf(participantToDelete.value);
-    if (index > -1) {
-      training.participants.splice(index, 1);
-    }
+    await trainingsStore.removeParticipant(
+      training.value.id,
+      participantToDelete.value.id
+    );
     participantToDelete.value = undefined;
   }
   confirmRemoveParticipantDialog.value = false;
 }
 
-function updateStartTime(newTime: number) {
-  training.startTime = newTime;
+async function updateField<K extends keyof typeof training.value>(
+  field: K,
+  value: (typeof training.value)[K]
+) {
+  await trainingsStore.updateField(training.value.id, field, value);
 }
 
-function updateEndTime(newTime: number) {
-  training.endTime = newTime;
+function updateStartTime(newTime?: number) {
+  updateField("startTime", newTime);
+}
+
+function updateEndTime(newTime?: number) {
+  updateField("endTime", newTime);
 }
 
 function isNotSelected(person: string) {
   return (
-    !training.participants
-      .map((p) => p.name.toLowerCase())
-      .includes(person.toLowerCase()) || "Ist bereits eingetragen"
+    !participants.value.map((p) => p.name).includes(person) ||
+    "Ist bereits eingetragen"
   );
 }
 
@@ -359,19 +345,14 @@ function showConfirmRemoveTrainingDialog() {
   confirmRemoveTrainingDialog.value = true;
 }
 
-function removeTraining() {
+async function removeTraining() {
   confirmRemoveTrainingDialog.value = false;
-  const objectToRemove = trainings.find((item) => item.id == training.id);
-  if (objectToRemove) {
-    const index = trainings.indexOf(objectToRemove);
-    if (index > -1) {
-      trainings.splice(index, 1);
-      router.replace({ name: "TrainingHome" });
-    }
-  }
+  await trainingsStore.remove(training.value.id);
+  router.replace({ name: "TrainingHome" });
 }
 
-function onGroupsUpdated(newGroups: string[]) {
+function updateGroups(newGroups: string[]) {
+  updateField("groups", newGroups);
   if (newGroups.length == 1) {
     newParticipantGroup.value = newGroups[0];
   } else {

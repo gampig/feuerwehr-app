@@ -1,15 +1,18 @@
+export interface TrainingGroup {
+  name: string;
+}
+
 export interface Participant {
   name: string;
   group?: string;
 }
 
 export interface Training {
-  id: string;
   creationTime: number;
   startTime?: number;
   endTime?: number;
   responsiblePeople?: string[];
-  groups: string[];
+  groups?: string[];
   title: string;
-  participants: Participant[];
+  participants?: { [id: string]: Participant };
 }
