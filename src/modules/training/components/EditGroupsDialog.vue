@@ -26,8 +26,8 @@
             >
           </td>
         </tr>
-        <tr v-for="(group, index) in editedGroups" :key="group">
-          <td>{{ group }}</td>
+        <tr v-for="(group, index) in editedGroups" :key="group.name">
+          <td>{{ group.name }}</td>
           <td width="1%" style="white-space: nowrap">
             <v-btn
               icon
@@ -73,7 +73,8 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { groups } from "../views/TestData";
+import { useTrainingGroupsStore } from "../stores/trainingGroups";
+import { TrainingGroup } from "../models/Training";
 
 const { modelValue } = defineProps<{
   modelValue: boolean;
@@ -81,9 +82,13 @@ const { modelValue } = defineProps<{
 
 const emit = defineEmits(["update:model-value"]);
 
+const trainingGroupsStore = useTrainingGroupsStore();
+
 const confirmCancelDialog = ref(false);
 const dirty = ref(false);
-const editedGroups = ref([...groups]);
+const editedGroups = ref<TrainingGroup[]>([
+  ...trainingGroupsStore.trainingGroups,
+]);
 const newGroupName = ref("");
 
 function addNewGroup() {
@@ -92,7 +97,7 @@ function addNewGroup() {
   }
 
   dirty.value = true;
-  editedGroups.value.push(newGroupName.value);
+  editedGroups.value.push({ name: newGroupName.value });
   newGroupName.value = "";
 }
 
@@ -120,12 +125,11 @@ function removeGroup(groupIndex: number) {
 function reset() {
   dirty.value = false;
   newGroupName.value = "";
-  editedGroups.value = [...groups];
+  editedGroups.value = [...trainingGroupsStore.trainingGroups];
 }
 
-function save() {
-  groups.length = 0;
-  groups.push(...editedGroups.value);
+async function save() {
+  trainingGroupsStore.setGroups(editedGroups.value);
   emit("update:model-value", false);
 }
 

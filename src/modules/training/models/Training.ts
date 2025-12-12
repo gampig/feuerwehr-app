@@ -1,3 +1,7 @@
+export interface TrainingGroup {
+  name: string;
+}
+
 export interface Participant {
   name: string;
   group?: string;

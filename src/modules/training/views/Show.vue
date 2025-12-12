@@ -158,7 +158,6 @@
 import { usePeopleStore } from "@/modules/people/stores/people";
 import { computed, ref } from "vue";
 import { Participant } from "../models/Training";
-import { groups } from "./TestData";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
 import { SortItem } from "@/models/SortItem";
@@ -168,6 +167,7 @@ import { Acl } from "@/acl";
 import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
 import { useTrainingsStore } from "../stores/trainings";
+import { useTrainingGroupsStore } from "../stores/trainingGroups";
 
 const newParticipantName = ref("");
 const newParticipantGroup = ref<string | undefined>(undefined);
@@ -184,6 +184,7 @@ const { hasAnyRole } = useAuthStore();
 
 const peopleStore = usePeopleStore();
 const trainingsStore = useTrainingsStore();
+const trainingGroupsStore = useTrainingGroupsStore();
 
 const availablePeople = computed(() =>
   peopleStore.people
@@ -228,6 +229,10 @@ const sortBy = ref<SortItem[]>([
   },
 ]);
 
+const groups = computed<string[]>(
+  () => trainingGroupsStore.trainingGroups?.map((g) => g.name) ?? []
+);
+
 const training = computed(
   () =>
     trainingsStore.trainings.find(
@@ -250,7 +255,7 @@ const responsiblePeople = ref<string[]>();
 
 const selectableGroups =
   (training.value.groups ?? [])
-    .concat(groups)
+    .concat(groups.value)
     .filter((value, index, self) => self.indexOf(value) === index) ?? [];
 
 const editAllowed = computed((): boolean => {
