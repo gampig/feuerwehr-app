@@ -121,6 +121,11 @@
               </template>
             </v-data-table>
           </v-card>
+          <div class="d-flex justify-end mt-6">
+            <v-btn variant="tonal" color="primary" @click="close"
+              >Speichern & Schließen</v-btn
+            >
+          </div>
         </template>
       </v-stepper>
     </v-container>
@@ -359,6 +364,10 @@ function updateGroups(newGroups: string[]) {
   } else {
     newParticipantGroup.value = undefined;
   }
+}
+
+function close() {
+  router.replace({ name: "TrainingHome" });
 }
 
 watchEffect(() => {
