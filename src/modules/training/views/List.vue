@@ -60,6 +60,14 @@
           label="Titel"
           :rules="[required]"
         />
+        <v-select
+          v-model="newTrainingGroups"
+          :items="groups"
+          multiple
+          label="Gruppen"
+          :rules="[required]"
+        >
+        </v-select>
       </VForm>
     </BaseCreateDialog>
 
@@ -79,6 +87,7 @@ import moment from "moment";
 import { VForm } from "vuetify/components/VForm";
 import { required } from "@/utils/rules";
 import { useTrainingsStore } from "../stores/trainings";
+import { useTrainingGroupsStore } from "../stores/trainingGroups";
 
 const router = useRouter();
 
@@ -98,6 +107,7 @@ const sortBy: SortItem[] = [
   },
 ];
 
+const trainingGroupsStore = useTrainingGroupsStore();
 const trainingsStore = useTrainingsStore();
 const items = computed(() =>
   hasAnyRole(Acl.alleUebungenAnzeigen)
@@ -105,10 +115,15 @@ const items = computed(() =>
     : trainingsStore.trainingsOfToday
 );
 
+const groups = computed<string[]>(
+  () => trainingGroupsStore.trainingGroups?.map((g) => g.name) ?? []
+);
+
 const search = ref("");
 const createTrainingForm = ref<VForm>();
 const createTrainingDialog = ref(false);
 const newTrainingTitle = ref<string>();
+const newTrainingGroups = ref<string[]>();
 const editGroupsDialog = ref(false);
 
 function showTraining(id: string) {
@@ -130,6 +145,7 @@ async function createTraining() {
     const startTime = roundToNearestHalfHour(currentTime.clone());
     const id = await trainingsStore.create({
       title: newTrainingTitle.value ?? "",
+      groups: newTrainingGroups.value ?? undefined,
       creationTime: currentTime.unix(),
       startTime: startTime.unix(),
       endTime: startTime.add(2, "h").unix(),
