@@ -251,10 +251,12 @@ const participants = computed(() =>
   }))
 );
 
-const selectableGroups =
-  (training.value.groups ?? [])
-    .concat(groups.value)
-    .filter((value, index, self) => self.indexOf(value) === index) ?? [];
+const selectableGroups = computed(
+  () =>
+    (training.value.groups ?? [])
+      .concat(groups.value)
+      .filter((value, index, self) => self.indexOf(value) === index) ?? []
+);
 
 const editAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
