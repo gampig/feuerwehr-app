@@ -66,7 +66,7 @@
             <v-card flat>
               <v-card-text>
                 <v-autocomplete
-                  v-model:search="newParticipantName"
+                  v-model="newParticipantName"
                   :items="availablePeople"
                   clearable
                   label="Teilnehmer"
@@ -169,7 +169,7 @@ import moment from "moment";
 import { useTrainingsStore } from "../stores/trainings";
 import { useTrainingGroupsStore } from "../stores/trainingGroups";
 
-const newParticipantName = ref("");
+const newParticipantName = ref<string | null>(null);
 const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant & { readonly id: string }>();
 const startTimeDialog = ref(false);
@@ -289,12 +289,13 @@ async function addParticipant() {
   }
 
   if ((await addParticipantForm.value.validate()).valid) {
-    trainingsStore.addParticipant(
+    await trainingsStore.addParticipant(
       training.value.id,
-      newParticipantName.value,
+      newParticipantName.value as string,
       newParticipantGroup.value
     );
     addParticipantForm.value.reset();
+    addParticipantForm.value.resetValidation();
     if (training.value.groups?.length == 1) {
       newParticipantGroup.value = training.value.groups[0];
     }
