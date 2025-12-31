@@ -12,7 +12,10 @@
     "callouts": {
       ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
       ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_CHIEF').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
-      ".indexOn": ["alarmTime", "einsatznummer"],
+      ".indexOn": [
+        "alarmTime",
+        "einsatznummer"
+      ],
       "$callout_id": {
         // Neuer Einsatz oder max. 7 Tage alt
         ".write": "(!data.exists() || (now/1000 - 604800) < data.child('alarmTime').val()) && (now/1000 - 604800) < newData.child('alarmTime').val() && auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
@@ -49,10 +52,12 @@
     "trainings": {
       ".read": "auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
       ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_GROUPLEADER').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_CHIEF').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
-      ".indexOn": ["startTime"],
+      ".indexOn": [
+        "startTime"
+      ],
       "$training_id": {
         // Neue Übung oder max. 7 Tage alt
-        ".write": "(!data.exists() || (now/1000 - 604800) < data.child('startTime').val()) && (now/1000 - 604800) < newData.child('startTime').val() && auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
+        ".write": "(!data.exists() || (now/1000 - 604800) < data.child('startTime').val()) && auth != null && true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val()",
         "startTime": {
           ".validate": "newData.isNumber()"
         },
@@ -70,7 +75,9 @@
       ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
       ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
       "clothingTypes": {
-        ".indexOn": ["category"],
+        ".indexOn": [
+          "category"
+        ],
         "$type_id": {
           ".validate": "newData.hasChildren(['name'])"
         }
@@ -114,7 +121,9 @@
       // Rollen: CALLOUT_EDITOR, MAINTAINER_CLOTHES
       ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_CALLOUT_EDITOR').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val())",
       ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_PEOPLE_EDITOR').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_CHIEF').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
-      ".indexOn": ["lastName"],
+      ".indexOn": [
+        "lastName"
+      ],
       "$person_id": {
         ".validate": "newData.hasChildren(['status'])"
       }
