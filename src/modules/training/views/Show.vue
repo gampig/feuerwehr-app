@@ -156,7 +156,7 @@
 
 <script setup lang="ts">
 import { usePeopleStore } from "@/modules/people/stores/people";
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { Participant } from "../models/Training";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
@@ -357,4 +357,10 @@ function updateGroups(newGroups: string[]) {
     newParticipantGroup.value = undefined;
   }
 }
+
+watchEffect(() => {
+  if (training.value.groups?.length == 1) {
+    newParticipantGroup.value = training.value.groups[0];
+  }
+});
 </script>
