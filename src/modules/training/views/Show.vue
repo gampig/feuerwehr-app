@@ -31,7 +31,7 @@
             />
 
             <v-autocomplete
-              v-model="responsiblePeople"
+              :model-value="training.responsiblePeople"
               :items="availablePeople"
               multiple
               clear-on-select
@@ -250,8 +250,6 @@ const participants = computed(() =>
     ...value[1],
   }))
 );
-
-const responsiblePeople = ref<string[]>();
 
 const selectableGroups =
   (training.value.groups ?? [])
