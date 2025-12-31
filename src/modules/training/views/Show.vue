@@ -31,7 +31,7 @@
             />
 
             <v-autocomplete
-              v-model="responsiblePeople"
+              :model-value="training.responsiblePeople"
               :items="availablePeople"
               multiple
               clear-on-select
@@ -66,7 +66,7 @@
             <v-card flat>
               <v-card-text>
                 <v-autocomplete
-                  v-model:search="newParticipantName"
+                  v-model="newParticipantName"
                   :items="availablePeople"
                   clearable
                   label="Teilnehmer"
@@ -121,6 +121,11 @@
               </template>
             </v-data-table>
           </v-card>
+          <div class="d-flex justify-end mt-6">
+            <v-btn variant="tonal" color="primary" @click="close"
+              >Speichern & Schließen</v-btn
+            >
+          </div>
         </template>
       </v-stepper>
     </v-container>
@@ -156,7 +161,7 @@
 
 <script setup lang="ts">
 import { usePeopleStore } from "@/modules/people/stores/people";
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { Participant } from "../models/Training";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
@@ -169,7 +174,7 @@ import moment from "moment";
 import { useTrainingsStore } from "../stores/trainings";
 import { useTrainingGroupsStore } from "../stores/trainingGroups";
 
-const newParticipantName = ref("");
+const newParticipantName = ref<string | null>(null);
 const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant & { readonly id: string }>();
 const startTimeDialog = ref(false);
@@ -251,12 +256,12 @@ const participants = computed(() =>
   }))
 );
 
-const responsiblePeople = ref<string[]>();
-
-const selectableGroups =
-  (training.value.groups ?? [])
-    .concat(groups.value)
-    .filter((value, index, self) => self.indexOf(value) === index) ?? [];
+const selectableGroups = computed(
+  () =>
+    (training.value.groups ?? [])
+      .concat(groups.value)
+      .filter((value, index, self) => self.indexOf(value) === index) ?? []
+);
 
 const editAllowed = computed((): boolean => {
   if (hasAnyRole(Acl.uebungImmerBearbeiten)) {
@@ -289,12 +294,13 @@ async function addParticipant() {
   }
 
   if ((await addParticipantForm.value.validate()).valid) {
-    trainingsStore.addParticipant(
+    await trainingsStore.addParticipant(
       training.value.id,
-      newParticipantName.value,
+      newParticipantName.value as string,
       newParticipantGroup.value
     );
     addParticipantForm.value.reset();
+    addParticipantForm.value.resetValidation();
     if (training.value.groups?.length == 1) {
       newParticipantGroup.value = training.value.groups[0];
     }
@@ -359,4 +365,14 @@ function updateGroups(newGroups: string[]) {
     newParticipantGroup.value = undefined;
   }
 }
+
+function close() {
+  router.replace({ name: "TrainingHome" });
+}
+
+watchEffect(() => {
+  if (training.value.groups?.length == 1) {
+    newParticipantGroup.value = training.value.groups[0];
+  }
+});
 </script>
