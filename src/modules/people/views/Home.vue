@@ -1,74 +1,44 @@
 <template>
   <BasePage page-title="Personen" navdrawer>
-    <template #actions>
-      <v-btn icon @click="create"><v-icon>mdi-plus</v-icon></v-btn>
-    </template>
-
     <v-container>
-      <v-data-iterator
-        :items="people"
+      <v-row class="mb-3">
+        <v-col>
+          <v-btn color="primary" @click="create">
+            <v-icon start>mdi-plus</v-icon>
+            Person hinzufügen
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-data-table
         :search="search"
-        :items-per-page="12"
+        :headers="headers"
+        :sort-by="sortBy"
+        :items="people"
         :loading="loading"
-        :page="page"
       >
-        <template #header>
-          <v-row class="mb-2">
-            <v-col cols="12">
-              <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                clearable
-                variant="solo"
-                hide-details
-                placeholder="Suche"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+        <template #top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            density="compact"
+            placeholder="Suche"
+          ></v-text-field>
         </template>
 
-        <template #default="{ items }">
-          <v-row>
-            <v-col
-              v-for="(item, i) in items"
-              :key="i"
-              cols="12"
-              sm="6"
-              md="4"
-              lg="3"
-            >
-              <v-card>
-                <v-card-title>
-                  {{ item.raw.id }}
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-list density="compact">
-                  <v-list-item>
-                    Einsätze: {{ item.raw.recentCalloutsCount || 0 }}
-                    <br />
-                    Übungen: {{ item.raw.recentTrainingsCount || 0 }}
-                  </v-list-item>
-                  <v-list-item
-                    density="compact"
-                    append-icon="mdi-pencil"
-                    @click="edit(item.raw.id)"
-                  >
-                    {{ item.raw.status }}
-                  </v-list-item>
-                </v-list>
-              </v-card>
-            </v-col>
-          </v-row>
+        <template #[`item.recentCalloutsCount`]="{ item }">
+          {{ item.recentCalloutsCount || 0 }}
         </template>
 
-        <template #footer="{ pageCount }">
-          <v-pagination
-            v-model="page"
-            :length="pageCount"
-            class="mt-4"
-          ></v-pagination>
+        <template #[`item.recentTrainingsCount`]="{ item }">
+          {{ item.recentTrainingsCount || 0 }}
         </template>
-      </v-data-iterator>
+
+        <template #[`item.actions`]="{ item }">
+          <v-btn variant="tonal" @click="edit(item.id)">Bearbeiten</v-btn>
+        </template>
+      </v-data-table>
     </v-container>
 
     <CreateDialog v-model="showCreateDialog"></CreateDialog>
@@ -85,12 +55,27 @@ import { ref, computed } from "vue";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
 import { usePeopleStore } from "../stores/people";
+import { SortItem } from "@/models/SortItem";
 
 const showCreateDialog = ref(false);
 const showEditDialog = ref(false);
 const personToBeEdited = ref("");
 const search = ref("");
-const page = ref(1);
+
+const headers = [
+  { title: "Name", key: "id" },
+  { title: "Status", key: "status" },
+  { title: "Einsätze", key: "recentCalloutsCount" },
+  { title: "Übungen", key: "recentTrainingsCount" },
+  { title: "", key: "actions", sortable: false },
+];
+
+const sortBy: SortItem[] = [
+  {
+    key: "id",
+    order: "asc",
+  },
+];
 
 const peopleStore = usePeopleStore();
 
