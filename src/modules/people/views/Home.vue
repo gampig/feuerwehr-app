@@ -80,43 +80,37 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { mapState } from "pinia";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 import CreateDialog from "../components/CreateDialog.vue";
 import EditDialog from "../components/EditDialog.vue";
 import { usePeopleStore } from "../stores/people";
 
-export default defineComponent({
-  components: { CreateDialog, EditDialog },
-  data() {
-    return {
-      showCreateDialog: false,
-      showEditDialog: false,
-      personToBeEdited: "",
-      search: "",
-      page: 1,
-    };
-  },
+const showCreateDialog = ref(false);
+const showEditDialog = ref(false);
+const personToBeEdited = ref("");
+const search = ref("");
+const page = ref(1);
 
-  computed: {
-    ...mapState(usePeopleStore, { storePeople: "people", loading: "loading" }),
+const peopleStore = usePeopleStore();
 
-    // Same as storePeople, but id is an enumerable property
-    people() {
-      return this.storePeople.map((person) => ({ ...person, id: person.id }));
-    },
-  },
+const loading = computed(() => peopleStore.loading);
 
-  methods: {
-    create() {
-      this.showCreateDialog = true;
-    },
+const people = computed(() =>
+  (peopleStore.people ?? [])
+    // Needed to make the id field enumerable
+    .map((person: any) => ({
+      ...person,
+      id: person.id,
+    }))
+);
 
-    edit(id: string) {
-      this.personToBeEdited = id;
-      this.showEditDialog = true;
-    },
-  },
-});
+function create() {
+  showCreateDialog.value = true;
+}
+
+function edit(id: string) {
+  personToBeEdited.value = id;
+  showEditDialog.value = true;
+}
 </script>
