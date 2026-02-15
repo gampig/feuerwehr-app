@@ -45,6 +45,8 @@
                 <v-list density="compact">
                   <v-list-item>
                     Einsätze: {{ item.raw.recentCalloutsCount || 0 }}
+                    <br />
+                    Übungen: {{ item.raw.recentTrainingsCount || 0 }}
                   </v-list-item>
                   <v-list-item
                     density="compact"
