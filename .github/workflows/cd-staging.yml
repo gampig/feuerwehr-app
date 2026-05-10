@@ -13,6 +13,9 @@ on:
       - "**.md"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}
 
