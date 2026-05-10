@@ -92,7 +92,7 @@
               <v-card-actions>
                 <v-btn
                   type="submit"
-                  variant="flat"
+                  variant="elevated"
                   color="primary"
                   @click="addParticipant"
                 >
@@ -173,6 +173,7 @@ import { useAuthStore } from "@/stores/auth";
 import moment from "moment";
 import { useTrainingsStore } from "../stores/trainings";
 import { useTrainingGroupsStore } from "../stores/trainingGroups";
+import { showMessage } from "@/utils/notifications";
 
 const newParticipantName = ref<string | null>(null);
 const newParticipantGroup = ref<string | undefined>(undefined);
@@ -299,11 +300,13 @@ async function addParticipant() {
       newParticipantName.value as string,
       newParticipantGroup.value
     );
+    const name = newParticipantName.value;
     addParticipantForm.value.reset();
     addParticipantForm.value.resetValidation();
     if (training.value.groups?.length == 1) {
       newParticipantGroup.value = training.value.groups[0];
     }
+    showMessage(`${name} hinzugefügt.`);
   }
 }
 

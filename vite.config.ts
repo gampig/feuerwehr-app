@@ -1,10 +1,11 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 import vuetify from "vite-plugin-vuetify";
 import vueDevTools from "vite-plugin-vue-devtools";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 import { gitDescribeSync } from "git-describe";
+import { playwright } from "@vitest/browser-playwright";
 
 const buildTimestamp = new Date().toISOString();
 const gitCommitHash = gitDescribeSync().hash;
@@ -75,5 +76,14 @@ export default defineConfig({
     warmup: {
       clientFiles: ["./src/**/*.vue"],
     },
+  },
+  test: {
+    browser: {
+      provider: playwright(),
+      enabled: false,
+      headless: true,
+      instances: [{ browser: "chromium" }],
+    },
+    include: ["tests/**/*.spec.ts", "tests/**/*.test.ts"],
   },
 });
