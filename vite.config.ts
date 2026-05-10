@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 import vuetify from "vite-plugin-vuetify";
 import vueDevTools from "vite-plugin-vue-devtools";
@@ -75,5 +75,8 @@ export default defineConfig({
     warmup: {
       clientFiles: ["./src/**/*.vue"],
     },
+  },
+  test: {
+    include: ["tests/**/*.spec.ts", "tests/**/*.test.ts"],
   },
 });
