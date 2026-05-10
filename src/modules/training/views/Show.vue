@@ -92,7 +92,7 @@
               <v-card-actions>
                 <v-btn
                   type="submit"
-                  variant="flat"
+                  variant="elevated"
                   color="primary"
                   @click="addParticipant"
                 >
