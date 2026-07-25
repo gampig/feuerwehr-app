@@ -5,6 +5,7 @@ import {
   isPersonInMannschaft,
   getGroupOfPerson,
 } from "@/modules/callout/utils/mannschaft";
+import { TrainingFormatter } from "../utils/TrainingFormatter";
 
 /**
  *
@@ -77,5 +78,20 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
 
     return [headerRow].concat(dataRows);
+  });
+}
+
+export async function exportUebungsliste(): Promise<string[][]> {
+  return Promise.all([storage.getUebungen()]).then(([uebungen]) => {
+    const sortedUebungen = [...uebungen].sort(
+      (uebung) => uebung.startTime ?? uebung.creationTime
+    );
+
+    const uebungRows = sortedUebungen.flatMap((uebung, index) => {
+      const uebungFormatter = new TrainingFormatter(uebung, index);
+      return uebungFormatter.toDataRows();
+    });
+
+    return [TrainingFormatter.getHeaderRow()].concat(uebungRows);
   });
 }
