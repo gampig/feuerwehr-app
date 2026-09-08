@@ -20,6 +20,16 @@
               >
             </v-col>
           </v-row>
+
+          <v-row justify="center" class="mb-6">
+            <v-col sm="6" md="4">
+              <v-btn
+                :loading="exportingUebungsliste"
+                @click="exportUebungsliste"
+                >Übungsliste speichern</v-btn
+              >
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-container>
@@ -31,14 +41,17 @@ import { defineComponent } from "vue";
 import {
   exportPeopleWithStatus,
   exportMannschaftsbuch,
+  exportUebungsliste,
 } from "../services/exportService";
 import { saveAsCsv } from "../services/csvService";
+import { writeFile } from "xlsx";
 
 export default defineComponent({
   data() {
     return {
       exportingPersonen: false,
       exportingMannschaftsbuch: false,
+      exportingUebungsliste: false,
     };
   },
 
@@ -63,6 +76,20 @@ export default defineComponent({
         })
         .finally(() => {
           this.exportingMannschaftsbuch = false;
+        });
+    },
+
+    exportUebungsliste() {
+      this.exportingUebungsliste = true;
+      exportUebungsliste()
+        .then((data) => {
+          writeFile(data, "Übungen.xlsx", { compression: true });
+        })
+        .catch((e: Error) => {
+          this.$showError(e.message);
+        })
+        .finally(() => {
+          this.exportingUebungsliste = false;
         });
     },
   },

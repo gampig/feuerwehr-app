@@ -2,6 +2,7 @@ import { crewRef } from "@/firebase";
 import { MannschaftenMap } from "@/modules/callout/models/Callout";
 import { useCalloutsStore } from "@/modules/callout/stores/callouts";
 import { usePeopleStore } from "@/modules/people/stores/people";
+import { useTrainingsStore } from "@/modules/training/stores/trainings";
 import { useVehiclesStore } from "@/modules/vehicles/stores/vehicles";
 import { get } from "firebase/database";
 
@@ -21,5 +22,9 @@ export default {
   async getMannschaften() {
     const snapshot = await get(crewRef);
     return snapshot.val() as MannschaftenMap;
+  },
+
+  getUebungen() {
+    return useTrainingsStore().promise;
   },
 };

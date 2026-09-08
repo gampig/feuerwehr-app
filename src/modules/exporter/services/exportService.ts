@@ -5,6 +5,11 @@ import {
   isPersonInMannschaft,
   getGroupOfPerson,
 } from "@/modules/callout/utils/mannschaft";
+import {
+  createTableForTrainingsOfGroup,
+  formatTraining,
+} from "../utils/TrainingFormatter";
+import { utils, WorkBook } from "xlsx";
 
 /**
  *
@@ -77,5 +82,29 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
       .concat(fahrzeuge.map((fahrzeug) => "Einsatzende " + fahrzeug.name));
 
     return [headerRow].concat(dataRows);
+  });
+}
+
+export async function exportUebungsliste(): Promise<WorkBook> {
+  return Promise.all([storage.getUebungen()]).then(([uebungen]) => {
+    const sortedUebungen = [...uebungen].sort(
+      (uebung) => uebung.startTime ?? uebung.creationTime
+    );
+
+    const formattedUebungen = sortedUebungen.map(formatTraining);
+    const groups = [
+      ...new Set(formattedUebungen.flatMap((uebung) => uebung.groups)),
+    ].sort();
+
+    const workbook = utils.book_new();
+
+    for (const group of groups) {
+      const worksheet = utils.aoa_to_sheet(
+        createTableForTrainingsOfGroup(formattedUebungen, group)
+      );
+      utils.book_append_sheet(workbook, worksheet, group);
+    }
+
+    return workbook;
   });
 }
