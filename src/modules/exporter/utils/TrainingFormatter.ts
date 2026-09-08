@@ -1,105 +1,90 @@
 import { Training } from "@/modules/training/models/Training";
-import { formatDateTime } from "@/utils/dates";
+import { formatDateWithoutYear } from "@/utils/dates";
 
-interface ParticipantDetails {
-  group: string;
-  isResponsible: boolean;
+interface TrainingView {
+  date: string;
+  durationInMinutes: number;
+  title: string;
+  groups: string[];
+  participantsByGroup: { [group: string]: string[] | undefined };
 }
 
-export class TrainingFormatter {
-  private uebung: Training;
-  private index: number;
+export const groupOfEveryone = "Alle";
+export const invalidGroup = "Fehlende Gruppe";
 
-  constructor(uebung: Training, index: number) {
-    this.uebung = uebung;
-    this.index = index;
-  }
+export function formatTraining(training: Training): TrainingView {
+  const startTime = training.startTime ?? training.creationTime;
+  const twoHoursInSeconds = 2 * 60 * 60;
+  const endTime = training.endTime ?? startTime + twoHoursInSeconds;
+  const date = formatDateWithoutYear(startTime);
 
-  static getHeaderRow() {
-    return [
-      "Übungsnummer",
-      "Beginn",
-      "Ende",
-      "Titel",
-      "Teilnehmer",
-      "Verantwortlich",
-      "Gruppe",
-    ];
-  }
+  const participantsByGroup: { [group: string]: string[] } = {};
+  const participants = Object.values(training.participants ?? {}).map(
+    (participant) => participant.name
+  );
 
-  toDataRows(): string[][] {
-    const trainingRow = [
-      (this.index + 1).toString(),
-      formatDateTime(this.uebung.startTime),
-      formatDateTime(this.uebung.endTime),
-      this.uebung.title,
-    ];
+  for (const participantId in training.participants ?? {}) {
+    const participant = training.participants![participantId];
+    const group = participant.group ?? invalidGroup;
 
-    if (!this.uebung.participants) {
-      return [trainingRow.concat(["", "", ""])];
+    if (!(group in participantsByGroup)) {
+      participantsByGroup[group] = [];
     }
 
-    const participants = this.getParticipantsByName();
+    participantsByGroup[group].push(participant.name);
+  }
 
-    // Add responsible people that are not in the list of participants yet
-    this.uebung.responsiblePeople?.forEach((responsiblePerson) => {
-      if (responsiblePerson in participants === false) {
-        participants[responsiblePerson] = {
-          group: "",
-          isResponsible: true,
-        };
+  for (const responsiblePerson of training.responsiblePeople ?? []) {
+    if (!participants.includes(responsiblePerson)) {
+      if (!(invalidGroup in participantsByGroup)) {
+        participantsByGroup[invalidGroup] = [];
       }
-    });
 
-    return Object.entries(participants)
-      .sort((entryA, entryB) => this.compareParticipantEntries(entryA, entryB))
-      .map(([name, details]) => [
-        ...trainingRow,
-        name,
-        details.isResponsible ? "Ja" : "",
-        details.group,
-      ]);
+      participantsByGroup[invalidGroup].push(responsiblePerson);
+      participants.push(responsiblePerson);
+    }
   }
 
-  private compareParticipantEntries(
-    [nameA, detailsA]: [string, ParticipantDetails],
-    [nameB, detailsB]: [string, ParticipantDetails]
-  ): number {
-    if (detailsA.isResponsible !== detailsB.isResponsible) {
-      return Number(detailsB.isResponsible) - Number(detailsA.isResponsible);
-    }
+  participantsByGroup[groupOfEveryone] = participants;
 
-    const groupComparison = detailsA.group.localeCompare(
-      detailsB.group,
-      undefined,
-      {
-        sensitivity: "base",
-      }
-    );
+  return {
+    date: date,
+    durationInMinutes: (endTime - startTime) / 60,
+    title: training.title,
+    groups: Object.keys(participantsByGroup),
+    participantsByGroup: participantsByGroup,
+  };
+}
 
-    if (groupComparison !== 0) {
-      return groupComparison;
-    }
+export function createTableForTrainingsOfGroup(
+  trainings: TrainingView[],
+  group: string
+) {
+  const interestingTrainings = trainings.filter((training) =>
+    training.groups.includes(group)
+  );
+  const peopleInGroup = [
+    ...new Set(
+      interestingTrainings.flatMap(
+        (training) => training.participantsByGroup[group] ?? []
+      )
+    ),
+  ].sort();
 
-    return nameA.localeCompare(nameB, undefined, {
-      sensitivity: "base",
-    });
+  const rows: any[][] = [
+    ["", ...interestingTrainings.map((training) => training.date)],
+  ];
+
+  for (const person of peopleInGroup) {
+    rows.push([
+      person,
+      ...interestingTrainings.map((training) =>
+        (training.participantsByGroup[group] ?? []).includes(person)
+          ? 1
+          : undefined
+      ),
+    ]);
   }
 
-  private getParticipantsByName(): { [name: string]: ParticipantDetails } {
-    if (!this.uebung.participants) {
-      return {};
-    }
-
-    return Object.fromEntries(
-      Object.values(this.uebung.participants).map((participant) => [
-        participant.name,
-        {
-          group: participant.group ?? "",
-          isResponsible:
-            this.uebung.responsiblePeople?.includes(participant.name) ?? false,
-        },
-      ])
-    );
-  }
+  return rows;
 }

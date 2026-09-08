@@ -44,6 +44,7 @@ import {
   exportUebungsliste,
 } from "../services/exportService";
 import { saveAsCsv } from "../services/csvService";
+import { writeFile } from "xlsx";
 
 export default defineComponent({
   data() {
@@ -82,7 +83,7 @@ export default defineComponent({
       this.exportingUebungsliste = true;
       exportUebungsliste()
         .then((data) => {
-          saveAsCsv(data, "Übungsliste.csv");
+          writeFile(data, "Übungen.xlsx", { compression: true });
         })
         .catch((e: Error) => {
           this.$showError(e.message);

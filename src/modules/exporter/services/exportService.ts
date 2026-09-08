@@ -5,7 +5,11 @@ import {
   isPersonInMannschaft,
   getGroupOfPerson,
 } from "@/modules/callout/utils/mannschaft";
-import { TrainingFormatter } from "../utils/TrainingFormatter";
+import {
+  createTableForTrainingsOfGroup,
+  formatTraining,
+} from "../utils/TrainingFormatter";
+import { utils, WorkBook } from "xlsx";
 
 /**
  *
@@ -81,17 +85,26 @@ export async function exportMannschaftsbuch(): Promise<string[][]> {
   });
 }
 
-export async function exportUebungsliste(): Promise<string[][]> {
+export async function exportUebungsliste(): Promise<WorkBook> {
   return Promise.all([storage.getUebungen()]).then(([uebungen]) => {
     const sortedUebungen = [...uebungen].sort(
       (uebung) => uebung.startTime ?? uebung.creationTime
     );
 
-    const uebungRows = sortedUebungen.flatMap((uebung, index) => {
-      const uebungFormatter = new TrainingFormatter(uebung, index);
-      return uebungFormatter.toDataRows();
-    });
+    const formattedUebungen = sortedUebungen.map(formatTraining);
+    const groups = [
+      ...new Set(formattedUebungen.flatMap((uebung) => uebung.groups)),
+    ].sort();
 
-    return [TrainingFormatter.getHeaderRow()].concat(uebungRows);
+    const workbook = utils.book_new();
+
+    for (const group of groups) {
+      const worksheet = utils.aoa_to_sheet(
+        createTableForTrainingsOfGroup(formattedUebungen, group)
+      );
+      utils.book_append_sheet(workbook, worksheet, group);
+    }
+
+    return workbook;
   });
 }
