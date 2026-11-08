@@ -6,6 +6,7 @@ import {
   getGroupOfPerson,
 } from "@/modules/callout/utils/mannschaft";
 import {
+  createTableForTrainingOverview,
   createTableForTrainingsOfGroup,
   formatTraining,
 } from "../utils/TrainingFormatter";
@@ -97,6 +98,11 @@ export async function exportUebungsliste(): Promise<WorkBook> {
     ].sort();
 
     const workbook = utils.book_new();
+
+    const worksheet = utils.aoa_to_sheet(
+      createTableForTrainingOverview(formattedUebungen, groups)
+    );
+    utils.book_append_sheet(workbook, worksheet, "Übersicht");
 
     for (const group of groups) {
       const worksheet = utils.aoa_to_sheet(

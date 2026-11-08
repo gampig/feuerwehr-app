@@ -1,5 +1,5 @@
 import { Training } from "@/modules/training/models/Training";
-import { formatDateWithoutYear } from "@/utils/dates";
+import { formatDate, formatDateWithoutYear } from "@/utils/dates";
 
 interface TrainingView {
   date: string;
@@ -82,6 +82,29 @@ export function createTableForTrainingsOfGroup(
         (training.participantsByGroup[group] ?? []).includes(person)
           ? 1
           : undefined
+      ),
+    ]);
+  }
+
+  return rows;
+}
+
+export function createTableForTrainingOverview(
+  trainings: TrainingView[],
+  groups: string[]
+) {
+  const filteredGroups = groups.filter((group) => group !== "Alle");
+  const rows: any[][] = [
+    ["Datum", "Thema", "Dauer (Minuten)", ...filteredGroups],
+  ];
+
+  for (const training of trainings) {
+    rows.push([
+      training.date,
+      training.title,
+      training.durationInMinutes,
+      ...filteredGroups.map(
+        (group) => (training.participantsByGroup[group] ?? []).length
       ),
     ]);
   }
