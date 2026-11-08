@@ -44,10 +44,12 @@
             </v-autocomplete>
 
             <v-select
-              v-model="training.groups"
+              :model-value="training.groups"
               :items="selectableGroups"
               multiple
-              label="Gruppen"
+              label="Beteiligte Gruppen"
+              hint="Diese Gruppen stehen beim Eintragen neuer Teilnehmer zur Auswahl."
+              persistent-hint
               @update:model-value="updateGroups"
             >
             </v-select>
@@ -102,25 +104,50 @@
             </v-card>
           </VForm>
           <v-divider class="mt-3" />
-          <v-card flat>
-            <v-data-table
-              v-model:sort-by="sortBy"
-              :headers="headers"
-              :items="participants"
-              :items-per-page="-1"
-              no-data-text="Keine Teilnehmer vorhanden"
-            >
-              <template #[`item.actions`]="{ item }">
-                <v-btn
-                  v-if="editAllowed"
-                  variant="plain"
-                  @click="showConfirmRemoveParticipantDialog(item)"
+          <v-list class="mt-3 border rounded" density="compact">
+            <template v-if="participantGroups.length > 0">
+              <template v-for="group in participantGroups" :key="group.key">
+                <v-list-item
+                  :title="group.label"
+                  :subtitle="`${group.participants.length} Teilnehmer`"
+                  prepend-icon="mdi-account-group"
                 >
-                  Entfernen
-                </v-btn>
+                  <template #append>
+                    <v-btn
+                      v-if="
+                        canBulkChangeParticipantGroups &&
+                        group.participants.length > 0 &&
+                        bulkMoveTargetGroupsFor(group).length > 0
+                      "
+                      size="small"
+                      variant="tonal"
+                      @click="openBulkMoveDialog(group)"
+                    >
+                      Anderer Gruppe zuordnen
+                    </v-btn>
+                  </template>
+                </v-list-item>
+                <v-list-item
+                  v-for="participant in group.participants"
+                  :key="participant.id"
+                  :title="participant.name"
+                  class="ps-8"
+                  prepend-icon="mdi-account"
+                >
+                  <template #append>
+                    <v-btn
+                      v-if="editAllowed"
+                      variant="plain"
+                      @click="showConfirmRemoveParticipantDialog(participant)"
+                    >
+                      Entfernen
+                    </v-btn>
+                  </template>
+                </v-list-item>
               </template>
-            </v-data-table>
-          </v-card>
+            </template>
+            <v-list-item v-else title="Keine Teilnehmer vorhanden" />
+          </v-list>
           <div class="d-flex justify-end mt-6">
             <v-btn variant="tonal" color="primary" @click="close"
               >Speichern & Schließen</v-btn
@@ -156,6 +183,49 @@
     >
       Möchtest du diese Übung wirklich löschen?
     </BaseConfirmDialog>
+    <v-dialog
+      v-model="bulkMoveDialog"
+      max-width="500"
+      :persistent="bulkMoveSaving"
+    >
+      <v-card>
+        <v-card-title>Teilnehmer gesammelt zuordnen</v-card-title>
+        <v-card-text>
+          <p class="mb-4">
+            {{ bulkMoveParticipantCount }} Teilnehmer aus
+            {{ bulkMoveSourceGroupLabel }}
+            {{
+              isRemovingTrainingGroup
+                ? "vor dem Entfernen der Gruppe neu zuordnen."
+                : "einer anderen Gruppe zuordnen."
+            }}
+          </p>
+          <v-select
+            v-model="bulkMoveTargetGroup"
+            :items="bulkMoveTargetGroups"
+            label="Zielgruppe"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn :disabled="bulkMoveSaving" @click="closeBulkMoveDialog">
+            Abbrechen
+          </v-btn>
+          <v-btn
+            color="primary"
+            :loading="bulkMoveSaving"
+            :disabled="!bulkMoveTargetGroup"
+            @click="moveParticipantsToGroup"
+          >
+            {{
+              isRemovingTrainingGroup
+                ? "Zuordnen und Gruppe entfernen"
+                : "Zuordnen"
+            }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </BasePage>
 </template>
 
@@ -165,7 +235,6 @@ import { computed, ref, watchEffect } from "vue";
 import { Participant } from "../models/Training";
 import { formatDateTime } from "@/utils/dates";
 import { VForm } from "vuetify/components/VForm";
-import { SortItem } from "@/models/SortItem";
 import { required } from "@/utils/rules";
 import { useRoute, useRouter } from "vue-router";
 import { Acl } from "@/acl";
@@ -175,13 +244,26 @@ import { useTrainingsStore } from "../stores/trainings";
 import { useTrainingGroupsStore } from "../stores/trainingGroups";
 import { showMessage } from "@/utils/notifications";
 
+type ParticipantGroup = {
+  key: string;
+  name: string | undefined;
+  label: string;
+  participants: (Participant & { readonly id: string })[];
+};
+
 const newParticipantName = ref<string | null>(null);
 const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant & { readonly id: string }>();
+const bulkMoveSourceGroup = ref<string | undefined>();
+const bulkMoveTargetGroup = ref<string>();
+const groupsAfterRemoval = ref<string[]>();
+const bulkMoveParticipantCount = ref(0);
 const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
 const confirmRemoveTrainingDialog = ref(false);
 const confirmRemoveParticipantDialog = ref(false);
+const bulkMoveDialog = ref(false);
+const bulkMoveSaving = ref(false);
 
 const route = useRoute();
 const router = useRouter();
@@ -211,30 +293,6 @@ const steps = [
   },
 ];
 
-const headers = [
-  {
-    title: "Name",
-    key: "name",
-    groupable: false,
-  },
-  {
-    title: "Gruppe",
-    key: "group",
-  },
-  {
-    title: "",
-    key: "actions",
-    width: "1%",
-    sortable: false,
-  },
-];
-
-const sortBy = ref<SortItem[]>([
-  {
-    key: "name",
-  },
-]);
-
 const groups = computed<string[]>(
   () => trainingGroupsStore.trainingGroups?.map((g) => g.name) ?? []
 );
@@ -251,11 +309,47 @@ const training = computed(
 );
 
 const participants = computed(() =>
-  Object.entries(training.value.participants ?? {}).map((value) => ({
-    id: value[0],
-    ...value[1],
-  }))
+  Object.entries(training.value.participants ?? {})
+    .map(([id, participant]) => ({
+      id,
+      ...participant,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 );
+
+const participantGroups = computed<ParticipantGroup[]>(() => {
+  const groupNames = [
+    ...new Set([
+      ...(training.value.groups ?? []),
+      ...participants.value
+        .map((participant) => participant.group)
+        .filter((group): group is string => group !== undefined),
+    ]),
+  ];
+
+  const groupedParticipants: ParticipantGroup[] = groupNames.map((name) => ({
+    key: `assigned-${name}`,
+    name,
+    label: name,
+    participants: participants.value.filter(
+      (participant) => participant.group === name
+    ),
+  }));
+  const unassignedParticipants = participants.value.filter(
+    (participant) => participant.group === undefined
+  );
+
+  if (unassignedParticipants.length > 0) {
+    groupedParticipants.push({
+      key: "unassigned",
+      name: undefined,
+      label: "Ohne Gruppe",
+      participants: unassignedParticipants,
+    });
+  }
+
+  return groupedParticipants;
+});
 
 const selectableGroups = computed(
   () =>
@@ -286,6 +380,20 @@ const deleteAllowed = computed((): boolean => {
   }
   return editAllowed.value && participants.value.length == 0;
 });
+
+const canBulkChangeParticipantGroups = computed(() =>
+  hasAnyRole(Acl.uebungImmerBearbeiten)
+);
+
+const bulkMoveTargetGroups = computed(() =>
+  (groupsAfterRemoval.value ?? training.value.groups ?? []).filter(
+    (group) => group !== bulkMoveSourceGroup.value
+  )
+);
+
+const isRemovingTrainingGroup = computed(
+  () => groupsAfterRemoval.value !== undefined
+);
 
 const addParticipantForm = ref<VForm>();
 
@@ -361,12 +469,120 @@ async function removeTraining() {
 }
 
 function updateGroups(newGroups: string[]) {
+  const removedGroupsWithParticipants = (training.value.groups ?? []).filter(
+    (group) =>
+      !newGroups.includes(group) &&
+      participants.value.some((participant) => participant.group === group)
+  );
+  if (removedGroupsWithParticipants.length > 0) {
+    if (removedGroupsWithParticipants.length > 1) {
+      showMessage(
+        "Bitte entferne Gruppen mit Teilnehmern einzeln, damit du für jede Gruppe eine Zielgruppe auswählen kannst.",
+        "warning"
+      );
+      return;
+    }
+
+    if (newGroups.length === 0) {
+      showMessage(
+        "Die letzte Gruppe kann nicht entfernt werden, solange sie Teilnehmer hat.",
+        "warning"
+      );
+      return;
+    }
+
+    const [groupToRemove] = removedGroupsWithParticipants;
+    const groupParticipants = participants.value.filter(
+      (participant) => participant.group === groupToRemove
+    );
+    bulkMoveSourceGroup.value = groupToRemove;
+    bulkMoveParticipantCount.value = groupParticipants.length;
+    groupsAfterRemoval.value = newGroups;
+    bulkMoveTargetGroup.value =
+      newGroups.length === 1 ? newGroups[0] : undefined;
+    bulkMoveDialog.value = true;
+    return;
+  }
+
+  saveGroups(newGroups);
+}
+
+function saveGroups(newGroups: string[]) {
   updateField("groups", newGroups);
   if (newGroups.length == 1) {
     newParticipantGroup.value = newGroups[0];
   } else {
     newParticipantGroup.value = undefined;
   }
+}
+
+function bulkMoveTargetGroupsFor(group: { name: string | undefined }) {
+  return (training.value.groups ?? []).filter(
+    (targetGroup) => targetGroup !== group.name
+  );
+}
+
+function openBulkMoveDialog(group: {
+  name: string | undefined;
+  participants: (Participant & { readonly id: string })[];
+}) {
+  bulkMoveSourceGroup.value = group.name;
+  bulkMoveParticipantCount.value = group.participants.length;
+  bulkMoveTargetGroup.value =
+    bulkMoveTargetGroups.value.length === 1
+      ? bulkMoveTargetGroups.value[0]
+      : undefined;
+  groupsAfterRemoval.value = undefined;
+  bulkMoveDialog.value = true;
+}
+
+const bulkMoveSourceGroupLabel = computed(
+  () => bulkMoveSourceGroup.value ?? "Ohne Gruppe"
+);
+
+function closeBulkMoveDialog() {
+  if (bulkMoveSaving.value) {
+    return;
+  }
+  bulkMoveDialog.value = false;
+  bulkMoveSourceGroup.value = undefined;
+  bulkMoveTargetGroup.value = undefined;
+  groupsAfterRemoval.value = undefined;
+}
+
+async function moveParticipantsToGroup() {
+  const targetGroup = bulkMoveTargetGroup.value;
+  if (
+    targetGroup === undefined ||
+    targetGroup === bulkMoveSourceGroup.value ||
+    (targetGroup !== undefined &&
+      !bulkMoveTargetGroups.value.includes(targetGroup))
+  ) {
+    return;
+  }
+
+  const participantsToMove = participants.value.filter(
+    (participant) => participant.group === bulkMoveSourceGroup.value
+  );
+
+  bulkMoveSaving.value = true;
+  try {
+    await Promise.all(
+      participantsToMove.map((participant) =>
+        trainingsStore.updateField(
+          training.value.id,
+          `participants/${participant.id}/group`,
+          targetGroup
+        )
+      )
+    );
+    if (groupsAfterRemoval.value !== undefined) {
+      saveGroups(groupsAfterRemoval.value);
+    }
+  } finally {
+    bulkMoveSaving.value = false;
+  }
+  closeBulkMoveDialog();
 }
 
 function close() {
