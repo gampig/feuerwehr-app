@@ -44,11 +44,11 @@
             </v-autocomplete>
 
             <v-select
-              v-model="training.groups"
+              :model-value="training.groups"
               :items="selectableGroups"
               multiple
               label="Beteiligte Gruppen"
-              hint="Diese Gruppen stehen beim Eintragen neuer Teilnehmer zur Auswahl. Bestehende Zuordnungen bleiben unverändert."
+              hint="Diese Gruppen stehen beim Eintragen neuer Teilnehmer zur Auswahl."
               persistent-hint
               @update:model-value="updateGroups"
             >
@@ -193,7 +193,12 @@
         <v-card-text>
           <p class="mb-4">
             {{ bulkMoveParticipantCount }} Teilnehmer aus
-            {{ bulkMoveSourceGroupLabel }} einer anderen Gruppe zuordnen.
+            {{ bulkMoveSourceGroupLabel }}
+            {{
+              isRemovingTrainingGroup
+                ? "vor dem Entfernen der Gruppe neu zuordnen."
+                : "einer anderen Gruppe zuordnen."
+            }}
           </p>
           <v-select
             v-model="bulkMoveTargetGroup"
@@ -212,7 +217,11 @@
             :disabled="!bulkMoveTargetGroup"
             @click="moveParticipantsToGroup"
           >
-            Zuordnen
+            {{
+              isRemovingTrainingGroup
+                ? "Zuordnen und Gruppe entfernen"
+                : "Zuordnen"
+            }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -247,6 +256,7 @@ const newParticipantGroup = ref<string | undefined>(undefined);
 const participantToDelete = ref<Participant & { readonly id: string }>();
 const bulkMoveSourceGroup = ref<string | undefined>();
 const bulkMoveTargetGroup = ref<string>();
+const groupsAfterRemoval = ref<string[]>();
 const bulkMoveParticipantCount = ref(0);
 const startTimeDialog = ref(false);
 const endTimeDialog = ref(false);
@@ -371,14 +381,18 @@ const deleteAllowed = computed((): boolean => {
   return editAllowed.value && participants.value.length == 0;
 });
 
-const canBulkChangeParticipantGroups = computed(
-  () => hasAnyRole(Acl.uebungImmerBearbeiten) && editAllowed.value
+const canBulkChangeParticipantGroups = computed(() =>
+  hasAnyRole(Acl.uebungImmerBearbeiten)
 );
 
 const bulkMoveTargetGroups = computed(() =>
-  (training.value.groups ?? []).filter(
+  (groupsAfterRemoval.value ?? training.value.groups ?? []).filter(
     (group) => group !== bulkMoveSourceGroup.value
   )
+);
+
+const isRemovingTrainingGroup = computed(
+  () => groupsAfterRemoval.value !== undefined
 );
 
 const addParticipantForm = ref<VForm>();
@@ -455,6 +469,45 @@ async function removeTraining() {
 }
 
 function updateGroups(newGroups: string[]) {
+  const removedGroupsWithParticipants = (training.value.groups ?? []).filter(
+    (group) =>
+      !newGroups.includes(group) &&
+      participants.value.some((participant) => participant.group === group)
+  );
+  if (removedGroupsWithParticipants.length > 0) {
+    if (removedGroupsWithParticipants.length > 1) {
+      showMessage(
+        "Bitte entferne Gruppen mit Teilnehmern einzeln, damit du für jede Gruppe eine Zielgruppe auswählen kannst.",
+        "warning"
+      );
+      return;
+    }
+
+    if (newGroups.length === 0) {
+      showMessage(
+        "Die letzte Gruppe kann nicht entfernt werden, solange sie Teilnehmer hat.",
+        "warning"
+      );
+      return;
+    }
+
+    const [groupToRemove] = removedGroupsWithParticipants;
+    const groupParticipants = participants.value.filter(
+      (participant) => participant.group === groupToRemove
+    );
+    bulkMoveSourceGroup.value = groupToRemove;
+    bulkMoveParticipantCount.value = groupParticipants.length;
+    groupsAfterRemoval.value = newGroups;
+    bulkMoveTargetGroup.value =
+      newGroups.length === 1 ? newGroups[0] : undefined;
+    bulkMoveDialog.value = true;
+    return;
+  }
+
+  saveGroups(newGroups);
+}
+
+function saveGroups(newGroups: string[]) {
   updateField("groups", newGroups);
   if (newGroups.length == 1) {
     newParticipantGroup.value = newGroups[0];
@@ -473,16 +526,13 @@ function openBulkMoveDialog(group: {
   name: string | undefined;
   participants: (Participant & { readonly id: string })[];
 }) {
-  if (!canBulkChangeParticipantGroups.value) {
-    return;
-  }
-
   bulkMoveSourceGroup.value = group.name;
   bulkMoveParticipantCount.value = group.participants.length;
   bulkMoveTargetGroup.value =
     bulkMoveTargetGroups.value.length === 1
       ? bulkMoveTargetGroups.value[0]
       : undefined;
+  groupsAfterRemoval.value = undefined;
   bulkMoveDialog.value = true;
 }
 
@@ -497,15 +547,16 @@ function closeBulkMoveDialog() {
   bulkMoveDialog.value = false;
   bulkMoveSourceGroup.value = undefined;
   bulkMoveTargetGroup.value = undefined;
+  groupsAfterRemoval.value = undefined;
 }
 
 async function moveParticipantsToGroup() {
   const targetGroup = bulkMoveTargetGroup.value;
   if (
-    !canBulkChangeParticipantGroups.value ||
     targetGroup === undefined ||
     targetGroup === bulkMoveSourceGroup.value ||
-    !(training.value.groups ?? []).includes(targetGroup)
+    (targetGroup !== undefined &&
+      !bulkMoveTargetGroups.value.includes(targetGroup))
   ) {
     return;
   }
@@ -525,10 +576,13 @@ async function moveParticipantsToGroup() {
         )
       )
     );
-    bulkMoveDialog.value = false;
+    if (groupsAfterRemoval.value !== undefined) {
+      saveGroups(groupsAfterRemoval.value);
+    }
   } finally {
     bulkMoveSaving.value = false;
   }
+  closeBulkMoveDialog();
 }
 
 function close() {
