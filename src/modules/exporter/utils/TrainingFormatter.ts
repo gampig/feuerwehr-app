@@ -36,11 +36,16 @@ export function formatTraining(training: Training): TrainingView {
 
   for (const responsiblePerson of training.responsiblePeople ?? []) {
     if (!participants.includes(responsiblePerson)) {
-      if (!(invalidGroup in participantsByGroup)) {
-        participantsByGroup[invalidGroup] = [];
+      const targetGroup =
+        training.groups && training.groups.length === 1
+          ? training.groups[0]
+          : invalidGroup;
+
+      if (!(targetGroup in participantsByGroup)) {
+        participantsByGroup[targetGroup] = [];
       }
 
-      participantsByGroup[invalidGroup].push(responsiblePerson);
+      participantsByGroup[targetGroup].push(responsiblePerson);
       participants.push(responsiblePerson);
     }
   }
