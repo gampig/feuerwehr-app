@@ -72,8 +72,8 @@
     },
     "clothes": {
       // Rollen: MAINTAINER_CLOTHES, ADMIN
-      ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
-      ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
+      ".read": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_CHIEF').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
+      ".write": "auth != null && (true === root.child('users').child(auth.uid).child('roles').child('ROLE_MAINTAINER_CLOTHES').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_CHIEF').val() || true === root.child('users').child(auth.uid).child('roles').child('ROLE_ADMIN').val())",
       "clothingTypes": {
         ".indexOn": [
           "category"

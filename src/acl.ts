@@ -80,6 +80,7 @@ export abstract class Acl {
 
   static readonly kleiderverwaltung: AllRoles[] = [
     "ROLE_ADMIN",
+    "ROLE_CHIEF",
     "ROLE_MAINTAINER_CLOTHES",
   ];
 
